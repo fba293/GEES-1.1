@@ -18,7 +18,7 @@ export const CrmView: React.FC = () => {
   const [newLeadName, setNewLeadName] = useState('');
   const [newLeadEmail, setNewLeadEmail] = useState('');
   const [newLeadPhone, setNewLeadPhone] = useState('');
-  const [newLeadCountry, setNewLeadCountry] = useState('Canada');
+  const [newLeadCountry, setNewLeadCountry] = useState('Malaysia');
   const [newLeadField, setNewLeadField] = useState('Computer Science');
   const [newLeadIelts, setNewLeadIelts] = useState('6.5');
   const [newLeadCounselor, setNewLeadCounselor] = useState(mockCounselors[0].name);
@@ -297,12 +297,17 @@ export const CrmView: React.FC = () => {
                     onChange={(e) => setNewLeadCountry(e.target.value)}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-transparent text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
-                    <option value="Canada">Canada</option>
+                    <option value="Malaysia">Malaysia</option>
                     <option value="United Kingdom">United Kingdom</option>
                     <option value="Australia">Australia</option>
-                    <option value="USA">USA</option>
-                    <option value="Germany">Germany</option>
-                    <option value="Malaysia">Malaysia</option>
+                    <option value="New Zealand">New Zealand</option>
+                    <option value="Cyprus">Cyprus</option>
+                    <option value="Belgium">Belgium</option>
+                    <option value="Finland">Finland</option>
+                    <option value="Greece">Greece</option>
+                    <option value="Mauritius">Mauritius</option>
+                    <option value="Netherlands">Netherlands</option>
+                    <option value="India">India</option>
                   </select>
                 </div>
                 <div>

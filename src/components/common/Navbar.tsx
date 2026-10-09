@@ -96,11 +96,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </div>
                   <ul className="space-y-1">
                     {[
-                      { flag: '🇦🇺', name: 'Australia' },
-                      { flag: '🇨🇦', name: 'Canada' },
+                      { flag: '🇲🇾', name: 'Malaysia' },
                       { flag: '🇬🇧', name: 'United Kingdom' },
-                      { flag: '🇺🇸', name: 'USA' },
-                      { flag: '🇲🇾', name: 'Malaysia' }
+                      { flag: '🇦🇺', name: 'Australia' },
+                      { flag: '🇳🇿', name: 'New Zealand' }
                     ].map((c) => (
                       <li key={c.name}>
                         <button
@@ -123,18 +122,17 @@ export const Navbar: React.FC<NavbarProps> = ({
                       Europe
                     </span>
                   </div>
-                  <ul className="space-y-0.5">
+                  <ul className="space-y-1">
                     {[
-                      { flag: '🇮🇹', name: 'Italy' },
-                      { flag: '🇫🇮', name: 'Finland' },
                       { flag: '🇧🇪', name: 'Belgium' },
-                      { flag: '🇨🇾', name: 'Cyprus' },
-                      { flag: '🇬🇷', name: 'Greece' }
+                      { flag: '🇫🇮', name: 'Finland' },
+                      { flag: '🇬🇷', name: 'Greece' },
+                      { flag: '🇳🇱', name: 'Netherlands' }
                     ].map((c) => (
                       <li key={c.name}>
                         <button
                           onClick={() => onNavigate('destinations', c.name)}
-                          className="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-blue-600 transition-colors font-medium text-xs text-left cursor-pointer"
+                          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-blue-600 transition-colors font-medium text-xs text-left cursor-pointer"
                         >
                           <span className="text-lg leading-none">{c.flag}</span>
                           <span>{c.name}</span>
@@ -149,16 +147,14 @@ export const Navbar: React.FC<NavbarProps> = ({
                   <div className="flex items-center gap-2 pb-2 border-b border-slate-100 dark:border-slate-800">
                     <span className="material-symbols-outlined text-[18px] text-blue-600">travel_explore</span>
                     <span className="text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-400 font-bold">
-                      Asia & More
+                      Mediterranean & Asia
                     </span>
                   </div>
                   <ul className="space-y-1">
                     {[
+                      { flag: '🇨🇾', name: 'Cyprus' },
                       { flag: '🇲🇺', name: 'Mauritius' },
-                      { flag: '🇨🇳', name: 'China' },
-                      { flag: '🇯🇵', name: 'Japan' },
-                      { flag: '🇹🇷', name: 'Turkey' },
-                      { flag: '🇳🇿', name: 'New Zealand' }
+                      { flag: '🇮🇳', name: 'India' }
                     ].map((c) => (
                       <li key={c.name}>
                         <button

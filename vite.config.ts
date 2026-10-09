@@ -25,6 +25,8 @@ export default defineConfig(() => {
           blog: path.resolve(__dirname, 'blog.html'),
           faq: path.resolve(__dirname, 'faq.html'),
           contact: path.resolve(__dirname, 'contact.html'),
+          services: path.resolve(__dirname, 'services.html'),
+          countries: path.resolve(__dirname, 'countries.html'),
         },
       },
     },

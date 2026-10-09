@@ -140,11 +140,11 @@ export const SearchModal: React.FC<SearchModalProps> = ({
               <div className="flex flex-wrap gap-2">
                 {[
                   'Master in Data Science',
-                  'Canada Student Visa',
+                  'UK Graduate Visa',
                   'Monash University',
-                  "King's University College",
+                  'University of Auckland',
                   'Australia Subclass 500',
-                  'Full Scholarships 2027'
+                  'Malaysia Student Pass'
                 ].map((chip) => (
                   <button
                     key={chip}

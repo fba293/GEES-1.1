@@ -35,17 +35,17 @@ export const PreFooterCta: React.FC<PreFooterCtaProps> = ({
             </div>
 
             {/* Main Headline */}
-            <div className="flex flex-nowrap items-center justify-center gap-1.5 sm:gap-x-3 md:gap-x-4 mb-4 sm:mb-6 max-w-full overflow-hidden">
-              <h2 className="font-sans font-black text-base xs:text-xl sm:text-5xl md:text-6xl lg:text-7xl text-slate-900 dark:text-white tracking-tight leading-none shrink-0 whitespace-nowrap">
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-x-3 md:gap-x-4 mb-4 sm:mb-6 max-w-full">
+              <h2 className="font-sans font-black text-2xl xs:text-3xl sm:text-5xl md:text-6xl lg:text-7xl text-slate-900 dark:text-white tracking-tight leading-tight">
                 Still wondering
               </h2>
-              <span className="font-sans font-black text-base xs:text-xl sm:text-5xl md:text-6xl lg:text-7xl text-slate-950 bg-[#fbb034] px-2 sm:px-6 md:px-8 py-1 sm:py-2.5 md:py-3.5 rounded-xl sm:rounded-2xl md:rounded-3xl inline-flex items-center justify-center tracking-tight leading-none shadow-sm shrink-0 whitespace-nowrap">
+              <span className="font-sans font-black text-2xl xs:text-3xl sm:text-5xl md:text-6xl lg:text-7xl text-slate-950 bg-[#fbb034] px-3.5 sm:px-6 md:px-8 py-1 sm:py-2.5 md:py-3.5 rounded-xl sm:rounded-2xl md:rounded-3xl inline-flex items-center justify-center tracking-tight leading-tight shadow-sm">
                 what to do?
               </span>
             </div>
 
             {/* Subtitle description */}
-            <p className="text-xs sm:text-lg md:text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto mb-6 md:mb-12 leading-relaxed font-normal truncate sm:whitespace-normal">
+            <p className="text-sm sm:text-lg md:text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto mb-6 md:mb-12 leading-relaxed font-normal px-2">
               Message our experts to start your study abroad journey today
             </p>
 
@@ -61,7 +61,7 @@ export const PreFooterCta: React.FC<PreFooterCtaProps> = ({
                     onNavigate('apply');
                   }
                 }}
-                className="w-full sm:w-auto px-7 py-3.5 rounded-full bg-white dark:bg-slate-900 text-slate-950 dark:text-white border-slate-300 dark:border-slate-700 font-semibold text-sm md:text-base shadow-md"
+                className="min-h-[44px] w-full sm:w-auto px-7 py-3.5 rounded-full bg-white dark:bg-slate-900 text-slate-950 dark:text-white border-slate-300 dark:border-slate-700 font-semibold text-sm md:text-base shadow-md cursor-pointer"
               />
               <a
                 href="tel:+8801805529578"
@@ -70,7 +70,7 @@ export const PreFooterCta: React.FC<PreFooterCtaProps> = ({
                 <InteractiveHoverButton
                   type="button"
                   text="Call Our Office"
-                  className="w-full sm:w-auto px-7 py-3.5 rounded-full bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 font-semibold text-sm md:text-base shadow-xs"
+                  className="min-h-[44px] w-full sm:w-auto px-7 py-3.5 rounded-full bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 font-semibold text-sm md:text-base shadow-xs cursor-pointer"
                 />
               </a>
             </div>

@@ -1,555 +1,394 @@
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
- * GEES "Blogs, News & Updates" with Live Bookmarks, Reading Drawer, Social Sharing,
- * Framer Motion Staggered Entrance & Modern Newsletter Subscription.
+ * GEES - Global Education Expert Services
+ * Homepage "Blogs, News & Visa Updates" Section (Original GEES Design)
+ * 
+ * Features:
+ * - Signature GEES typography & golden pill badge header ("Blogs & [Updates]")
+ * - Smooth 120 FPS animated category tabs (All, Canada, UK, Australia, Visa & Immigration)
+ * - High-converting editorial article cards with image zoom, tags, metadata, and key takeaways checklist
+ * - Interactive full reading modal with copy link & counselor consultation intake
+ * - Prominent "More Articles" button that redirects to the updated /blog.html hub
+ * - Mobile-first refinement with 44×44px touch targets and responsive card stacking
  */
 
-import React, { useState } from 'react';
-import { motion, Variants } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
 import { mockBlogPosts } from '../../data/mockDatabase.ts';
 import { BlogPost } from '../../types/index.ts';
-import { InteractiveHoverButton } from '../ui/interactive-hover-button.tsx';
 import { AnimatedTabs, AnimatedTabItem } from '../ui/animated-tabs.tsx';
+import { InteractiveHoverButton } from '../ui/interactive-hover-button.tsx';
 
 interface BlogsUpdatesSectionProps {
   onOpenConsultation: () => void;
+  onNavigate?: (view: string, payload?: any) => void;
 }
 
-export const BlogsUpdatesSection: React.FC<BlogsUpdatesSectionProps> = ({ onOpenConsultation }) => {
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [posts, setPosts] = useState<BlogPost[]>(mockBlogPosts);
-  const [activeReadingModal, setActiveReadingModal] = useState<BlogPost | null>(null);
-  const [activeShareModal, setActiveShareModal] = useState<BlogPost | null>(null);
+export const BlogsUpdatesSection: React.FC<BlogsUpdatesSectionProps> = ({
+  onOpenConsultation,
+  onNavigate
+}) => {
+  // Active Filter Category
+  const [activeCategory, setActiveCategory] = useState<string>('all');
+
+  // Bookmarks & local state for posts
+  const [posts, setPosts] = useState<BlogPost[]>(() => mockBlogPosts);
+
+  // Active Article Reading Modal
+  const [selectedArticle, setSelectedArticle] = useState<BlogPost | null>(null);
+
+  // Copied Link Feedback
   const [copiedLink, setCopiedLink] = useState(false);
 
-  // Newsletter state
-  const [newsletterEmail, setNewsletterEmail] = useState('');
-  const [newsletterSubscribed, setNewsletterSubscribed] = useState(false);
-
-  const savedCount = posts.filter(p => p.saved).length;
-
-  const blogTabs: AnimatedTabItem[] = [
-    { label: 'All Posts', id: 'all' },
-    { label: 'Articles', id: 'article' },
-    { label: 'News & Events', id: 'news' },
-    { label: 'Scholarships', id: 'scholarship' },
-    { label: 'Visa Updates', id: 'visa' },
-    { 
-      label: 'Saved', 
-      id: 'saved',
-      icon: <span className="material-symbols-outlined text-[15px] text-red-500">bookmark</span>,
-      badge: (
-        <span className="px-1.5 py-0.2 text-[10px] font-black rounded-full bg-red-600 text-white leading-none">
-          {savedCount}
-        </span>
-      )
-    }
+  // Tabs Definition
+  const tabs: AnimatedTabItem[] = [
+    { id: 'all', label: 'All Updates' },
+    { id: 'malaysia', label: 'Malaysia 🇲🇾' },
+    { id: 'uk', label: 'UK Guide 🇬🇧' },
+    { id: 'australia', label: 'Australia 🇦🇺' },
+    { id: 'visa', label: 'Visa & Immigration ✈️' }
   ];
 
-  const handleCategoryChange = (categoryKey: string) => {
-    setSelectedCategory(categoryKey);
-  };
+  // Keyboard navigation for escape key to close modal
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setSelectedArticle(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
+  // Filter Logic
+  const filteredPosts = posts.filter((post) => {
+    if (activeCategory === 'all') return true;
+    const cat = post.category.toLowerCase();
+    const title = post.title.toLowerCase();
+
+    if (activeCategory === 'malaysia') {
+      return cat.includes('malaysia') || title.includes('malaysia');
+    }
+    if (activeCategory === 'uk') {
+      return cat.includes('uk') || title.includes('russell') || title.includes('uk');
+    }
+    if (activeCategory === 'australia') {
+      return cat.includes('australia') || title.includes('australia');
+    }
+    if (activeCategory === 'visa') {
+      return cat.includes('visa') || title.includes('visa') || title.includes('evidence');
+    }
+    return true;
+  });
+
+  // Toggle Bookmark
   const toggleBookmark = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    setPosts(prev => prev.map(p => {
-      if (p.id === id) {
-        return { ...p, saved: !p.saved };
-      }
-      return p;
-    }));
+    setPosts((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, saved: !p.saved } : p))
+    );
   };
 
-  const filteredPosts = selectedCategory === 'all'
-    ? posts
-    : selectedCategory === 'saved'
-    ? posts.filter(p => p.saved)
-    : posts.filter(p => p.category.toLowerCase().includes(selectedCategory));
-
-  const handleCopyLink = (url: string) => {
-    navigator.clipboard.writeText(url);
-    setCopiedLink(true);
-    setTimeout(() => setCopiedLink(false), 2500);
-  };
-
-  const handleShareSocial = (e: React.MouseEvent, platform: 'linkedin' | 'twitter' | 'facebook', post: BlogPost) => {
+  // Copy Link Handler
+  const handleCopyLink = (post: BlogPost, e: React.MouseEvent) => {
     e.stopPropagation();
-    const url = encodeURIComponent(window.location.origin + `/blog/${post.slug}`);
-    const text = encodeURIComponent(post.title);
-    if (platform === 'linkedin') {
-      window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank', 'noopener,noreferrer');
-    } else if (platform === 'twitter') {
-      window.open(`https://twitter.com/intent/tweet?url=${url}&text=${text}`, '_blank', 'noopener,noreferrer');
-    } else if (platform === 'facebook') {
-      window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank', 'noopener,noreferrer');
+    if (typeof window !== 'undefined') {
+      const url = `${window.location.origin}/blog.html#${post.slug || post.id}`;
+      navigator.clipboard.writeText(url);
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2000);
     }
   };
 
-  const handleNewsletterSubmit = (e: React.FormEvent) => {
+  // Redirect to Updated blog.html
+  const handleRedirectToBlog = (e: React.MouseEvent) => {
     e.preventDefault();
-    if (!newsletterEmail) return;
-    setNewsletterSubscribed(true);
-    setNewsletterEmail('');
-    setTimeout(() => setNewsletterSubscribed(false), 4000);
-  };
-
-  // Framer motion container and card variants for staggered animation
-  const containerVariants: Variants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.12,
-        delayChildren: 0.05
-      }
-    }
-  };
-
-  const cardVariants: Variants = {
-    hidden: { opacity: 0, y: 24, scale: 0.98 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: {
-        duration: 0.45,
-        ease: 'easeOut'
-      }
+    if (typeof window !== 'undefined') {
+      // Direct redirection to blog.html as explicitly requested
+      window.location.href = '/blog.html';
+    } else if (onNavigate) {
+      onNavigate('blog');
     }
   };
 
   return (
-    <section className="w-full max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 bg-white dark:bg-[#070b19]">
-      {/* Header */}
-      <div className="max-w-3xl mx-auto text-center mb-8 pb-4 px-2">
-        <h2 className="text-base xs:text-xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tight flex items-center justify-center flex-nowrap sm:flex-wrap whitespace-nowrap overflow-hidden text-ellipsis sm:whitespace-normal gap-1.5 sm:gap-2.5">
-          <span>Blogs, News &</span>
-          <span className="bg-[#fbb034] text-slate-950 px-2 sm:px-5 py-0.5 sm:py-1 rounded-lg sm:rounded-2xl shadow-xs">
-            Updates
-          </span>
-        </h2>
-        <p className="text-xs sm:text-base text-slate-600 dark:text-slate-400 mt-2 sm:mt-2.5 font-medium truncate sm:whitespace-normal">
-          Latest news, visa updates & student success stories.
-        </p>
-      </div>
+    <section
+      id="blogs-section"
+      className="w-full bg-slate-50 dark:bg-[#070D1E] py-14 sm:py-20 border-t border-slate-100 dark:border-slate-800 transition-colors"
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* 1. Header (Classic GEES Signature Style) */}
+        <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12 px-2">
+          <div className="flex items-center justify-center flex-wrap gap-2 sm:gap-3 mb-2 text-center max-w-full px-2">
+            <h2 className="text-2xl xs:text-3xl sm:text-5xl lg:text-6xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
+              Blogs &
+            </h2>
+            <span className="text-2xl xs:text-3xl sm:text-5xl lg:text-6xl font-black text-slate-950 px-3.5 sm:px-6 py-0.5 sm:py-1 rounded-xl sm:rounded-2xl bg-[#fbb034] inline-flex items-center shadow-xs leading-tight">
+              Updates
+            </span>
+          </div>
+          <p className="mt-2.5 sm:mt-3 text-sm sm:text-lg text-slate-500 dark:text-slate-400 font-normal leading-relaxed px-2">
+            Latest immigration advisories, university admission trends, and scholarship guides.
+          </p>
 
-      {/* Filter Tabs with Universal 120 FPS Sliding Indicator */}
-      <div className="w-full mb-8 sm:mb-10 flex justify-center">
-        <AnimatedTabs
-          tabs={blogTabs}
-          activeId={selectedCategory}
-          onChange={handleCategoryChange}
-          size="md"
-        />
-      </div>
+          {/* Category Tabs */}
+          <div className="mt-6 sm:mt-8 w-full flex justify-center">
+            <AnimatedTabs
+              tabs={tabs}
+              activeId={activeCategory}
+              onChange={(id) => setActiveCategory(id)}
+              size="md"
+            />
+          </div>
+        </div>
 
-      {/* Grid with Framer Motion Staggered Entrance */}
-      <motion.div
-        key={selectedCategory}
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: '-40px' }}
-        className="space-y-7"
-      >
-        {/* Row 1: Horizontal Split Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {filteredPosts.slice(0, 2).map((post) => (
-            <motion.article
-              key={post.id}
-              variants={cardVariants}
-              onClick={() => setActiveReadingModal(post)}
-              className="group bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 p-5 sm:p-6 flex flex-col-reverse sm:flex-row items-stretch justify-between gap-6 shadow-sm hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02] hover:-translate-y-1.5 will-change-transform cursor-pointer relative overflow-hidden"
-            >
-              <div className="flex-1 flex flex-col justify-between py-1">
-                <div>
-                  {/* Metadata Row with Estimated Reading Time and Social Share Buttons */}
-                  <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-                    <div className="flex items-center gap-2">
-                      <span className="px-3 py-0.5 text-xs font-semibold rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
-                        {post.category}
-                      </span>
-                      <span className="text-xs text-slate-400 font-medium">
-                        {post.publishedDate}
-                      </span>
-                      {/* Estimated Reading Time Badge */}
-                      <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-600 dark:text-amber-400 bg-amber-500/10 dark:bg-amber-400/10 px-2 py-0.5 rounded-full border border-amber-500/20">
-                        <span className="material-symbols-outlined text-[13px]">schedule</span>
-                        <span>{post.readTime || '4 min read'}</span>
-                      </span>
-                    </div>
+        {/* 2. Responsive 3-Column Articles Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch">
+          {filteredPosts.slice(0, 6).map((post) => {
+            return (
+              <article
+                key={post.id}
+                onClick={() => setSelectedArticle(post)}
+                className="group relative bg-white dark:bg-slate-900 rounded-3xl overflow-hidden border border-slate-200/90 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between cursor-pointer active:scale-[0.99]"
+              >
+                {/* Image Banner */}
+                <div className="relative aspect-[16/10] overflow-hidden bg-slate-100 dark:bg-slate-800">
+                  <img
+                    src={post.imageUrl}
+                    alt={post.title}
+                    loading="lazy"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
 
-                    {/* Inline Social Share Buttons */}
-                    <div className="flex items-center gap-1">
-                      <button
-                        title="Share on LinkedIn"
-                        onClick={(e) => handleShareSocial(e, 'linkedin', post)}
-                        className="p-1 rounded-md text-slate-400 hover:text-sky-600 hover:bg-sky-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-                      >
-                        <span className="text-xs font-bold leading-none">in</span>
-                      </button>
-                      <button
-                        title="Share on X / Twitter"
-                        onClick={(e) => handleShareSocial(e, 'twitter', post)}
-                        className="p-1 rounded-md text-slate-400 hover:text-slate-950 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-                      >
-                        <span className="text-xs font-bold leading-none">𝕏</span>
-                      </button>
-                      <button
-                        title="Share on Facebook"
-                        onClick={(e) => handleShareSocial(e, 'facebook', post)}
-                        className="p-1 rounded-md text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-                      >
-                        <span className="text-xs font-bold leading-none">fb</span>
-                      </button>
-                    </div>
+                  {/* Top Category Badge */}
+                  <div className="absolute top-3.5 left-3.5 z-10">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase bg-slate-900/80 backdrop-blur-md text-[#fbb034] border border-amber-400/20 shadow-xs">
+                      {post.category}
+                    </span>
                   </div>
 
-                  <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white leading-snug group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors mb-2">
-                    {post.title}
-                  </h3>
-                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-3 mb-4 font-normal">
-                    {post.excerpt}
-                  </p>
-                </div>
-
-                <div className="pt-2 flex items-center justify-between border-t border-slate-100 dark:border-slate-800">
-                  <span className="text-xs font-bold text-amber-600 dark:text-amber-400 group-hover:underline flex items-center gap-1">
-                    <span>Read More</span>
-                    <span>→</span>
-                  </span>
-                  <div className="flex items-center gap-1">
+                  {/* Top Right Bookmark Action with 44px hit area */}
+                  <div className="absolute top-2.5 right-2.5 z-10 flex items-center">
                     <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setActiveShareModal(post);
-                      }}
-                      className="p-1.5 rounded-full text-slate-400 hover:text-blue-600 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
-                    >
-                      <span className="material-symbols-outlined text-[18px]">share</span>
-                    </button>
-                    <button
+                      type="button"
+                      aria-label={post.saved ? 'Remove bookmark' : 'Bookmark article'}
                       onClick={(e) => toggleBookmark(post.id, e)}
-                      className={`p-1.5 rounded-full transition-transform active:scale-125 cursor-pointer ${
-                        post.saved ? 'text-red-600' : 'text-slate-400 hover:text-red-600'
-                      }`}
+                      className="w-11 h-11 flex items-center justify-center rounded-full bg-slate-900/70 hover:bg-slate-900 text-white backdrop-blur-md transition-colors cursor-pointer"
                     >
-                      <span className="material-symbols-outlined text-[18px]">
+                      <span
+                        className={`material-symbols-outlined text-[20px] transition-transform active:scale-125 ${
+                          post.saved ? 'text-[#fbb034] fill-current font-variation-fill' : 'text-white'
+                        }`}
+                      >
                         {post.saved ? 'bookmark' : 'bookmark_border'}
                       </span>
                     </button>
                   </div>
-                </div>
-              </div>
 
-              {/* Card Image with subtle drop-shadow filter */}
-              <div className="w-full sm:w-52 h-48 sm:h-auto shrink-0 relative overflow-hidden rounded-2xl bg-slate-100 dark:bg-slate-800 drop-shadow-md shadow-md">
-                <img
-                  src={post.imageUrl}
-                  alt={post.title}
-                  className="w-full h-full object-cover group-hover:scale-105 duration-500 transition-transform"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
-            </motion.article>
-          ))}
-        </div>
-
-        {/* Row 2: 3-Column Standard Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredPosts.slice(2).map((post) => (
-            <motion.article
-              key={post.id}
-              variants={cardVariants}
-              onClick={() => setActiveReadingModal(post)}
-              className="group bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 p-5 sm:p-6 flex flex-col justify-between shadow-sm hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02] hover:-translate-y-1.5 will-change-transform cursor-pointer relative overflow-hidden"
-            >
-              <div>
-                {/* Image with subtle drop-shadow */}
-                <div className="w-full h-48 relative overflow-hidden rounded-2xl bg-slate-100 dark:bg-slate-800 mb-4 drop-shadow-md shadow-md">
-                  <img
-                    src={post.imageUrl}
-                    alt={post.title}
-                    className="w-full h-full object-cover group-hover:scale-105 duration-500 transition-transform"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                </div>
-
-                {/* Metadata Row with Estimated Reading Time and Social Share Buttons */}
-                <div className="flex flex-wrap items-center justify-between gap-1.5 mb-2.5 text-xs">
-                  <div className="flex items-center gap-1.5">
-                    <span className="px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold">
-                      {post.category}
+                  {/* Read time pill */}
+                  <div className="absolute bottom-3 left-3.5 z-10 flex items-center gap-2 text-white/90 text-xs font-semibold">
+                    <span className="flex items-center gap-1 bg-black/50 backdrop-blur-xs px-2.5 py-0.5 rounded-full">
+                      <span className="material-symbols-outlined text-xs text-[#fbb034]">schedule</span>
+                      <span>{post.readTime}</span>
                     </span>
-                    <span className="text-slate-400">• {post.publishedDate}</span>
                   </div>
-                  {/* Estimated Reading Time */}
-                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">
-                    <span className="material-symbols-outlined text-[12px]">schedule</span>
-                    <span>{post.readTime || '4 min read'}</span>
-                  </span>
                 </div>
 
-                {/* Micro Social Share Row */}
-                <div className="flex items-center gap-2 mb-3 text-slate-400 text-xs">
-                  <span className="text-[11px] font-medium">Share:</span>
-                  <button
-                    title="Share on LinkedIn"
-                    onClick={(e) => handleShareSocial(e, 'linkedin', post)}
-                    className="hover:text-sky-600 transition-colors font-bold text-xs"
-                  >
-                    LinkedIn
-                  </button>
-                  <span>•</span>
-                  <button
-                    title="Share on X"
-                    onClick={(e) => handleShareSocial(e, 'twitter', post)}
-                    className="hover:text-slate-900 dark:hover:text-white transition-colors font-bold text-xs"
-                  >
-                    𝕏
-                  </button>
-                  <span>•</span>
-                  <button
-                    title="Share on Facebook"
-                    onClick={(e) => handleShareSocial(e, 'facebook', post)}
-                    className="hover:text-blue-600 transition-colors font-bold text-xs"
-                  >
-                    FB
-                  </button>
-                </div>
+                {/* Card Content */}
+                <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between">
+                  <div>
+                    {/* Author & Published Date */}
+                    <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-3">
+                      <span className="font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                        <span className="w-5 h-5 rounded-full bg-amber-400/20 text-amber-500 flex items-center justify-center text-[10px] font-bold">
+                          ✍️
+                        </span>
+                        <span>{post.author}</span>
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <span className="material-symbols-outlined text-xs">visibility</span>
+                        <span>{post.viewsCount.toLocaleString()}</span>
+                      </span>
+                    </div>
 
-                <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-snug group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors mb-2">
-                  {post.title}
-                </h3>
-                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-3 mb-4">
-                  {post.excerpt}
-                </p>
-              </div>
+                    {/* Title */}
+                    <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-[#fbb034] transition-colors tracking-tight leading-snug mb-2.5">
+                      {post.title}
+                    </h3>
 
-              <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                <span className="text-xs font-bold text-amber-600 dark:text-amber-400 group-hover:underline flex items-center gap-1">
-                  <span>Read More</span>
-                  <span>→</span>
-                </span>
-                <div className="flex items-center gap-1">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setActiveShareModal(post);
-                    }}
-                    className="p-1.5 rounded-full text-slate-400 hover:text-blue-600 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
-                  >
-                    <span className="material-symbols-outlined text-[18px]">share</span>
-                  </button>
-                  <button
-                    onClick={(e) => toggleBookmark(post.id, e)}
-                    className={`p-1.5 rounded-full transition-transform active:scale-125 cursor-pointer ${
-                      post.saved ? 'text-red-600' : 'text-slate-400 hover:text-red-600'
-                    }`}
-                  >
-                    <span className="material-symbols-outlined text-[18px]">
-                      {post.saved ? 'bookmark' : 'bookmark_border'}
-                    </span>
-                  </button>
+                    {/* Excerpt */}
+                    <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 line-clamp-2 leading-relaxed mb-4">
+                      {post.excerpt}
+                    </p>
+
+                    {/* Key Takeaways Box (Signature GEES Feature) */}
+                    {post.takeaways && post.takeaways.length > 0 && (
+                      <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/80 mb-4 space-y-1.5">
+                        <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 dark:text-slate-500 block">
+                          Key Highlights
+                        </span>
+                        {post.takeaways.slice(0, 2).map((item, idx) => (
+                          <div key={idx} className="flex items-start gap-1.5 text-xs text-slate-700 dark:text-slate-300">
+                            <span className="material-symbols-outlined text-emerald-500 text-sm shrink-0 leading-tight">
+                              check_circle
+                            </span>
+                            <span className="line-clamp-1 leading-snug">{item}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Card Bottom Actions */}
+                  <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedArticle(post)}
+                      className="min-h-[44px] inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-blue-600 hover:text-blue-700 dark:text-[#fbb034] dark:hover:text-amber-300 transition-colors py-2 cursor-pointer"
+                    >
+                      <span>Read Full Guide</span>
+                      <span className="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">
+                        arrow_forward
+                      </span>
+                    </button>
+
+                    <button
+                      type="button"
+                      aria-label="Share article"
+                      onClick={(e) => handleCopyLink(post, e)}
+                      className="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer active:scale-95"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">share</span>
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </motion.article>
-          ))}
+              </article>
+            );
+          })}
         </div>
 
-        {/* Empty state when filtering Saved with 0 bookmarks */}
-        {filteredPosts.length === 0 && (
-          <div className="py-16 text-center bg-slate-50 dark:bg-slate-800/50 rounded-3xl border border-dashed border-slate-300 dark:border-slate-700 p-8">
-            <span className="material-symbols-outlined text-4xl text-slate-400 mb-2">bookmark_border</span>
-            <h3 className="text-base font-bold text-slate-800 dark:text-slate-200">No Saved Articles Yet</h3>
-            <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
-              Click the bookmark ribbon on any article card to save it for quick reading.
-            </p>
-            <button
-              type="button"
-              onClick={() => setSelectedCategory('all')}
-              className="mt-4 px-4 py-2 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-950 font-bold text-xs cursor-pointer"
-            >
-              Browse All Articles
-            </button>
-          </div>
-        )}
-      </motion.div>
-
-      {/* Modern Newsletter Subscription Box */}
-      <div className="mt-14 max-w-2xl mx-auto p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-blue-50 via-amber-50/40 to-slate-50 dark:from-slate-900 dark:via-blue-950/40 dark:to-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm text-center">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/20 text-amber-700 dark:text-amber-300 text-xs font-bold mb-3">
-          <span className="material-symbols-outlined text-sm">mail</span>
-          <span>Stay Updated</span>
-        </div>
-        <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight mb-2">
-          Subscribe to the GEES International Digest
-        </h3>
-        <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-md mx-auto mb-5">
-          Get weekly scholarship alerts, immigration law updates, and university intake deadlines sent straight to your inbox.
-        </p>
-
-        {newsletterSubscribed ? (
-          <div className="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-800 dark:text-emerald-300 text-sm font-semibold flex items-center justify-center gap-2 animate-fadeIn">
-            <span className="material-symbols-outlined text-emerald-500">check_circle</span>
-            <span>Thank you for subscribing! Check your email for our welcome guide.</span>
-          </div>
-        ) : (
-          <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row items-center gap-2.5 max-w-md mx-auto">
-            <input
-              type="email"
-              required
-              placeholder="Enter your email address..."
-              value={newsletterEmail}
-              onChange={(e) => setNewsletterEmail(e.target.value)}
-              className="w-full px-4 py-3 rounded-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#fbb034] shadow-xs"
+        {/* 3. Bottom CTA: "More Articles" Redirect Button */}
+        <div className="mt-12 sm:mt-16 text-center flex flex-col items-center justify-center gap-3">
+          <a
+            href="/blog.html"
+            onClick={handleRedirectToBlog}
+            className="inline-flex items-center justify-center focus:outline-none"
+          >
+            <InteractiveHoverButton
+              text="More Articles"
+              className="min-h-[44px] text-sm sm:text-base py-3 px-8 shadow-md cursor-pointer"
             />
+          </a>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            Explore 50+ detailed destination guides, scholarship roadmaps & visa checklists.
+          </p>
+        </div>
+      </div>
+
+      {/* 4. Full Article Modal */}
+      {selectedArticle && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-[#0f172a] rounded-3xl max-w-3xl w-full p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            {/* Close Button with 44px touch target */}
             <button
-              type="submit"
-              className="w-full sm:w-auto px-6 py-3 rounded-full bg-[#fbb034] hover:bg-amber-400 text-slate-950 font-bold text-xs uppercase tracking-wider shrink-0 transition-colors shadow-md shadow-amber-500/20 cursor-pointer"
+              onClick={() => setSelectedArticle(null)}
+              aria-label="Close modal"
+              className="absolute top-4 right-4 w-11 h-11 flex items-center justify-center rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
             >
-              Subscribe
+              <span className="material-symbols-outlined">close</span>
             </button>
-          </form>
-        )}
-      </div>
 
-      {/* View More Articles Footer Link */}
-      <div className="mt-10 sm:mt-12 text-center">
-        <a
-          href="blog.html"
-          className="inline-block"
-        >
-          <InteractiveHoverButton
-            type="button"
-            text="More Articles"
-            className="px-8 py-3.5 rounded-full bg-white dark:bg-slate-900 text-slate-950 dark:text-white border-slate-300 dark:border-slate-700 font-bold text-sm sm:text-base shadow-md cursor-pointer"
-          />
-        </a>
-      </div>
-
-      {/* Reading Article Modal with subtle drop-shadow on image */}
-      {activeReadingModal && (
-        <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="relative bg-white dark:bg-[#0f172a] w-full max-w-3xl rounded-3xl shadow-2xl overflow-hidden border border-slate-100 dark:border-slate-800 max-h-[90vh] flex flex-col animate-fadeIn">
             {/* Modal Header */}
-            <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-800/50">
-              <span className="px-3 py-1 text-xs font-bold rounded-full bg-blue-100 text-blue-700">
-                {activeReadingModal.category}
+            <div className="pr-10 mb-4">
+              <span className="inline-block px-3 py-1 rounded-full text-xs font-bold bg-[#fbb034]/20 text-[#fbb034] border border-amber-400/30 uppercase tracking-wider mb-2">
+                {selectedArticle.category}
               </span>
-              <button
-                onClick={() => setActiveReadingModal(null)}
-                className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-slate-900 cursor-pointer"
-              >
-                <span className="material-symbols-outlined text-sm">close</span>
-              </button>
+              <h2 className="text-xl sm:text-3xl font-black text-slate-900 dark:text-white leading-tight">
+                {selectedArticle.title}
+              </h2>
+              <div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-slate-500 dark:text-slate-400">
+                <span className="font-semibold text-slate-700 dark:text-slate-300">
+                  By {selectedArticle.author}
+                </span>
+                <span>•</span>
+                <span>{selectedArticle.publishedDate}</span>
+                <span>•</span>
+                <span>{selectedArticle.readTime}</span>
+                <span>•</span>
+                <span>{selectedArticle.viewsCount.toLocaleString()} views</span>
+              </div>
             </div>
 
-            {/* Modal Content */}
-            <div className="px-6 sm:px-8 py-6 overflow-y-auto space-y-5 no-scrollbar">
-              <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white leading-tight">
-                {activeReadingModal.title}
-              </h2>
-              <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500">
-                <span>Published: {activeReadingModal.publishedDate}</span>
-                <span className="text-amber-600 font-bold">• {activeReadingModal.readTime}</span>
-                <span>• By {activeReadingModal.author}</span>
-                <span>• {activeReadingModal.viewsCount} views</span>
-              </div>
-              <div className="w-full h-64 rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800 drop-shadow-md shadow-lg border border-slate-200/50 dark:border-slate-700/50">
-                <img src={activeReadingModal.imageUrl} alt={activeReadingModal.title} className="w-full h-full object-cover" />
-              </div>
-              <div className="text-sm sm:text-base leading-relaxed text-slate-700 dark:text-slate-300 font-normal space-y-3">
-                <p>{activeReadingModal.body}</p>
-              </div>
+            {/* Modal Banner Image */}
+            <div className="rounded-2xl overflow-hidden mb-6 aspect-[16/9] bg-slate-100 dark:bg-slate-800">
+              <img
+                src={selectedArticle.imageUrl}
+                alt={selectedArticle.title}
+                className="w-full h-full object-cover"
+              />
+            </div>
 
-              {/* Key Takeaways */}
-              <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200/60 dark:border-amber-800/40">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-amber-900 dark:text-amber-300 mb-2">
-                  Key Strategic Takeaways:
+            {/* Key Takeaways */}
+            {selectedArticle.takeaways && selectedArticle.takeaways.length > 0 && (
+              <div className="p-4 sm:p-5 rounded-2xl bg-amber-500/10 border border-amber-500/20 mb-6">
+                <h4 className="text-xs uppercase font-extrabold text-amber-600 dark:text-amber-400 tracking-wider mb-2.5">
+                  Key Takeaways
                 </h4>
-                <ul className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 space-y-1.5 pl-4 list-disc">
-                  {activeReadingModal.takeaways.map((item, idx) => (
-                    <li key={idx}>{item}</li>
+                <ul className="space-y-2">
+                  {selectedArticle.takeaways.map((item, idx) => (
+                    <li key={idx} className="flex items-start gap-2 text-xs sm:text-sm text-slate-800 dark:text-slate-200">
+                      <span className="material-symbols-outlined text-emerald-500 text-base shrink-0">
+                        check_circle
+                      </span>
+                      <span>{item}</span>
+                    </li>
                   ))}
                 </ul>
               </div>
+            )}
+
+            {/* Body Content */}
+            <div className="text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed space-y-4 mb-8">
+              <p>{selectedArticle.body}</p>
             </div>
 
-            {/* Modal Footer Actions */}
-            <div className="px-6 py-4 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-              <button
-                onClick={() => setActiveShareModal(activeReadingModal)}
-                className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-blue-600 cursor-pointer"
-              >
-                <span className="material-symbols-outlined text-[16px]">share</span>
-                <span>Share Story</span>
-              </button>
-              <button
-                onClick={() => {
-                  setActiveReadingModal(null);
-                  onOpenConsultation();
-                }}
-                className="px-5 py-2.5 rounded-full bg-[#fbb034] hover:bg-amber-400 text-slate-950 text-xs font-bold shadow-sm cursor-pointer"
-              >
-                Book IELTS & Visa Consultation
-              </button>
+            {/* Modal Bottom CTA */}
+            <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-slate-100 dark:border-slate-800 items-center justify-between">
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                <button
+                  type="button"
+                  onClick={(e) => handleCopyLink(selectedArticle, e)}
+                  className="min-h-[44px] flex-1 sm:flex-none px-4 py-2.5 rounded-full border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition cursor-pointer flex items-center justify-center gap-1.5 active:scale-95"
+                >
+                  <span className="material-symbols-outlined text-sm">
+                    {copiedLink ? 'check' : 'content_copy'}
+                  </span>
+                  <span>{copiedLink ? 'Copied Link!' : 'Copy Link'}</span>
+                </button>
+              </div>
+
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                <button
+                  onClick={() => {
+                    setSelectedArticle(null);
+                    onOpenConsultation();
+                  }}
+                  className="min-h-[44px] flex-1 sm:flex-none px-6 py-2.5 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs sm:text-sm tracking-wide text-center cursor-pointer shadow-lg shadow-blue-600/30 transition active:scale-95 flex items-center justify-center"
+                >
+                  Book Free Consultation for This Guide
+                </button>
+              </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* Social Share Sheet Modal */}
-      {activeShareModal && (
-        <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="relative bg-white dark:bg-[#0f172a] w-full max-w-md rounded-3xl p-6 shadow-2xl border border-slate-100 dark:border-slate-800 animate-fadeIn">
-            <button
-              onClick={() => setActiveShareModal(null)}
-              className="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-slate-900 cursor-pointer"
-            >
-              <span className="material-symbols-outlined text-sm">close</span>
-            </button>
-            <h3 className="text-lg font-black text-slate-900 dark:text-white mb-1">
-              Share Article
-            </h3>
-            <p className="text-xs text-slate-500 mb-4 truncate">
-              {activeShareModal.title}
-            </p>
-            <div className="grid grid-cols-4 gap-2.5 text-center mb-6">
-              {[
-                { label: 'WhatsApp', color: 'bg-emerald-500', action: () => window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(activeShareModal.title + ' ' + activeShareModal.slug)}`) },
-                { label: 'Facebook', color: 'bg-blue-600', action: () => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`) },
-                { label: 'X (Twitter)', color: 'bg-black', action: () => window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(activeShareModal.title)}`) },
-                { label: 'LinkedIn', color: 'bg-sky-600', action: () => window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`) }
-              ].map((s, i) => (
-                <button
-                  key={i}
-                  onClick={s.action}
-                  className="flex flex-col items-center gap-1.5 p-2 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-                >
-                  <div className={`w-11 h-11 rounded-2xl ${s.color} text-white flex items-center justify-center shadow-sm`}>
-                    <span className="material-symbols-outlined text-[18px]">share</span>
-                  </div>
-                  <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300">{s.label}</span>
-                </button>
-              ))}
-            </div>
-            {/* Copy Link */}
-            <div className="p-2 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-between">
-              <span className="text-xs text-slate-600 dark:text-slate-300 truncate px-2">
-                https://gees.education/blog/{activeShareModal.slug}
-              </span>
-              <button
-                onClick={() => handleCopyLink(`https://gees.education/blog/${activeShareModal.slug}`)}
-                className="px-3 py-1.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs shrink-0 cursor-pointer"
-              >
-                {copiedLink ? 'Copied! ✓' : 'Copy Link'}
-              </button>
-            </div>
-          </div>
+      {/* Floating Copied Toast */}
+      {copiedLink && (
+        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-xl border border-slate-700 animate-in fade-in slide-in-from-bottom-2 duration-200 flex items-center gap-2">
+          <span className="material-symbols-outlined text-emerald-400 text-sm">check_circle</span>
+          <span>Article link copied to clipboard!</span>
         </div>
       )}
     </section>

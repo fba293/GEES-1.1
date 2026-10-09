@@ -1,20 +1,6 @@
-import { InteractiveHoverButton } from "./interactive-hover-button.tsx";
-import { Hero } from "./animated-hero";
+// Demo for GSAP SVG Animation Component
+import { Component } from "@/src/components/ui/connoisseur-stack-interactor.tsx";
 
-function InteractiveHoverButtonDemo() {
-  return (
-    <div className="relative justify-center">
-      <InteractiveHoverButton text="Apply Now" />
-    </div>
-  );
+export default function DemoOne() {
+  return <Component />;
 }
-
-function HeroDemo() {
-  return (
-    <div className="block">
-      <Hero />
-    </div>
-  );
-}
-
-export { InteractiveHoverButtonDemo, HeroDemo };

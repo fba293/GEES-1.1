@@ -574,14 +574,17 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             </h4>
             <ul className="space-y-2 text-xs text-slate-600 dark:text-slate-300">
               {[
+                { flag: '🇲🇾', label: 'Study in Malaysia', slug: 'Malaysia' },
                 { flag: '🇬🇧', label: 'Study in UK', slug: 'United Kingdom' },
                 { flag: '🇦🇺', label: 'Study in Australia', slug: 'Australia' },
                 { flag: '🇳🇿', label: 'Study in New Zealand', slug: 'New Zealand' },
-                { flag: '🇨🇦', label: 'Study in Canada', slug: 'Canada' },
-                { flag: '🇺🇸', label: 'Study in USA', slug: 'United States' },
-                { flag: '🇩🇪', label: 'Study in Europe / Germany', slug: 'Germany' },
-                { flag: '🇲🇾', label: 'Study in Malaysia', slug: 'Malaysia' },
-                { flag: '🇰🇷', label: 'Study in South Korea', slug: 'South Korea' },
+                { flag: '🇨🇾', label: 'Study in Cyprus', slug: 'Cyprus' },
+                { flag: '🇧🇪', label: 'Study in Belgium', slug: 'Belgium' },
+                { flag: '🇫🇮', label: 'Study in Finland', slug: 'Finland' },
+                { flag: '🇬🇷', label: 'Study in Greece', slug: 'Greece' },
+                { flag: '🇲🇺', label: 'Study in Mauritius', slug: 'Mauritius' },
+                { flag: '🇳🇱', label: 'Study in Netherlands', slug: 'Netherlands' },
+                { flag: '🇮🇳', label: 'Study in India', slug: 'India' },
               ].map((d) => (
                 <li key={d.label}>
                   <button

@@ -21,7 +21,7 @@ interface Ripple {
 export const WhyChooseSection: React.FC<WhyChooseSectionProps> = ({ onSelectCountry }) => {
   const [activeFeature, setActiveFeature] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedModalCountry, setSelectedModalCountry] = useState('Europe');
+  const [selectedModalCountry, setSelectedModalCountry] = useState('Malaysia');
 
   // Parallax Tilt State for Feature Cards Container
   const [parallaxTilt, setParallaxTilt] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
@@ -31,14 +31,17 @@ export const WhyChooseSection: React.FC<WhyChooseSectionProps> = ({ onSelectCoun
   const [ripples, setRipples] = useState<Ripple[]>([]);
 
   const destinations = [
-    { name: 'USA', flag: '🇺🇸', code: 'USA' },
-    { name: 'UK', flag: '🇬🇧', code: 'UK' },
-    { name: 'Ireland', flag: '🇮🇪', code: 'Ireland' },
-    { name: 'Australia', flag: '🇦🇺', code: 'Australia' },
-    { name: 'Canada', flag: '🇨🇦', code: 'Canada' },
-    { name: 'Malaysia', flag: '🇲🇾', code: 'Malaysia' },
-    { name: 'New Zealand', flag: '🇳🇿', code: 'New Zealand' },
-    { name: 'Europe', flag: '🇪🇺', code: 'Europe' }
+    { name: 'Malaysia', flag: '🇲🇾', code: 'MY' },
+    { name: 'United Kingdom', flag: '🇬🇧', code: 'UK' },
+    { name: 'Australia', flag: '🇦🇺', code: 'AU' },
+    { name: 'New Zealand', flag: '🇳🇿', code: 'NZ' },
+    { name: 'Cyprus', flag: '🇨🇾', code: 'CY' },
+    { name: 'Belgium', flag: '🇧🇪', code: 'BE' },
+    { name: 'Finland', flag: '🇫🇮', code: 'FI' },
+    { name: 'Greece', flag: '🇬🇷', code: 'GR' },
+    { name: 'Mauritius', flag: '🇲🇺', code: 'MU' },
+    { name: 'Netherlands', flag: '🇳🇱', code: 'NL' },
+    { name: 'India', flag: '🇮🇳', code: 'IN' }
   ];
 
   // Mouse Move Parallax Handler
@@ -73,16 +76,16 @@ export const WhyChooseSection: React.FC<WhyChooseSectionProps> = ({ onSelectCoun
 
   return (
     <section className="relative z-10 mx-auto w-full max-w-6xl px-3.5 sm:px-6 lg:px-8 py-10 xs:py-12 sm:py-20 bg-white dark:bg-[#070b19]">
-      {/* High-Impact Strictly Single-Line Single-Row H2 Heading */}
-      <div className="text-center mb-6 sm:mb-14 px-1 max-w-full overflow-hidden">
-        <h2 className="text-base xs:text-xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 dark:text-white leading-none whitespace-nowrap overflow-hidden text-ellipsis flex items-center justify-center gap-1.5 sm:gap-3 select-none">
+      {/* Header with High-Impact Typography */}
+      <div className="text-center mb-8 sm:mb-14 px-2 max-w-full">
+        <h2 className="text-2xl xs:text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 dark:text-white leading-tight flex items-center justify-center flex-wrap gap-2 sm:gap-3 select-none">
           <span>Why Choose</span>
-          <span className="text-[#fbb034] bg-[#fbb034]/15 px-2.5 sm:px-5 py-0.5 sm:py-1 rounded-lg sm:rounded-2xl border border-[#fbb034]/30 shadow-xs inline-flex items-center shrink-0">
+          <span className="text-[#fbb034] bg-[#fbb034]/15 px-3 sm:px-5 py-0.5 sm:py-1 rounded-xl sm:rounded-2xl border border-[#fbb034]/30 shadow-xs inline-flex items-center shrink-0">
             GEES Global
           </span>
           <span>for Your Future</span>
         </h2>
-        <p className="mt-2 sm:mt-3 text-slate-500 dark:text-slate-400 text-xs sm:text-base font-medium max-w-2xl mx-auto truncate">
+        <p className="mt-2.5 sm:mt-3 text-slate-500 dark:text-slate-400 text-sm sm:text-base font-normal leading-relaxed max-w-2xl mx-auto px-2">
           Trusted guidance. Transparent support. Hassle-free study abroad with 0 service charges.
         </p>
       </div>
@@ -225,7 +228,7 @@ export const WhyChooseSection: React.FC<WhyChooseSectionProps> = ({ onSelectCoun
                     <div className="text-[8px] xs:text-[10px] sm:text-xs font-bold text-slate-600 dark:text-slate-400 mt-0.5 leading-tight">Students Placed</div>
                   </div>
                   <div className="px-1 sm:px-2">
-                    <div className="text-base xs:text-xl sm:text-2xl font-black text-slate-900 dark:text-white">20+</div>
+                    <div className="text-base xs:text-xl sm:text-2xl font-black text-slate-900 dark:text-white">167+</div>
                     <div className="text-[8px] xs:text-[10px] sm:text-xs font-bold text-slate-600 dark:text-slate-400 mt-0.5 leading-tight">Partner Unis</div>
                   </div>
                   <div className="px-1 sm:px-2">
@@ -249,7 +252,7 @@ export const WhyChooseSection: React.FC<WhyChooseSectionProps> = ({ onSelectCoun
           type="button"
           text="Explore Destinations"
           onClick={() => setIsModalOpen(true)}
-          className="w-full sm:w-auto px-6 sm:px-8 py-3.5 rounded-full border-slate-300 dark:border-slate-700 text-sm font-bold text-slate-900 dark:text-white bg-white dark:bg-slate-900 shadow-xs cursor-pointer"
+          className="min-h-[44px] w-full sm:w-auto px-6 sm:px-8 py-3.5 rounded-full border-slate-300 dark:border-slate-700 text-sm font-bold text-slate-900 dark:text-white bg-white dark:bg-slate-900 shadow-xs cursor-pointer"
         />
       </div>
 
@@ -259,7 +262,7 @@ export const WhyChooseSection: React.FC<WhyChooseSectionProps> = ({ onSelectCoun
           <div className="relative w-full max-w-lg bg-white dark:bg-[#0f172a] rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-100 dark:border-slate-800 animate-fadeIn">
             <button
               onClick={() => setIsModalOpen(false)}
-              className="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-slate-900 cursor-pointer"
+              className="absolute top-4 right-4 w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-slate-900 dark:hover:text-white cursor-pointer active:scale-95"
             >
               <span className="material-symbols-outlined text-sm">close</span>
             </button>
@@ -276,7 +279,7 @@ export const WhyChooseSection: React.FC<WhyChooseSectionProps> = ({ onSelectCoun
                   key={d.code}
                   type="button"
                   onClick={() => setSelectedModalCountry(d.name)}
-                  className={`p-3 rounded-2xl border text-left flex items-center gap-2.5 transition-all cursor-pointer ${
+                  className={`min-h-[44px] p-3 rounded-2xl border text-left flex items-center gap-2.5 transition-all cursor-pointer active:scale-95 ${
                     selectedModalCountry === d.name
                       ? 'border-[#F6BE48] bg-amber-50/50 dark:bg-slate-800 font-bold'
                       : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50'
@@ -295,7 +298,7 @@ export const WhyChooseSection: React.FC<WhyChooseSectionProps> = ({ onSelectCoun
                   setIsModalOpen(false);
                   onSelectCountry(selectedModalCountry);
                 }}
-                className="w-full py-3 rounded-full bg-[#fbb034] hover:bg-amber-400 text-slate-950 font-bold text-xs uppercase tracking-wider cursor-pointer shadow-md"
+                className="min-h-[44px] w-full py-3.5 rounded-full bg-[#fbb034] hover:bg-amber-400 text-slate-950 font-bold text-xs uppercase tracking-wider cursor-pointer shadow-md active:scale-98 flex items-center justify-center"
               >
                 Explore {selectedModalCountry} Universities
               </button>

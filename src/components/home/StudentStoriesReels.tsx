@@ -181,13 +181,13 @@ export const StudentStoriesReels: React.FC = () => {
       <div className="max-w-[1440px] mx-auto w-full overflow-hidden">
         {/* Header */}
         <header className="text-center max-w-3xl mx-auto mb-6 sm:mb-10 md:mb-14 px-2">
-          <h2 className="text-base xs:text-xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 dark:text-white flex items-center justify-center flex-nowrap sm:flex-wrap whitespace-nowrap overflow-hidden text-ellipsis sm:whitespace-normal gap-1.5 sm:gap-3 mb-2">
+          <h2 className="text-2xl xs:text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 dark:text-white flex items-center justify-center flex-wrap gap-2 sm:gap-3 mb-2 leading-tight">
             <span>Journey with</span>
-            <span className="bg-[#fbb034] text-slate-950 px-2 sm:px-5 py-0.5 sm:py-1 rounded-xl sm:rounded-2xl font-black shadow-sm">
+            <span className="bg-[#fbb034] text-slate-950 px-3.5 sm:px-5 py-0.5 sm:py-1 rounded-xl sm:rounded-2xl font-black shadow-sm">
               GEES
             </span>
           </h2>
-          <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-base md:text-lg max-w-2xl mx-auto font-medium leading-relaxed truncate sm:whitespace-normal">
+          <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base md:text-lg max-w-2xl mx-auto font-normal leading-relaxed px-2">
             Watch real student vlogs, campus arrivals, visa moments, and university journeys captured in high definition.
           </p>
 
@@ -326,14 +326,14 @@ export const StudentStoriesReels: React.FC = () => {
                             {reel.universityAndCourse}
                           </p>
                         </div>
-                        {/* Very Small Fullscreen Button */}
+                        {/* Clean Fullscreen Expand Button */}
                         <button
                           type="button"
                           aria-label="Expand story"
                           data-purpose="compact-reel-btn"
-                          className="w-4.5 h-4.5 xs:w-5 xs:h-5 sm:w-6 sm:h-6 rounded-full bg-white/25 backdrop-blur-md flex items-center justify-center text-white shrink-0 hover:bg-white/40 transition-colors pointer-events-auto cursor-pointer p-0"
+                          className="w-7 h-7 xs:w-8 xs:h-8 sm:w-7 sm:h-7 rounded-full bg-white/25 backdrop-blur-md flex items-center justify-center text-white shrink-0 hover:bg-white/40 transition-colors pointer-events-auto cursor-pointer p-0 active:scale-90"
                         >
-                          <span className="material-symbols-outlined text-[9.5px] xs:text-[10px] sm:text-[13px] leading-none select-none">fullscreen</span>
+                          <span className="material-symbols-outlined text-[13px] xs:text-[15px] sm:text-[14px] leading-none select-none">fullscreen</span>
                         </button>
                       </div>
                     </div>
@@ -394,12 +394,13 @@ export const StudentStoriesReels: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5">
                     <button
                       onClick={() => setIsMuted(!isMuted)}
-                      className="w-8 h-8 rounded-full bg-black/60 border border-white/20 flex items-center justify-center text-white"
+                      className="w-10 h-10 sm:w-8 sm:h-8 rounded-full bg-black/60 border border-white/20 flex items-center justify-center text-white active:scale-95 transition-transform"
+                      aria-label={isMuted ? 'Unmute video' : 'Mute video'}
                     >
-                      <span className="material-symbols-outlined text-[16px]">
+                      <span className="material-symbols-outlined text-[17px] sm:text-[16px]">
                         {isMuted ? 'volume_off' : 'volume_up'}
                       </span>
                     </button>
@@ -407,10 +408,11 @@ export const StudentStoriesReels: React.FC = () => {
                       href={activeStoryModal.tiktokUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-8 h-8 rounded-full bg-black/60 border border-white/20 flex items-center justify-center text-white"
+                      className="w-10 h-10 sm:w-8 sm:h-8 rounded-full bg-black/60 border border-white/20 flex items-center justify-center text-white active:scale-95 transition-transform"
                       title="Watch on TikTok"
+                      aria-label="Watch on TikTok"
                     >
-                      <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.24 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"></path></svg>
+                      <svg className="w-4 h-4 sm:w-3.5 sm:h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.24 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"></path></svg>
                     </a>
                   </div>
                 </div>

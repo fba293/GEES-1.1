@@ -4,10 +4,11 @@
  * GEES Dynamic University & Course Explorer with /universities/[slug] details
  */
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { mockUniversities, mockCourses } from '../../data/mockDatabase.ts';
 import { SkeletonLoader } from '../common/SkeletonLoader.tsx';
 import { AnimatedTabs, AnimatedTabItem } from '../ui/animated-tabs.tsx';
+import { getPartnerCountryTabs, getTotalPartnerCount } from '../../utils/PartnerUniversityManager.ts';
 
 interface UniversityExplorerViewProps {
   initialSlug?: string;
@@ -24,27 +25,25 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
   const [activeTab, setActiveTab] = useState<'overview' | 'programs' | 'campuses' | 'admissions'>('overview');
   const [isLoading] = useState<boolean>(false);
 
-  const countryTabs: AnimatedTabItem[] = [
-    { label: 'All Countries', id: 'all' },
-    { label: 'Canada', id: 'Canada' },
-    { label: 'Australia', id: 'Australia' },
-    { label: 'United Kingdom', id: 'United Kingdom' },
-    { label: 'Germany', id: 'Germany' },
-    { label: 'Malaysia', id: 'Malaysia' }
-  ];
+  // Dynamically populated from PartnerUniversityManager template
+  const countryTabs: AnimatedTabItem[] = useMemo(() => {
+    return getPartnerCountryTabs();
+  }, []);
 
   const handleCountryChange = (c: string) => {
     setSelectedCountry(c);
   };
 
-  const filteredUnis = mockUniversities.filter(u => {
-    const matchesCountry = selectedCountry === 'all' || u.country.toLowerCase() === selectedCountry.toLowerCase();
-    const matchesSearch = searchQuery === '' || 
-      u.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      u.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      u.popularPrograms.some(p => p.toLowerCase().includes(searchQuery.toLowerCase()));
-    return matchesCountry && matchesSearch;
-  });
+  const filteredUnis = useMemo(() => {
+    return mockUniversities.filter(u => {
+      const matchesCountry = selectedCountry === 'all' || u.country.toLowerCase() === selectedCountry.toLowerCase();
+      const matchesSearch = searchQuery === '' || 
+        u.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        u.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        u.popularPrograms.some(p => p.toLowerCase().includes(searchQuery.toLowerCase()));
+      return matchesCountry && matchesSearch;
+    });
+  }, [selectedCountry, searchQuery]);
 
   const activeUniversity = selectedUniSlug
     ? mockUniversities.find(u => u.slug === selectedUniSlug)
@@ -63,7 +62,7 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
             Global Database & Partner Directory
           </span>
           <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
-            Explore 500+ Partner Universities & Campuses
+            Explore {mockUniversities.length}+ Partner Universities & Campuses
           </h1>
           <p className="text-sm text-slate-500 mt-1">
             Browse verified entry requirements, tuition fees, and scholarship criteria with direct application representation.
@@ -93,26 +92,48 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
             <div className="absolute bottom-6 inset-x-6 sm:inset-x-8 text-white flex flex-col sm:flex-row sm:items-end justify-between gap-4">
               <div>
-                <div className="flex items-center gap-2 mb-2">
+                <div className="flex items-center gap-2 mb-2 flex-wrap">
                   <span className="text-2xl">{activeUniversity.flagEmoji}</span>
-                  <span className="px-3 py-0.5 rounded-full bg-blue-600 text-white font-bold text-xs uppercase">
-                    World Rank #{activeUniversity.rankingWorld}
+                  {activeUniversity.qsRank2027 && (
+                    <span className="px-3 py-0.5 rounded-full bg-amber-400 text-slate-950 font-black text-xs uppercase shadow-sm flex items-center gap-1">
+                      <span>QS 2027:</span>
+                      <span>#{activeUniversity.qsRank2027}</span>
+                    </span>
+                  )}
+                  <span className="px-3 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-white font-bold text-xs">
+                    {activeUniversity.type || 'University'}
                   </span>
-                  <span className="px-3 py-0.5 rounded-full bg-amber-400 text-slate-950 font-bold text-xs">
+                  <span className="px-3 py-0.5 rounded-full bg-amber-400/90 text-slate-950 font-bold text-xs">
                     {activeUniversity.country}
                   </span>
                 </div>
                 <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
                   {activeUniversity.name}
                 </h2>
-                <p className="text-xs sm:text-sm text-slate-300 mt-1">{activeUniversity.tagline}</p>
+                <p className="text-xs sm:text-sm text-slate-300 mt-1 flex items-center gap-2 flex-wrap">
+                  <span>{activeUniversity.city}{activeUniversity.state ? `, ${activeUniversity.state}` : ''}, {activeUniversity.country}</span>
+                  {activeUniversity.established && <span>• Est. {activeUniversity.established}</span>}
+                </p>
               </div>
-              <button
-                onClick={() => onApply(activeUniversity.name)}
-                className="px-6 py-3 rounded-full bg-[#fbb034] hover:bg-amber-400 text-slate-950 font-extrabold text-sm shadow-lg transition-transform active:scale-95 shrink-0 cursor-pointer"
-              >
-                Apply to this University →
-              </button>
+              <div className="flex items-center gap-3 flex-wrap">
+                {activeUniversity.websiteUrl && (
+                  <a
+                    href={activeUniversity.websiteUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-md text-white text-xs font-bold transition-all cursor-pointer shadow-sm"
+                  >
+                    <span>Visit Website</span>
+                    <span className="material-symbols-outlined text-[14px]">open_in_new</span>
+                  </a>
+                )}
+                <button
+                  onClick={() => onApply(activeUniversity.name)}
+                  className="px-6 py-2.5 rounded-full bg-[#fbb034] hover:bg-amber-400 text-slate-950 font-black text-xs sm:text-sm shadow-lg transition-transform active:scale-95 shrink-0 cursor-pointer"
+                >
+                  Apply via GEES →
+                </button>
+              </div>
             </div>
           </div>
 
@@ -146,15 +167,15 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
                     </span>
                   </div>
                   <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
-                    <span className="text-[10px] uppercase font-bold text-slate-400 block mb-1">Min IELTS</span>
-                    <span className="text-lg font-black text-blue-600">
-                      Band {activeUniversity.minIeltsScore}
+                    <span className="text-[10px] uppercase font-bold text-slate-400 block mb-1">Institution Type</span>
+                    <span className="text-base font-black text-blue-600 truncate block">
+                      {activeUniversity.type || 'University'}
                     </span>
                   </div>
                   <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
-                    <span className="text-[10px] uppercase font-bold text-slate-400 block mb-1">Acceptance Rate</span>
+                    <span className="text-[10px] uppercase font-bold text-slate-400 block mb-1">Establishment</span>
                     <span className="text-lg font-black text-emerald-600">
-                      {activeUniversity.acceptanceRatePct}%
+                      {activeUniversity.established ? `Est. ${activeUniversity.established}` : 'Established'}
                     </span>
                   </div>
                   <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
@@ -274,6 +295,22 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
           {/* Universities Grid with Skeleton Screens */}
           {isLoading ? (
             <SkeletonLoader type="university" count={6} />
+          ) : filteredUnis.length === 0 ? (
+            <div className="text-center py-16 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-8 shadow-xs">
+              <span className="material-symbols-outlined text-4xl text-slate-400 mb-2">school</span>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">No partner universities found</h3>
+              <p className="text-sm text-slate-500 max-w-md mx-auto mt-1 mb-5">
+                No collaborated universities found matching your criteria. Try searching with a different term or view all partner countries.
+              </p>
+              <button
+                type="button"
+                onClick={() => { setSearchQuery(''); setSelectedCountry('all'); }}
+                className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-[#0066cc] hover:bg-[#0071e3] text-white text-xs font-bold transition-all cursor-pointer shadow-xs active:scale-95"
+              >
+                <span className="material-symbols-outlined text-sm">refresh</span>
+                <span>Reset All Filters</span>
+              </button>
+            </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredUnis.map((uni) => (
@@ -286,32 +323,77 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
                     {/* Card Banner */}
                     <div className="relative h-44 w-full overflow-hidden bg-slate-900">
                       <img src={uni.bannerUrl} alt={uni.name} className="w-full h-full object-cover" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent"></div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 to-transparent"></div>
                       <div className="absolute top-3 left-3 right-3 flex items-center justify-between">
                         <span className="text-2xl drop-shadow">{uni.flagEmoji}</span>
-                        <span className="px-2.5 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-white text-[11px] font-bold">
-                          Rank #{uni.rankingWorld}
-                        </span>
+                        {uni.qsRank2027 ? (
+                          <span className="px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[10.5px] font-black shadow-xs flex items-center gap-1">
+                            <span>QS 2027:</span>
+                            <span>#{uni.qsRank2027}</span>
+                          </span>
+                        ) : (
+                          <span className="px-2 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-white text-[10px] font-bold">
+                            {uni.type || 'University'}
+                          </span>
+                        )}
                       </div>
                       <div className="absolute bottom-3 left-3 right-3 text-white">
-                        <span className="text-[10px] uppercase font-bold text-amber-300">{uni.city}, {uni.country}</span>
+                        <span className="text-[10px] uppercase font-bold text-amber-300">
+                          {uni.city}{uni.state ? `, ${uni.state}` : ''}, {uni.country}
+                        </span>
                         <h3 className="text-lg font-bold leading-snug line-clamp-1">{uni.name}</h3>
                       </div>
                     </div>
 
                     {/* Card Content */}
                     <div className="p-5 space-y-3">
-                      <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-2">
-                        {uni.tagline}
-                      </p>
-                      <div className="grid grid-cols-2 gap-2 text-xs pt-1 border-t border-slate-100 dark:border-slate-800">
+                      {/* Meta: Type & Established Year */}
+                      <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                        <span className="font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1">
+                          <span className="material-symbols-outlined text-[14px] text-blue-600">account_balance</span>
+                          <span>{uni.type || 'University'}</span>
+                        </span>
+                        {uni.established && (
+                          <span className="font-medium text-slate-500">Est. {uni.established}</span>
+                        )}
+                      </div>
+
+                      {/* Available Programs Chips */}
+                      <div className="space-y-1">
+                        <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">
+                          Available Programs:
+                        </span>
+                        <div className="flex flex-wrap gap-1">
+                          {uni.popularPrograms.slice(0, 3).map((prog, idx) => (
+                            <span
+                              key={idx}
+                              className="px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-[11px] font-medium text-slate-700 dark:text-slate-300 truncate max-w-[210px]"
+                            >
+                              {prog}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Tuition & Website Action */}
+                      <div className="grid grid-cols-2 gap-2 text-xs pt-2 border-t border-slate-100 dark:border-slate-800 items-center">
                         <div>
                           <span className="text-[10px] text-slate-400 uppercase font-bold block">Avg Tuition</span>
                           <strong className="text-slate-900 dark:text-white">${uni.avgTuitionAnnualUSD.toLocaleString()} / yr</strong>
                         </div>
-                        <div>
-                          <span className="text-[10px] text-slate-400 uppercase font-bold block">Min IELTS</span>
-                          <strong className="text-blue-600">Band {uni.minIeltsScore}</strong>
+                        <div className="text-right">
+                          {uni.websiteUrl && (
+                            <a
+                              href={uni.websiteUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                              className="inline-flex items-center gap-1 text-[11px] font-bold text-blue-600 hover:text-blue-700 hover:underline"
+                            >
+                              <span>Website</span>
+                              <span className="material-symbols-outlined text-[12px]">open_in_new</span>
+                            </a>
+                          )}
                         </div>
                       </div>
                     </div>

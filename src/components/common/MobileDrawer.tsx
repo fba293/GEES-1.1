@@ -184,7 +184,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
                         <span>Popular Destinations</span>
                       </div>
                       <div className="grid grid-cols-2 gap-1.5 text-xs">
-                        {['🇦🇺 Australia', '🇨🇦 Canada', '🇬🇧 United Kingdom', '🇺🇸 USA', '🇲🇾 Malaysia'].map((c, i) => (
+                        {['🇲🇾 Malaysia', '🇬🇧 United Kingdom', '🇦🇺 Australia', '🇳🇿 New Zealand'].map((c, i) => (
                           <button
                             key={i}
                             onClick={() => handleNav('destinations', c.split(' ').slice(1).join(' '))}
@@ -201,7 +201,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
                         <span>Europe</span>
                       </div>
                       <div className="grid grid-cols-2 gap-1.5 text-xs">
-                        {['🇩🇪 Germany', '🇮🇪 Ireland', '🇸🇪 Sweden', '🇫🇷 France', '🇳🇱 Netherlands', '🇮🇹 Italy', '🇫🇮 Finland', '🇧🇪 Belgium', '🇨🇾 Cyprus', '🇬🇷 Greece'].map((c, i) => (
+                        {['🇧🇪 Belgium', '🇫🇮 Finland', '🇬🇷 Greece', '🇳🇱 Netherlands'].map((c, i) => (
                           <button
                             key={i}
                             onClick={() => handleNav('destinations', c.split(' ').slice(1).join(' '))}
@@ -215,10 +215,10 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
                     <div>
                       <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1.5 flex items-center gap-1">
                         <span className="material-symbols-outlined text-[13px] text-emerald-500">travel_explore</span>
-                        <span>Asia & More</span>
+                        <span>Mediterranean & Asia</span>
                       </div>
                       <div className="grid grid-cols-2 gap-1.5 text-xs">
-                        {['🇨🇳 China', '🇯🇵 Japan', '🇰🇷 South Korea', '🇦🇪 UAE', '🇳🇿 New Zealand'].map((c, i) => (
+                        {['🇨🇾 Cyprus', '🇲🇺 Mauritius', '🇮🇳 India'].map((c, i) => (
                           <button
                             key={i}
                             onClick={() => handleNav('destinations', c.split(' ').slice(1).join(' '))}

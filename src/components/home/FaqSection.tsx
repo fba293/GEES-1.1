@@ -54,11 +54,11 @@ export const FaqSection: React.FC<FaqSectionProps> = ({
       id: 'home-faq-2',
       category: 'Destinations',
       question: 'Which countries can I apply to through GEES?',
-      answer: 'Students can apply to all major study destinations, including the United Kingdom, Australia, Canada, New Zealand, United States, and top European destinations. Our experienced counselors help each student identify the most suitable country based on their academic background, budget, career goals, and long-term opportunities.',
+      answer: 'Students can apply to all our official partner destinations: Malaysia, the United Kingdom, Australia, New Zealand, Cyprus, Belgium, Finland, Greece, Mauritius, the Netherlands, and India. Our experienced counselors help each student identify the most suitable country based on their academic background, budget, career goals, and post-study opportunities.',
       keyPoints: [
-        'Direct representation across UK, Australia, Canada, USA, New Zealand & Europe',
+        'Official direct representation across Malaysia, UK, Australia, New Zealand, Cyprus, Belgium, Finland, Greece, Mauritius, Netherlands & India',
         'Affordable and post-study work friendly country selection',
-        'PR pathway and graduate employment analysis'
+        'Transparent visa and graduate employment pathway analysis'
       ],
       ctaText: 'Explore Destinations',
       ctaAction: 'universities'
@@ -136,7 +136,7 @@ export const FaqSection: React.FC<FaqSectionProps> = ({
       id: 'more-faq-2',
       category: 'Scholarships & Funding',
       question: 'What financial sponsorship documents are required for my student visa application?',
-      answer: 'Embassies typically require official bank statements showing funds held for 28 consecutive days (UK) or 3–6 months (Canada/USA) covering full 1st-year tuition fees plus living expenses. Sponsors can include parents, legal guardians, or approved education bank loans.',
+      answer: 'Embassies typically require official bank statements showing funds held for 28 consecutive days (UK) or relevant maintenance periods (Australia, New Zealand, Netherlands) covering full 1st-year tuition fees plus living expenses. Sponsors can include parents, legal guardians, or approved education bank loans.',
       keyPoints: [
         'Bank solvency certificate and official transaction statements',
         'Affidavit of financial sponsorship and relationship proof'
@@ -146,7 +146,7 @@ export const FaqSection: React.FC<FaqSectionProps> = ({
       id: 'more-faq-3',
       category: 'Visas & Immigration',
       question: 'Can international students work part-time while studying abroad?',
-      answer: 'Yes! In the UK, international students can work up to 20 hours/week during term and full-time during vacations. Australia allows 48 hours per fortnight, Canada allows 20–24 hours/week off-campus, and most European countries allow 15–20 hours/week, helping students support living costs and gain valuable overseas experience.',
+      answer: 'Yes! In the UK, international students can work up to 20 hours/week during term and full-time during vacations. Australia allows 48 hours per fortnight, New Zealand permits 20 hours/week, and European destinations like Finland, Belgium, and Netherlands permit 16–30 hours/week, helping students support living costs and gain valuable overseas experience.',
       keyPoints: [
         'Earn money to support accommodation and personal living costs',
         'Gain valuable international workplace experience and networking',
@@ -157,10 +157,10 @@ export const FaqSection: React.FC<FaqSectionProps> = ({
       id: 'more-faq-4',
       category: 'Visas & Immigration',
       question: 'How long can I stay and work after graduation through Post-Study Work (PSW) permits?',
-      answer: 'The UK Graduate Route offers 2 to 3 years; Canada’s Post-Graduation Work Permit (PGWP) offers up to 3 years; Australia’s Temporary Graduate visa offers 2 to 4 years; and countries like Germany provide an 18-month job-seeker visa upon university completion, allowing graduates to work and pursue permanent residency.',
+      answer: 'The UK Graduate Route offers 2 to 3 years; Australia’s Temporary Graduate visa offers 2 to 4 years; New Zealand grants up to 3 years; Finland offers a 2-year job seeker permit; and the Netherlands provides a 1-year Orientation Year (Zoekjaar) visa upon degree completion.',
       keyPoints: [
         'Work for any employer without mandatory initial sponsorship',
-        'Pathway toward permanent residence (PR) in countries like Canada and Australia'
+        'Pathway toward global careers and long-term residency in countries like Australia and New Zealand'
       ]
     },
     {
@@ -311,13 +311,13 @@ export const FaqSection: React.FC<FaqSectionProps> = ({
             </div>
           )}
 
-          <h2 className="text-base xs:text-xl sm:text-4xl md:text-5xl font-black font-display tracking-tight text-slate-900 dark:text-white flex items-center justify-center gap-1.5 sm:gap-3 flex-nowrap sm:flex-wrap whitespace-nowrap overflow-hidden text-ellipsis sm:whitespace-normal leading-tight">
+          <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-black font-display tracking-tight text-slate-900 dark:text-white flex items-center justify-center gap-2 sm:gap-3 flex-wrap leading-tight">
             <span>Frequently Asked</span>
-            <span className="inline-block bg-[#FBB034] text-slate-950 px-2.5 sm:px-5 py-0.5 sm:py-1 rounded-xl sm:rounded-2xl shadow-sm tracking-tight">
+            <span className="inline-block bg-[#FBB034] text-slate-950 px-3.5 sm:px-5 py-0.5 sm:py-1 rounded-xl sm:rounded-2xl shadow-sm tracking-tight">
               Questions
             </span>
           </h2>
-          <p className="mt-2 sm:mt-3 text-xs sm:text-base text-slate-500 dark:text-slate-400 font-normal leading-relaxed max-w-xl mx-auto truncate sm:whitespace-normal">
+          <p className="mt-2.5 sm:mt-3 text-sm sm:text-base text-slate-500 dark:text-slate-400 font-normal leading-relaxed max-w-xl mx-auto px-2">
             {isCompact 
               ? 'Find quick answers to common questions about studying abroad with GEES.' 
               : 'Everything you need to know about university admissions, student visas, scholarships, and living abroad.'}
@@ -478,10 +478,10 @@ export const FaqSection: React.FC<FaqSectionProps> = ({
                         <button
                           type="button"
                           onClick={() => handleCtaClick(faq.ctaAction)}
-                          className="inline-flex items-center gap-1 text-[11px] font-bold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer ml-auto"
+                          className="min-h-[44px] inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer ml-auto py-2"
                         >
                           <span>{faq.ctaText}</span>
-                          <span className="material-symbols-outlined text-[13px]">arrow_forward</span>
+                          <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
                         </button>
                       )}
                     </div>
@@ -503,7 +503,7 @@ export const FaqSection: React.FC<FaqSectionProps> = ({
               <InteractiveHoverButton
                 type="button"
                 text="Show All FAQs"
-                className="px-8 py-3.5 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 border-slate-900 dark:border-white font-bold text-xs sm:text-sm shadow-sm"
+                className="min-h-[44px] px-8 py-3.5 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 border-slate-900 dark:border-white font-bold text-xs sm:text-sm shadow-sm cursor-pointer"
               />
             </a>
           </div>
@@ -518,11 +518,11 @@ export const FaqSection: React.FC<FaqSectionProps> = ({
                 Speak directly with an overseas education counselor today. Free, friendly, and transparent.
               </p>
             </div>
-            <div className="flex items-center gap-2.5 shrink-0">
+            <div className="flex flex-col xs:flex-row items-center gap-2.5 shrink-0 w-full xs:w-auto">
               <button
                 type="button"
                 onClick={onOpenConsultation}
-                className="px-5 py-2.5 rounded-full bg-[#FBB034] hover:bg-amber-400 text-slate-950 font-bold text-xs transition-all shadow-md active:scale-95 cursor-pointer flex items-center gap-1.5"
+                className="min-h-[44px] w-full xs:w-auto px-5 py-2.5 rounded-full bg-[#FBB034] hover:bg-amber-400 text-slate-950 font-bold text-xs transition-all shadow-md active:scale-95 cursor-pointer flex items-center justify-center gap-1.5"
               >
                 <span className="material-symbols-outlined text-[16px]">calendar_month</span>
                 <span>Ask A Counselor</span>
@@ -531,7 +531,7 @@ export const FaqSection: React.FC<FaqSectionProps> = ({
                 href="https://wa.me/8801805529578"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-4 py-2.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold text-xs transition-all flex items-center gap-1.5"
+                className="min-h-[44px] w-full xs:w-auto px-4 py-2.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold text-xs transition-all flex items-center justify-center gap-1.5 active:scale-95"
               >
                 <span>💬 WhatsApp</span>
               </a>

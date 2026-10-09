@@ -106,17 +106,20 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 }) => {
   // 1. Typewriter Animation State
   const countries = [
+    'Malaysia',
     'United Kingdom',
     'Australia',
-    'USA',
-    'Canada',
-    'Germany',
-    'Malaysia',
-    'China',
-    'Cyprus'
+    'New Zealand',
+    'Cyprus',
+    'Belgium',
+    'Finland',
+    'Greece',
+    'Mauritius',
+    'Netherlands',
+    'India'
   ];
   const [countryIndex, setCountryIndex] = useState(0);
-  const [displayedText, setDisplayedText] = useState('United Kingdom');
+  const [displayedText, setDisplayedText] = useState('Malaysia');
   const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
@@ -229,25 +232,25 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         {/* Title + Graduate Graphic Header */}
         <div className="w-full flex flex-col lg:flex-row items-start lg:items-end justify-between gap-6 sm:gap-10 relative">
           <div className="flex flex-col items-start flex-1 relative z-20">
-            <h1 className="hero-study-in text-[42px] xs:text-[50px] sm:text-[76px] lg:text-[96px] font-black tracking-tight text-slate-900 dark:text-white leading-[0.95] select-none">
+            <h1 className="hero-study-in text-[38px] xs:text-[46px] sm:text-[76px] lg:text-[96px] font-black tracking-tight text-slate-900 dark:text-white leading-[0.98] select-none">
               Study in
             </h1>
             
             {/* Typewriter Highlight Box */}
-            <div className="hero-typewriter-box mt-2 sm:mt-3 inline-block px-3 sm:px-8 py-1 sm:py-3 rounded-2xl sm:rounded-3xl shadow-sm bg-[#fbb034] transition-all duration-300 max-w-full">
-              <span className="hero-typewriter text-[28px] xs:text-[40px] sm:text-[68px] lg:text-[88px] font-black tracking-tight text-slate-950 leading-none inline-flex items-center min-h-[1.05em] max-w-full overflow-hidden text-ellipsis">
+            <div className="hero-typewriter-box mt-2 sm:mt-3 inline-block px-3.5 sm:px-8 py-1.5 sm:py-3 rounded-2xl sm:rounded-3xl shadow-sm bg-[#fbb034] transition-all duration-300 max-w-full">
+              <span className="hero-typewriter text-[26px] xs:text-[36px] sm:text-[68px] lg:text-[88px] font-black tracking-tight text-slate-950 leading-none inline-flex items-center min-h-[1.05em] max-w-full overflow-hidden text-ellipsis">
                 <span>{displayedText}</span>
                 <span className="ml-1 inline-block w-[3px] sm:w-[5px] h-[0.75em] bg-slate-950 rounded-sm animate-pulse align-baseline shrink-0"></span>
               </span>
             </div>
 
-            <p className="hero-connecting-text mt-3 sm:mt-6 font-bold text-[7.5px] xs:text-[9px] sm:text-[13px] tracking-[0.08em] sm:tracking-[0.22em] uppercase text-slate-500 dark:text-slate-400 bg-white/40 dark:bg-slate-950/20 backdrop-blur-[1px] px-1.5 py-0.5 rounded-md inline-block max-w-full truncate sm:whitespace-normal">
-              CONNECTING YOU TO THE WORLD CLASS EDUCATION
+            <p className="hero-connecting-text mt-3 sm:mt-6 font-bold text-[10px] xs:text-[11px] sm:text-[13px] tracking-[0.12em] sm:tracking-[0.22em] uppercase text-slate-600 dark:text-slate-300 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xs px-2 py-1 rounded-md inline-block max-w-full truncate sm:whitespace-normal">
+              CONNECTING YOU TO WORLD CLASS EDUCATION
             </p>
           </div>
 
           {/* Graduate Photo Card Visual */}
-          <div className="hero-girl-container absolute right-0 bottom-0 w-36 xs:w-48 sm:w-auto flex flex-col items-center justify-end shrink-0 pointer-events-none z-10">
+          <div className="hero-girl-container absolute right-0 bottom-0 w-28 xs:w-36 sm:w-auto flex flex-col items-center justify-end shrink-0 pointer-events-none z-10">
             <div className="relative flex items-end justify-center w-full max-w-sm sm:max-w-md">
               <div className="absolute top-10 sm:top-20 w-36 xs:w-48 sm:w-80 h-36 xs:h-48 sm:h-80 bg-blue-500/15 dark:bg-blue-500/20 rounded-full blur-3xl pointer-events-none -z-10"></div>
               <div className="absolute top-12 sm:top-24 w-32 xs:w-40 sm:w-72 h-32 xs:h-40 sm:h-72 bg-[#fbb034]/20 rounded-full blur-2xl pointer-events-none -z-10"></div>
@@ -337,25 +340,25 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   {searchQuery && (
                     <button 
                       aria-label="Clear search" 
-                      className="p-1 rounded-full text-[#86868b] hover:text-[#1d1d1f] hover:bg-[#f5f5f7] tap-scale transition-all duration-150 flex items-center justify-center" 
+                      className="w-8 h-8 rounded-full text-[#86868b] hover:text-[#1d1d1f] hover:bg-[#f5f5f7] active:scale-90 transition-all flex items-center justify-center cursor-pointer" 
                       id="clear-search-btn" 
                       onClick={() => setSearchQuery('')}
                       type="button"
                     >
-                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
                         <path d="M6 18L18 6M6 6l12 12" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
                     </button>
                   )}
                   <button 
                     aria-label="Quick suggestions" 
-                    className="p-1 rounded-full text-[#8e8e93] hover:text-[#1d1d1f] hover:bg-black/5 tap-scale transition-colors" 
+                    className="w-8 h-8 rounded-full text-[#8e8e93] hover:text-[#1d1d1f] hover:bg-black/5 active:scale-90 transition-colors flex items-center justify-center cursor-pointer" 
                     onClick={() => {
                       const prompts = [
                         "United Kingdom",
                         "Computer Science",
                         "Australia",
-                        "Canada",
+                        "New Zealand",
                         "Health Insurance"
                       ];
                       const pick = prompts[Math.floor(Math.random() * prompts.length)];
@@ -365,7 +368,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     title="Quick suggestions" 
                     type="button"
                   >
-                    <svg className="w-3.5 h-3.5 text-[#86868b]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 text-[#86868b]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                       <path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" strokeLinecap="round" strokeLinejoin="round" />
                       <path d="M19 10v2a7 7 0 01-14 0v-2" strokeLinecap="round" strokeLinejoin="round" />
                       <line strokeLinecap="round" strokeLinejoin="round" x1="12" x2="12" y1="19" y2="23" />
@@ -440,17 +443,20 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   <select
                     value={selectedDestination}
                     onChange={(e) => setSelectedDestination(e.target.value)}
-                    className="appearance-none -webkit-appearance-none w-full bg-transparent text-[12px] min-[390px]:text-[12.5px] font-semibold text-[#1d1d1f] tracking-tight truncate border-0 p-0 m-0 mt-0.5 focus:ring-0 focus:outline-none cursor-pointer leading-tight h-[18px]"
+                    className="appearance-none -webkit-appearance-none w-full bg-transparent text-[12px] min-[390px]:text-[12.5px] font-semibold text-[#1d1d1f] dark:text-white tracking-tight truncate border-0 p-0 m-0 mt-0.5 focus:ring-2 focus:ring-[#fbb034]/40 focus:outline-none cursor-pointer leading-tight h-[18px] rounded-lg transition-all"
                   >
-                    <option value="all">All</option>
-                    <option value="UK">UK</option>
-                    <option value="USA">USA</option>
-                    <option value="Canada">Canada</option>
-                    <option value="Australia">Australia</option>
-                    <option value="Germany">Germany</option>
+                    <option value="all">All Destinations</option>
                     <option value="Malaysia">Malaysia</option>
-                    <option value="China">China</option>
+                    <option value="UK">United Kingdom</option>
+                    <option value="Australia">Australia</option>
+                    <option value="New Zealand">New Zealand</option>
                     <option value="Cyprus">Cyprus</option>
+                    <option value="Belgium">Belgium</option>
+                    <option value="Finland">Finland</option>
+                    <option value="Greece">Greece</option>
+                    <option value="Mauritius">Mauritius</option>
+                    <option value="Netherlands">Netherlands</option>
+                    <option value="India">India</option>
                   </select>
                 </div>
               </label>
@@ -504,27 +510,27 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
             {/* Bottom Actions: Find Programs Button + Quick Navigation Pills + Stats Ticker */}
             <div className="p-3 bg-white">
-              {/* Find Programs -> Blue Capsule Button */}
+              {/* Find Programs -> GEES Amber Capsule Button with Apple-Grade Proportions */}
               <button
                 id="find-programs-button"
                 onClick={handleFindPrograms}
                 type="button"
                 data-purpose="compact-btn"
-                className="w-full h-9 rounded-full bg-[#0066cc] hover:bg-[#0071e3] active:bg-[#0055aa] text-white font-medium text-[14px] tracking-tight flex items-center justify-center space-x-1.5 transition-all shadow-none tap-scale-btn"
+                className="w-full h-11 min-h-[44px] rounded-full bg-[#fbb034] hover:bg-[#f59e0b] active:bg-[#d97706] text-slate-950 font-black text-[15px] tracking-tight flex items-center justify-center space-x-2 transition-all shadow-sm active:scale-[0.98] cursor-pointer"
               >
                 <span>Find Programs</span>
-                <svg className="w-3.5 h-3.5 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 stroke-[2.4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </button>
 
               {/* 2x2 Clean Rounded White Pill Buttons */}
-              <div className="grid grid-cols-2 gap-1.5 mt-2" data-purpose="quick-navigation-grid">
+              <div className="grid grid-cols-2 gap-2 mt-2.5" data-purpose="quick-navigation-grid">
                 <button
                   onClick={() => onNavigate('universities')}
                   type="button"
                   data-purpose="compact-btn"
-                  className="w-full h-8 rounded-full border border-[#e5e5ea] bg-white hover:bg-[#f5f5f7] active:bg-[#ebebed] text-[#1d1d1f] font-normal text-[12.5px] tracking-tight text-center transition-all shadow-none flex items-center justify-center tap-scale"
+                  className="w-full h-11 min-h-[44px] rounded-full border border-[#e5e5ea] bg-white hover:bg-[#f5f5f7] active:bg-[#ebebed] text-[#1d1d1f] font-semibold text-[13px] tracking-tight text-center transition-all shadow-none flex items-center justify-center active:scale-[0.97] cursor-pointer"
                 >
                   Universities
                 </button>
@@ -532,7 +538,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   onClick={() => onNavigate('courses')}
                   type="button"
                   data-purpose="compact-btn"
-                  className="w-full h-8 rounded-full border border-[#e5e5ea] bg-white hover:bg-[#f5f5f7] active:bg-[#ebebed] text-[#1d1d1f] font-normal text-[12.5px] tracking-tight text-center transition-all shadow-none flex items-center justify-center tap-scale"
+                  className="w-full h-11 min-h-[44px] rounded-full border border-[#e5e5ea] bg-white hover:bg-[#f5f5f7] active:bg-[#ebebed] text-[#1d1d1f] font-semibold text-[13px] tracking-tight text-center transition-all shadow-none flex items-center justify-center active:scale-[0.97] cursor-pointer"
                 >
                   Courses
                 </button>
@@ -540,7 +546,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   onClick={() => onNavigate('services', 'ielts-preparation')}
                   type="button"
                   data-purpose="compact-btn"
-                  className="w-full h-8 rounded-full border border-[#e5e5ea] bg-white hover:bg-[#f5f5f7] active:bg-[#ebebed] text-[#1d1d1f] font-normal text-[12.5px] tracking-tight text-center transition-all shadow-none flex items-center justify-center tap-scale"
+                  className="w-full h-11 min-h-[44px] rounded-full border border-[#e5e5ea] bg-white hover:bg-[#f5f5f7] active:bg-[#ebebed] text-[#1d1d1f] font-semibold text-[13px] tracking-tight text-center transition-all shadow-none flex items-center justify-center active:scale-[0.97] cursor-pointer"
                 >
                   IELTS Prep
                 </button>
@@ -548,14 +554,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   onClick={() => onNavigate('blog')}
                   type="button"
                   data-purpose="compact-btn"
-                  className="w-full h-8 rounded-full border border-[#e5e5ea] bg-white hover:bg-[#f5f5f7] active:bg-[#ebebed] text-[#1d1d1f] font-normal text-[12.5px] tracking-tight text-center transition-all shadow-none flex items-center justify-center tap-scale"
+                  className="w-full h-11 min-h-[44px] rounded-full border border-[#e5e5ea] bg-white hover:bg-[#f5f5f7] active:bg-[#ebebed] text-[#1d1d1f] font-semibold text-[13px] tracking-tight text-center transition-all shadow-none flex items-center justify-center active:scale-[0.97] cursor-pointer"
                 >
                   Blogs &amp; News
                 </button>
               </div>
 
               {/* Stats Overview Row with Vertical Hairline Dividers */}
-              <div className="flex items-center justify-between mt-2.5 pt-2 border-t border-[#e5e5ea] px-1" data-purpose="stats-overview-grid">
+              <div className="flex items-center justify-between mt-3 pt-2.5 pb-0.5 border-t border-[#e5e5ea] px-1.5" data-purpose="stats-overview-grid">
                 <div className="flex-1 text-center min-w-0">
                   <div className="flex items-baseline justify-center leading-none">
                     <span className="text-[15px] font-bold tracking-tight text-[#1d1d1f]">100</span>
@@ -566,10 +572,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 <div className="w-[1px] h-4.5 bg-[#e5e5ea] shrink-0" />
                 <div className="flex-1 text-center min-w-0">
                   <div className="flex items-baseline justify-center leading-none">
-                    <span className="text-[15px] font-bold tracking-tight text-[#1d1d1f]">20</span>
+                    <span className="text-[15px] font-bold tracking-tight text-[#1d1d1f]">167</span>
                     <span className="text-[11px] font-semibold text-[#1d1d1f]">+</span>
                   </div>
-                  <p className="text-[10px] font-normal text-[#86868b] mt-0.5 whitespace-nowrap truncate tracking-tight">Partners</p>
+                  <p className="text-[10px] font-normal text-[#86868b] mt-0.5 whitespace-nowrap truncate tracking-tight">Partner Unis</p>
                 </div>
                 <div className="w-[1px] h-4.5 bg-[#e5e5ea] shrink-0" />
                 <div className="flex-1 text-center min-w-0">
@@ -685,15 +691,20 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   <select
                     value={selectedDestination}
                     onChange={(e) => setSelectedDestination(e.target.value)}
-                    className="w-full bg-transparent text-xs font-bold text-slate-900 dark:text-white focus:outline-none cursor-pointer border-0 p-0"
+                    className="w-full bg-transparent text-xs font-bold text-slate-900 dark:text-white focus:outline-none cursor-pointer rounded-xl border border-slate-200/80 dark:border-slate-700/80 px-2 py-1.5 transition-all duration-200 hover:border-amber-400/50 focus:border-[#fbb034] focus:ring-2 focus:ring-[#fbb034]/30"
                   >
                     <option value="all">All Destinations</option>
-                    <option value="UK">United Kingdom</option>
-                    <option value="USA">United States</option>
-                    <option value="Canada">Canada</option>
-                    <option value="Australia">Australia</option>
-                    <option value="Germany">Germany</option>
                     <option value="Malaysia">Malaysia</option>
+                    <option value="UK">United Kingdom</option>
+                    <option value="Australia">Australia</option>
+                    <option value="New Zealand">New Zealand</option>
+                    <option value="Cyprus">Cyprus</option>
+                    <option value="Belgium">Belgium</option>
+                    <option value="Finland">Finland</option>
+                    <option value="Greece">Greece</option>
+                    <option value="Mauritius">Mauritius</option>
+                    <option value="Netherlands">Netherlands</option>
+                    <option value="India">India</option>
                   </select>
                 </div>
               </div>
@@ -769,7 +780,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           {/* 4 Animated Counting Number Tickers */}
           <div className="w-full grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4 mt-8 sm:mt-10">
             <StatCounter value={100} suffix="+" label="Students Placed" duration={1800} />
-            <StatCounter value={20} suffix="+" label="Partner Universities" duration={1500} />
+            <StatCounter value={167} suffix="+" label="Partner Universities" duration={1500} />
             <StatCounter value={95} suffix="%" label="Visa Success" duration={1700} />
             <StatCounter value={2} suffix="+" label="Global Offices" duration={1200} />
           </div>

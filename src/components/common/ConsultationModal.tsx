@@ -22,7 +22,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
-  const [destination, setDestination] = useState('Canada');
+  const [destination, setDestination] = useState('Malaysia');
   const [preferredDate, setPreferredDate] = useState('2026-10-05');
   const [counselor, setCounselor] = useState(preselectedCounselor || mockCounselors[0].name);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -137,12 +137,17 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                     onChange={(e) => setDestination(e.target.value)}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-transparent text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#fbb034]"
                   >
-                    <option value="Canada">Canada</option>
+                    <option value="Malaysia">Malaysia</option>
                     <option value="United Kingdom">United Kingdom</option>
                     <option value="Australia">Australia</option>
-                    <option value="USA">USA</option>
-                    <option value="Germany">Germany</option>
-                    <option value="Malaysia">Malaysia</option>
+                    <option value="New Zealand">New Zealand</option>
+                    <option value="Cyprus">Cyprus</option>
+                    <option value="Belgium">Belgium</option>
+                    <option value="Finland">Finland</option>
+                    <option value="Greece">Greece</option>
+                    <option value="Mauritius">Mauritius</option>
+                    <option value="Netherlands">Netherlands</option>
+                    <option value="India">India</option>
                   </select>
                 </div>
                 <div>

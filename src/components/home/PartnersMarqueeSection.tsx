@@ -13,7 +13,7 @@ interface PartnersMarqueeSectionProps {
 
 export const PartnersMarqueeSection: React.FC<PartnersMarqueeSectionProps> = ({ onNavigate }) => {
   return (
-    <section className="w-full bg-white dark:bg-[#0B1329] py-20 lg:py-28 overflow-hidden relative transition-colors" data-purpose="partners-showcase">
+    <section className="w-full bg-white dark:bg-[#0B1329] py-12 sm:py-20 lg:py-28 overflow-hidden relative transition-colors" data-purpose="partners-showcase">
       {/* Ambient Blur Accents */}
       <div className="pointer-events-none absolute -top-24 left-1/4 w-96 h-96 bg-blue-400/20 dark:bg-blue-600/10 rounded-full blur-3xl -z-10" />
       <div className="pointer-events-none absolute top-1/2 right-12 w-80 h-80 bg-indigo-400/20 dark:bg-indigo-600/10 rounded-full blur-3xl -z-10" />
@@ -21,17 +21,17 @@ export const PartnersMarqueeSection: React.FC<PartnersMarqueeSectionProps> = ({ 
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-10 lg:mb-18 px-2" data-purpose="section-header">
+        <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12 lg:mb-18 px-2" data-purpose="section-header">
           {/* Main Heading with Golden Pill Badge */}
-          <h2 className="text-base xs:text-xl sm:text-6xl md:text-7xl font-extrabold font-display tracking-tight text-slate-900 dark:text-white flex items-center justify-center gap-1.5 sm:gap-4 flex-nowrap sm:flex-wrap whitespace-nowrap overflow-hidden text-ellipsis sm:whitespace-normal">
+          <h2 className="text-2xl xs:text-3xl sm:text-6xl md:text-7xl font-extrabold font-display tracking-tight text-slate-900 dark:text-white flex items-center justify-center gap-2 sm:gap-4 flex-wrap leading-tight">
             <span>Our</span>
-            <span className="inline-block bg-[#FBB034] text-[#111827] px-2.5 sm:px-8 py-0.5 sm:py-2 rounded-xl sm:rounded-2xl shadow-sm tracking-tight">
+            <span className="inline-block bg-[#FBB034] text-[#111827] px-3.5 sm:px-8 py-0.5 sm:py-2 rounded-xl sm:rounded-2xl shadow-sm tracking-tight">
               Partners
             </span>
           </h2>
           {/* Supporting Subtext */}
-          <p className="mt-2 sm:mt-6 text-xs sm:text-lg text-slate-500 dark:text-slate-400 font-normal leading-relaxed max-w-2xl mx-auto truncate sm:whitespace-normal">
-            Connecting you to 150+ top universities across the globe
+          <p className="mt-2.5 sm:mt-6 text-sm sm:text-lg text-slate-500 dark:text-slate-400 font-normal leading-relaxed max-w-2xl mx-auto px-2">
+            Connecting you to 167+ top partner universities across the globe
           </p>
         </div>
       </div>
@@ -158,21 +158,21 @@ export const PartnersMarqueeSection: React.FC<PartnersMarqueeSectionProps> = ({ 
                 </div>
               </div>
 
-              {/* 11. Georgian College */}
-              <div className="partner-card flex-shrink-0 min-w-[260px] sm:min-w-[280px] h-20 sm:h-24 bg-white dark:bg-[#0f172a] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm px-6 py-3.5 flex items-center justify-center cursor-pointer" title="Georgian College" onClick={() => onNavigate?.('universities')}>
+              {/* 11. KU Leuven */}
+              <div className="partner-card flex-shrink-0 min-w-[260px] sm:min-w-[280px] h-20 sm:h-24 bg-white dark:bg-[#0f172a] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm px-6 py-3.5 flex items-center justify-center cursor-pointer" title="KU Leuven" onClick={() => onNavigate?.('universities')}>
                 <div className="text-left leading-none">
-                  <span className="text-2xl font-black text-[#003B71] dark:text-blue-400 tracking-tight block">Georgian</span>
-                  <span className="text-[9px] uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400 mt-1 block">College • Canada</span>
+                  <span className="text-2xl font-black text-[#1D8DB0] dark:text-cyan-400 tracking-tight block">KU LEUVEN</span>
+                  <span className="text-[9px] uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400 mt-1 block">University • Belgium</span>
                 </div>
               </div>
 
-              {/* 12. University of Manitoba */}
-              <div className="partner-card flex-shrink-0 min-w-[260px] sm:min-w-[280px] h-20 sm:h-24 bg-white dark:bg-[#0f172a] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm px-6 py-3.5 flex items-center justify-center cursor-pointer" title="University of Manitoba" onClick={() => onNavigate?.('universities')}>
+              {/* 12. University of Helsinki */}
+              <div className="partner-card flex-shrink-0 min-w-[260px] sm:min-w-[280px] h-20 sm:h-24 bg-white dark:bg-[#0f172a] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm px-6 py-3.5 flex items-center justify-center cursor-pointer" title="University of Helsinki" onClick={() => onNavigate?.('universities')}>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[#5B3413] text-[#F3AE1B] font-serif font-black flex items-center justify-center text-base shadow-sm">M</div>
+                  <div className="w-10 h-10 rounded-full bg-[#002F6C] text-white font-serif font-black flex items-center justify-center text-base shadow-sm">UH</div>
                   <div className="text-left leading-tight">
                     <span className="text-[9px] font-bold text-slate-500 dark:text-slate-400 uppercase block">University of</span>
-                    <span className="text-base font-extrabold text-slate-900 dark:text-white">Manitoba</span>
+                    <span className="text-base font-extrabold text-slate-900 dark:text-white">Helsinki (Finland)</span>
                   </div>
                 </div>
               </div>
@@ -309,54 +309,54 @@ export const PartnersMarqueeSection: React.FC<PartnersMarqueeSectionProps> = ({ 
                 </div>
               </div>
 
-              {/* 5. Yorkville University */}
-              <div className="partner-card flex-shrink-0 min-w-[260px] sm:min-w-[280px] h-20 sm:h-24 bg-white dark:bg-[#0f172a] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm px-6 py-3.5 flex items-center justify-center cursor-pointer" title="Yorkville University" onClick={() => onNavigate?.('universities')}>
+              {/* 5. Universiti Malaya */}
+              <div className="partner-card flex-shrink-0 min-w-[260px] sm:min-w-[280px] h-20 sm:h-24 bg-white dark:bg-[#0f172a] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm px-6 py-3.5 flex items-center justify-center cursor-pointer" title="Universiti Malaya" onClick={() => onNavigate?.('universities')}>
                 <div className="text-left leading-none">
-                  <span className="text-xl font-black text-slate-900 dark:text-white tracking-tight block">YORKVILLE</span>
-                  <span className="text-[9px] uppercase tracking-[0.24em] font-extrabold text-[#D32F2F] mt-1 block">UNIVERSITY</span>
+                  <span className="text-xl font-black text-slate-900 dark:text-white tracking-tight block">UNIVERSITI</span>
+                  <span className="text-[9px] uppercase tracking-[0.24em] font-extrabold text-[#fbb034] mt-1 block">MALAYA (MALAYSIA)</span>
                 </div>
               </div>
 
-              {/* 6. University Canada West */}
-              <div className="partner-card flex-shrink-0 min-w-[260px] sm:min-w-[280px] h-20 sm:h-24 bg-white dark:bg-[#0f172a] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm px-6 py-3.5 flex items-center justify-center cursor-pointer" title="University Canada West" onClick={() => onNavigate?.('universities')}>
+              {/* 6. University of Amsterdam */}
+              <div className="partner-card flex-shrink-0 min-w-[260px] sm:min-w-[280px] h-20 sm:h-24 bg-white dark:bg-[#0f172a] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm px-6 py-3.5 flex items-center justify-center cursor-pointer" title="University of Amsterdam" onClick={() => onNavigate?.('universities')}>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-[#E2231A] text-white flex items-center justify-center font-black text-sm shadow-sm flex-shrink-0">UCW</div>
+                  <div className="w-10 h-10 rounded-xl bg-[#000000] text-white flex items-center justify-center font-black text-sm shadow-sm flex-shrink-0">UvA</div>
                   <div className="text-left leading-tight">
-                    <span className="text-sm font-black text-slate-900 dark:text-white block">UNIVERSITY</span>
-                    <span className="text-[9px] uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold">CANADA WEST</span>
+                    <span className="text-sm font-black text-slate-900 dark:text-white block">UNIVERSITY OF</span>
+                    <span className="text-[9px] uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold">AMSTERDAM (NETHERLANDS)</span>
                   </div>
                 </div>
               </div>
 
-              {/* 7. University of Regina */}
-              <div className="partner-card flex-shrink-0 min-w-[260px] sm:min-w-[280px] h-20 sm:h-24 bg-white dark:bg-[#0f172a] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm px-6 py-3.5 flex items-center justify-center cursor-pointer" title="University of Regina" onClick={() => onNavigate?.('universities')}>
+              {/* 7. University of Nicosia */}
+              <div className="partner-card flex-shrink-0 min-w-[260px] sm:min-w-[280px] h-20 sm:h-24 bg-white dark:bg-[#0f172a] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm px-6 py-3.5 flex items-center justify-center cursor-pointer" title="University of Nicosia" onClick={() => onNavigate?.('universities')}>
                 <div className="text-center leading-tight">
-                  <span className="text-[9px] uppercase tracking-widest text-[#006A4E] dark:text-emerald-400 font-bold block">University of</span>
-                  <span className="text-2xl font-serif font-black text-[#006A4E] dark:text-emerald-300">Regina</span>
+                  <span className="text-[9px] uppercase tracking-widest text-[#6610f2] dark:text-purple-400 font-bold block">University of</span>
+                  <span className="text-2xl font-serif font-black text-[#6610f2] dark:text-purple-300">Nicosia (Cyprus)</span>
                 </div>
               </div>
 
-              {/* 8. Centennial College */}
-              <div className="partner-card flex-shrink-0 min-w-[260px] sm:min-w-[280px] h-20 sm:h-24 bg-white dark:bg-[#0f172a] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm px-6 py-3.5 flex items-center justify-center cursor-pointer" title="Centennial College" onClick={() => onNavigate?.('universities')}>
+              {/* 8. University of Mauritius */}
+              <div className="partner-card flex-shrink-0 min-w-[260px] sm:min-w-[280px] h-20 sm:h-24 bg-white dark:bg-[#0f172a] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm px-6 py-3.5 flex items-center justify-center cursor-pointer" title="University of Mauritius" onClick={() => onNavigate?.('universities')}>
                 <div className="text-left leading-none">
-                  <span className="text-lg font-black text-[#006747] dark:text-emerald-400 tracking-tight block">CENTENNIAL</span>
-                  <span className="text-[9px] uppercase tracking-widest text-slate-600 dark:text-slate-400 font-extrabold mt-1 block">COLLEGE</span>
+                  <span className="text-lg font-black text-[#006747] dark:text-emerald-400 tracking-tight block">UNIVERSITY OF</span>
+                  <span className="text-[9px] uppercase tracking-widest text-slate-600 dark:text-slate-400 font-extrabold mt-1 block">MAURITIUS</span>
                 </div>
               </div>
 
-              {/* 9. University of Windsor */}
-              <div className="partner-card flex-shrink-0 min-w-[260px] sm:min-w-[280px] h-20 sm:h-24 bg-white dark:bg-[#0f172a] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm px-6 py-3.5 flex items-center justify-center cursor-pointer" title="University of Windsor" onClick={() => onNavigate?.('universities')}>
+              {/* 9. University of Athens */}
+              <div className="partner-card flex-shrink-0 min-w-[260px] sm:min-w-[280px] h-20 sm:h-24 bg-white dark:bg-[#0f172a] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm px-6 py-3.5 flex items-center justify-center cursor-pointer" title="University of Athens" onClick={() => onNavigate?.('universities')}>
                 <div className="text-left leading-none">
-                  <span className="text-[9px] uppercase tracking-widest text-slate-500 dark:text-slate-400 block font-bold">University of</span>
-                  <span className="text-2xl font-black text-[#005596] dark:text-blue-300 tracking-tight mt-0.5 block">Windsor</span>
+                  <span className="text-[9px] uppercase tracking-widest text-slate-500 dark:text-slate-400 block font-bold">National University of</span>
+                  <span className="text-2xl font-black text-[#005596] dark:text-blue-300 tracking-tight mt-0.5 block">Athens (Greece)</span>
                 </div>
               </div>
 
-              {/* 10. Capilano University */}
-              <div className="partner-card flex-shrink-0 min-w-[260px] sm:min-w-[280px] h-20 sm:h-24 bg-white dark:bg-[#0f172a] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm px-6 py-3.5 flex items-center justify-center cursor-pointer" title="Capilano University" onClick={() => onNavigate?.('universities')}>
+              {/* 10. Indian Institute of Technology */}
+              <div className="partner-card flex-shrink-0 min-w-[260px] sm:min-w-[280px] h-20 sm:h-24 bg-white dark:bg-[#0f172a] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm px-6 py-3.5 flex items-center justify-center cursor-pointer" title="Indian Institute of Technology" onClick={() => onNavigate?.('universities')}>
                 <div className="text-center leading-tight">
-                  <span className="text-base font-black text-[#007FA3] dark:text-cyan-300 uppercase tracking-wider block">CAPILANO</span>
-                  <span className="text-[9px] uppercase tracking-[0.28em] font-bold text-slate-600 dark:text-slate-400">UNIVERSITY</span>
+                  <span className="text-base font-black text-[#E65100] dark:text-amber-400 uppercase tracking-wider block">IIT DELHI</span>
+                  <span className="text-[9px] uppercase tracking-[0.28em] font-bold text-slate-600 dark:text-slate-400">INDIA TECH HUB</span>
                 </div>
               </div>
 
@@ -410,24 +410,24 @@ export const PartnersMarqueeSection: React.FC<PartnersMarqueeSectionProps> = ({ 
                   </div>
                 </div>
               </div>
-              <div className="partner-card flex-shrink-0 min-w-[260px] sm:min-w-[280px] h-20 sm:h-24 bg-white dark:bg-[#0f172a] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm px-6 py-3.5 flex items-center justify-center cursor-pointer" title="Trent University" onClick={() => onNavigate?.('universities')}>
+              <div className="partner-card flex-shrink-0 min-w-[260px] sm:min-w-[280px] h-20 sm:h-24 bg-white dark:bg-[#0f172a] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm px-6 py-3.5 flex items-center justify-center cursor-pointer" title="KU Leuven" onClick={() => onNavigate?.('universities')}>
                 <div className="text-left leading-none">
-                  <span className="text-2xl font-black tracking-tight text-[#004731] dark:text-emerald-400 block">TRENT</span>
-                  <span className="text-[9px] uppercase font-sans tracking-[0.28em] font-extrabold text-slate-600 dark:text-slate-400 mt-1 block">UNIVERSITY</span>
+                  <span className="text-2xl font-black text-[#1D8DB0] dark:text-cyan-400 tracking-tight block">KU LEUVEN</span>
+                  <span className="text-[9px] uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400 mt-1 block">University • Belgium</span>
                 </div>
               </div>
-              <div className="partner-card flex-shrink-0 min-w-[260px] sm:min-w-[280px] h-20 sm:h-24 bg-white dark:bg-[#0f172a] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm px-6 py-3.5 flex items-center justify-center cursor-pointer" title="Yorkville University" onClick={() => onNavigate?.('universities')}>
+              <div className="partner-card flex-shrink-0 min-w-[260px] sm:min-w-[280px] h-20 sm:h-24 bg-white dark:bg-[#0f172a] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm px-6 py-3.5 flex items-center justify-center cursor-pointer" title="Universiti Malaya" onClick={() => onNavigate?.('universities')}>
                 <div className="text-left leading-none">
-                  <span className="text-xl font-black text-slate-900 dark:text-white tracking-tight block">YORKVILLE</span>
-                  <span className="text-[9px] uppercase tracking-[0.24em] font-extrabold text-[#D32F2F] mt-1 block">UNIVERSITY</span>
+                  <span className="text-xl font-black text-slate-900 dark:text-white tracking-tight block">UNIVERSITI</span>
+                  <span className="text-[9px] uppercase tracking-[0.24em] font-extrabold text-[#fbb034] mt-1 block">MALAYA (MALAYSIA)</span>
                 </div>
               </div>
-              <div className="partner-card flex-shrink-0 min-w-[260px] sm:min-w-[280px] h-20 sm:h-24 bg-white dark:bg-[#0f172a] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm px-6 py-3.5 flex items-center justify-center cursor-pointer" title="University Canada West" onClick={() => onNavigate?.('universities')}>
+              <div className="partner-card flex-shrink-0 min-w-[260px] sm:min-w-[280px] h-20 sm:h-24 bg-white dark:bg-[#0f172a] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm px-6 py-3.5 flex items-center justify-center cursor-pointer" title="University of Amsterdam" onClick={() => onNavigate?.('universities')}>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-[#E2231A] text-white flex items-center justify-center font-black text-sm shadow-sm flex-shrink-0">UCW</div>
+                  <div className="w-10 h-10 rounded-xl bg-[#000000] text-white flex items-center justify-center font-black text-sm shadow-sm flex-shrink-0">UvA</div>
                   <div className="text-left leading-tight">
-                    <span className="text-sm font-black text-slate-900 dark:text-white block">UNIVERSITY</span>
-                    <span className="text-[9px] uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold">CANADA WEST</span>
+                    <span className="text-sm font-black text-slate-900 dark:text-white block">UNIVERSITY OF</span>
+                    <span className="text-[9px] uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold">AMSTERDAM (NETHERLANDS)</span>
                   </div>
                 </div>
               </div>
@@ -437,12 +437,12 @@ export const PartnersMarqueeSection: React.FC<PartnersMarqueeSectionProps> = ({ 
       </div>
 
       {/* Call To Action */}
-      <div className="mt-14 sm:mt-18 flex justify-center px-4" data-purpose="cta-container">
+      <div className="mt-10 sm:mt-18 flex justify-center px-4" data-purpose="cta-container">
         <InteractiveHoverButton
           type="button"
           text="View all university partners"
           onClick={() => onNavigate?.('universities')}
-          className="px-8 py-3.5 rounded-full bg-white dark:bg-slate-900 text-slate-950 dark:text-white border-slate-300 dark:border-slate-700 font-bold text-sm sm:text-base shadow-md"
+          className="min-h-[44px] px-7 sm:px-8 py-3.5 rounded-full bg-white dark:bg-slate-900 text-slate-950 dark:text-white border-slate-300 dark:border-slate-700 font-semibold text-sm sm:text-base shadow-sm cursor-pointer"
         />
       </div>
     </section>

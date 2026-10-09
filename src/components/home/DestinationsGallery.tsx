@@ -167,14 +167,14 @@ export const DestinationsGallery: React.FC<DestinationsGalleryProps> = ({
   return (
     <section className="relative w-full bg-white dark:bg-[#070b19] py-16 sm:py-24 overflow-hidden border-t border-slate-100 dark:border-slate-800 select-none">
       {/* Header - Big, Bold, and Centered matching other major sections */}
-      <div className="max-w-6xl mx-auto px-2 sm:px-6 lg:px-8 mb-10 sm:mb-14 text-center">
-        <h2 className="text-base xs:text-xl sm:text-5xl md:text-6xl font-black text-slate-900 dark:text-white tracking-tight flex items-center justify-center flex-nowrap sm:flex-wrap whitespace-nowrap overflow-hidden text-ellipsis sm:whitespace-normal gap-1.5 sm:gap-3 mb-2 sm:mb-3">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-10 sm:mb-14 text-center">
+        <h2 className="text-2xl xs:text-3xl sm:text-5xl md:text-6xl font-black text-slate-900 dark:text-white tracking-tight flex items-center justify-center flex-wrap gap-2 sm:gap-3 mb-2 sm:mb-3 leading-tight">
           <span>Choose your</span>
-          <span className="bg-[#fbbf24] text-slate-950 px-2 sm:px-6 py-0.5 sm:py-1.5 rounded-lg sm:rounded-[22px] font-black tracking-tight leading-none shadow-sm">
+          <span className="bg-[#fbbf24] text-slate-950 px-3.5 sm:px-6 py-0.5 sm:py-1.5 rounded-xl sm:rounded-[22px] font-black tracking-tight leading-none shadow-sm">
             Destination
           </span>
         </h2>
-        <p className="text-xs sm:text-lg text-slate-600 dark:text-slate-400 font-medium max-w-2xl mx-auto mb-6 truncate sm:whitespace-normal">
+        <p className="text-sm sm:text-lg text-slate-600 dark:text-slate-400 font-normal leading-relaxed max-w-2xl mx-auto mb-6 px-2">
           Explore premier study destinations with top-tier universities, generous post-study work rights, and high visa approval rates.
         </p>
         
@@ -184,12 +184,12 @@ export const DestinationsGallery: React.FC<DestinationsGalleryProps> = ({
             type="button"
             text="Explore All Destinations"
             onClick={() => onNavigateToCountry('all')}
-            className="px-6 py-2.5 rounded-full bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border-slate-200 dark:border-slate-700 text-xs sm:text-sm font-bold shadow-xs cursor-pointer"
+            className="min-h-[44px] px-6 py-3 rounded-full bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border-slate-200 dark:border-slate-700 text-xs sm:text-sm font-bold shadow-xs cursor-pointer"
           />
           <button
             type="button"
             onClick={() => setIsExpanded(prev => !prev)}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs sm:text-sm font-bold border border-slate-200 dark:border-slate-700 transition-all duration-300 cursor-pointer shadow-xs active:scale-95"
+            className="min-h-[44px] inline-flex items-center gap-2 px-5 py-3 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs sm:text-sm font-bold border border-slate-200 dark:border-slate-700 transition-all duration-300 cursor-pointer shadow-xs active:scale-95"
           >
             <span className="material-symbols-outlined text-[18px]">
               {isExpanded ? 'view_carousel' : 'grid_view'}
@@ -217,13 +217,6 @@ export const DestinationsGallery: React.FC<DestinationsGalleryProps> = ({
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/40 to-transparent" />
                 <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-slate-950/60 to-transparent" />
-
-                <div className="absolute top-4 inset-x-4 flex items-center justify-between z-10">
-                  <span className="text-3xl leading-none drop-shadow-md select-none">{dest.flagEmoji}</span>
-                  <span className="px-2.5 py-1 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white font-black text-[10px] uppercase tracking-wider">
-                    {dest.unisCountText}
-                  </span>
-                </div>
 
                 <div className="absolute bottom-0 inset-x-0 p-5 z-10 flex flex-col justify-end text-white">
                   <span className="text-[10px] font-black tracking-widest text-amber-400 uppercase mb-0.5">
@@ -334,16 +327,6 @@ export const DestinationsGallery: React.FC<DestinationsGalleryProps> = ({
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/40 to-transparent" />
                 <div className="absolute inset-x-0 top-0 h-20 sm:h-28 bg-gradient-to-b from-slate-950/60 to-transparent" />
 
-                {/* Top Badge Row */}
-                <div className="absolute top-3 left-3 right-3 sm:top-4 sm:left-4 sm:right-4 flex items-center justify-between z-10">
-                  <span className="text-2xl sm:text-4xl leading-none drop-shadow-md select-none">
-                    {dest.flagEmoji}
-                  </span>
-                  <span className="px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white font-black text-[10px] sm:text-[11px] uppercase tracking-wider shadow-sm">
-                    {dest.unisCountText}
-                  </span>
-                </div>
-
                 {/* Bottom Info Area */}
                 <div className="absolute bottom-0 inset-x-0 p-3.5 xs:p-4 sm:p-6 z-10 flex flex-col justify-end text-white">
                   <span className="text-[9.5px] sm:text-[11px] font-black tracking-widest text-amber-400 uppercase mb-0.5 sm:mb-1">
@@ -368,10 +351,10 @@ export const DestinationsGallery: React.FC<DestinationsGalleryProps> = ({
                         }
                       }}
                       data-purpose="compact-btn"
-                      className="inline-flex items-center gap-0.5 xs:gap-1 px-2 py-0.5 xs:px-2.5 xs:py-1 sm:px-4 sm:py-1.5 h-6 xs:h-7 sm:h-8 rounded-full bg-[#fbbf24] text-slate-950 font-bold text-[9px] xs:text-[10px] sm:text-xs hover:brightness-105 shadow-xs transition-transform active:scale-95 cursor-pointer shrink-0"
+                      className="inline-flex items-center gap-1 px-3 sm:px-4 py-1.5 sm:py-1.5 min-h-[38px] sm:min-h-[36px] rounded-full bg-[#fbbf24] text-slate-950 font-bold text-[11px] sm:text-xs hover:brightness-105 shadow-xs transition-transform active:scale-95 cursor-pointer shrink-0"
                     >
                       <span>Explore</span>
-                      <span className="material-symbols-outlined text-[10.5px] xs:text-[12px] sm:text-[15px]">arrow_forward</span>
+                      <span className="material-symbols-outlined text-[12px] sm:text-[14px]">arrow_forward</span>
                     </button>
                   </div>
                 </div>
@@ -389,69 +372,69 @@ export const DestinationsGallery: React.FC<DestinationsGalleryProps> = ({
             {/* Close Button */}
             <button
               onClick={() => setSelectedCountry(null)}
-              className="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-slate-900 dark:hover:text-white cursor-pointer"
+              className="absolute top-4 right-4 w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-slate-900 dark:hover:text-white cursor-pointer active:scale-95"
             >
               <span className="material-symbols-outlined text-lg">close</span>
             </button>
 
             {/* Modal Header */}
-            <div className="flex items-center gap-4 mb-6">
-              <span className="text-5xl">{selectedCountry.flagEmoji}</span>
+            <div className="flex items-center gap-3.5 mb-5 sm:mb-6">
+              <span className="text-4xl sm:text-5xl">{selectedCountry.flagEmoji}</span>
               <div>
                 <span className="text-xs font-bold text-amber-500 uppercase tracking-widest">
                   Study Destination
                 </span>
-                <h3 className="text-3xl font-black text-slate-900 dark:text-white">
+                <h3 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
                   {selectedCountry.name}
                 </h3>
               </div>
             </div>
 
             {/* Highlights Grid */}
-            <div className="grid grid-cols-2 gap-3 mb-6">
-              <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800">
-                <span className="text-xs font-semibold text-slate-400 block mb-1">
+            <div className="grid grid-cols-2 gap-2.5 sm:gap-3 mb-5 sm:mb-6">
+              <div className="p-3 sm:p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800">
+                <span className="text-[11px] sm:text-xs font-semibold text-slate-400 block mb-1">
                   Partner Universities
                 </span>
-                <span className="text-base font-bold text-slate-900 dark:text-white">
+                <span className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
                   {selectedCountry.unisCountText}
                 </span>
               </div>
-              <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800">
-                <span className="text-xs font-semibold text-slate-400 block mb-1">
+              <div className="p-3 sm:p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800">
+                <span className="text-[11px] sm:text-xs font-semibold text-slate-400 block mb-1">
                   Average Tuition
                 </span>
-                <span className="text-base font-bold text-slate-900 dark:text-white">
+                <span className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
                   {selectedCountry.avgTuitionText}
                 </span>
               </div>
-              <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800">
-                <span className="text-xs font-semibold text-slate-400 block mb-1">
+              <div className="p-3 sm:p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800">
+                <span className="text-[11px] sm:text-xs font-semibold text-slate-400 block mb-1">
                   Major Intakes
                 </span>
-                <span className="text-base font-bold text-slate-900 dark:text-white">
+                <span className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
                   {selectedCountry.intakeText}
                 </span>
               </div>
-              <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800">
-                <span className="text-xs font-semibold text-slate-400 block mb-1">
+              <div className="p-3 sm:p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800">
+                <span className="text-[11px] sm:text-xs font-semibold text-slate-400 block mb-1">
                   Post-Study Work
                 </span>
-                <span className="text-base font-bold text-slate-900 dark:text-white">
+                <span className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
                   {selectedCountry.pswText}
                 </span>
               </div>
             </div>
 
             {/* Modal Actions */}
-            <div className="flex gap-3">
+            <div className="flex flex-col xs:flex-row gap-2.5 sm:gap-3">
               <button
                 onClick={() => {
                   const country = selectedCountry.name;
                   setSelectedCountry(null);
                   onNavigateToCountry(country);
                 }}
-                className="flex-1 py-3 px-4 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-sm hover:bg-[#fbbf24] hover:text-slate-950 dark:hover:bg-[#fbbf24] dark:hover:text-slate-950 transition-all text-center cursor-pointer shadow-md"
+                className="min-h-[44px] flex-1 py-3 px-4 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-sm hover:bg-[#fbbf24] hover:text-slate-950 dark:hover:bg-[#fbbf24] dark:hover:text-slate-950 transition-all text-center cursor-pointer shadow-md active:scale-95 flex items-center justify-center"
               >
                 View Universities in {selectedCountry.name}
               </button>
@@ -460,7 +443,7 @@ export const DestinationsGallery: React.FC<DestinationsGalleryProps> = ({
                   setSelectedCountry(null);
                   onOpenConsultation();
                 }}
-                className="py-3 px-4 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-all cursor-pointer"
+                className="min-h-[44px] py-3 px-4 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-all cursor-pointer active:scale-95 flex items-center justify-center"
               >
                 Free Consultation
               </button>

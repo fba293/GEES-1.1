@@ -14,7 +14,7 @@ interface SuccessStoriesSectionProps {
 }
 
 export const SuccessStoriesSection: React.FC<SuccessStoriesSectionProps> = ({ onNavigate }) => {
-  const [selectedFilter, setSelectedFilter] = useState<'all' | 'malaysia' | 'australia' | 'canada' | 'uk'>('all');
+  const [selectedFilter, setSelectedFilter] = useState<'all' | 'malaysia' | 'australia' | 'new zealand' | 'uk'>('all');
   const [currentIndex, setCurrentIndex] = useState(2); // Default to Tahmid Rahman
   const [selectedCaseStudy, setSelectedCaseStudy] = useState<any | null>(null);
 
@@ -26,7 +26,7 @@ export const SuccessStoriesSection: React.FC<SuccessStoriesSectionProps> = ({ on
     { label: 'All Stories', id: 'all' },
     { label: 'Malaysia 🇲🇾', id: 'malaysia' },
     { label: 'Australia 🇦🇺', id: 'australia' },
-    { label: 'Canada 🇨🇦', id: 'canada' },
+    { label: 'New Zealand 🇳🇿', id: 'new zealand' },
     { label: 'United Kingdom 🇬🇧', id: 'uk' }
   ];
 
@@ -75,15 +75,15 @@ export const SuccessStoriesSection: React.FC<SuccessStoriesSectionProps> = ({ on
     <section className="w-full bg-white dark:bg-[#070b19] py-14 sm:py-20 border-t border-slate-100 dark:border-slate-800">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
         {/* Header */}
-        <div className="flex items-center justify-center flex-nowrap sm:flex-wrap whitespace-nowrap overflow-hidden text-ellipsis sm:whitespace-normal gap-1.5 sm:gap-3 mb-2 text-center max-w-full px-2">
-          <h2 className="text-base xs:text-xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
+        <div className="flex items-center justify-center flex-wrap gap-2 sm:gap-3 mb-2 text-center max-w-full px-2">
+          <h2 className="text-2xl xs:text-3xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
             Success
           </h2>
-          <span className="text-base xs:text-xl sm:text-5xl font-black text-slate-950 px-2 sm:px-6 py-0.5 sm:py-1 rounded-lg sm:rounded-2xl bg-[#fbb034] inline-flex items-center shadow-xs">
+          <span className="text-2xl xs:text-3xl sm:text-5xl font-black text-slate-950 px-3.5 sm:px-6 py-0.5 sm:py-1 rounded-xl sm:rounded-2xl bg-[#fbb034] inline-flex items-center shadow-xs leading-tight">
             Stories
           </span>
         </div>
-        <p className="text-xs sm:text-base text-slate-600 dark:text-slate-400 text-center max-w-2xl mb-8 truncate sm:whitespace-normal">
+        <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 text-center max-w-2xl mb-8 font-normal leading-relaxed px-2">
           Real student experiences with admission, visa and arrival support.
         </p>
 
@@ -210,17 +210,23 @@ export const SuccessStoriesSection: React.FC<SuccessStoriesSectionProps> = ({ on
                   </button>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1">
                   {filteredStories.map((_, i) => (
                     <button
                       key={i}
+                      type="button"
+                      aria-label={`Go to story ${i + 1}`}
                       onClick={() => setCurrentIndex(i)}
-                      className={`h-2 rounded-full transition-all cursor-pointer ${
-                        i === (currentIndex % filteredStories.length)
-                          ? 'w-7 sm:w-8 bg-[#fbb034]'
-                          : 'w-2 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300'
-                      }`}
-                    />
+                      className="p-2.5 flex items-center justify-center cursor-pointer tap-target-44"
+                    >
+                      <span
+                        className={`h-2 rounded-full transition-all block ${
+                          i === (currentIndex % filteredStories.length)
+                            ? 'w-7 sm:w-8 bg-[#fbb034]'
+                            : 'w-2 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300'
+                        }`}
+                      />
+                    </button>
                   ))}
                 </div>
               </div>
@@ -229,7 +235,7 @@ export const SuccessStoriesSection: React.FC<SuccessStoriesSectionProps> = ({ on
         </div>
 
         {/* Secondary Call-To-Action: Read Full Success Stories */}
-        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4 text-center px-2">
+        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 text-center px-2 w-full sm:w-auto">
           <button
             onClick={() => {
               if (onNavigate) {
@@ -238,7 +244,7 @@ export const SuccessStoriesSection: React.FC<SuccessStoriesSectionProps> = ({ on
                 setSelectedCaseStudy(activeStory);
               }
             }}
-            className="inline-flex items-center gap-2 px-7 py-3 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs uppercase tracking-wider hover:bg-blue-600 dark:hover:bg-[#fbb034] dark:hover:text-slate-950 transition-all shadow-md cursor-pointer active:scale-95"
+            className="min-h-[44px] w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs uppercase tracking-wider hover:bg-blue-600 dark:hover:bg-[#fbb034] dark:hover:text-slate-950 transition-all shadow-md cursor-pointer active:scale-95"
           >
             <span>Read Full Success Stories</span>
             <span className="material-symbols-outlined text-sm">menu_book</span>
@@ -249,7 +255,7 @@ export const SuccessStoriesSection: React.FC<SuccessStoriesSectionProps> = ({ on
             href="https://globaleducationexpert.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2.5 px-6 py-3 rounded-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-bold text-xs shadow-xs hover:shadow-md transition-all active:scale-95"
+            className="min-h-[44px] w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3 rounded-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-bold text-xs shadow-xs hover:shadow-md transition-all active:scale-95"
           >
             <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
@@ -269,7 +275,7 @@ export const SuccessStoriesSection: React.FC<SuccessStoriesSectionProps> = ({ on
           <div className="relative bg-white dark:bg-[#0f172a] w-full max-w-xl rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-100 dark:border-slate-800 animate-fadeIn">
             <button
               onClick={() => setSelectedCaseStudy(null)}
-              className="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-slate-900 cursor-pointer"
+              className="absolute top-4 right-4 w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-slate-900 cursor-pointer active:scale-95"
             >
               <span className="material-symbols-outlined text-sm">close</span>
             </button>
@@ -306,7 +312,7 @@ export const SuccessStoriesSection: React.FC<SuccessStoriesSectionProps> = ({ on
             </div>
             <button
               onClick={() => setSelectedCaseStudy(null)}
-              className="w-full py-3 rounded-full bg-[#fbb034] hover:bg-amber-400 text-slate-950 font-bold text-xs uppercase tracking-wider cursor-pointer"
+              className="min-h-[44px] w-full py-3 px-4 rounded-full bg-[#fbb034] hover:bg-amber-400 text-slate-950 font-bold text-xs uppercase tracking-wider cursor-pointer shadow-md active:scale-98 flex items-center justify-center"
             >
               Close Story
             </button>

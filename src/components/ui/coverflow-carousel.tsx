@@ -395,7 +395,7 @@ export function CoverflowCarousel({
       )}
 
       {showPagination && (
-        <div className="mt-6 flex items-center justify-center gap-2">
+        <div className="mt-6 flex items-center justify-center gap-1">
           {slides.map((_, index) => (
             <button
               key={index}
@@ -403,11 +403,15 @@ export function CoverflowCarousel({
               aria-label={`Go to slide ${index + 1}`}
               aria-current={index === selected}
               onClick={() => goTo(index)}
-              className={cn(
-                "size-2 rounded-full bg-foreground transition-opacity cursor-pointer",
-                index === selected ? "opacity-100" : "opacity-30",
-              )}
-            />
+              className="p-2.5 flex items-center justify-center cursor-pointer tap-target-44"
+            >
+              <span
+                className={cn(
+                  "size-2 rounded-full bg-foreground transition-all",
+                  index === selected ? "opacity-100 scale-125 bg-[#fbb034]" : "opacity-30",
+                )}
+              />
+            </button>
           ))}
         </div>
       )}

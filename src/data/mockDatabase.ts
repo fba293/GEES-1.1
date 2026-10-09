@@ -18,269 +18,17 @@ import {
   Agent, 
   Commission 
 } from '../types/index.ts';
+import { 
+  getCollaboratedUniversities, 
+  getCollaboratedCourses 
+} from '../utils/PartnerUniversityManager.ts';
+import { getAllApprovedDestinations } from '../lib/country-config.ts';
 
 // ============================================================================
-// 1. UNIVERSITIES
+// 1. UNIVERSITIES & COURSES (Centralized GEES Collaborations Registry)
 // ============================================================================
-export const mockUniversities: University[] = [
-  {
-    id: 'uni-1',
-    name: "King's University College at Western University",
-    slug: 'kings-university-college',
-    country: 'Canada',
-    countryCode: 'CA',
-    flagEmoji: '🇨🇦',
-    city: 'London, Ontario',
-    rankingWorld: 114,
-    rankingNational: 8,
-    tagline: 'World-class Canadian degree with personalized class sizes & high graduate employment.',
-    description: "King's University College is a Catholic co-educational liberal arts university college affiliated with Western University. Known for its small, personal classes, exceptional faculty mentorship, and international community representing over 40 nations.",
-    logoUrl: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=200&auto=format&fit=crop',
-    bannerUrl: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=1200&auto=format&fit=crop',
-    campuses: [
-      { id: 'c-1', name: 'Main Campus', city: 'London', stateOrProvince: 'Ontario', country: 'Canada', isMainCampus: true }
-    ],
-    intakes: ['September', 'January'],
-    avgTuitionAnnualUSD: 24500,
-    currency: 'CAD',
-    minIeltsScore: 6.5,
-    acceptanceRatePct: 72.0,
-    popularPrograms: ['BMOS (Management and Organizational Studies)', 'Finance', 'Psychology', 'Computer Science'],
-    scholarshipsAvailable: true,
-    featured: true,
-    topRanked: true
-  },
-  {
-    id: 'uni-2',
-    name: 'University of Toronto',
-    slug: 'university-of-toronto',
-    country: 'Canada',
-    countryCode: 'CA',
-    flagEmoji: '🇨🇦',
-    city: 'Toronto, Ontario',
-    rankingWorld: 21,
-    rankingNational: 1,
-    tagline: "Canada's leading institution for learning, discovery and knowledge creation.",
-    description: 'A global leader in research and education, U of T boasts world-renowned faculties in commerce, artificial intelligence, biomedical engineering, and global affairs with prime campuses across the Greater Toronto Area.',
-    logoUrl: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=200&auto=format&fit=crop',
-    bannerUrl: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=1200&auto=format&fit=crop',
-    campuses: [
-      { id: 'c-2a', name: 'St. George Campus (Downtown)', city: 'Toronto', stateOrProvince: 'Ontario', country: 'Canada', isMainCampus: true },
-      { id: 'c-2b', name: 'Mississauga Campus (UTM)', city: 'Mississauga', stateOrProvince: 'Ontario', country: 'Canada', isMainCampus: false },
-      { id: 'c-2c', name: 'Scarborough Campus (UTSC)', city: 'Scarborough', stateOrProvince: 'Ontario', country: 'Canada', isMainCampus: false }
-    ],
-    intakes: ['September', 'January'],
-    avgTuitionAnnualUSD: 36000,
-    currency: 'CAD',
-    minIeltsScore: 6.5,
-    acceptanceRatePct: 43.0,
-    popularPrograms: ['BBA Global Business', 'Computer Science & AI', 'Biomedical Science', 'Economics'],
-    scholarshipsAvailable: true,
-    featured: true,
-    topRanked: true
-  },
-  {
-    id: 'uni-3',
-    name: 'Monash University',
-    slug: 'monash-university',
-    country: 'Australia',
-    countryCode: 'AU',
-    flagEmoji: '🇦🇺',
-    city: 'Melbourne, Victoria',
-    rankingWorld: 42,
-    rankingNational: 4,
-    tagline: "Australia's largest university and member of the prestigious Group of Eight.",
-    description: 'Monash is recognized for transformative research and world-class education. Its campuses in Melbourne offer industry-integrated degree pathways, modern laboratories, and prominent post-study work visa rights.',
-    logoUrl: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=200&auto=format&fit=crop',
-    bannerUrl: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1200&auto=format&fit=crop',
-    campuses: [
-      { id: 'c-3a', name: 'Clayton Campus', city: 'Melbourne', stateOrProvince: 'Victoria', country: 'Australia', isMainCampus: true },
-      { id: 'c-3b', name: 'Caulfield Campus', city: 'Melbourne', stateOrProvince: 'Victoria', country: 'Australia', isMainCampus: false }
-    ],
-    intakes: ['February', 'July'],
-    avgTuitionAnnualUSD: 31000,
-    currency: 'AUD',
-    minIeltsScore: 6.5,
-    acceptanceRatePct: 40.0,
-    popularPrograms: ['Biomedical Science', 'Pharmacy', 'Data Analytics', 'Robotics Engineering'],
-    scholarshipsAvailable: true,
-    featured: true,
-    topRanked: true
-  },
-  {
-    id: 'uni-4',
-    name: 'Technical University of Munich (TUM)',
-    slug: 'technical-university-of-munich',
-    country: 'Germany',
-    countryCode: 'DE',
-    flagEmoji: '🇩🇪',
-    city: 'Munich, Bavaria',
-    rankingWorld: 37,
-    rankingNational: 1,
-    tagline: "Germany's Excellence University at the forefront of AI and Engineering.",
-    description: 'Renowned for zero tuition fees across many public graduate programs, cutting-edge corporate collaborations with BMW, Siemens, and Google, and a high-tech entrepreneurial ecosystem in Bavaria.',
-    logoUrl: 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?q=80&w=200&auto=format&fit=crop',
-    bannerUrl: 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?q=80&w=1200&auto=format&fit=crop',
-    campuses: [
-      { id: 'c-4', name: 'Munich City & Garching Research Campus', city: 'Munich', stateOrProvince: 'Bavaria', country: 'Germany', isMainCampus: true }
-    ],
-    intakes: ['October (Winter)', 'April (Summer)'],
-    avgTuitionAnnualUSD: 3000,
-    currency: 'EUR',
-    minIeltsScore: 6.5,
-    acceptanceRatePct: 24.0,
-    popularPrograms: ['MSc Robotics & AI', 'Automotive Engineering', 'Informatics', 'Aerospace'],
-    scholarshipsAvailable: true,
-    featured: true,
-    topRanked: true
-  },
-  {
-    id: 'uni-5',
-    name: "King's College London",
-    slug: 'kings-college-london',
-    country: 'United Kingdom',
-    countryCode: 'GB',
-    flagEmoji: '🇬🇧',
-    city: 'London',
-    rankingWorld: 40,
-    rankingNational: 6,
-    tagline: 'Heart of London Russell Group university driving global impact and innovation.',
-    description: 'One of the oldest and most prestigious universities in England, situated in central London with unmatched industry links across finance, law, healthcare, and technology.',
-    logoUrl: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?q=80&w=200&auto=format&fit=crop',
-    bannerUrl: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?q=80&w=1200&auto=format&fit=crop',
-    campuses: [
-      { id: 'c-5a', name: 'Strand Campus', city: 'London', country: 'United Kingdom', isMainCampus: true },
-      { id: 'c-5b', name: 'Waterloo Campus', city: 'London', country: 'United Kingdom', isMainCampus: false }
-    ],
-    intakes: ['September', 'January'],
-    avgTuitionAnnualUSD: 29000,
-    currency: 'GBP',
-    minIeltsScore: 6.5,
-    acceptanceRatePct: 47.0,
-    popularPrograms: ['MSc Data Science', 'Global Health', 'Corporate Finance', 'International Law'],
-    scholarshipsAvailable: true,
-    featured: true,
-    topRanked: true
-  },
-  {
-    id: 'uni-6',
-    name: 'Universiti Malaya (UM)',
-    slug: 'universiti-malaya',
-    country: 'Malaysia',
-    countryCode: 'MY',
-    flagEmoji: '🇲🇾',
-    city: 'Kuala Lumpur',
-    rankingWorld: 60,
-    rankingNational: 1,
-    tagline: "Malaysia's premier research university offering affordable global degrees.",
-    description: 'Ranked in the top 1% globally, UM provides prestigious degrees with living and tuition costs that are a fraction of Western Europe, alongside English-medium instruction and international student pathways.',
-    logoUrl: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=200&auto=format&fit=crop',
-    bannerUrl: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1200&auto=format&fit=crop',
-    campuses: [
-      { id: 'c-6', name: 'Kuala Lumpur Campus', city: 'Kuala Lumpur', country: 'Malaysia', isMainCampus: true }
-    ],
-    intakes: ['October', 'March'],
-    avgTuitionAnnualUSD: 6500,
-    currency: 'MYR',
-    minIeltsScore: 6.0,
-    acceptanceRatePct: 55.0,
-    popularPrograms: ['BSc Computer Systems', 'MBA International Business', 'Software Engineering', 'Biomedicine'],
-    scholarshipsAvailable: true,
-    featured: false,
-    topRanked: true
-  }
-];
-
-// ============================================================================
-// 2. COURSES
-// ============================================================================
-export const mockCourses: Course[] = [
-  {
-    id: 'crs-1',
-    universityId: 'uni-1',
-    universityName: "King's University College at Western University",
-    slug: 'bachelor-management-organizational-studies',
-    title: 'Bachelor of Management & Organizational Studies (BMOS)',
-    level: 'undergraduate',
-    department: 'School of Management, Economics, & Mathematics',
-    durationMonths: 48,
-    annualFeeUSD: 24800,
-    tuitionFeeLocal: 'CAD $33,500 / year',
-    ieltsRequirement: 6.5,
-    intakes: ['September', 'January'],
-    scholarshipCoveragePct: 20.0,
-    overview: 'Combines comprehensive business foundations in finance, accounting, and consumer behavior with Canadian paid co-op internships.',
-    careerProspects: ['Financial Analyst', 'Investment Banker', 'Management Consultant', 'Brand Strategist']
-  },
-  {
-    id: 'crs-2',
-    universityId: 'uni-2',
-    universityName: 'University of Toronto',
-    slug: 'bachelor-business-administration',
-    title: 'Bachelor of Business Administration (BBA Global Finance)',
-    level: 'undergraduate',
-    department: 'Rotman School of Management',
-    durationMonths: 48,
-    annualFeeUSD: 38000,
-    tuitionFeeLocal: 'CAD $58,000 / year',
-    ieltsRequirement: 7.0,
-    intakes: ['September'],
-    scholarshipCoveragePct: 25.0,
-    overview: "Canada's flagship business degree preparing students for Wall Street, Bay Street, and multinational consulting leadership.",
-    careerProspects: ['Corporate Finance Officer', 'Portfolio Manager', 'Fintech Innovator', 'Chartered Financial Analyst (CFA)']
-  },
-  {
-    id: 'crs-3',
-    universityId: 'uni-3',
-    universityName: 'Monash University',
-    slug: 'bachelor-biomedical-science',
-    title: 'Bachelor of Biomedical Science',
-    level: 'undergraduate',
-    department: 'Faculty of Medicine, Nursing and Health Sciences',
-    durationMonths: 36,
-    annualFeeUSD: 29500,
-    tuitionFeeLocal: 'AUD $44,000 / year',
-    ieltsRequirement: 6.5,
-    intakes: ['February', 'July'],
-    scholarshipCoveragePct: 15.0,
-    overview: 'Equips aspiring doctors and researchers with advanced clinical anatomy, pharmacology, genomics, and infectious disease diagnostics.',
-    careerProspects: ['Clinical Trial Coordinator', 'Biomedical Researcher', 'Healthcare Consultant', 'Medical Scientist']
-  },
-  {
-    id: 'crs-4',
-    universityId: 'uni-4',
-    universityName: 'Technical University of Munich (TUM)',
-    slug: 'msc-robotics-cognition-intelligence',
-    title: 'MSc Robotics, Cognition, Intelligence',
-    level: 'postgraduate',
-    department: 'Department of Informatics & Engineering',
-    durationMonths: 24,
-    annualFeeUSD: 3200,
-    tuitionFeeLocal: 'EUR €1,500 / semester (Admin Fee)',
-    ieltsRequirement: 6.5,
-    intakes: ['October (Winter)'],
-    scholarshipCoveragePct: 50.0,
-    overview: "Elite master's combining deep learning, autonomous navigation, machine vision, and humanoid robotics in partnership with Munich tech clusters.",
-    careerProspects: ['Robotics Engineer', 'Autonomous Vehicle Architect', 'AI Research Scientist', 'Control Systems Specialist']
-  },
-  {
-    id: 'crs-5',
-    universityId: 'uni-5',
-    universityName: "King's College London",
-    slug: 'msc-data-science',
-    title: 'MSc Data Science & Artificial Intelligence',
-    level: 'postgraduate',
-    department: 'Department of Informatics',
-    durationMonths: 12,
-    annualFeeUSD: 33500,
-    tuitionFeeLocal: 'GBP £29,850 / year',
-    ieltsRequirement: 7.0,
-    intakes: ['September', 'January'],
-    scholarshipCoveragePct: 18.0,
-    overview: "Intensive 1-year master's covering neural networks, big data architectures, cloud computing, and real-world fintech datasets.",
-    careerProspects: ['Lead Data Scientist', 'Machine Learning Engineer', 'Quantitative Analyst', 'Chief Data Officer']
-  }
-];
+export const mockUniversities: University[] = getCollaboratedUniversities();
+export const mockCourses: Course[] = getCollaboratedCourses();
 
 // ============================================================================
 // 3. COUNSELORS (Matching "Meet Our Counselors" Stitch Design Exactly)
@@ -297,7 +45,7 @@ export const mockCounselors: Counselor[] = [
     linkedInUrl: 'https://www.linkedin.com/company/globaleduexpert',
     experienceYears: 12,
     specialties: ['Executive Strategy', 'Global University Tie-Ups', 'Scholarship Negotiation'],
-    destinationsManaged: ['UK', 'USA', 'Canada', 'Australia'],
+    destinationsManaged: ['UK', 'Australia', 'New Zealand', 'Malaysia'],
     availableToday: true,
     totalPlacedStudents: 1200
   },
@@ -311,8 +59,8 @@ export const mockCounselors: Counselor[] = [
     phone: '+8801805529579',
     linkedInUrl: 'https://www.linkedin.com/company/globaleduexpert',
     experienceYears: 8,
-    specialties: ['Undergraduate Admissions', 'Australia GTE / GS Reviews', 'Canada SDS Visas'],
-    destinationsManaged: ['Australia', 'Canada', 'Malaysia'],
+    specialties: ['Undergraduate Admissions', 'Australia GTE / GS Reviews', 'Visa Interviews'],
+    destinationsManaged: ['Australia', 'New Zealand', 'Malaysia'],
     availableToday: true,
     totalPlacedStudents: 680
   },
@@ -327,7 +75,7 @@ export const mockCounselors: Counselor[] = [
     linkedInUrl: 'https://www.linkedin.com/company/globaleduexpert',
     experienceYears: 6,
     specialties: ['Student Outreach', 'University Spot Assessment Fairs', 'Brand Growth'],
-    destinationsManaged: ['UK', 'USA', 'Germany'],
+    destinationsManaged: ['UK', 'Netherlands', 'Finland'],
     availableToday: true,
     totalPlacedStudents: 410
   },
@@ -357,7 +105,7 @@ export const mockCounselors: Counselor[] = [
     linkedInUrl: 'https://www.linkedin.com/company/globaleduexpert',
     experienceYears: 9,
     specialties: ['Financial Paper Verification', 'Mock Visa Interviews', 'Refusal Turnaround Strategy'],
-    destinationsManaged: ['USA', 'UK', 'Canada', 'Europe Schengen'],
+    destinationsManaged: ['UK', 'Belgium', 'Cyprus', 'Finland'],
     availableToday: true,
     totalPlacedStudents: 890
   },
@@ -371,8 +119,8 @@ export const mockCounselors: Counselor[] = [
     phone: '+8801805529583',
     linkedInUrl: 'https://www.linkedin.com/company/globaleduexpert',
     experienceYears: 11,
-    specialties: ['Russell Group Applications', 'Pre-Med & STEM Admissions', 'CAS & I-20 Expediting'],
-    destinationsManaged: ['UK', 'USA', 'Germany', 'Australia'],
+    specialties: ['Russell Group Applications', 'Pre-Med & STEM Admissions', 'CAS & Visa Expediting'],
+    destinationsManaged: ['UK', 'Australia', 'Mauritius', 'India'],
     availableToday: true,
     totalPlacedStudents: 1100
   }
@@ -601,118 +349,134 @@ export const mockServices: ServiceItem[] = [
     bgColor: '#8e24aa',
     iconName: 'corporate_fare',
     imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC7rwSVjrpHvltaZj4RcV3QxaGhbC2Ad-tPYnqpD0vO0wFSU3Eh95NHgCm6mwR-HHwW9q8UDJgcAL6UZRs3b21Hye1TxjCRAu2onTMsp-3yYJSk_eIyj9feCzjyn9eUxh4UGDArK7MiqOQYKlSviYuzjhIDw1LLiTUpAGw2NE19HIdYL14hX4NC8gsvLx1Yoi16d0LnBK9L4pLTK9HNAmMr-mnuroP2QzWbBb8m5_sMFHfO23M9EJIJx2lmWXgf2Uv6mBY'
+  },
+  {
+    id: 'srv-20',
+    title: 'Study in Malaysia',
+    slug: 'study-in-malaysia',
+    category: 'Study Destinations',
+    badge: 'Top Asian Hub',
+    desc: 'Affordable world-class degrees, dual-award programs with UK/Australia, and streamlined student pass processing in Kuala Lumpur.',
+    bgColor: '#fbb034',
+    iconName: 'flight_takeoff',
+    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAZd5n2tNuLtUbnkYxop24Dh6YXppoO22AesWMq9Da4U_hH8TSpxJJNI9Y_MBNshJzyKQcfIb8mPPWk0Mn0SVK1To7DY3uHnMLWe0B1YurXdva4mDR3KbXcAyqOo_xz3y4dg9yRenJJnoK3fziRYHUzfqdQ0JTWL0jBgdRRTMm6dwqPU72Xo-wGUcIwNmYEaiAnE_G-NZ9a3pU9GpcdoC78ZFo0PT9BQEGrMrHNQK4240l6syDpLlX3uw'
+  },
+  {
+    id: 'srv-21',
+    title: 'Study in United Kingdom',
+    slug: 'study-in-united-kingdom',
+    category: 'Study Destinations',
+    badge: 'Russell Group Unis',
+    desc: 'World-renowned British education, 1-year master’s degrees, and 2-year Graduate Route Post-Study Work visa privileges.',
+    bgColor: '#003da5',
+    iconName: 'school',
+    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAn8SidT19xm-Ih2icXb6JpNK_tQqdmojSuthrT5rDbG33SBb7vwcaRsxzZQDYleO10CZl1E0vB-sQ8wKZahU3IiPEGxtlovG9Onwsd82BLPr0dLH6BN51_3NZysN6eCCyfA8USlwCV7w6HHENlvg8LFYqCTJ0tOF5aV_o8HfnK8YGZNsqH11KNogvM5lNGr1lD3K302jYGqKgVsPBOFL05mru2O5htVnecp2iyz7m6MYHtNlyRE_bPRg'
+  },
+  {
+    id: 'srv-22',
+    title: 'Study in Australia',
+    slug: 'study-in-australia',
+    category: 'Study Destinations',
+    badge: 'Group of Eight',
+    desc: 'Prestigious Group of Eight universities, exceptional lifestyle, part-time work rights, and post-study work visas.',
+    bgColor: '#198754',
+    iconName: 'public',
+    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAHYlN5zXQ-dzjZHyIlwvfZcc2UWexdtmJFkTXVGzcaLfA_7dJQv7S82aFKUGhZRLClGa4BUZBdZ1QZudkqRCZ4doIlOOrnWPNoj3cdp-6-_Xfa3ec3Stitcm67A-2aNdthXMyfUs1D3GlgQnaVdfXExgN0pNouD198US-ufi3wNKdZ3X7zM8ZRo1v9zM_3SuvLZHkqSMJqA8t5MCLGzk_D6KMM6StuU1E0Nc7BW-7PZHiFJ849Af4pvA'
+  },
+  {
+    id: 'srv-23',
+    title: 'Study in New Zealand',
+    slug: 'study-in-new-zealand',
+    category: 'Study Destinations',
+    badge: 'Safe & Scenic',
+    desc: 'World-class education in innovative institutions like Te Pūkenga, stunning landscapes, and post-study work pathways.',
+    bgColor: '#0dcaf0',
+    iconName: 'landscape',
+    imageUrl: 'https://images.unsplash.com/photo-1507699622108-4be3ab695d3f?q=80&w=1200&auto=format&fit=crop'
+  },
+  {
+    id: 'srv-24',
+    title: 'Study in Cyprus',
+    slug: 'study-in-cyprus',
+    category: 'Study Destinations',
+    badge: 'EU Education Hub',
+    desc: 'Affordable European Union degrees taught in English, Mediterranean lifestyle, and excellent career opportunities across Europe.',
+    bgColor: '#6610f2',
+    iconName: 'wb_sunny',
+    imageUrl: 'https://images.unsplash.com/photo-1533105079780-92b9be482077?q=80&w=1200&auto=format&fit=crop'
+  },
+  {
+    id: 'srv-25',
+    title: 'Study in Belgium',
+    slug: 'study-in-belgium',
+    category: 'Study Destinations',
+    badge: 'Heart of Europe',
+    desc: 'Multilingual academic excellence in Brussels and Flanders, rich cultural heritage, and central European mobility.',
+    bgColor: '#d63384',
+    iconName: 'castle',
+    imageUrl: 'https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?q=80&w=1200&auto=format&fit=crop'
+  },
+  {
+    id: 'srv-26',
+    title: 'Study in Finland',
+    slug: 'study-in-finland',
+    category: 'Study Destinations',
+    badge: 'World-Best Education',
+    desc: 'Globally acclaimed education system, cutting-edge innovation hubs, English-taught degree programs, and high quality of life.',
+    bgColor: '#0d6efd',
+    iconName: 'ac_unit',
+    imageUrl: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=1200&auto=format&fit=crop'
+  },
+  {
+    id: 'srv-27',
+    title: 'Study in Greece',
+    slug: 'study-in-greece',
+    category: 'Study Destinations',
+    badge: 'Historic & Affordable',
+    desc: 'Rich classical heritage combined with modern European degree programs, affordable living costs, and vibrant student life.',
+    bgColor: '#e65100',
+    iconName: 'temple_buddhist',
+    imageUrl: 'https://images.unsplash.com/photo-1516483638261-f4dbaf036963?q=80&w=1200&auto=format&fit=crop'
+  },
+  {
+    id: 'srv-28',
+    title: 'Study in Mauritius',
+    slug: 'study-in-mauritius',
+    category: 'Study Destinations',
+    badge: 'Tropical Study Haven',
+    desc: 'Safe, bilingual island nation hosting international branch campuses of UK and French universities with affordable tuition.',
+    bgColor: '#20c997',
+    iconName: 'beach_access',
+    imageUrl: 'https://images.unsplash.com/photo-1589394815804-964ed0be2eb5?q=80&w=1200&auto=format&fit=crop'
+  },
+  {
+    id: 'srv-29',
+    title: 'Study in Netherlands',
+    slug: 'study-in-netherlands',
+    category: 'Study Destinations',
+    badge: 'English-Taught Leader',
+    desc: 'Over 2,100 English-taught programs, highly international campuses, vibrant innovation ecosystems, and orientation year visas.',
+    bgColor: '#fd7e14',
+    iconName: 'directions_bike',
+    imageUrl: 'https://images.unsplash.com/photo-1512470876302-972faa2aa9a4?q=80&w=1200&auto=format&fit=crop'
+  },
+  {
+    id: 'srv-30',
+    title: 'Study in India',
+    slug: 'study-in-india',
+    category: 'Study Destinations',
+    badge: 'Emerging Tech Powerhouse',
+    desc: 'World-class IITs, IIMs, and premier medical & engineering institutions offering affordable global education standards.',
+    bgColor: '#ffc107',
+    iconName: 'location_city',
+    imageUrl: 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?q=80&w=1200&auto=format&fit=crop'
   }
 ];
 
 // ============================================================================
-// 5. DESTINATIONS (Matching Choose Your Destination Stitch Design)
+// 5. DESTINATIONS (Single Source of Truth from country-config.ts)
 // ============================================================================
-export const mockDestinations: DestinationCountry[] = [
-  {
-    code: 'UK',
-    name: 'United Kingdom',
-    flagEmoji: '🇬🇧',
-    unisCountText: '130+ Unis',
-    studentsCountText: '600K+ students',
-    intakeText: 'Sept & Jan',
-    avgTuitionText: '£14,000 - £26,000 / yr',
-    pswText: 'PSW 2 Years Guaranteed (3 Years PhD)',
-    citiesText: 'London, Manchester, Edinburgh, Oxford, Birmingham, Leeds',
-    bgImageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAn8SidT19xm-Ih2icXb6JpNK_tQqdmojSuthrT5rDbG33SBb7vwcaRsxzZQDYleO10CZl1E0vB-sQ8wKZahU3IiPEGxtlovG9Onwsd82BLPr0dLH6BN51_3NZysN6eCCyfA8USlwCV7w6HHENlvg8LFYqCTJ0tOF5aV_o8HfnK8YGZNsqH11KNogvM5lNGr1lD3K302jYGqKgVsPBOFL05mru2O5htVnecp2iyz7m6MYHtNlyRE_bPRg',
-    overview: 'The UK is home to centuries of academic tradition, world-renowned research, and the 2-year Graduate Route Post-Study Work Visa.'
-  },
-  {
-    code: 'USA',
-    name: 'United States',
-    flagEmoji: '🇺🇸',
-    unisCountText: '4,000+ Unis',
-    studentsCountText: '1M+ students',
-    intakeText: 'Fall, Spring & Summer',
-    avgTuitionText: '$22,000 - $55,000 / yr',
-    pswText: 'OPT up to 3 Years (STEM designated degrees)',
-    citiesText: 'Boston, New York, San Francisco, Chicago, Los Angeles, Seattle',
-    bgImageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBPdA5KQ9jJj157d7Hj5s4CmKQCci8aaWW3T6ePNBAcU_Hm14Cs8huvRaLjqoTFU3-hicKURqzREoSGZ1xTLZU05SIMDYwhhhReclPvCSQkSdDsJ9yqzWTTO4lWvJJo2F2Ukt_mO2Bpw3oO8Ubfzdxpyth84f9PaLy3rIWZOpkdyuIeXUWPL4HJkxBpJYeYJF6AZvwUGW3STI_B29JHyfEiU1NErcHDSwUMsbQ_Uw9Cg7YUBctOX-Z15A',
-    overview: 'Home to Silicon Valley, Ivy League universities, and unrivaled corporate internships with 3-year STEM OPT extensions.'
-  },
-  {
-    code: 'CA',
-    name: 'Canada',
-    flagEmoji: '🇨🇦',
-    unisCountText: '100+ Unis',
-    studentsCountText: '800K+ students',
-    intakeText: 'Sept & Jan',
-    avgTuitionText: 'CAD $18,000 - $34,000 / yr',
-    pswText: 'PGWP up to 3 Years with Express Entry PR pathways',
-    citiesText: 'Toronto, Vancouver, Montreal, Ottawa, Calgary, Edmonton',
-    bgImageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCYEne9QwgiK2-WfppCAYZ-JN2ezZwKhyEzLUhI59126_62LzJv-MQwVQhxuGUSaLXmc-oDz7zNC6vCbtVilRu5654mkZ_S5Gvs9O1O6l3AYxqOpKapyJ4ZzFS6atdO9erQRrrXNTYLakBqhwyvGEX7fuT_Mag2R36bbIcxJkJuSiXUnbgu8sTewYTY2VLuu5qaLi-QaQ78O7LTUlBmP5rZ8RZQlIyezmau44pzcyIkFd7nVUNpWiUQuw',
-    overview: 'Consistently ranked among the world’s safest countries with multicultural cities, high quality of living, and clear post-study pathways.'
-  },
-  {
-    code: 'SE',
-    name: 'Sweden',
-    flagEmoji: '🇸🇪',
-    unisCountText: '35+ Unis',
-    studentsCountText: '45K+ students',
-    intakeText: 'August & Jan',
-    avgTuitionText: 'SEK 90,000 - 150,000 / yr',
-    pswText: 'Post-Study Job Search Visa 1 Year',
-    citiesText: 'Stockholm, Lund, Gothenburg, Uppsala, Linköping',
-    bgImageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAfwYF78PFiYPSclVJr5mcwvog8O7bKSeNtLNTF17IGxkUCZYqKL_b7nfKpGwBh7rexQQ-c-Wo_B7jkpca70m_xkMIo-QwIn5XQqHrad2S7yRFwYvn8eK73dwqqQTW1M29l-dS70yS0Sjp1G5B5PNUUsHBHyLYwlWPt1c7iEtTJ_31E51rzSuJarWfb7Eyry60S-Wmvbzjs5xw7bBC5Sx9Xm1QDNM055cJ8jXxSoE4Xrjmoeh_sxVNdCA',
-    overview: 'The birthplace of innovation (Spotify, Skype, Nobel Prize), offering forward-thinking English-taught degrees and sustainable living.'
-  },
-  {
-    code: 'AU',
-    name: 'Australia',
-    flagEmoji: '🇦🇺',
-    unisCountText: '40+ Unis',
-    studentsCountText: '700K+ students',
-    intakeText: 'Feb & July',
-    avgTuitionText: 'AUD $24,000 - $45,000 / yr',
-    pswText: 'Subclass 485 Temporary Graduate Visa 2-4 Years',
-    citiesText: 'Melbourne, Sydney, Brisbane, Perth, Adelaide',
-    bgImageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAHYlN5zXQ-dzjZHyIlwvfZcc2UWexdtmJFkTXVGzcaLfA_7dJQv7S82aFKUGhZRLClGa4BUZBdZ1QZudkqRCZ4doIlOOrnWPNoj3cdp-6-_Xfa3ec3Stitcm67A-2aNdthXMyfUs1D3GlgQnaVdfXExgN0pNouD198US-ufi3wNKdZ3X7zM8ZRo1v9zM_3SuvLZHkqSMJqA8t5MCLGzk_D6KMM6StuU1E0Nc7BW-7PZHiFJ849Af4pvA',
-    overview: 'World-leading Group of Eight institutions, sunny lifestyle, protected minimum student wage rates, and generous graduate visas.'
-  },
-  {
-    code: 'MY',
-    name: 'Malaysia',
-    flagEmoji: '🇲🇾',
-    unisCountText: '75+ Unis',
-    studentsCountText: '170K+ students',
-    intakeText: 'March & Oct',
-    avgTuitionText: '$4,000 - $9,000 / yr',
-    pswText: 'Affordable Global Hub + UK Branch Campuses',
-    citiesText: 'Kuala Lumpur, Penang, Johor Bahru, Selangor',
-    bgImageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAZd5n2tNuLtUbnkYxop24Dh6YXppoO22AesWMq9Da4U_hH8TSpxJJNI9Y_MBNshJzyKQcfIb8mPPWk0Mn0SVK1To7DY3uHnMLWe0B1YurXdva4mDR3KbXcAyqOo_xz3y4dg9yRenJJnoK3fziRYHUzfqdQ0JTWL0jBgdRRTMm6dwqPU72Xo-wGUcIwNmYEaiAnE_G-NZ9a3pU9GpcdoC78ZFo0PT9BQEGrMrHNQK4240l6syDpLlX3uw',
-    overview: 'The leading educational powerhouse of Southeast Asia, offering dual awards from top UK/Australian universities at one-third the cost.'
-  },
-  {
-    code: 'DE',
-    name: 'Germany',
-    flagEmoji: '🇩🇪',
-    unisCountText: '400+ Unis',
-    studentsCountText: '400K+ students',
-    intakeText: 'Oct & April',
-    avgTuitionText: '€0 - €3,000 / yr (Mostly Free)',
-    pswText: '18-Month Post-Study Job Seeker Visa',
-    citiesText: 'Munich, Berlin, Frankfurt, Hamburg, Aachen',
-    bgImageUrl: 'https://images.unsplash.com/photo-1467269204594-9661b134dd2b?q=80&w=1200&auto=format&fit=crop',
-    overview: "Europe's leading economic superpower with tuition-free public universities, world-class automotive & STEM programs, and high-demand tech jobs."
-  },
-  {
-    code: 'IE',
-    name: 'Ireland',
-    flagEmoji: '🇮🇪',
-    unisCountText: '30+ Unis',
-    studentsCountText: '35K+ students',
-    intakeText: 'Sept & Jan',
-    avgTuitionText: '€11,000 - €22,000 / yr',
-    pswText: '2-Year Stay Back Third Level Graduate Scheme',
-    citiesText: 'Dublin, Cork, Galway, Limerick',
-    bgImageUrl: 'https://images.unsplash.com/photo-1549918864-48ac978761a4?q=80&w=1200&auto=format&fit=crop',
-    overview: 'The Silicon Valley of Europe housing EMEA headquarters of Google, Apple, and Meta, with 2-year post-study work visas for master graduates.'
-  }
-];
+export const mockDestinations: DestinationCountry[] = getAllApprovedDestinations();
 
 // ============================================================================
 // 6. STUDENT REELS & VIDEO STORIES ("Journey with GEES" Stitch Screen)
@@ -720,36 +484,36 @@ export const mockDestinations: DestinationCountry[] = [
 export const mockReels: ReelStory[] = [
   {
     id: 'reel-1',
-    name: "King's University College",
-    handle: '@kingsuniversitycollege',
-    universityAndCourse: "King's University College • Western Univ",
+    name: 'University of Auckland',
+    handle: '@aucklanduni',
+    universityAndCourse: 'University of Auckland • New Zealand',
     category: 'campus',
     categoryBadge: 'Campus Life',
-    flagEmoji: '🇨🇦',
-    location: 'London, ON, CA',
+    flagEmoji: '🇳🇿',
+    location: 'Auckland, NZ',
     viewsText: '86.5k',
     likesCount: '14.2k',
     durationText: '0:48',
     videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-students-walking-in-a-university-campus-43184-large.mp4',
-    posterUrl: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=900&auto=format&fit=crop',
-    quote: 'Experience vibrant campus life, world-class Canadian education, and welcoming global student community at Western University!',
-    tiktokUrl: 'https://www.tiktok.com/@kingsuniversitycollege'
+    posterUrl: 'https://images.unsplash.com/photo-1507699622108-4be3ab695d3f?q=80&w=900&auto=format&fit=crop',
+    quote: 'Experience vibrant campus life, world-class New Zealand education, and welcoming global student community at Auckland!',
+    tiktokUrl: 'https://www.tiktok.com/@globaleduexpert'
   },
   {
     id: 'reel-2',
     name: 'Tahmid Rahman',
-    handle: '@tahmid_ontario',
-    universityAndCourse: 'BBA • University of Toronto',
+    handle: '@tahmid_amsterdam',
+    universityAndCourse: 'BBA • University of Amsterdam',
     category: 'visa',
     categoryBadge: 'Visa Approved',
-    flagEmoji: '🇨🇦',
-    location: 'Toronto, CA',
+    flagEmoji: '🇳🇱',
+    location: 'Amsterdam, NL',
     viewsText: '41.9k',
     likesCount: '5.2k',
     durationText: '0:58',
     videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
-    posterUrl: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=900&auto=format&fit=crop',
-    quote: 'My Canadian study permit got approved in just 26 days! Arriving at Pearson Airport with my GEES welcome kit was unforgettable.',
+    posterUrl: 'https://images.unsplash.com/photo-1512470876302-972faa2aa9a4?q=80&w=900&auto=format&fit=crop',
+    quote: 'My Netherlands residence permit got approved in just 18 days! Arriving at Schiphol Airport with my GEES welcome kit was unforgettable.',
     tiktokUrl: 'https://www.tiktok.com/@globaleduexpert'
   },
   {
@@ -772,18 +536,18 @@ export const mockReels: ReelStory[] = [
   {
     id: 'reel-4',
     name: 'Fahim Shahriar',
-    handle: '@fahim_tum',
-    universityAndCourse: 'Robotics & AI • TU Munich',
+    handle: '@fahim_kuleuven',
+    universityAndCourse: 'AI & Robotics • KU Leuven',
     category: 'vlogs',
     categoryBadge: 'Student Vlog',
-    flagEmoji: '🇩🇪',
-    location: 'Munich, DE',
+    flagEmoji: '🇧🇪',
+    location: 'Leuven, BE',
     viewsText: '34.1k',
     likesCount: '4.1k',
     durationText: '0:52',
     videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyBlazes.mp4',
-    posterUrl: 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?q=80&w=900&auto=format&fit=crop',
-    quote: "Day in the life of a master's researcher in Germany: labs, bike commutes, and zero tuition fees thanks to GEES guidance!",
+    posterUrl: 'https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?q=80&w=900&auto=format&fit=crop',
+    quote: "Day in the life of a master's researcher in Belgium: labs, historic city squares, and affordable European tuition thanks to GEES guidance!",
     tiktokUrl: 'https://www.tiktok.com/@globaleduexpert'
   },
   {
@@ -853,14 +617,14 @@ export const mockTestimonials: TestimonialStory[] = [
   {
     id: 'tahmid',
     name: 'Tahmid Rahman',
-    degree: 'BBA in Global Finance',
-    university: 'University of Toronto',
-    country: 'canada',
-    locationBadge: '📍 Toronto, Ontario 🇨🇦',
-    quote: 'Secured direct admission and my study permit within 3 weeks with full scholarship guidance from senior GEES counselors.',
+    degree: 'Bachelor of Science in Computer Science',
+    university: 'University of Auckland',
+    country: 'new zealand',
+    locationBadge: '📍 Auckland, New Zealand 🇳🇿',
+    quote: 'Secured direct admission and my New Zealand student visa within 3 weeks with full scholarship guidance from senior GEES counselors.',
     rating: '5.0',
     avatarUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDXglkog8Bv0ktvmFTcDx2kRVqs1x7BCAZcuHuVQmMj1T0ue8Z9WWwpS5R5YD-hc-Ayz60CJJsPro-DVegiTQdvGeKAWgjJGgi5kfvvAr2qXRug1aoTve6WV0ij225paCerORnIp7ZrY4T9_rauyU2z7D2HPWBTY7gPktgk5SO9sT7lcra_ZRQwmOo-N-TjkOHw2uxLt6FQ-9b4EYnuoBd0nyR6jhur8vY_xgsCRDFJJWBmUya1o8uL6INVJ4ZZk5klnMrgN9-_K_r8ZbM',
-    flagEmoji: '🇨🇦'
+    flagEmoji: '🇳🇿'
   },
   {
     id: 'nabila',
@@ -873,6 +637,18 @@ export const mockTestimonials: TestimonialStory[] = [
     rating: '5.0',
     avatarUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=800&auto=format&fit=crop',
     flagEmoji: '🇦🇺'
+  },
+  {
+    id: 'ayesha',
+    name: 'Ayesha Siddiqua',
+    degree: 'MSc in Data Science',
+    university: "King's College London",
+    country: 'uk',
+    locationBadge: '📍 London, United Kingdom 🇬🇧',
+    quote: "Dream admission at King's College London! GEES negotiated my merit scholarship and assisted through CAS generation seamlessly.",
+    rating: '5.0',
+    avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=800&auto=format&fit=crop',
+    flagEmoji: '🇬🇧'
   }
 ];
 
@@ -884,7 +660,7 @@ export const mockBlogPosts: BlogPost[] = [
     id: 'art-1',
     slug: 'australia-updates-evidence-levels-student-visa-applications',
     title: 'Australia Updates Evidence Levels for Student Visa Applications',
-    category: 'Article • Canada',
+    category: 'Article • Australia',
     publishedDate: 'September 20, 2026',
     readTime: '5 min read',
     author: 'Syed Ekhlas',
@@ -901,20 +677,20 @@ export const mockBlogPosts: BlogPost[] = [
   },
   {
     id: 'art-2',
-    slug: 'canada-simplifies-citizenship-law-who-will-benefit',
-    title: 'Canada Simplifies Citizenship Law: Who Will Benefit?',
-    category: 'News • Canada',
+    slug: 'study-in-malaysia-emgs-student-pass-guide',
+    title: 'Study in Malaysia: Complete EMGS Visa & Admission Guide',
+    category: 'News • Malaysia',
     publishedDate: 'September 05, 2026',
     readTime: '4 min read',
-    author: 'Ali Ahmed',
+    author: 'Fahad Bin Abdullah',
     viewsCount: 2512,
-    excerpt: 'Covering high-demand undergraduate & master’s programs, PAL allocations, co-op placements, and visa requirements for upcoming 2027 intakes.',
-    body: 'Canada is moving forward with a major reform to its hereditary citizenship law. The government is introducing a new law to abolish the limitation known as the “second-generation cut-off,” a restriction that prevented many Canadian citizens from passing on citizenship to their foreign-born children. Bill C-3 – An Act to Amend the Citizenship Act (2025) – received Royal Assent. In a statement, the government said this step marks an important milestone toward making the Citizenship Act more inclusive, while maintaining the integrity of Canadian citizenship.',
-    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBHSL1YCjjqDyplXS-Wp8PAuPd4lFSneg5bZQXjTNOUisKkq60BCkZGlWBKSK8IzUFvJG7KgoaMDBQSK1D-wi3DHK3I6jWJnyY4PIH8VVhfE2iL0rQT38agjlpYEOiCLg1B1q4781gKDhEd5PRifCHBKsg0AhjBx89HE-CJAxg5eU5FNRDXrYcoV2-zVun0H-4pJXSY7_Cgxitu_9Rz6zGF-BOoPcJkObuVfscjXYQa1WqWcE8EmTNz15yetjv0KExwaN4x4JK26YstSLI',
+    excerpt: 'Comprehensive overview of admissions at Universiti Malaya, private colleges, EMGS eVAL approval stages, and UK dual-degree qualifications.',
+    body: 'Malaysia has firmly established itself as Southeast Asia’s premier education powerhouse. With world-ranked universities like Universiti Malaya, low living costs, and branch campuses of renowned British and Australian institutions, international students receive globally recognized degrees at a fraction of the cost. The Education Malaysia Global Services (EMGS) portal provides transparent online visa progress tracking from initial offer to arrival clearance.',
+    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAZd5n2tNuLtUbnkYxop24Dh6YXppoO22AesWMq9Da4U_hH8TSpxJJNI9Y_MBNshJzyKQcfIb8mPPWk0Mn0SVK1To7DY3uHnMLWe0B1YurXdva4mDR3KbXcAyqOo_xz3y4dg9yRenJJnoK3fziRYHUzfqdQ0JTWL0jBgdRRTMm6dwqPU72Xo-wGUcIwNmYEaiAnE_G-NZ9a3pU9GpcdoC78ZFo0PT9BQEGrMrHNQK4240l6syDpLlX3uw',
     takeaways: [
-      'Abolishes the controversial first-generation limit on citizenship by descent.',
-      'Restores rights for children born abroad to Canadian citizens who have substantial connections.',
-      'Strengthens international family stability for global Canadian professionals and graduates.'
+      'Tuition and accommodation costs average 60-70% lower than traditional Western destinations.',
+      'EMGS system offers transparent, fast-tracked student pass approvals within 14-21 working days.',
+      'Opportunity to graduate with dual awards from UK and Australian partner universities in Kuala Lumpur.'
     ],
     saved: false
   },
@@ -966,7 +742,7 @@ export const mockBlogPosts: BlogPost[] = [
     author: 'Nusrat Jahan',
     viewsCount: 6890,
     excerpt: 'Over 900 applications have reportedly faced refusal. Learn why Malta has tightened assessments, key factors triggering rejections, and strategic study alternatives.',
-    body: 'Over 900 student visa applications have faced refusal in recent months due to strict changes in Central Visa Unit verification criteria in Malta. Factors include unverified accommodation booking slips, third-party bank transactions, and sub-standard language certifications. GEES compliance specialists break down how students can protect their investment and redirect their applications toward reliable destinations such as Malaysia, Canada, or Germany.',
+    body: 'Over 900 student visa applications have faced refusal in recent months due to strict changes in Central Visa Unit verification criteria in Malta. Factors include unverified accommodation booking slips, third-party bank transactions, and sub-standard language certifications. GEES compliance specialists break down how students can protect their investment and redirect their applications toward reliable destinations such as Malaysia, Australia, or the Netherlands.',
     imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuArG9bL5zaGNfe68G4P5s7TdFtOZFL7TJ3fK6hB46FeUWGJLqM4T_6UvhtWr6oBbK4sFigFzVgCaSa2hJiTjeu0ixWIJW4SpCs5Zsor3HxFMm_dIvOsCz8FSWkk0aubsFLvi4V3CZdmkpDTzRF_INKlZoMukKKeGnXP8fl25jjS-ul0AnJzQQFbndpFd0KNAVNlRTJTK-yH8o-EmzD-qxQssK_4wgp5zBMNS89qPZ8N_oSxXx0f9RqhwQZ_u3ipG4LgxWNIq8_3JUiEIuw',
     takeaways: [
       'Critical pitfalls causing refusals: unverified bank statements and unauthorized agencies.',
@@ -986,7 +762,7 @@ export const mockLeads: Lead[] = [
     fullName: 'Tanvir Hossain',
     email: 'tanvir.hossain@example.com',
     phone: '+8801711223344',
-    desiredCountry: 'Canada',
+    desiredCountry: 'Australia',
     desiredLevel: 'Postgraduate',
     desiredField: 'Computer Science',
     currentEducation: 'BSc in CSE (CGPA 3.65)',
@@ -1058,14 +834,14 @@ export const mockLeads: Lead[] = [
 export const mockApplications: Application[] = [
   {
     id: 'app-1',
-    applicationNumber: 'GEES-2026-CA-0842',
+    applicationNumber: 'GEES-2026-UK-0842',
     studentId: 'std-1',
     studentName: 'Tahmid Rahman',
     studentEmail: 'tahmid.rahman@example.com',
-    universityId: 'uni-2',
-    universityName: 'University of Toronto',
-    courseTitle: 'Bachelor of Business Administration (BBA)',
-    country: 'Canada',
+    universityId: 'uni-5',
+    universityName: 'King\'s College London',
+    courseTitle: 'Bachelor of Science in Business Management',
+    country: 'United Kingdom',
     intakeTerm: 'September 2027',
     stage: 'visa_approved',
     counselorName: 'Fahad Bin Abdullah',
@@ -1076,14 +852,14 @@ export const mockApplications: Application[] = [
       { id: 'doc-2', name: 'Academic Transcripts & Certificates', type: 'transcript', status: 'verified' },
       { id: 'doc-3', name: 'IELTS Academic TRF (Overall 7.5)', type: 'ielts', status: 'verified' },
       { id: 'doc-4', name: 'Statement of Purpose (SOP)', type: 'sop', status: 'verified' },
-      { id: 'doc-5', name: 'Bank Solvency & GIC Deposit Receipt', type: 'bank_statement', status: 'verified' }
+      { id: 'doc-5', name: 'Bank Solvency & Financial Verification', type: 'bank_statement', status: 'verified' }
     ],
     timeline: [
-      { id: 't-1', title: 'Consultation & Profile Evaluation', description: 'Assessed academic eligibility and shortlisted 3 top Canadian universities.', date: 'Aug 10, 2026', completed: true, active: false },
-      { id: 't-2', title: 'Application Dossier Submitted', description: 'Transcripts, SOP, and recommendation letters officially submitted to U of T.', date: 'Aug 18, 2026', completed: true, active: false },
-      { id: 't-3', title: 'Offer Letter Received', description: 'Official admission letter issued with CAD $5,000 entrance award.', date: 'Aug 29, 2026', completed: true, active: false },
-      { id: 't-4', title: 'Canadian Study Permit Filed', description: 'Full biometric and SDS financial packet lodged with IRCC.', date: 'Sep 05, 2026', completed: true, active: false },
-      { id: 't-5', title: 'Student Visa Approved', description: 'Passport returned with Canadian Student Visa counterfoil!', date: 'Sep 24, 2026', completed: true, active: true }
+      { id: 't-1', title: 'Consultation & Profile Evaluation', description: 'Assessed academic eligibility and shortlisted top UK universities.', date: 'Aug 10, 2026', completed: true, active: false },
+      { id: 't-2', title: 'Application Dossier Submitted', description: 'Transcripts, SOP, and recommendation letters officially submitted via UCAS/Direct portal.', date: 'Aug 18, 2026', completed: true, active: false },
+      { id: 't-3', title: 'CAS & Offer Letter Received', description: 'Official unconditional admission offer and CAS letter issued.', date: 'Aug 29, 2026', completed: true, active: false },
+      { id: 't-4', title: 'UK Student Visa Filed', description: 'Full biometric and UKVI visa packet lodged with VFS Global.', date: 'Sep 05, 2026', completed: true, active: false },
+      { id: 't-5', title: 'Student Visa Approved', description: 'Passport returned with UK Student Visa vignette sticker!', date: 'Sep 24, 2026', completed: true, active: true }
     ]
   },
   {

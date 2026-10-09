@@ -106,26 +106,26 @@ export const StepsRoadmapSection: React.FC<StepsRoadmapSectionProps> = ({ onOpen
   };
 
   return (
-    <section id="steps-roadmap-section" className="w-full py-14 sm:py-20 px-4 sm:px-6 lg:px-8 bg-slate-50/60 dark:bg-[#0B1329] border-t border-slate-100 dark:border-slate-800">
+    <section id="steps-roadmap-section" className="w-full py-12 sm:py-20 px-4 sm:px-6 lg:px-8 bg-slate-50/60 dark:bg-[#0B1329] border-t border-slate-100 dark:border-slate-800">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <header className="text-center max-w-3xl mx-auto mb-12 sm:mb-16 px-2">
-          <h2 className="text-base xs:text-xl sm:text-5xl md:text-6xl font-black tracking-tight text-slate-900 dark:text-white flex items-center justify-center flex-nowrap sm:flex-wrap whitespace-nowrap overflow-hidden text-ellipsis sm:whitespace-normal gap-1.5 sm:gap-3 mb-2">
+        <header className="text-center max-w-3xl mx-auto mb-10 sm:mb-16 px-2">
+          <h2 className="text-2xl xs:text-3xl sm:text-5xl md:text-6xl font-black tracking-tight text-slate-900 dark:text-white flex items-center justify-center flex-wrap gap-2 sm:gap-3 mb-2 leading-tight">
             <span>6 Steps to</span>
-            <span className="bg-[#fbbf24] text-slate-950 px-2 sm:px-6 py-0.5 sm:py-1 rounded-lg sm:rounded-2xl font-black tracking-tight leading-none shadow-sm">
+            <span className="bg-[#fbbf24] text-slate-950 px-3.5 sm:px-6 py-0.5 sm:py-1 rounded-xl sm:rounded-2xl font-black tracking-tight leading-none shadow-sm">
               Your Goal
             </span>
           </h2>
-          <p className="text-xs sm:text-lg text-slate-600 dark:text-slate-400 font-medium truncate sm:whitespace-normal">
+          <p className="text-sm sm:text-lg text-slate-600 dark:text-slate-400 font-medium px-2">
             From your first conversation to confident departure.
           </p>
         </header>
 
         {/* Process Grid: Left Visual Card & Right Accordion */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start mb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start mb-10 sm:mb-12">
           {/* Left Column: Counselor session photo with trust pill */}
           <div className="lg:col-span-5 flex flex-col items-center lg:sticky lg:top-24">
-            <div className="relative w-full aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl bg-slate-200 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+            <div className="relative w-full aspect-[4/3] xs:aspect-[4/5] max-w-sm rounded-3xl overflow-hidden shadow-xl bg-slate-200 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
               <img
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmxWeNh7tryz5Ui6SbdMmMasVp5_mcakVeZkNW8gNg_1gZe6pLxsfqJ-cVa6DhoMo8dyDswM0Bvk51sqpt2_dcePWC8WkmRxGM5ZWvkNM7IV8x0PJ9tG2E7DOIwirLxoErAea2uVmX_N0pFBSj31KKXgVwt499uf26nRiNZ1jC400Vj9ndQVmAJRbyCDHQWWqyxAnb0Mh7atoeoHJSHyN0jFPwKJ2pZJUpg_fP79mwsGDDS0HDlBR_dLXXCz5y-sELihI"
                 alt="GEES Counselor advising family"
@@ -135,7 +135,7 @@ export const StepsRoadmapSection: React.FC<StepsRoadmapSectionProps> = ({ onOpen
               />
               {/* Floating Trust Pill */}
               <div className="absolute bottom-3 xs:bottom-5 inset-x-2 xs:inset-x-4 flex justify-center z-10">
-                <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md px-2.5 xs:px-4 py-1.5 sm:py-2.5 rounded-full shadow-lg border border-white/60 dark:border-slate-800 flex items-center justify-center gap-1.5 xs:gap-2 text-[10px] xs:text-[11px] sm:text-xs font-bold text-slate-900 dark:text-slate-100 whitespace-nowrap">
+                <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md px-3 xs:px-4 py-2 sm:py-2.5 rounded-full shadow-lg border border-white/60 dark:border-slate-800 flex items-center justify-center gap-1.5 xs:gap-2 text-[10.5px] xs:text-[11px] sm:text-xs font-bold text-slate-900 dark:text-slate-100 whitespace-nowrap">
                   <span>No service charge</span>
                   <span className="text-slate-300 dark:text-slate-600 font-light select-none">|</span>
                   <span>No hidden fees</span>
@@ -220,7 +220,7 @@ export const StepsRoadmapSection: React.FC<StepsRoadmapSectionProps> = ({ onOpen
                             e.stopPropagation();
                             setDeepDiveStep(stepNumber);
                           }}
-                          className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1 cursor-pointer"
+                          className="min-h-[44px] py-2 text-xs sm:text-sm font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1.5 cursor-pointer"
                         >
                           <span>Explore Step Checklist & Deliverables</span>
                           <span className="material-symbols-outlined text-xs">arrow_forward</span>
@@ -240,7 +240,7 @@ export const StepsRoadmapSection: React.FC<StepsRoadmapSectionProps> = ({ onOpen
             type="button"
             text="Start with a Free Consultation"
             onClick={onOpenBooking}
-            className="px-8 py-3.5 rounded-full border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-950 dark:text-white font-bold text-sm sm:text-base shadow-xs cursor-pointer"
+            className="min-h-[44px] px-8 py-3.5 rounded-full border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-950 dark:text-white font-semibold text-sm sm:text-base shadow-sm cursor-pointer"
           />
         </div>
       </div>
@@ -251,7 +251,7 @@ export const StepsRoadmapSection: React.FC<StepsRoadmapSectionProps> = ({ onOpen
           <div className="relative w-full max-w-xl bg-white dark:bg-[#0f172a] rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-100 dark:border-slate-800 animate-fadeIn">
             <button
               onClick={() => setDeepDiveStep(null)}
-              className="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-slate-900 cursor-pointer"
+              className="absolute top-4 right-4 w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-slate-900 cursor-pointer"
             >
               <span className="material-symbols-outlined text-sm">close</span>
             </button>
@@ -309,7 +309,7 @@ export const StepsRoadmapSection: React.FC<StepsRoadmapSectionProps> = ({ onOpen
                   setDeepDiveStep(null);
                   onOpenBooking();
                 }}
-                className="flex-1 py-3 rounded-full bg-[#f59e0b] hover:bg-amber-400 text-slate-950 font-bold text-xs uppercase tracking-wider cursor-pointer"
+                className="min-h-[44px] flex-1 py-3 px-4 rounded-full bg-[#f59e0b] hover:bg-amber-400 text-slate-950 font-bold text-xs uppercase tracking-wider cursor-pointer shadow-md active:scale-98 flex items-center justify-center"
               >
                 Book Step Consultation
               </button>

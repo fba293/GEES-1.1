@@ -19,8 +19,13 @@ export const ServicesCoverflow: React.FC<ServicesCoverflowProps> = ({
   onSelectService,
   onViewAllServices
 }) => {
-  // Format mock services into the structure required by CoverflowCarousel
-  const slides = mockServices.map((service) => ({
+  // Exclude country/destination service cards so this section focuses strictly on core services (Admissions, Visas, Arrival, Living, Tests)
+  const coreServices = mockServices.filter(
+    (service) => service.category !== 'Study Destinations' && !service.title.toLowerCase().startsWith('study in ')
+  );
+
+  // Format services into the structure required by CoverflowCarousel
+  const slides = coreServices.map((service) => ({
     src: service.imageUrl,
     alt: service.title,
     title: service.title,
@@ -33,13 +38,13 @@ export const ServicesCoverflow: React.FC<ServicesCoverflowProps> = ({
   }));
 
   const handleCardClick = (index: number) => {
-    onSelectService(mockServices[index]);
+    onSelectService(coreServices[index]);
   };
 
   return (
     <section 
       aria-labelledby="geesServicesTitle"
-      className="gees-services-coverflow relative w-full bg-white dark:bg-[#070b19] py-12 xs:py-16 sm:py-24 select-none border-b border-slate-100 dark:border-slate-800"
+      className="gees-services-coverflow relative w-full bg-white dark:bg-[#070b19] py-10 xs:py-12 sm:py-24 select-none border-b border-slate-100 dark:border-slate-800"
       data-home-section="services"
       id="home-services"
     >
@@ -48,15 +53,15 @@ export const ServicesCoverflow: React.FC<ServicesCoverflowProps> = ({
         <div className="gees-services-coverflow__head text-center mb-6 sm:mb-12 px-4 max-w-5xl mx-auto">
           <div>
             <h2 
-              className="gees-section-title text-base xs:text-xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center justify-center flex-nowrap sm:flex-wrap whitespace-nowrap overflow-hidden text-ellipsis sm:whitespace-normal gap-1.5 sm:gap-3"
+              className="gees-section-title text-2xl xs:text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center justify-center flex-wrap gap-2 sm:gap-3 leading-tight"
               id="geesServicesTitle"
             >
               <span>Our</span>
-              <span className="gees-section-highlight px-2 sm:px-5 py-0.5 sm:py-1 bg-[#fbb034] text-slate-950 rounded-lg sm:rounded-2xl inline-block shadow-sm font-black">
+              <span className="gees-section-highlight px-3 sm:px-5 py-0.5 sm:py-1 bg-[#fbb034] text-slate-950 rounded-xl sm:rounded-2xl inline-block shadow-sm font-black tracking-tight">
                 Services
               </span>
             </h2>
-            <p className="gees-services-coverflow__eyebrow text-[11px] xs:text-xs sm:text-sm tracking-[0.2em] sm:tracking-[0.22em] font-bold text-slate-500 dark:text-slate-400 uppercase mt-2 sm:mt-3 truncate sm:whitespace-normal">
+            <p className="gees-services-coverflow__eyebrow text-xs sm:text-sm tracking-[0.16em] sm:tracking-[0.22em] font-bold text-slate-500 dark:text-slate-400 uppercase mt-2 sm:mt-3 px-2">
               Everything you need, in one place
             </p>
           </div>
@@ -92,7 +97,7 @@ export const ServicesCoverflow: React.FC<ServicesCoverflowProps> = ({
             type="button"
             text="View all services"
             onClick={onViewAllServices}
-            className="px-8 py-3.5 rounded-full bg-white dark:bg-slate-900 text-slate-950 dark:text-white border-slate-300 dark:border-slate-700 font-bold text-sm shadow-md"
+            className="min-h-[44px] px-8 py-3.5 rounded-full bg-white dark:bg-slate-900 text-slate-950 dark:text-white border-slate-300 dark:border-slate-700 font-semibold text-sm shadow-sm cursor-pointer"
           />
         </div>
       </div>
