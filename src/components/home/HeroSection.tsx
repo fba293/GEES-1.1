@@ -154,7 +154,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDestination, setSelectedDestination] = useState('all');
   const [selectedLevel, setSelectedLevel] = useState('all');
-  const [fieldOfStudy, setFieldOfStudy] = useState('');
+  const [fieldOfStudy, setFieldOfStudy] = useState('all');
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -722,10 +722,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     className="w-full bg-transparent text-xs font-bold text-slate-900 dark:text-white focus:outline-none cursor-pointer border-0 p-0"
                   >
                     <option value="all">All Levels</option>
-                    <option value="undergraduate">Undergraduate</option>
-                    <option value="postgraduate">Postgraduate</option>
-                    <option value="doctorate">Doctorate / PhD</option>
-                    <option value="foundation">Foundation / Pathway</option>
+                    <option value="undergraduate">Undergraduate (Bachelor's)</option>
+                    <option value="postgraduate">Postgraduate (Master's / MBA)</option>
+                    <option value="doctorate">Doctorate (PhD)</option>
+                    <option value="certificate">Certificate</option>
+                    <option value="foundation">Foundation / A-Level</option>
+                    <option value="diploma">Diploma</option>
+                    <option value="advanced-diploma">Advanced Diploma</option>
                   </select>
                 </div>
               </div>
@@ -737,13 +740,24 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 </div>
                 <div className="flex-1 min-w-0">
                   <span className="block font-bold text-[9px] tracking-wider uppercase text-slate-400">Field of Study</span>
-                  <input
-                    type="text"
-                    placeholder="e.g. Computer Science"
+                  <select
                     value={fieldOfStudy}
                     onChange={(e) => setFieldOfStudy(e.target.value)}
-                    className="w-full bg-transparent text-xs font-bold text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none border-0 p-0"
-                  />
+                    className="w-full bg-transparent text-xs font-bold text-slate-900 dark:text-white focus:outline-none cursor-pointer border-0 p-0"
+                  >
+                    <option value="all">All Programs</option>
+                    <option value="cs">Computer Science & IT</option>
+                    <option value="business">Business & Management</option>
+                    <option value="engineering">Engineering & Applied Sciences</option>
+                    <option value="health">Health & Medicine</option>
+                    <option value="arts">Arts & Design</option>
+                    <option value="social">Social Sciences</option>
+                    <option value="natural">Natural Sciences</option>
+                    <option value="education">Education & Teaching</option>
+                    <option value="hospitality">Hospitality & Tourism</option>
+                    <option value="law">Law</option>
+                    <option value="architecture">Architecture & Built Environment</option>
+                  </select>
                 </div>
               </div>
 

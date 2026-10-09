@@ -15,13 +15,17 @@ interface CourseExplorerViewProps {
   onNavigateToUni?: (uniSlug: string) => void;
   initialQuery?: string;
   initialCountry?: string;
+  initialLevel?: string;
+  initialField?: string;
 }
 
 export const CourseExplorerView: React.FC<CourseExplorerViewProps> = ({
   onApply,
   onNavigateToUni,
   initialQuery = '',
-  initialCountry = 'all'
+  initialCountry = 'all',
+  initialLevel = 'all',
+  initialField = 'all'
 }) => {
   const allCourses: Course[] = useMemo(() => getCollaboratedCourses(), []);
   const allUnis = useMemo(() => getCollaboratedUniversities(), []);
@@ -29,30 +33,47 @@ export const CourseExplorerView: React.FC<CourseExplorerViewProps> = ({
   // Filter states
   const [searchQuery, setSearchQuery] = useState(initialQuery);
   const [selectedCountry, setSelectedCountry] = useState<string>(initialCountry);
-  const [selectedField, setSelectedField] = useState<string>('all');
-  const [selectedLevel, setSelectedLevel] = useState<string>('all');
+  const [selectedField, setSelectedField] = useState<string>(initialField);
+  const [selectedLevel, setSelectedLevel] = useState<string>(initialLevel);
   const [selectedMode, setSelectedMode] = useState<string>('all');
   const [selectedUniId, setSelectedUniId] = useState<string>('all');
+  const [sortBy, setSortBy] = useState<'az' | 'fee-asc' | 'fee-desc' | 'qs'>('qs');
 
   // Comparison drawer state
   const [comparedCourseIds, setComparedCourseIds] = useState<string[]>([]);
   const [isCompareModalOpen, setIsCompareModalOpen] = useState(false);
 
-  // Field Categories
-  const fieldCategories = [
-    { id: 'all', label: 'All Fields' },
-    { id: 'cs', label: 'Computer Science & AI', match: 'computer' },
-    { id: 'business', label: 'Business & Management', match: 'business' },
-    { id: 'engineering', label: 'Engineering & Tech', match: 'engineering' },
-    { id: 'health', label: 'Medicine & Health', match: 'health' },
-    { id: 'law', label: 'Law & Legal Studies', match: 'law' },
-    { id: 'data', label: 'Data Science & Marketing', match: 'data' },
-    { id: 'arts', label: 'Arts & Design', match: 'art' }
-  ];
+  // Level items with counts
+  const levelItems = useMemo(() => [
+    { id: 'all', label: 'All', count: allCourses.length },
+    { id: 'certificate', label: 'Certificate', count: allCourses.filter(c => c.level === 'certificate').length },
+    { id: 'foundation', label: 'Foundation / A-Level', count: allCourses.filter(c => c.level === 'foundation' || c.level === 'a-level').length },
+    { id: 'diploma', label: 'Diploma', count: allCourses.filter(c => c.level === 'diploma').length },
+    { id: 'advanced-diploma', label: 'Advance Diploma', count: allCourses.filter(c => c.level === 'advanced-diploma').length },
+    { id: 'undergraduate', label: 'Bachelor Degree', count: allCourses.filter(c => c.level === 'undergraduate').length },
+    { id: 'postgraduate', label: 'Masters Degree', count: allCourses.filter(c => c.level === 'postgraduate').length },
+    { id: 'doctorate', label: 'Doctorate', count: allCourses.filter(c => c.level === 'doctorate').length },
+  ], [allCourses]);
 
-  // Filtering Logic
+  // Field Categories with counts
+  const fieldCategories = useMemo(() => [
+    { id: 'all', label: 'All Programs', match: '', count: allCourses.length },
+    { id: 'cs', label: 'Computer Science & IT', match: 'computer', count: allCourses.filter(c => c.title.toLowerCase().includes('computer') || c.department.toLowerCase().includes('computer') || c.title.toLowerCase().includes('software') || c.title.toLowerCase().includes('it')).length },
+    { id: 'business', label: 'Business & Management', match: 'business', count: allCourses.filter(c => c.title.toLowerCase().includes('business') || c.department.toLowerCase().includes('business') || c.title.toLowerCase().includes('management') || c.title.toLowerCase().includes('mba') || c.title.toLowerCase().includes('accounting')).length },
+    { id: 'engineering', label: 'Engineering & Applied Sciences', match: 'engineering', count: allCourses.filter(c => c.title.toLowerCase().includes('engineering') || c.department.toLowerCase().includes('engineering')).length },
+    { id: 'health', label: 'Health & Medicine', match: 'health', count: allCourses.filter(c => c.title.toLowerCase().includes('health') || c.department.toLowerCase().includes('medicine') || c.title.toLowerCase().includes('nursing') || c.title.toLowerCase().includes('biomedical')).length },
+    { id: 'arts', label: 'Arts & Design', match: 'art', count: allCourses.filter(c => c.title.toLowerCase().includes('art') || c.department.toLowerCase().includes('design') || c.title.toLowerCase().includes('media')).length },
+    { id: 'social', label: 'Social Sciences', match: 'social', count: allCourses.filter(c => c.title.toLowerCase().includes('social') || c.department.toLowerCase().includes('social')).length },
+    { id: 'natural', label: 'Natural Sciences', match: 'science', count: allCourses.filter(c => c.title.toLowerCase().includes('science') || c.department.toLowerCase().includes('science')).length },
+    { id: 'education', label: 'Education & Teaching', match: 'education', count: allCourses.filter(c => c.title.toLowerCase().includes('education') || c.department.toLowerCase().includes('education')).length },
+    { id: 'hospitality', label: 'Hospitality & Tourism', match: 'hospitality', count: allCourses.filter(c => c.title.toLowerCase().includes('hospitality') || c.title.toLowerCase().includes('tourism')).length },
+    { id: 'law', label: 'Law', match: 'law', count: allCourses.filter(c => c.title.toLowerCase().includes('law') || c.department.toLowerCase().includes('law')).length },
+    { id: 'architecture', label: 'Architecture & Built Environment', match: 'architecture', count: allCourses.filter(c => c.title.toLowerCase().includes('architecture') || c.department.toLowerCase().includes('architecture')).length },
+  ], [allCourses]);
+
+  // Filtering & Sorting Logic
   const filteredCourses = useMemo(() => {
-    return allCourses.filter((course) => {
+    const list = allCourses.filter((course) => {
       // 1. Search Query
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
@@ -80,7 +101,13 @@ export const CourseExplorerView: React.FC<CourseExplorerViewProps> = ({
 
       // 4. Study Level
       if (selectedLevel !== 'all') {
-        if (course.level !== selectedLevel) return false;
+        if (selectedLevel === 'foundation') {
+          if (course.level !== 'foundation' && course.level !== 'a-level') return false;
+        } else if (selectedLevel === 'diploma') {
+          if (course.level !== 'diploma' && course.level !== 'advanced-diploma') return false;
+        } else {
+          if (course.level !== selectedLevel) return false;
+        }
       }
 
       // 5. Study Mode
@@ -96,7 +123,25 @@ export const CourseExplorerView: React.FC<CourseExplorerViewProps> = ({
 
       return true;
     });
-  }, [allCourses, searchQuery, selectedCountry, selectedField, selectedLevel, selectedMode, selectedUniId]);
+
+    return [...list].sort((a, b) => {
+      if (sortBy === 'az') {
+        return a.title.localeCompare(b.title);
+      }
+      if (sortBy === 'fee-asc') {
+        return a.annualFeeUSD - b.annualFeeUSD;
+      }
+      if (sortBy === 'fee-desc') {
+        return b.annualFeeUSD - a.annualFeeUSD;
+      }
+      if (sortBy === 'qs') {
+        const rankA = Number(a.qsRank2027 || 9999);
+        const rankB = Number(b.qsRank2027 || 9999);
+        return rankA - rankB;
+      }
+      return 0;
+    });
+  }, [allCourses, searchQuery, selectedCountry, selectedField, selectedLevel, selectedMode, selectedUniId, sortBy, fieldCategories]);
 
   // Comparison toggle handler (max 4 courses)
   const toggleCompare = (courseId: string) => {
@@ -126,162 +171,216 @@ export const CourseExplorerView: React.FC<CourseExplorerViewProps> = ({
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
-      {/* 1. Header with Golden Pill Badge */}
-      <div className="mb-6 sm:mb-10 text-center sm:text-left">
-        <div className="flex items-center gap-2 justify-center sm:justify-start mb-2">
-          <span className="w-2 h-2 rounded-full bg-[#fbb034] animate-pulse"></span>
-          <span className="text-xs font-extrabold uppercase tracking-widest text-blue-600 dark:text-blue-400">
-            Academic Degree Explorer & Comparison Tool
-          </span>
-        </div>
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+      {/* 1. Header */}
+      <div className="mb-4 sm:mb-6 text-center sm:text-left">
         <h1 className="text-2xl xs:text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
-          Explore Degree Programs Across Partner Universities
+          Courses & Programs
         </h1>
-        <p className="mt-2 text-sm sm:text-base text-slate-600 dark:text-slate-400 max-w-3xl leading-relaxed">
-          Filter programs by study duration in years, study mode (full-time, part-time, online), intake dates, tuition fees per year, and compare institutions side-by-side with 100% free GEES admission mentorship.
+        <p className="mt-1 text-sm sm:text-base text-slate-600 dark:text-slate-400 max-w-3xl leading-relaxed">
+          Discover the right program for your academic and career goals.
         </p>
       </div>
 
-      {/* 2. Unified Search & Filter Control Station */}
-      <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-xs p-4 sm:p-6 mb-8 space-y-4">
-        {/* Row 1: Search Input + Active Results Count */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-          <div className="relative flex-1">
-            <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xl">
-              search
-            </span>
-            <input
-              type="text"
-              placeholder="Search programs by title (e.g., Computer Science, MBA), university, or city..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full h-12 pl-11 pr-10 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-sm font-medium text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#fbb034]/40 focus:border-[#fbb034] transition-all"
-            />
-            {searchQuery && (
-              <button
-                type="button"
-                onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-white flex items-center justify-center cursor-pointer"
-              >
-                <span className="material-symbols-outlined text-base">close</span>
-              </button>
-            )}
-          </div>
-
-          <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0">
-            <div className="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300">
-              <span className="text-blue-600 dark:text-blue-400 font-extrabold">{filteredCourses.length}</span> programs found
+      {/* 2. Left Sidebar & Right Content Grid Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
+        {/* LEFT SIDEBAR: Filters */}
+        <aside className="lg:col-span-1 space-y-6 lg:sticky lg:top-24 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/90 dark:border-slate-800 p-6 shadow-xs">
+          <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+            <div className="flex items-center gap-2">
+              <span className="material-symbols-outlined text-amber-500 text-lg">tune</span>
+              <h3 className="font-extrabold text-sm text-slate-900 dark:text-white uppercase tracking-wider">
+                Filters & Programs
+              </h3>
             </div>
-            {(selectedCountry !== 'all' || selectedField !== 'all' || selectedLevel !== 'all' || selectedMode !== 'all' || selectedUniId !== 'all' || searchQuery) && (
+            {(selectedCountry !== 'all' || selectedField !== 'all' || selectedLevel !== 'all' || selectedMode !== 'all' || selectedUniId !== 'all' || searchQuery || sortBy !== 'qs') && (
               <button
                 type="button"
                 onClick={resetFilters}
-                className="h-10 px-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 text-xs font-bold hover:bg-rose-100 transition-colors flex items-center gap-1 cursor-pointer"
+                className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
               >
-                <span className="material-symbols-outlined text-sm">restart_alt</span>
-                <span>Reset</span>
+                Reset All
               </button>
             )}
           </div>
-        </div>
 
-        {/* Row 2: Field Category Quick Chips (Touch pan & scrollable) */}
-        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1 touch-pan-x">
-          {fieldCategories.map((f) => {
-            const isActive = selectedField === f.id;
-            return (
-              <button
-                key={f.id}
-                type="button"
-                onClick={() => setSelectedField(f.id)}
-                className={`min-h-[40px] px-3.5 py-1.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer select-none flex items-center gap-1 ${
-                  isActive
-                    ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-sm'
-                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
-                }`}
-              >
-                <span>{f.label}</span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Row 3: Multi-Select Filter Matrix (Country, Level, Mode, University) */}
-        <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-3 pt-2 border-t border-slate-100 dark:border-slate-800">
-          {/* 1. Country Filter */}
-          <div className="flex flex-col">
-            <label className="text-[10px] uppercase font-bold tracking-wider text-slate-400 mb-1">
-              Destination Country
+          {/* Search Filter in Sidebar */}
+          <div className="space-y-2">
+            <label className="text-[11px] uppercase font-extrabold tracking-wider text-slate-400 block">
+              Search Programs
             </label>
-            <select
-              value={selectedCountry}
-              onChange={(e) => setSelectedCountry(e.target.value)}
-              className="h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#fbb034]/40 cursor-pointer"
-            >
-              <option value="all">All Countries (11)</option>
-              {APPROVED_COUNTRY_NAMES.map((c) => (
-                <option key={c} value={c}>{c}</option>
-              ))}
-            </select>
+            <div className="relative">
+              <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg">
+                search
+              </span>
+              <input
+                type="text"
+                placeholder="Title, university or city..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full h-11 pl-10 pr-9 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#fbb034]/40 focus:border-[#fbb034] transition-all"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-white flex items-center justify-center cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-sm">close</span>
+                </button>
+              )}
+            </div>
           </div>
 
-          {/* 2. Study Level Filter */}
-          <div className="flex flex-col">
-            <label className="text-[10px] uppercase font-bold tracking-wider text-slate-400 mb-1">
+          {/* Sort By Filter in Sidebar */}
+          <div className="space-y-2">
+            <label className="text-[11px] uppercase font-extrabold tracking-wider text-slate-400 block">
+              Sort Ranking & Tariff
+            </label>
+            <div className="relative">
+              <select
+                value={sortBy}
+                onChange={(e: any) => setSortBy(e.target.value)}
+                className="w-full h-11 px-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#fbb034]/40 cursor-pointer appearance-none"
+              >
+                <option value="qs">QS Rank (Best)</option>
+                <option value="az">A–Z (Alphabetical)</option>
+                <option value="fee-asc">Fee ↓ (Low to High)</option>
+                <option value="fee-desc">Fee ↑ (High to Low)</option>
+              </select>
+              <span className="material-symbols-outlined absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-lg">
+                expand_more
+              </span>
+            </div>
+          </div>
+
+          {/* Degree Level Filter */}
+          <div className="space-y-2">
+            <label className="text-[11px] uppercase font-extrabold tracking-wider text-slate-400 block">
               Degree Level
             </label>
             <select
               value={selectedLevel}
               onChange={(e) => setSelectedLevel(e.target.value)}
-              className="h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#fbb034]/40 cursor-pointer"
+              className="w-full h-11 px-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#fbb034]/40 cursor-pointer"
             >
-              <option value="all">All Degree Levels</option>
+              <option value="all">All Levels</option>
               <option value="undergraduate">Undergraduate (Bachelor's)</option>
               <option value="postgraduate">Postgraduate (Master's / MBA)</option>
               <option value="doctorate">Doctorate (PhD)</option>
-              <option value="foundation">Pathway / Foundation</option>
-              <option value="diploma">Executive Diploma</option>
+              <option value="certificate">Certificate</option>
+              <option value="foundation">Foundation / A-Level</option>
+              <option value="diploma">Diploma</option>
+              <option value="advanced-diploma">Advanced Diploma</option>
             </select>
           </div>
 
-          {/* 3. Study Mode Filter */}
-          <div className="flex flex-col">
-            <label className="text-[10px] uppercase font-bold tracking-wider text-slate-400 mb-1">
+          {/* Field of Study Filter */}
+          <div className="space-y-2">
+            <label className="text-[11px] uppercase font-extrabold tracking-wider text-slate-400 block">
+              Program Field
+            </label>
+            <select
+              value={selectedField}
+              onChange={(e) => setSelectedField(e.target.value)}
+              className="w-full h-11 px-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#fbb034]/40 cursor-pointer"
+            >
+              {fieldCategories.map((f) => (
+                <option key={f.id} value={f.id}>{f.label} ({f.count})</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Country List in Sidebar */}
+          <div className="space-y-2.5">
+            <label className="text-[11px] uppercase font-extrabold tracking-wider text-slate-400 block">
+              Partner Countries
+            </label>
+            <div className="space-y-1 max-h-[220px] overflow-y-auto sleek-scrollbar pr-1">
+              <button
+                type="button"
+                onClick={() => setSelectedCountry('all')}
+                className={`w-full text-left px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-between cursor-pointer ${
+                  selectedCountry === 'all'
+                    ? 'bg-[#fbb034] text-slate-950 font-black shadow-xs'
+                    : 'bg-slate-50 dark:bg-slate-800/50 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                }`}
+              >
+                <span>All Countries</span>
+                {selectedCountry === 'all' && <span className="material-symbols-outlined text-[14px]">check</span>}
+              </button>
+              {APPROVED_COUNTRY_NAMES.map((c) => {
+                const isActive = selectedCountry.toLowerCase() === c.toLowerCase();
+                return (
+                  <button
+                    key={c}
+                    type="button"
+                    onClick={() => setSelectedCountry(c)}
+                    className={`w-full text-left px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-between cursor-pointer ${
+                      isActive
+                        ? 'bg-[#fbb034] text-slate-950 font-black shadow-xs'
+                        : 'bg-slate-50 dark:bg-slate-800/50 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                    }`}
+                  >
+                    <span className="truncate">{c}</span>
+                    {isActive && <span className="material-symbols-outlined text-[14px]">check</span>}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Study Mode Filter */}
+          <div className="space-y-2">
+            <label className="text-[11px] uppercase font-extrabold tracking-wider text-slate-400 block">
               Study Mode
             </label>
             <select
               value={selectedMode}
               onChange={(e) => setSelectedMode(e.target.value)}
-              className="h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#fbb034]/40 cursor-pointer"
+              className="w-full h-11 px-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#fbb034]/40 cursor-pointer"
             >
-              <option value="all">All Study Modes</option>
+              <option value="all">All Modes</option>
               <option value="full-time">Full-Time (On Campus)</option>
-              <option value="part-time">Part-Time (Working Students)</option>
-              <option value="online">Online / Distance Learning</option>
+              <option value="part-time">Part-Time</option>
+              <option value="online">Online / Distance</option>
             </select>
           </div>
 
-          {/* 4. University / College Filter */}
-          <div className="flex flex-col">
-            <label className="text-[10px] uppercase font-bold tracking-wider text-slate-400 mb-1">
-              Partner University
+          {/* University Filter */}
+          <div className="space-y-2">
+            <label className="text-[11px] uppercase font-extrabold tracking-wider text-slate-400 block">
+              University
             </label>
             <select
               value={selectedUniId}
               onChange={(e) => setSelectedUniId(e.target.value)}
-              className="h-11 px-3 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#fbb034]/40 cursor-pointer truncate"
+              className="w-full h-11 px-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#fbb034]/40 cursor-pointer truncate"
             >
-              <option value="all">All Collaborated Universities</option>
+              <option value="all">All Universities</option>
               {allUnis.map((u) => (
-                <option key={u.id} value={u.id}>
-                  {u.name} ({u.country})
-                </option>
+                <option key={u.id} value={u.id}>{u.name} ({u.country})</option>
               ))}
             </select>
           </div>
-        </div>
-      </div>
+        </aside>
+
+        {/* RIGHT CONTENT AREA */}
+        <div className="lg:col-span-3 space-y-6">
+          {/* Results bar header */}
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 p-4 flex items-center justify-between shadow-xs">
+            <div className="flex items-center gap-2">
+              <span className="px-3 py-1 rounded-xl bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 font-black text-xs">
+                {filteredCourses.length}
+              </span>
+              <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                Accredited Degree Programs Found
+              </span>
+            </div>
+            <div className="text-xs text-slate-400 font-medium hidden sm:block">
+              Official GEES Partner Admissions
+            </div>
+          </div>
 
       {/* 3. Program Cards Grid (1-col mobile, 2-col tablet, 3-col desktop) */}
       {filteredCourses.length === 0 ? (
@@ -397,6 +496,11 @@ export const CourseExplorerView: React.FC<CourseExplorerViewProps> = ({
                       <strong className="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-white block truncate">
                         {course.tuitionFeeLocal}
                       </strong>
+                      {course.totalTuitionLocal && (
+                        <span className="text-[9px] text-slate-400 block truncate">
+                          Total: {course.totalTuitionLocal}
+                        </span>
+                      )}
                     </div>
 
                     <div className="p-2 rounded-xl bg-slate-50/70 dark:bg-slate-800/40">
@@ -406,6 +510,18 @@ export const CourseExplorerView: React.FC<CourseExplorerViewProps> = ({
                       </strong>
                     </div>
                   </div>
+
+                  {/* Accreditations Badges */}
+                  {course.accreditations && course.accreditations.length > 0 && (
+                    <div className="flex items-center gap-1.5 flex-wrap pt-1">
+                      {course.accreditations.map((acc, aIdx) => (
+                        <span key={aIdx} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-50 dark:bg-amber-950/30 text-amber-800 dark:text-amber-300 border border-amber-200/50 text-[10px] font-bold">
+                          <span className="material-symbols-outlined text-[12px]">verified</span>
+                          <span>{acc}</span>
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 {/* Bottom Card Actions: 44px min-height */}
@@ -415,10 +531,10 @@ export const CourseExplorerView: React.FC<CourseExplorerViewProps> = ({
                       href={course.universityWebsite}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-xs font-bold text-slate-500 hover:text-slate-900 dark:hover:text-white inline-flex items-center gap-1 py-2"
+                      className="text-xs font-bold text-slate-500 hover:text-slate-900 dark:hover:text-white inline-flex items-center gap-1.5 py-2"
                     >
-                      <span>Uni Web</span>
-                      <span className="material-symbols-outlined text-[13px]">open_in_new</span>
+                      <span className="material-symbols-outlined text-[14px]">public</span>
+                      <span>Website</span>
                     </a>
                   )}
 
@@ -427,7 +543,7 @@ export const CourseExplorerView: React.FC<CourseExplorerViewProps> = ({
                     onClick={() => onApply(`${course.title} at ${course.universityName}`)}
                     className="min-h-[44px] ml-auto px-5 py-2.5 rounded-full bg-[#fbb034] hover:bg-[#f59e0b] active:bg-[#d97706] text-slate-950 font-black text-xs sm:text-sm transition-all shadow-sm active:scale-95 cursor-pointer flex items-center gap-1.5"
                   >
-                    <span>Apply via GEES</span>
+                    <span>Apply Now</span>
                     <span className="material-symbols-outlined text-sm">arrow_forward</span>
                   </button>
                 </div>
@@ -436,6 +552,8 @@ export const CourseExplorerView: React.FC<CourseExplorerViewProps> = ({
           })}
         </div>
       )}
+        </div>
+      </div>
 
       {/* 4. Docked Floating Comparison Trigger Bar (Shows whenever >= 1 courses selected) */}
       {comparedCourses.length > 0 && (
@@ -647,7 +765,7 @@ export const CourseExplorerView: React.FC<CourseExplorerViewProps> = ({
                           }}
                           className="min-h-[44px] w-full px-4 py-2 rounded-full bg-[#fbb034] text-slate-950 font-black text-xs shadow-xs hover:brightness-105 active:scale-95 transition-all cursor-pointer text-center"
                         >
-                          Apply with GEES (Free)
+                          Apply Now
                         </button>
                       </td>
                     ))}

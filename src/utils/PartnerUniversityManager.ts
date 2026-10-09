@@ -8,7 +8,7 @@
  * Strictly prevents non-partner data and displays verified 2027 QS rankings where available.
  */
 
-import { University, Course, Campus } from '../types/index.ts';
+import { University, Course, Campus, UniversityAccommodation, UniversityArticle } from '../types/index.ts';
 import { getApprovedCountryConfig, COUNTRY_METADATA_REGISTRY, ApprovedCountryName, APPROVED_COUNTRY_NAMES } from '../lib/country-config.ts';
 
 export interface CollaboratedUniversityEntry {
@@ -29,6 +29,10 @@ export interface CollaboratedUniversityEntry {
   logoUrl?: string;
   bannerUrl?: string;
   featured?: boolean;
+  campuses?: Campus[];
+  accommodations?: UniversityAccommodation[];
+  articles?: UniversityArticle[];
+  customCourses?: Partial<Course>[];
 }
 
 /**
@@ -202,19 +206,277 @@ export const COLLABORATED_UNIVERSITIES: CollaboratedUniversityEntry[] = [
   { name: 'AAS College', country: 'Greece', city: 'Thessaloniki', state: 'Central Macedonia', established: 1990, type: 'Private College', websiteUrl: 'https://www.aas.gr' },
 
   // --------------------------------------------------------------------------
-  // 6. MALAYSIA (43 Universities & Colleges)
+  // 6. MALAYSIA (43 Universities & Colleges) - Enriched with en.your-uni.com Data
   // --------------------------------------------------------------------------
-  { name: 'INTI International University & Colleges', country: 'Malaysia', city: 'Nilai', state: 'Negeri Sembilan', established: 1986, type: 'Private', qsRank2027: 406, websiteUrl: 'https://newinti.edu.my', featured: true },
-  { name: "Taylor's University", country: 'Malaysia', city: 'Subang Jaya', state: 'Selangor', established: 1969, type: 'Private', qsRank2027: 272, websiteUrl: 'https://university.taylors.edu.my', featured: true },
-  { name: 'SEGi University & Colleges', country: 'Malaysia', city: 'Kota Damansara', state: 'Selangor', established: 1977, type: 'Private', qsRank2027: '701-710', websiteUrl: 'https://www.segi.edu.my' },
-  { name: 'Sunway University', country: 'Malaysia', city: 'Bandar Sunway', state: 'Selangor', established: 2004, type: 'Private', qsRank2027: 354, websiteUrl: 'https://sunwayuniversity.edu.my', featured: true },
-  { name: 'Management & Science University (MSU)', country: 'Malaysia', city: 'Shah Alam', state: 'Selangor', established: 2001, type: 'Private', qsRank2027: 608, websiteUrl: 'https://www.msu.edu.my' },
-  { name: 'Asia Pacific University of Technology & Innovation (APU)', country: 'Malaysia', city: 'Kuala Lumpur', state: 'Federal Territory', established: 1993, type: 'Private', qsRank2027: 528, websiteUrl: 'https://www.apu.edu.my', featured: true },
+  { 
+    name: 'INTI International University & Colleges', 
+    country: 'Malaysia', 
+    city: 'Nilai', 
+    state: 'Negeri Sembilan', 
+    established: 1986, 
+    type: 'Private', 
+    qsRank2027: 406, 
+    websiteUrl: 'https://newinti.edu.my', 
+    featured: true,
+    bannerUrl: 'https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?q=80&w=1200&auto=format&fit=crop',
+    logoUrl: 'https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?q=80&w=200&auto=format&fit=crop',
+    popularPrograms: ['BSc (Hons) Computer Science & AI', 'Bachelor of Business Administration', 'Bachelor of Biotechnology', 'Master of International Business'],
+    avgTuitionAnnualUSD: 4500,
+    intakes: ['January', 'May', 'August']
+  },
+  { 
+    name: "Taylor's University", 
+    country: 'Malaysia', 
+    city: 'Subang Jaya', 
+    state: 'Selangor', 
+    established: 1969, 
+    type: 'Private', 
+    qsRank2027: 272, 
+    websiteUrl: 'https://university.taylors.edu.my', 
+    featured: true,
+    bannerUrl: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=1200&auto=format&fit=crop',
+    logoUrl: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=200&auto=format&fit=crop',
+    popularPrograms: ['Bachelor of Business (Hons)', 'Bachelor of Culinary Management', 'Bachelor of Software Engineering', 'Master of Management'],
+    avgTuitionAnnualUSD: 8200,
+    intakes: ['March', 'August']
+  },
+  { 
+    name: 'SEGi University & Colleges', 
+    country: 'Malaysia', 
+    city: 'Kota Damansara', 
+    state: 'Selangor', 
+    established: 1977, 
+    type: 'Private', 
+    qsRank2027: '701-710', 
+    websiteUrl: 'https://www.segi.edu.my',
+    popularPrograms: ['Bachelor of Medicine & Surgery (MBBS)', 'Bachelor of Business Management', 'Bachelor of Early Childhood Education'],
+    avgTuitionAnnualUSD: 4800,
+    intakes: ['February', 'June', 'October']
+  },
+  { 
+    name: 'Sunway University', 
+    country: 'Malaysia', 
+    city: 'Bandar Sunway', 
+    state: 'Selangor', 
+    established: 2004, 
+    type: 'Private', 
+    qsRank2027: 354, 
+    websiteUrl: 'https://sunwayuniversity.edu.my', 
+    featured: true,
+    bannerUrl: 'https://images.unsplash.com/photo-1592280771190-3e2e4d571952?q=80&w=1200&auto=format&fit=crop',
+    logoUrl: 'https://images.unsplash.com/photo-1592280771190-3e2e4d571952?q=80&w=200&auto=format&fit=crop',
+    popularPrograms: ['BSc (Hons) Accounting & Finance', 'BSc (Hons) Computer Science', 'BSc (Hons) Actuarial Studies', 'Master of Data Science'],
+    avgTuitionAnnualUSD: 7800,
+    intakes: ['January', 'March', 'August']
+  },
+  { 
+    name: 'Management & Science University (MSU)', 
+    country: 'Malaysia', 
+    city: 'Shah Alam', 
+    state: 'Selangor', 
+    established: 2001, 
+    type: 'Private', 
+    qsRank2027: 608, 
+    websiteUrl: 'https://www.msu.edu.my',
+    popularPrograms: ['Bachelor of Biomedical Science', 'Bachelor of International Business', 'Bachelor of Graphic Design'],
+    avgTuitionAnnualUSD: 5200,
+    intakes: ['February', 'July', 'September']
+  },
+  { 
+    name: 'Asia Pacific University of Technology & Innovation (APU)', 
+    country: 'Malaysia', 
+    city: 'Kuala Lumpur', 
+    state: 'Federal Territory', 
+    established: 1993, 
+    type: 'Private', 
+    qsRank2027: 528, 
+    websiteUrl: 'https://www.apu.edu.my', 
+    featured: true,
+    bannerUrl: 'https://images.unsplash.com/photo-1519452635265-7b1fbfd1e4e0?q=80&w=1200&auto=format&fit=crop',
+    logoUrl: 'https://images.unsplash.com/photo-1519452635265-7b1fbfd1e4e0?q=80&w=200&auto=format&fit=crop',
+    popularPrograms: ['BSc (Hons) Information Technology', 'BSc (Hons) Cybersecurity', 'BSc (Hons) Artificial Intelligence', 'MSc Data Science & AI'],
+    avgTuitionAnnualUSD: 6400,
+    intakes: ['March', 'May', 'July', 'October', 'November']
+  },
   { name: 'Universiti Tun Abdul Razak (UNIRAZAK)', country: 'Malaysia', city: 'Kuala Lumpur', state: 'Federal Territory', established: 1997, type: 'Private', websiteUrl: 'https://www.unirazak.edu.my' },
   { name: 'Universiti Kuala Lumpur (UniKL)', country: 'Malaysia', city: 'Kuala Lumpur', state: 'Federal Territory', established: 2002, type: 'Private', qsRank2027: '1401+', websiteUrl: 'https://www.unikl.edu.my' },
   { name: 'Limkokwing University', country: 'Malaysia', city: 'Cyberjaya', state: 'Selangor', established: 1991, type: 'Private', websiteUrl: 'https://www.limkokwing.net' },
   { name: 'University of Cyberjaya (UoC)', country: 'Malaysia', city: 'Cyberjaya', state: 'Selangor', established: 2005, type: 'Private', qsRank2027: '951-1000', websiteUrl: 'https://cyberjaya.edu.my' },
-  { name: 'City University Malaysia', country: 'Malaysia', city: 'Petaling Jaya', state: 'Selangor', established: 1984, type: 'Private', websiteUrl: 'https://www.city.edu.my' },
+  
+  // 11. CITY UNIVERSITY MALAYSIA (Enriched from en.your-uni.com)
+  { 
+    name: 'City University Malaysia', 
+    country: 'Malaysia', 
+    city: 'Petaling Jaya', 
+    state: 'Selangor', 
+    established: 1984, 
+    type: 'Private', 
+    websiteUrl: 'https://www.city.edu.my',
+    bannerUrl: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=1200&auto=format&fit=crop',
+    logoUrl: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=200&auto=format&fit=crop',
+    tagline: 'Premier metropolitan university in Petaling Jaya specializing in Business Administration, Accounting, IT, and Creative Design.',
+    description: 'City University Malaysia (City U), founded in 1984, is an accredited higher education institution recognized by the Malaysian Qualifications Agency (MQA) and the Ministry of Higher Education (MOHE). Located in Petaling Jaya near Kuala Lumpur, City U delivers market-driven undergraduate degrees, master programs, and foundation pathways with strong corporate linkages and affordable tuition.',
+    featured: true,
+    popularPrograms: [
+      'Bachelor of Business Administration (Hons)',
+      'Bachelor of Accounting (Hons)',
+      'Bachelor of Information Technology (Hons)',
+      'Bachelor of Graphic Design (Hons)',
+      'Master of Business Administration (MBA)',
+      'Diploma in Business Administration'
+    ],
+    intakes: ['January', 'March', 'May', 'July', 'September', 'October'],
+    avgTuitionAnnualUSD: 3600,
+    campuses: [
+      { id: 'campus-cityu-1', name: 'Petaling Jaya Main Campus (Menara City U)', city: 'Petaling Jaya', stateOrProvince: 'Selangor', country: 'Malaysia', isMainCampus: true },
+      { id: 'campus-cityu-2', name: 'Johor Bahru Regional Campus', city: 'Johor Bahru', stateOrProvince: 'Johor', country: 'Malaysia', isMainCampus: false }
+    ],
+    accommodations: [
+      {
+        id: 'acc-cityu-1',
+        name: 'City U On-Campus Hostel',
+        type: 'On-Campus Hostel',
+        distanceToCampus: '0 km (Inside Menara City U)',
+        monthlyRentMYR: 'MYR 450 - 650 / month',
+        monthlyRentUSD: '$100 - $145 / month',
+        roomTypes: ['Twin Sharing Room (Air-Conditioned)', 'Single Executive Room'],
+        amenities: ['Air Conditioning & Study Desk', '24/7 Security & CCTV', 'High-Speed Wi-Fi', 'Dining Hall & Cafeteria', 'On-Site Laundry Service'],
+        imageUrl: 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?q=80&w=600&auto=format&fit=crop',
+        description: 'Affordable on-campus accommodation within Menara City U, offering hassle-free access to lecture halls and campus library.'
+      },
+      {
+        id: 'acc-cityu-2',
+        name: 'Damansara Bistari Student Residence',
+        type: 'Student Residence',
+        distanceToCampus: '800m (10 mins walk / Campus Shuttle)',
+        monthlyRentMYR: 'MYR 500 - 800 / month',
+        monthlyRentUSD: '$115 - $180 / month',
+        roomTypes: ['Single Room with Balcony', 'Twin Sharing with AC'],
+        amenities: ['Next to RapidKL LRT Station', 'Surrounded by Malls & Cafes', 'Swimming Pool', 'High-Speed Fiber Wi-Fi', 'Full Kitchen'],
+        imageUrl: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=600&auto=format&fit=crop',
+        description: 'Convenient student apartment living in Petaling Jaya with rapid transit connections directly into downtown Kuala Lumpur.'
+      }
+    ],
+    articles: [
+      {
+        id: 'art-cityu-1',
+        title: 'Bachelor of Business Administration (Hons) at City University: Complete Course & Career Guide',
+        summary: 'Explore curriculum structure, corporate internship placements in Kuala Lumpur, and MQA-accredited dual qualifications.',
+        category: 'Academic Excellence',
+        readTime: '4 min read',
+        date: 'Oct 2026',
+        imageUrl: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=600&auto=format&fit=crop'
+      },
+      {
+        id: 'art-cityu-2',
+        title: 'Student Life & Cost of Living in Petaling Jaya, Malaysia',
+        summary: 'Detailed monthly breakdown of food, transport, and leisure expenses for international students living in Petaling Jaya.',
+        category: 'Campus Life',
+        readTime: '5 min read',
+        date: 'Oct 2026',
+        imageUrl: 'https://images.unsplash.com/photo-1507699622108-4be3ab695d3f?q=80&w=600&auto=format&fit=crop'
+      }
+    ],
+    customCourses: [
+      {
+        title: 'Bachelor of Business Administration (Hons)',
+        level: 'undergraduate',
+        department: 'Business, Management & Economics',
+        durationYears: '3 Years',
+        durationMonths: 36,
+        studyMode: 'Full-Time',
+        annualFeeUSD: 3400,
+        tuitionFeeLocal: 'MYR 15,000 / year',
+        tuitionPerYear: 'MYR 15,000',
+        totalTuitionLocal: 'MYR 45,000',
+        totalTuitionUSD: '$10,200 USD',
+        intakes: ['January', 'March', 'May', 'July', 'September', 'October'],
+        ieltsRequirement: 5.5,
+        accreditations: ['MQA Accredited', 'Chartered Management Institute (CMI)', 'MOHE Approved'],
+        entryRequirements: 'STPM / Cambridge A-Levels (2 passes) or recognized Foundation / Diploma with min CGPA 2.0. English: IELTS 5.5 or English Placement Test.',
+        overview: 'City University’s Bachelor of Business Administration (Hons) delivers an in-depth foundation across corporate management, international trade, marketing intelligence, and organizational strategy with mandatory corporate internships in Kuala Lumpur.',
+        careerProspects: ['Business Development Manager', 'Marketing Strategist', 'Operations Analyst', 'Human Resource Specialist', 'Management Trainee'],
+        campusName: 'Petaling Jaya Main Campus'
+      },
+      {
+        title: 'Bachelor of Accounting (Hons)',
+        level: 'undergraduate',
+        department: 'Business, Management & Economics',
+        durationYears: '3.5 Years',
+        durationMonths: 42,
+        studyMode: 'Full-Time',
+        annualFeeUSD: 3750,
+        tuitionFeeLocal: 'MYR 16,500 / year',
+        tuitionPerYear: 'MYR 16,500',
+        totalTuitionLocal: 'MYR 57,750',
+        totalTuitionUSD: '$13,100 USD',
+        intakes: ['January', 'May', 'September'],
+        ieltsRequirement: 5.5,
+        accreditations: ['MQA Accredited', 'ACCA 9 Papers Exemption', 'CIMA Accelerated Route', 'CPA Australia Foundation'],
+        entryRequirements: 'STPM / Cambridge A-Levels with credit in Mathematics. English: IELTS 5.5 or equivalent.',
+        overview: 'Comprehensive professional accounting degree accredited by MQA and ACCA, offering exemptions and direct pathways to Chartered Accountant certification.',
+        careerProspects: ['Financial Auditor', 'Tax Consultant', 'Corporate Accountant', 'Risk Analyst'],
+        campusName: 'Petaling Jaya Main Campus'
+      },
+      {
+        title: 'Bachelor of Information Technology (Hons)',
+        level: 'undergraduate',
+        department: 'Computer Science, IT & Engineering',
+        durationYears: '3 Years',
+        durationMonths: 36,
+        studyMode: 'Full-Time',
+        annualFeeUSD: 3600,
+        tuitionFeeLocal: 'MYR 16,000 / year',
+        tuitionPerYear: 'MYR 16,000',
+        totalTuitionLocal: 'MYR 48,000',
+        totalTuitionUSD: '$10,800 USD',
+        intakes: ['March', 'July', 'October'],
+        ieltsRequirement: 5.5,
+        accreditations: ['MQA Accredited', 'Cisco Networking Academy', 'Oracle Academy Partner'],
+        overview: 'Practical IT degree covering full-stack software development, cloud infrastructure, enterprise networks, and database administration.',
+        careerProspects: ['Full Stack Developer', 'Cloud Systems Engineer', 'IT Consultant', 'Database Administrator'],
+        campusName: 'Petaling Jaya Main Campus'
+      },
+      {
+        title: 'Master of Business Administration (MBA)',
+        level: 'postgraduate',
+        department: 'Business, Management & Economics',
+        durationYears: '1.5 Years',
+        durationMonths: 18,
+        studyMode: 'Full-Time / Hybrid',
+        annualFeeUSD: 4100,
+        tuitionFeeLocal: 'MYR 18,000 / year',
+        tuitionPerYear: 'MYR 18,000',
+        totalTuitionLocal: 'MYR 27,000',
+        totalTuitionUSD: '$6,100 USD',
+        intakes: ['January', 'April', 'July', 'October'],
+        ieltsRequirement: 6.0,
+        accreditations: ['MQA Accredited', 'CMI Dual Certificate Option'],
+        overview: 'Executive MBA program tailored for working professionals and international graduates focusing on corporate leadership, strategic finance, and global market innovation.',
+        careerProspects: ['Corporate Executive', 'Managing Director', 'Management Consultant', 'Chief Operations Officer'],
+        campusName: 'Petaling Jaya Main Campus'
+      },
+      {
+        title: 'Diploma in Business Administration',
+        level: 'diploma',
+        department: 'Business, Management & Economics',
+        durationYears: '2 Years',
+        durationMonths: 24,
+        studyMode: 'Full-Time',
+        annualFeeUSD: 2500,
+        tuitionFeeLocal: 'MYR 11,000 / year',
+        tuitionPerYear: 'MYR 11,000',
+        totalTuitionLocal: 'MYR 22,000',
+        totalTuitionUSD: '$5,000 USD',
+        intakes: ['January', 'April', 'August'],
+        ieltsRequirement: 5.0,
+        accreditations: ['MQA Accredited', 'Direct Progression to Year 2 Degree'],
+        overview: 'Direct gateway diploma providing fundamental knowledge in accounting, business ethics, marketing principles, and management communications.',
+        careerProspects: ['Assistant Manager', 'Account Executive', 'Customer Relations Specialist'],
+        campusName: 'Petaling Jaya Main Campus'
+      }
+    ]
+  },
   { name: 'ALFA University College (AUC)', country: 'Malaysia', city: 'Subang Jaya', state: 'Selangor', established: 1998, type: 'Private', websiteUrl: 'https://alfa.edu.my' },
   { name: 'Universiti Malaya-Wales (IUMW)', country: 'Malaysia', city: 'Kuala Lumpur', state: 'Federal Territory', established: 2012, type: 'Private', websiteUrl: 'https://iumw.edu.my' },
   { name: 'Lincoln University College', country: 'Malaysia', city: 'Petaling Jaya', state: 'Selangor', established: 2002, type: 'Private', qsRank2027: '701-710', websiteUrl: 'https://lincoln.edu.my' },
@@ -237,11 +499,260 @@ export const COLLABORATED_UNIVERSITIES: CollaboratedUniversityEntry[] = [
   { name: 'Kings University College', country: 'Malaysia', city: 'Kuala Lumpur', state: 'Federal Territory', established: 2008, type: 'Private', websiteUrl: 'https://kings.edu.my' },
   { name: 'DSH Institute of Technology (DIT)', country: 'Malaysia', city: 'Kuala Lumpur', state: 'Federal Territory', established: 1990, type: 'Private College', websiteUrl: 'https://dit.edu.my' },
   { name: 'Mantissa College', country: 'Malaysia', city: 'Taman Tun Dr Ismail', state: 'Kuala Lumpur', established: 1999, type: 'Private College', websiteUrl: 'https://mantissa.edu.my' },
-  { name: 'UCSI University', country: 'Malaysia', city: 'Cheras', state: 'Kuala Lumpur', established: 1986, type: 'Private', qsRank2027: 282, websiteUrl: 'https://www.ucsiuniversity.edu.my', featured: true },
+  { 
+    name: 'UCSI University', 
+    country: 'Malaysia', 
+    city: 'Cheras', 
+    state: 'Kuala Lumpur', 
+    established: 1986, 
+    type: 'Private', 
+    qsRank2027: 282, 
+    websiteUrl: 'https://www.ucsiuniversity.edu.my', 
+    featured: true,
+    bannerUrl: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1200&auto=format&fit=crop',
+    logoUrl: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=200&auto=format&fit=crop',
+    popularPrograms: ['BSc (Hons) Biotechnology', 'Bachelor of Pharmacy', 'Bachelor of Music', 'Master of International Business'],
+    avgTuitionAnnualUSD: 7200,
+    intakes: ['January', 'May', 'September']
+  },
   { name: 'University of Selangor (UNISEL)', country: 'Malaysia', city: 'Bestari Jaya', state: 'Selangor', established: 1999, type: 'State Public', websiteUrl: 'https://unisel.edu.my' },
   { name: 'International College of Creative Arts Technology (CATS College)', country: 'Malaysia', city: 'Kuching', state: 'Sarawak', established: 2001, type: 'Private College', websiteUrl: 'https://cats.edu.my' },
   { name: 'Asia Metropolitan University (AMU)', country: 'Malaysia', city: 'Johor Bahru', state: 'Johor', established: 2004, type: 'Private', websiteUrl: 'https://amu.edu.my' },
-  { name: 'Limkokwing University of Creative Technology (LUCT)', country: 'Malaysia', city: 'Cyberjaya', state: 'Selangor', established: 1991, type: 'Private', websiteUrl: 'https://limkokwing.net' },
+  
+  // 38. MULTIMEDIA UNIVERSITY (MMU) (Enriched from en.your-uni.com)
+  { 
+    name: 'Multimedia University (MMU)', 
+    country: 'Malaysia', 
+    city: 'Cyberjaya', 
+    state: 'Selangor', 
+    established: 1996, 
+    type: 'Premier Digital Tech University (GLC)', 
+    qsRank2027: '1001-1200', 
+    websiteUrl: 'https://www.mmu.edu.my',
+    bannerUrl: 'https://images.unsplash.com/photo-1562774053-701939374585?q=80&w=1200&auto=format&fit=crop',
+    logoUrl: 'https://images.unsplash.com/photo-1562774053-701939374585?q=80&w=200&auto=format&fit=crop',
+    tagline: "Malaysia's pioneer digital tech university with premier faculties in Accounting, Computer Science, AI, and Creative Multimedia.",
+    description: "Multimedia University (MMU), established in 1996 under Telekom Malaysia, is the pioneer private university in Malaysia and the nation's premier digital innovation powerhouse. Spanning state-of-the-art campuses in Cyberjaya and Melaka, MMU is celebrated globally for producing world-class software engineers, chartered accountants, and creative media visionaries.",
+    featured: true,
+    popularPrograms: [
+      'Bachelor of Accounting (Hons)',
+      'Bachelor of Business Administration (Hons)',
+      'Bachelor of Computer Science (Hons) in Artificial Intelligence',
+      'Bachelor of Multimedia (Hons) in Animation & Virtual Reality',
+      'Bachelor of Information Technology (Hons)',
+      'Master of Business Administration (MBA)',
+      'Master of Computer Science (by Research)'
+    ],
+    intakes: ['March', 'July', 'October', 'November'],
+    avgTuitionAnnualUSD: 4200,
+    campuses: [
+      { id: 'campus-mmu-1', name: 'Cyberjaya Flagship Smart Campus', city: 'Cyberjaya', stateOrProvince: 'Selangor', country: 'Malaysia', isMainCampus: true },
+      { id: 'campus-mmu-2', name: 'Melaka Historic Heritage Campus', city: 'Ayer Keroh', stateOrProvince: 'Melaka', country: 'Malaysia', isMainCampus: false }
+    ],
+    accommodations: [
+      {
+        id: 'acc-mmu-1',
+        name: 'MMU On-Campus Student Residence (Cyberjaya)',
+        type: 'On-Campus Hostel',
+        distanceToCampus: '0 km (Inside Campus Grounds)',
+        monthlyRentMYR: 'MYR 350 - 550 / month',
+        monthlyRentUSD: '$80 - $125 / month',
+        roomTypes: ['Twin Sharing Room (Air-Conditioned)', 'Single Room with En-Suite', 'Economy Quad Sharing'],
+        amenities: ['24/7 Security & Keycard Access', 'High-Speed Eduroam Wi-Fi', 'Cafeterias & Food Court', 'Olympic Swimming Pool & Gymnasium', 'Coin-Operated Laundry', 'Study Lounges'],
+        imageUrl: 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?q=80&w=600&auto=format&fit=crop',
+        description: 'Safe, affordable and vibrant campus hostels located footsteps away from lecture theatres, central library, and tech labs.'
+      },
+      {
+        id: 'acc-mmu-2',
+        name: 'The Arc Cyberjaya (Off-Campus Condominium)',
+        type: 'Condominium',
+        distanceToCampus: '500m (5-minute walk to MMU Gate)',
+        monthlyRentMYR: 'MYR 450 - 850 / month',
+        monthlyRentUSD: '$100 - $190 / month',
+        roomTypes: ['Master Bedroom with Private Bath', 'Middle Bedroom', 'Single Bedroom'],
+        amenities: ['Resort Swimming Pool', 'Fully Equipped Gym', '24/7 Security & CCTV', 'Air Conditioning & Water Heater', 'Mini-Marts & Cafes on Ground Floor', 'Campus Shuttle'],
+        imageUrl: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=600&auto=format&fit=crop',
+        description: 'The premier student condo choice for international MMU students, featuring full resort facilities within walking distance to class.'
+      },
+      {
+        id: 'acc-mmu-3',
+        name: 'Cyberia SmartHomes Condominium',
+        type: 'Off-Campus Apartment',
+        distanceToCampus: '300m (Adjacent to MMU South Gate)',
+        monthlyRentMYR: 'MYR 400 - 750 / month',
+        monthlyRentUSD: '$90 - $170 / month',
+        roomTypes: ['Single Room', 'Medium AC Room', 'Master Room with Balcony'],
+        amenities: ['Swimming Pool & Badminton Court', 'On-site Grocery Store', 'High-Speed Fiber Internet', 'Full Kitchen & Washing Machine'],
+        imageUrl: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=600&auto=format&fit=crop',
+        description: 'Budget-friendly condominium community directly adjacent to Multimedia University with a lively international student community.'
+      }
+    ],
+    articles: [
+      {
+        id: 'art-mmu-1',
+        title: 'Bachelor of Accounting (Hons) at MMU: ACCA 9-Paper Exemption & Career Pathways',
+        summary: 'How MMU accounting graduates secure fast-track ACCA, CIMA, and MIA professional memberships with Big 4 hiring.',
+        category: 'Academic Excellence',
+        readTime: '4 min read',
+        date: 'Oct 2026',
+        imageUrl: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=600&auto=format&fit=crop'
+      },
+      {
+        id: 'art-mmu-2',
+        title: 'Student Life in Cyberjaya: Silicon Valley of Malaysia',
+        summary: 'Discover smart city infrastructure, multicultural student community, dining, and weekend escapes in Cyberjaya and Putrajaya.',
+        category: 'Campus Life',
+        readTime: '5 min read',
+        date: 'Oct 2026',
+        imageUrl: 'https://images.unsplash.com/photo-1507699622108-4be3ab695d3f?q=80&w=600&auto=format&fit=crop'
+      },
+      {
+        id: 'art-mmu-3',
+        title: 'Step-by-Step EMGS Student Visa & VAL Approval Guide for Malaysia',
+        summary: 'Everything you need to know about Visa Approval Letter (VAL), EMGS processing timelines, medical screening, and single entry visa.',
+        category: 'Visa & EMGS',
+        readTime: '6 min read',
+        date: 'Oct 2026',
+        imageUrl: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?q=80&w=600&auto=format&fit=crop'
+      }
+    ],
+    customCourses: [
+      {
+        title: 'Bachelor of Accounting (Hons)',
+        level: 'undergraduate',
+        department: 'Business, Management & Economics',
+        durationYears: '3 Years',
+        durationMonths: 36,
+        studyMode: 'Full-Time',
+        annualFeeUSD: 4200,
+        tuitionFeeLocal: 'MYR 18,500 / year',
+        tuitionPerYear: 'MYR 18,500',
+        totalTuitionLocal: 'MYR 55,500',
+        totalTuitionUSD: '$12,500 USD',
+        intakes: ['March', 'July', 'October'],
+        ieltsRequirement: 5.5,
+        accreditations: ['MQA Accredited', 'ACCA Maximum 9-Paper Exemption', 'CIMA Accelerated Route', 'MIA Recognised', 'MICPA & CA ANZ'],
+        entryRequirements: 'STPM / Cambridge A-Levels (min Grade C in 2 subjects with credit in Mathematics) or recognized Foundation in Business. IELTS 5.5 - 6.0 or MUET Band 3.',
+        overview: 'Recognized by the Malaysian Institute of Accountants (MIA), ACCA, and CIMA, this honours degree produces premier chartered accountants equipped with forensic analytics, taxation expertise, and direct Big 4 corporate internships.',
+        careerProspects: ['Chartered Accountant', 'Financial Auditor (Big 4)', 'Forensic Accountant', 'Investment Banker', 'Chief Financial Officer (CFO)'],
+        campusName: 'Cyberjaya & Melaka Campuses'
+      },
+      {
+        title: 'Bachelor of Business Administration (Hons) in Marketing & Digital Commerce',
+        level: 'undergraduate',
+        department: 'Business, Management & Economics',
+        durationYears: '3 Years',
+        durationMonths: 36,
+        studyMode: 'Full-Time',
+        annualFeeUSD: 3850,
+        tuitionFeeLocal: 'MYR 17,000 / year',
+        tuitionPerYear: 'MYR 17,000',
+        totalTuitionLocal: 'MYR 51,000',
+        totalTuitionUSD: '$11,500 USD',
+        intakes: ['March', 'July', 'October'],
+        ieltsRequirement: 5.5,
+        accreditations: ['MQA Accredited', 'Digital Marketing Institute (DMI)'],
+        overview: 'Combines traditional corporate management strategy with next-generation digital commerce, SEO/SEM analytics, omnichannel branding, and consumer data science.',
+        careerProspects: ['Digital Growth Strategist', 'Brand Director', 'E-Commerce Manager', 'Marketing Intelligence Lead'],
+        campusName: 'Cyberjaya Campus'
+      },
+      {
+        title: 'Bachelor of Computer Science (Hons) in Artificial Intelligence',
+        level: 'undergraduate',
+        department: 'Computer Science, IT & Engineering',
+        durationYears: '3 Years',
+        durationMonths: 36,
+        studyMode: 'Full-Time',
+        annualFeeUSD: 4500,
+        tuitionFeeLocal: 'MYR 20,000 / year',
+        tuitionPerYear: 'MYR 20,000',
+        totalTuitionLocal: 'MYR 60,000',
+        totalTuitionUSD: '$13,500 USD',
+        intakes: ['March', 'July', 'October'],
+        ieltsRequirement: 6.0,
+        accreditations: ['MQA Accredited', 'Premier Digital Tech University (MDEC)', 'AWS Cloud Academy Partner'],
+        overview: 'Pioneered by MMU Cyberjaya, this flagship honours program covers deep learning, neural networks, computer vision, autonomous agents, and NLP in cutting-edge research labs.',
+        careerProspects: ['Machine Learning Engineer', 'AI Research Scientist', 'Computer Vision Developer', 'Data Architect'],
+        campusName: 'Cyberjaya Flagship Smart Campus'
+      },
+      {
+        title: 'Bachelor of Multimedia (Hons) in Animation & Virtual Reality',
+        level: 'undergraduate',
+        department: 'Arts, Design & Media',
+        durationYears: '3 Years',
+        durationMonths: 36,
+        studyMode: 'Full-Time',
+        annualFeeUSD: 4300,
+        tuitionFeeLocal: 'MYR 19,000 / year',
+        tuitionPerYear: 'MYR 19,000',
+        totalTuitionLocal: 'MYR 57,000',
+        totalTuitionUSD: '$12,900 USD',
+        intakes: ['March', 'July', 'October'],
+        ieltsRequirement: 5.5,
+        accreditations: ['MQA Accredited', 'Epic Games Unreal Engine Academic Partner', 'Unity Certified Training'],
+        overview: 'MMU is celebrated as the birthplace of Southeast Asia’s CGI animation industry. Students master 3D character animation, spatial computing, VR/AR engines, and cinematic rendering.',
+        careerProspects: ['3D Animator', 'VR/AR Experience Developer', 'VFX Technical Director', 'Game Designer'],
+        campusName: 'Cyberjaya Flagship Smart Campus'
+      },
+      {
+        title: 'Bachelor of Information Technology (Hons)',
+        level: 'undergraduate',
+        department: 'Computer Science, IT & Engineering',
+        durationYears: '3 Years',
+        durationMonths: 36,
+        studyMode: 'Full-Time',
+        annualFeeUSD: 4100,
+        tuitionFeeLocal: 'MYR 18,000 / year',
+        tuitionPerYear: 'MYR 18,000',
+        totalTuitionLocal: 'MYR 54,000',
+        totalTuitionUSD: '$12,200 USD',
+        intakes: ['March', 'July', 'October'],
+        ieltsRequirement: 5.5,
+        accreditations: ['MQA Accredited', 'Cisco Academy Partner', 'CompTIA Academic Partner'],
+        overview: 'Comprehensive IT qualification emphasizing cybersecurity defenses, cloud infrastructure, enterprise systems integration, and mobile development.',
+        careerProspects: ['IT Solutions Architect', 'Cloud Security Specialist', 'Systems Administrator'],
+        campusName: 'Cyberjaya & Melaka Campuses'
+      },
+      {
+        title: 'Master of Business Administration (MBA)',
+        level: 'postgraduate',
+        department: 'Business, Management & Economics',
+        durationYears: '1 Year',
+        durationMonths: 12,
+        studyMode: 'Full-Time / Hybrid',
+        annualFeeUSD: 5400,
+        tuitionFeeLocal: 'MYR 24,000 / year',
+        tuitionPerYear: 'MYR 24,000',
+        totalTuitionLocal: 'MYR 24,000',
+        totalTuitionUSD: '$5,400 USD',
+        intakes: ['March', 'July', 'November'],
+        ieltsRequirement: 6.0,
+        accreditations: ['MQA Accredited', 'Chartered Management Institute (CMI)'],
+        overview: 'Accelerated 1-year MBA for executives and international leaders combining digital transformation, corporate strategy, agile governance, and global finance.',
+        careerProspects: ['Chief Executive Officer', 'Corporate Strategy Director', 'Management Consultant', 'Entrepreneur'],
+        campusName: 'Cyberjaya Flagship Smart Campus'
+      },
+      {
+        title: 'Master of Computer Science (by Research / Coursework)',
+        level: 'postgraduate',
+        department: 'Computer Science, IT & Engineering',
+        durationYears: '1.5 - 2 Years',
+        durationMonths: 20,
+        studyMode: 'Full-Time',
+        annualFeeUSD: 3600,
+        tuitionFeeLocal: 'MYR 16,000 / year',
+        tuitionPerYear: 'MYR 16,000',
+        totalTuitionLocal: 'MYR 24,000',
+        totalTuitionUSD: '$5,400 USD',
+        intakes: ['March', 'July', 'November'],
+        ieltsRequirement: 6.0,
+        accreditations: ['MQA Accredited', 'High Impact Research Group'],
+        overview: 'Advanced postgraduate research program in high-performance computing, deep neural networks, IoT security, and distributed data systems.',
+        careerProspects: ['Lead Data Scientist', 'AI Research Lead', 'University Lecturer', 'R&D Director'],
+        campusName: 'Cyberjaya Flagship Smart Campus'
+      }
+    ]
+  },
   { name: 'MERITUS UNIVERSITY', country: 'Malaysia', city: 'Kuala Lumpur', state: 'Federal Territory', established: 2016, type: 'Private', websiteUrl: 'https://meritus.edu.my' },
   { name: 'International Institute of Management and Technology (IIMAT College)', country: 'Malaysia', city: 'Kuala Lumpur', state: 'Federal Territory', established: 2000, type: 'Private College', websiteUrl: 'https://iimat.edu.my' },
   { name: 'Kuala Lumpur University of Science and Technology (KLUST)', country: 'Malaysia', city: 'Kuala Lumpur', state: 'Federal Territory', established: 2010, type: 'Private', websiteUrl: 'https://klust.edu.my' },
@@ -313,7 +824,7 @@ function buildUniversity(entry: CollaboratedUniversityEntry, index: number): Uni
     description,
     logoUrl: entry.logoUrl || `https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=200&auto=format&fit=crop`,
     bannerUrl: banner,
-    campuses: [
+    campuses: entry.campuses || [
       {
         id: `campus-${index + 1}`,
         name: `${entry.name} Campus`,
@@ -331,7 +842,9 @@ function buildUniversity(entry: CollaboratedUniversityEntry, index: number): Uni
     popularPrograms,
     scholarshipsAvailable: true,
     featured: entry.featured ?? false,
-    topRanked: !!entry.qsRank2027
+    topRanked: !!entry.qsRank2027,
+    accommodations: entry.accommodations,
+    articles: entry.articles
   };
 }
 
@@ -350,7 +863,49 @@ function ensureBuilt(): { universities: University[]; courses: Course[] } {
   
   // Generate relevant courses matching university's programs
   const courses: Course[] = [];
-  universities.forEach((uni) => {
+  universities.forEach((uni, idx) => {
+    const rawEntry = COLLABORATED_UNIVERSITIES[idx];
+
+    // Priority 1: High-fidelity custom courses if explicitly configured
+    if (rawEntry && rawEntry.customCourses && rawEntry.customCourses.length > 0) {
+      rawEntry.customCourses.forEach((cc, cIdx) => {
+        courses.push({
+          id: `crs-${uni.id}-${cIdx + 1}`,
+          universityId: uni.id,
+          universityName: uni.name,
+          slug: `${uni.slug}-${toSlug(cc.title || 'program')}`,
+          title: cc.title || 'Degree Program',
+          level: (cc.level as any) || 'undergraduate',
+          department: cc.department || 'Business, Management & Economics',
+          durationYears: cc.durationYears || (uni.country === 'United Kingdom' || uni.country === 'Malaysia' ? '3 Years' : '3-4 Years'),
+          durationMonths: cc.durationMonths || 36,
+          studyMode: (cc.studyMode as any) || 'Full-Time',
+          country: uni.country,
+          countryCode: uni.countryCode,
+          city: cc.city || uni.city,
+          state: cc.state || uni.state,
+          flagEmoji: uni.flagEmoji,
+          universityWebsite: uni.websiteUrl,
+          qsRank2027: uni.qsRank2027,
+          universityType: uni.type,
+          annualFeeUSD: cc.annualFeeUSD || uni.avgTuitionAnnualUSD,
+          tuitionFeeLocal: cc.tuitionFeeLocal || `${uni.currency} ${Math.round(uni.avgTuitionAnnualUSD * 1.15).toLocaleString()} / year`,
+          tuitionPerYear: cc.tuitionPerYear || `${uni.currency} ${Math.round(uni.avgTuitionAnnualUSD * 1.15).toLocaleString()}`,
+          totalTuitionLocal: cc.totalTuitionLocal,
+          totalTuitionUSD: cc.totalTuitionUSD,
+          ieltsRequirement: cc.ieltsRequirement || 5.5,
+          intakes: cc.intakes || uni.intakes,
+          scholarshipCoveragePct: cc.scholarshipCoveragePct || 20.0,
+          overview: cc.overview || `Accredited degree program at ${uni.name} with industry certification and career placement.`,
+          careerProspects: cc.careerProspects || ['Corporate Specialist', 'Project Analyst', 'Industry Consultant'],
+          accreditations: cc.accreditations || ['MQA Accredited'],
+          entryRequirements: cc.entryRequirements,
+          campusName: cc.campusName || `${uni.city} Campus`
+        });
+      });
+      return;
+    }
+
     const prog1 = uni.popularPrograms[0] || 'Computer Science & AI';
     const prog2 = uni.popularPrograms[1] || 'International Business & Finance';
     const prog3 = uni.popularPrograms[2] || 'Data Analytics & Digital Marketing';

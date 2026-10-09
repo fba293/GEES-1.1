@@ -178,6 +178,24 @@
   scrollbar-width: none;
 }
 
+.sleek-scrollbar::-webkit-scrollbar {
+  height: 6px;
+}
+.sleek-scrollbar::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 9999px;
+}
+.sleek-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+.dark .sleek-scrollbar::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+.dark .sleek-scrollbar::-webkit-scrollbar-thumb {
+  background: #475569;
+}
+
 .carousel-viewport {
   perspective: 1200px;
   perspective-origin: 50% 50%;

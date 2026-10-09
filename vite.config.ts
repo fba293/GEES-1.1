@@ -27,6 +27,8 @@ export default defineConfig(() => {
           contact: path.resolve(__dirname, 'contact.html'),
           services: path.resolve(__dirname, 'services.html'),
           countries: path.resolve(__dirname, 'countries.html'),
+          universities: path.resolve(__dirname, 'universities.html'),
+          courses: path.resolve(__dirname, 'courses.html'),
         },
       },
     },

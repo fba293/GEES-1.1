@@ -32,6 +32,7 @@ import { FaqSection } from './components/home/FaqSection.tsx';
 
 // Portals & Sub-System Views
 import { UniversityExplorerView } from './components/portal/UniversityExplorerView.tsx';
+import { CourseExplorerView } from './components/portal/CourseExplorerView.tsx';
 import { StudentPortalView } from './components/portal/StudentPortalView.tsx';
 import { CrmView } from './components/portal/CrmView.tsx';
 import { AgentPortalView } from './components/portal/AgentPortalView.tsx';
@@ -59,6 +60,8 @@ export default function App() {
       if (path.includes('contact')) return 'contact';
       if (path.includes('services')) return 'services';
       if (path.includes('countries') || path.includes('destinations')) return 'destinations';
+      if (path.includes('courses') || path.includes('course')) return 'courses';
+      if (path.includes('universities') || path.includes('university')) return 'universities';
     }
     return 'home';
   });
@@ -109,7 +112,7 @@ export default function App() {
       return;
     }
 
-    if (view === 'home' && typeof window !== 'undefined' && (window.location.pathname.includes('blog') || window.location.pathname.includes('services') || window.location.pathname.includes('faq') || window.location.pathname.includes('contact') || window.location.pathname.includes('countries'))) {
+    if (view === 'home' && typeof window !== 'undefined' && (window.location.pathname.includes('blog') || window.location.pathname.includes('services') || window.location.pathname.includes('faq') || window.location.pathname.includes('contact') || window.location.pathname.includes('countries') || window.location.pathname.includes('universities') || window.location.pathname.includes('courses'))) {
       window.location.href = '/';
       return;
     }
@@ -120,6 +123,14 @@ export default function App() {
 
     if ((view === 'destinations' || view === 'countries') && typeof window !== 'undefined' && window.location.pathname.includes('.html')) {
       window.history.pushState({}, '', 'countries.html');
+    }
+
+    if (view === 'universities' && typeof window !== 'undefined' && window.location.pathname.includes('.html')) {
+      window.history.pushState({}, '', 'universities.html');
+    }
+
+    if (view === 'courses' && typeof window !== 'undefined' && window.location.pathname.includes('.html')) {
+      window.history.pushState({}, '', 'courses.html');
     }
 
     setNavPayload(payload || null);
@@ -228,21 +239,26 @@ export default function App() {
           </>
         )}
 
-        {/* VIEW: UNIVERSITIES & COURSES */}
-        {(currentView === 'universities' || currentView === 'courses') && (
-          <div className="py-6">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-6">
-              <button
-                onClick={() => handleNavigate('home')}
-                className="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400 mb-2 cursor-pointer"
-              >
-                <span className="material-symbols-outlined text-sm">arrow_back</span>
-                <span>Back to Home</span>
-              </button>
-            </div>
+        {/* VIEW: UNIVERSITIES */}
+        {currentView === 'universities' && (
+          <div className="py-2">
             <UniversityExplorerView
               initialSlug={typeof navPayload === 'string' ? navPayload : undefined}
               onApply={(uniName) => handleOpenConsultation(`Admissions Representative for ${uniName}`)}
+            />
+          </div>
+        )}
+
+        {/* VIEW: COURSES & COMPARISON ENGINE */}
+        {currentView === 'courses' && (
+          <div className="py-2">
+            <CourseExplorerView
+              onApply={(courseInfo) => handleOpenConsultation(`Admissions for ${courseInfo}`)}
+              onNavigateToUni={(uniSlug) => handleNavigate('universities', uniSlug)}
+              initialQuery={navPayload && typeof navPayload === 'object' ? navPayload.query : (typeof navPayload === 'string' ? navPayload : '')}
+              initialCountry={navPayload && typeof navPayload === 'object' ? navPayload.destination : 'all'}
+              initialLevel={navPayload && typeof navPayload === 'object' ? navPayload.level : 'all'}
+              initialField={navPayload && typeof navPayload === 'object' ? navPayload.field : 'all'}
             />
           </div>
         )}

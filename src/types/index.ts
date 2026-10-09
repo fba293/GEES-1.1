@@ -55,6 +55,31 @@ export interface University {
   scholarshipsAvailable: boolean;
   featured: boolean;
   topRanked: boolean;
+  accommodations?: UniversityAccommodation[];
+  articles?: UniversityArticle[];
+}
+
+export interface UniversityAccommodation {
+  id: string;
+  name: string;
+  type: 'On-Campus Hostel' | 'Off-Campus Apartment' | 'Student Residence' | 'Condominium';
+  distanceToCampus: string;
+  monthlyRentMYR: string;
+  monthlyRentUSD: string;
+  roomTypes: string[];
+  amenities: string[];
+  imageUrl?: string;
+  description: string;
+}
+
+export interface UniversityArticle {
+  id: string;
+  title: string;
+  summary: string;
+  category: 'Visa & EMGS' | 'Campus Life' | 'Career Pathways' | 'Accommodation Guide' | 'Academic Excellence';
+  readTime: string;
+  date: string;
+  imageUrl?: string;
 }
 
 export interface Campus {
@@ -72,7 +97,7 @@ export interface Course {
   universityName: string;
   slug: string;
   title: string;
-  level: 'undergraduate' | 'postgraduate' | 'doctorate' | 'foundation' | 'diploma';
+  level: 'undergraduate' | 'postgraduate' | 'doctorate' | 'foundation' | 'diploma' | 'certificate' | 'a-level' | 'advanced-diploma';
   department: string;
   durationYears: string | number;
   durationMonths: number;
@@ -88,11 +113,16 @@ export interface Course {
   annualFeeUSD: number;
   tuitionFeeLocal: string;
   tuitionPerYear: string;
+  totalTuitionLocal?: string;
+  totalTuitionUSD?: string;
   ieltsRequirement?: number;
   intakes: string[];
   scholarshipCoveragePct?: number;
   overview: string;
   careerProspects: string[];
+  accreditations?: string[];
+  entryRequirements?: string;
+  campusName?: string;
 }
 
 export interface Scholarship {
