@@ -32,7 +32,7 @@ const InteractiveHoverButton = React.forwardRef<
       ref={ref}
       onClick={handleClick}
       className={cn(
-        "group relative cursor-pointer overflow-hidden rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 py-2.5 px-6 text-center font-bold text-slate-950 dark:text-white shadow-xs active:scale-95 inline-flex items-center justify-center select-none isolation-isolate whitespace-nowrap",
+        "group relative cursor-pointer overflow-hidden rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 min-h-[44px] py-2.5 px-6 text-center font-bold text-slate-950 dark:text-white shadow-xs active:scale-95 inline-flex items-center justify-center select-none isolation-isolate whitespace-nowrap",
         "transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
         className,
       )}

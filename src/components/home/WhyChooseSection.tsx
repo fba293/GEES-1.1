@@ -75,17 +75,16 @@ export const WhyChooseSection: React.FC<WhyChooseSectionProps> = ({ onSelectCoun
   };
 
   return (
-    <section className="relative z-10 mx-auto w-full max-w-6xl px-3.5 sm:px-6 lg:px-8 py-10 xs:py-12 sm:py-20 bg-white dark:bg-[#070b19]">
+    <section className="relative z-10 w-full max-w-[95%] mx-auto px-3.5 sm:px-6 lg:px-8 py-10 xs:py-12 sm:py-20 bg-white dark:bg-[#070b19]">
       {/* Header with High-Impact Typography */}
-      <div className="text-center mb-8 sm:mb-14 px-2 max-w-full">
-        <h2 className="text-2xl xs:text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 dark:text-white leading-tight flex items-center justify-center flex-wrap gap-2 sm:gap-3 select-none">
+      <div className="text-center mb-8 sm:mb-14 px-2 max-w-3xl mx-auto">
+        <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold font-display tracking-tight text-slate-900 dark:text-white leading-tight flex items-center justify-center flex-wrap gap-2 sm:gap-3 md:gap-3.5 select-none text-center">
           <span>Why Choose</span>
-          <span className="text-[#fbb034] bg-[#fbb034]/15 px-3 sm:px-5 py-0.5 sm:py-1 rounded-xl sm:rounded-2xl border border-[#fbb034]/30 shadow-xs inline-flex items-center shrink-0">
-            GEES Global
+          <span className="bg-[#fbb034] text-slate-950 px-3.5 sm:px-5 md:px-6 py-0.5 sm:py-1 md:py-1.5 rounded-xl sm:rounded-2xl font-black tracking-tight leading-none shadow-sm shrink-0 inline-flex items-center">
+            GEES
           </span>
-          <span>for Your Future</span>
         </h2>
-        <p className="mt-2.5 sm:mt-3 text-slate-500 dark:text-slate-400 text-sm sm:text-base font-normal leading-relaxed max-w-2xl mx-auto px-2">
+        <p className="mt-2.5 sm:mt-3 text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-400 font-normal leading-relaxed max-w-2xl mx-auto px-2 text-center">
           Trusted guidance. Transparent support. Hassle-free study abroad with 0 service charges.
         </p>
       </div>

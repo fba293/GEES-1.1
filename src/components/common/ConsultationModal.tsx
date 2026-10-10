@@ -72,9 +72,6 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
         ) : (
           <>
             <div className="mb-6">
-              <span className="inline-block text-[10px] font-black uppercase tracking-wider text-blue-600 bg-blue-50 dark:bg-blue-950/50 px-2.5 py-1 rounded-md mb-2">
-                1-on-1 Free Session
-              </span>
               <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
                 Book Your Consultation
               </h3>
@@ -185,9 +182,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                   text="Confirm Free Appointment"
                   className="w-full py-3.5 px-6 rounded-2xl bg-white dark:bg-slate-900 text-slate-950 dark:text-white border-slate-300 dark:border-slate-700 font-extrabold text-sm shadow-lg"
                 />
-                <p className="text-[11px] text-center text-slate-400 mt-2">
-                  Zero commitment. 100% confidential academic guidance.
-                </p>
+
               </div>
             </form>
           </>

@@ -7,6 +7,7 @@
 import React, { useState } from 'react';
 import { mockServices } from '../../data/mockDatabase.ts';
 import { UserRole } from '../../types/index.ts';
+import { ThemeToggle } from '../ThemeToggle.tsx';
 
 interface MobileDrawerProps {
   isOpen: boolean;
@@ -95,16 +96,8 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
                   <span className="material-symbols-outlined text-[16px] sm:text-[18px]">search</span>
                 </button>
 
-                {/* Theme Toggle */}
-                <button
-                  onClick={onToggleTheme}
-                  className="w-8.5 h-8.5 sm:w-10 sm:h-10 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center justify-center text-amber-500 shadow-xs hover:bg-slate-50 transition-colors"
-                  title={isDark ? "Light Mode" : "Dark Mode"}
-                >
-                  <span className="material-symbols-outlined text-[16px] sm:text-[18px]">
-                    {isDark ? 'light_mode' : 'dark_mode'}
-                  </span>
-                </button>
+                {/* Theme Toggle (Matching globaleducationexpert.com exact motion icon & animation) */}
+                <ThemeToggle isDark={isDark} onToggle={onToggleTheme} size="sm" />
 
                 {/* Circular Dark Close Button */}
                 <button

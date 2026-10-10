@@ -14,6 +14,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { mockDestinations } from '../../data/mockDatabase.ts';
 import { DestinationCountry } from '../../types/index.ts';
 import { InteractiveHoverButton } from '../ui/interactive-hover-button.tsx';
+import { useCurrency } from '../../context/CurrencyContext.tsx';
 
 interface DestinationsGalleryProps {
   onNavigateToCountry: (countryName: string) => void;
@@ -24,6 +25,7 @@ export const DestinationsGallery: React.FC<DestinationsGalleryProps> = ({
   onNavigateToCountry,
   onOpenConsultation
 }) => {
+  const { formatPriceString } = useCurrency();
   const [selectedCountry, setSelectedCountry] = useState<DestinationCountry | null>(null);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -167,14 +169,14 @@ export const DestinationsGallery: React.FC<DestinationsGalleryProps> = ({
   return (
     <section className="relative w-full bg-white dark:bg-[#070b19] py-16 sm:py-24 overflow-hidden border-t border-slate-100 dark:border-slate-800 select-none">
       {/* Header - Big, Bold, and Centered matching other major sections */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-10 sm:mb-14 text-center">
-        <h2 className="text-2xl xs:text-3xl sm:text-5xl md:text-6xl font-black text-slate-900 dark:text-white tracking-tight flex items-center justify-center flex-wrap gap-2 sm:gap-3 mb-2 sm:mb-3 leading-tight">
+      <div className="max-w-[95%] w-full mx-auto px-4 sm:px-6 lg:px-8 mb-10 sm:mb-14 text-center">
+        <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold font-display text-slate-900 dark:text-white tracking-tight flex items-center justify-center flex-wrap gap-2 sm:gap-3 md:gap-3.5 leading-tight text-center">
           <span>Choose your</span>
-          <span className="bg-[#fbbf24] text-slate-950 px-3.5 sm:px-6 py-0.5 sm:py-1.5 rounded-xl sm:rounded-[22px] font-black tracking-tight leading-none shadow-sm">
+          <span className="bg-[#fbb034] text-slate-950 px-3.5 sm:px-5 md:px-6 py-0.5 sm:py-1 md:py-1.5 rounded-xl sm:rounded-2xl font-black tracking-tight leading-none shadow-sm shrink-0">
             Destination
           </span>
         </h2>
-        <p className="text-sm sm:text-lg text-slate-600 dark:text-slate-400 font-normal leading-relaxed max-w-2xl mx-auto mb-6 px-2">
+        <p className="mt-2.5 sm:mt-3 text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-400 font-normal leading-relaxed max-w-2xl mx-auto mb-6 px-2 text-center">
           Explore premier study destinations with top-tier universities, generous post-study work rights, and high visa approval rates.
         </p>
         
@@ -201,7 +203,7 @@ export const DestinationsGallery: React.FC<DestinationsGalleryProps> = ({
 
       {/* Expanded Grid View vs Compact Infinite Carousel with Smooth CSS Transitions */}
       {isExpanded ? (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 transition-all duration-500 ease-out animate-fadeIn">
+        <div className="max-w-[95%] w-full mx-auto px-4 sm:px-6 lg:px-8 py-2 transition-all duration-500 ease-out animate-fadeIn">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 sm:gap-6">
             {mockDestinations.map((dest) => (
               <div
@@ -240,7 +242,7 @@ export const DestinationsGallery: React.FC<DestinationsGalleryProps> = ({
                       e.stopPropagation();
                       onNavigateToCountry(dest.name);
                     }}
-                    className="w-full py-2 rounded-xl bg-white/15 hover:bg-[#fbbf24] hover:text-slate-950 text-white font-bold text-xs uppercase tracking-wider transition-colors text-center"
+                    className="w-full min-h-[44px] py-2.5 rounded-xl bg-white/15 hover:bg-[#fbbf24] hover:text-slate-950 text-white font-bold text-xs uppercase tracking-wider transition-colors text-center flex items-center justify-center cursor-pointer active:scale-95"
                   >
                     View Universities
                   </button>
@@ -351,10 +353,10 @@ export const DestinationsGallery: React.FC<DestinationsGalleryProps> = ({
                         }
                       }}
                       data-purpose="compact-btn"
-                      className="inline-flex items-center gap-1 px-3 sm:px-4 py-1.5 sm:py-1.5 min-h-[38px] sm:min-h-[36px] rounded-full bg-[#fbbf24] text-slate-950 font-bold text-[11px] sm:text-xs hover:brightness-105 shadow-xs transition-transform active:scale-95 cursor-pointer shrink-0"
+                      className="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 sm:py-1.5 min-h-[44px] rounded-full bg-[#fbbf24] text-slate-950 font-bold text-xs hover:brightness-105 shadow-xs transition-transform active:scale-95 cursor-pointer shrink-0"
                     >
                       <span>Explore</span>
-                      <span className="material-symbols-outlined text-[12px] sm:text-[14px]">arrow_forward</span>
+                      <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
                     </button>
                   </div>
                 </div>
@@ -405,7 +407,7 @@ export const DestinationsGallery: React.FC<DestinationsGalleryProps> = ({
                   Average Tuition
                 </span>
                 <span className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
-                  {selectedCountry.avgTuitionText}
+                  {formatPriceString(selectedCountry.avgTuitionText)}
                 </span>
               </div>
               <div className="p-3 sm:p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800">

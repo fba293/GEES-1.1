@@ -107,16 +107,16 @@ export const StepsRoadmapSection: React.FC<StepsRoadmapSectionProps> = ({ onOpen
 
   return (
     <section id="steps-roadmap-section" className="w-full py-12 sm:py-20 px-4 sm:px-6 lg:px-8 bg-slate-50/60 dark:bg-[#0B1329] border-t border-slate-100 dark:border-slate-800">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-[95%] w-full mx-auto">
         {/* Header */}
         <header className="text-center max-w-3xl mx-auto mb-10 sm:mb-16 px-2">
-          <h2 className="text-2xl xs:text-3xl sm:text-5xl md:text-6xl font-black tracking-tight text-slate-900 dark:text-white flex items-center justify-center flex-wrap gap-2 sm:gap-3 mb-2 leading-tight">
+          <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold font-display tracking-tight text-slate-900 dark:text-white flex items-center justify-center flex-wrap gap-2 sm:gap-3 md:gap-3.5 leading-tight text-center">
             <span>6 Steps to</span>
-            <span className="bg-[#fbbf24] text-slate-950 px-3.5 sm:px-6 py-0.5 sm:py-1 rounded-xl sm:rounded-2xl font-black tracking-tight leading-none shadow-sm">
+            <span className="bg-[#fbb034] text-slate-950 px-3.5 sm:px-5 md:px-6 py-0.5 sm:py-1 md:py-1.5 rounded-xl sm:rounded-2xl font-black tracking-tight leading-none shadow-sm shrink-0">
               Your Goal
             </span>
           </h2>
-          <p className="text-sm sm:text-lg text-slate-600 dark:text-slate-400 font-medium px-2">
+          <p className="mt-2.5 sm:mt-3 text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-400 font-normal leading-relaxed max-w-2xl mx-auto px-2 text-center">
             From your first conversation to confident departure.
           </p>
         </header>
@@ -135,7 +135,7 @@ export const StepsRoadmapSection: React.FC<StepsRoadmapSectionProps> = ({ onOpen
               />
               {/* Floating Trust Pill */}
               <div className="absolute bottom-3 xs:bottom-5 inset-x-2 xs:inset-x-4 flex justify-center z-10">
-                <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md px-3 xs:px-4 py-2 sm:py-2.5 rounded-full shadow-lg border border-white/60 dark:border-slate-800 flex items-center justify-center gap-1.5 xs:gap-2 text-[10.5px] xs:text-[11px] sm:text-xs font-bold text-slate-900 dark:text-slate-100 whitespace-nowrap">
+                <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md px-2.5 min-[390px]:px-3 xs:px-4 py-1.5 xs:py-2 sm:py-2.5 rounded-full shadow-lg border border-white/60 dark:border-slate-800 flex items-center justify-center gap-1 min-[390px]:gap-1.5 xs:gap-2 text-[9.5px] min-[390px]:text-[10.5px] xs:text-[11px] sm:text-xs font-bold text-slate-900 dark:text-slate-100 max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
                   <span>No service charge</span>
                   <span className="text-slate-300 dark:text-slate-600 font-light select-none">|</span>
                   <span>No hidden fees</span>
@@ -173,8 +173,8 @@ export const StepsRoadmapSection: React.FC<StepsRoadmapSectionProps> = ({ onOpen
                       : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300 hover:shadow-sm'
                   }`}
                 >
-                  <div className="w-full flex items-center justify-between py-3.5 px-4 sm:px-5">
-                    <div className="flex items-center gap-3.5">
+                  <div className="w-full flex items-center justify-between py-3.5 px-3.5 sm:px-5 min-h-[50px]">
+                    <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0 flex-1 pr-2">
                       {/* Step Number Badge */}
                       <div
                         className={`w-9 h-9 sm:w-10 sm:h-10 font-black text-xs sm:text-sm flex items-center justify-center rounded-full transition-all shrink-0 ${
@@ -198,7 +198,7 @@ export const StepsRoadmapSection: React.FC<StepsRoadmapSectionProps> = ({ onOpen
                         <span className="material-symbols-outlined text-[19px]">{step.icon}</span>
                       </motion.div>
 
-                      <span className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tracking-tight">
+                      <span className="text-[15px] sm:text-lg font-bold text-slate-900 dark:text-white tracking-tight truncate sm:whitespace-normal">
                         {step.title}
                       </span>
                     </div>

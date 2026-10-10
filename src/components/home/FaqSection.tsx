@@ -311,13 +311,13 @@ export const FaqSection: React.FC<FaqSectionProps> = ({
             </div>
           )}
 
-          <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-black font-display tracking-tight text-slate-900 dark:text-white flex items-center justify-center gap-2 sm:gap-3 flex-wrap leading-tight">
+          <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold font-display tracking-tight text-slate-900 dark:text-white flex items-center justify-center gap-2 sm:gap-3 md:gap-3.5 flex-wrap leading-tight text-center">
             <span>Frequently Asked</span>
-            <span className="inline-block bg-[#FBB034] text-slate-950 px-3.5 sm:px-5 py-0.5 sm:py-1 rounded-xl sm:rounded-2xl shadow-sm tracking-tight">
+            <span className="inline-block bg-[#fbb034] text-slate-950 px-3.5 sm:px-5 md:px-6 py-0.5 sm:py-1 md:py-1.5 rounded-xl sm:rounded-2xl shadow-sm font-black tracking-tight leading-none shrink-0">
               Questions
             </span>
           </h2>
-          <p className="mt-2.5 sm:mt-3 text-sm sm:text-base text-slate-500 dark:text-slate-400 font-normal leading-relaxed max-w-xl mx-auto px-2">
+          <p className="mt-2.5 sm:mt-3 text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-400 font-normal leading-relaxed max-w-2xl mx-auto px-2 text-center">
             {isCompact 
               ? 'Find quick answers to common questions about studying abroad with GEES.' 
               : 'Everything you need to know about university admissions, student visas, scholarships, and living abroad.'}
@@ -393,7 +393,7 @@ export const FaqSection: React.FC<FaqSectionProps> = ({
                 <button
                   type="button"
                   onClick={() => toggleAccordion(faq.id)}
-                  className="w-full text-left p-3.5 sm:p-4 flex items-center justify-between gap-3 cursor-pointer select-none group"
+                  className="w-full text-left p-3.5 sm:p-4 min-h-[52px] flex items-center justify-between gap-3 cursor-pointer select-none group"
                   aria-expanded={isOpen}
                 >
                   <div className="flex-1 pr-1">
@@ -415,7 +415,7 @@ export const FaqSection: React.FC<FaqSectionProps> = ({
                     </h3>
                   </div>
                   <div
-                    className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center shrink-0 transition-transform duration-200 ${
+                    className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-transform duration-200 ${
                       isOpen
                         ? 'bg-[#FBB034] text-slate-950 rotate-180 shadow-xs'
                         : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 group-hover:bg-slate-200 dark:group-hover:bg-slate-700'
@@ -455,14 +455,14 @@ export const FaqSection: React.FC<FaqSectionProps> = ({
                             <button
                               type="button"
                               onClick={() => handleFeedback(faq.id, true)}
-                              className="px-1.5 py-0.5 rounded hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-emerald-600 transition-colors"
+                              className="min-h-[44px] px-3 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-emerald-600 transition-colors flex items-center cursor-pointer"
                             >
                               👍 Yes
                             </button>
                             <button
                               type="button"
                               onClick={() => handleFeedback(faq.id, false)}
-                              className="px-1.5 py-0.5 rounded hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-rose-600 transition-colors"
+                              className="min-h-[44px] px-3 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-rose-600 transition-colors flex items-center cursor-pointer"
                             >
                               👎 No
                             </button>

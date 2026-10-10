@@ -227,24 +227,24 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
   return (
     <section className="relative w-full bg-white dark:bg-[#070b19] pt-1 xs:pt-4 sm:pt-12 pb-16 lg:pb-24 transition-colors duration-300">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-start w-full relative z-10">
+      <div className="max-w-[95%] w-full mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-start relative z-10">
         
         {/* Title + Graduate Graphic Header */}
         <div className="w-full flex flex-col lg:flex-row items-start lg:items-end justify-between gap-6 sm:gap-10 relative">
           <div className="flex flex-col items-start flex-1 relative z-20">
-            <h1 className="hero-study-in text-[38px] xs:text-[46px] sm:text-[76px] lg:text-[96px] font-black tracking-tight text-slate-900 dark:text-white leading-[0.98] select-none">
+            <h1 className="hero-study-in text-[32px] min-[390px]:text-[38px] xs:text-[46px] sm:text-[76px] lg:text-[96px] font-black tracking-[-0.03em] text-slate-900 dark:text-white leading-[1.02] select-none">
               Study in
             </h1>
             
             {/* Typewriter Highlight Box */}
             <div className="hero-typewriter-box mt-2 sm:mt-3 inline-block px-3.5 sm:px-8 py-1.5 sm:py-3 rounded-2xl sm:rounded-3xl shadow-sm bg-[#fbb034] transition-all duration-300 max-w-full">
-              <span className="hero-typewriter text-[26px] xs:text-[36px] sm:text-[68px] lg:text-[88px] font-black tracking-tight text-slate-950 leading-none inline-flex items-center min-h-[1.05em] max-w-full overflow-hidden text-ellipsis">
+              <span className="hero-typewriter text-[24px] min-[390px]:text-[28px] xs:text-[36px] sm:text-[68px] lg:text-[88px] font-black tracking-[-0.025em] text-slate-950 leading-none inline-flex items-center min-h-[1.05em] max-w-full overflow-hidden text-ellipsis">
                 <span>{displayedText}</span>
                 <span className="ml-1 inline-block w-[3px] sm:w-[5px] h-[0.75em] bg-slate-950 rounded-sm animate-pulse align-baseline shrink-0"></span>
               </span>
             </div>
 
-            <p className="hero-connecting-text mt-3 sm:mt-6 font-bold text-[10px] xs:text-[11px] sm:text-[13px] tracking-[0.12em] sm:tracking-[0.22em] uppercase text-slate-600 dark:text-slate-300 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xs px-2 py-1 rounded-md inline-block max-w-full truncate sm:whitespace-normal">
+            <p className="hero-connecting-text mt-3 sm:mt-6 font-bold text-[10px] min-[390px]:text-[11px] sm:text-[13px] tracking-[0.14em] sm:tracking-[0.22em] uppercase text-slate-600 dark:text-slate-300 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xs px-2 py-1 rounded-md inline-block max-w-full truncate sm:whitespace-normal">
               CONNECTING YOU TO WORLD CLASS EDUCATION
             </p>
           </div>
@@ -265,11 +265,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
         {/* Search & Filter Floating Card */}
         {/* MOBILE VIEW: Uploaded Compact Search & Inset Filter Matrix (< sm) */}
-        <div className="w-full relative z-20 sm:hidden" data-purpose="mobile-compact-search-container">
-          <section className="bg-white rounded-2xl border border-[#e5e5ea] overflow-hidden shadow-xs" data-purpose="compact-search-widget">
+        <div className="w-full relative z-20 mt-3 sm:mt-0 sm:hidden" data-purpose="mobile-compact-search-container">
+          <section className="bg-white dark:bg-slate-900 rounded-2xl border border-[#e5e5ea] dark:border-slate-800 overflow-hidden shadow-xs" data-purpose="compact-search-widget">
             {/* Unified Row 1: Super Compact High-end Search Capsule with Looping Typewriter */}
-            <div className="p-2.5 bg-white border-b border-[#e5e5ea]">
-              <div className="relative flex items-center h-11 pl-2 pr-2.5 rounded-full bg-white border border-[#e2e4ea] transition-all duration-300 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.04)] hover:border-[#cbcfd9] focus-within:border-amber-500/60 focus-within:shadow-[0_3px_14px_-3px_rgba(245,158,11,0.18)] focus-within:ring-2 focus-within:ring-amber-500/15 overflow-hidden">
+            <div className="p-2.5 bg-white dark:bg-slate-900 border-b border-[#e5e5ea] dark:border-slate-800">
+              <div className="relative flex items-center h-11 pl-2 pr-1 rounded-full bg-white dark:bg-slate-800/90 border border-[#e2e4ea] dark:border-slate-700 transition-all duration-300 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.04)] hover:border-[#cbcfd9] dark:hover:border-slate-600 focus-within:border-amber-500/60 focus-within:shadow-[0_3px_14px_-3px_rgba(245,158,11,0.18)] focus-within:ring-2 focus-within:ring-amber-500/15 overflow-hidden">
                 {/* 3D Glowing Orb */}
                 <div 
                   className="emerald-orb-container orb-animating"
@@ -310,20 +310,20 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   {!searchQuery && (
                     <div 
                       onClick={() => searchInputRef.current?.focus()}
-                      className="pointer-events-none absolute inset-y-0 left-2 flex items-center text-[13px] min-[380px]:text-[13.5px] min-[410px]:text-[14px] tracking-[-0.015em] text-[#1d1d1f]/75 font-normal select-none pr-1 z-20 whitespace-nowrap max-w-full"
+                      className="pointer-events-none absolute inset-y-0 left-2 flex items-center text-[13px] min-[380px]:text-[13.5px] min-[410px]:text-[14px] tracking-[-0.015em] text-[#1d1d1f]/75 dark:text-slate-300/80 font-normal select-none pr-1 z-20 whitespace-nowrap max-w-full"
                     >
                       <span className="mr-1 shrink-0">Search</span>
                       <AnimatedTextCycle 
                         words={typewriterServices}
                         interval={2200}
-                        textClassName="text-[#1d1d1f] font-semibold tracking-tight"
+                        textClassName="text-[#1d1d1f] dark:text-white font-semibold tracking-tight"
                       />
                     </div>
                   )}
                   <input 
                     ref={searchInputRef}
                     aria-label="Search services, universities, courses" 
-                    className="typewriter-input w-full h-full pl-2 pr-1.5 text-[13px] min-[380px]:text-[13.5px] min-[410px]:text-[14px] tracking-[-0.015em] bg-transparent border-0 text-[#1d1d1f] placeholder:text-transparent font-normal focus:outline-none focus:ring-0 transition-all relative z-10" 
+                    className="typewriter-input w-full h-full pl-2 pr-1 text-[13px] min-[380px]:text-[13.5px] min-[410px]:text-[14px] tracking-[-0.015em] bg-transparent border-0 text-[#1d1d1f] dark:text-white placeholder:text-transparent font-normal focus:outline-none focus:ring-0 transition-all relative z-10" 
                     id="main-course-search" 
                     type="search"
                     value={searchQuery}
@@ -335,12 +335,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   />
                 </div>
 
-                {/* Interactive Right Actions: Clear & Suggestion */}
-                <div className="flex items-center space-x-1 shrink-0">
+                {/* Interactive Right Actions: Clear & Suggestion with 44px touch targets */}
+                <div className="flex items-center shrink-0">
                   {searchQuery && (
                     <button 
                       aria-label="Clear search" 
-                      className="w-8 h-8 rounded-full text-[#86868b] hover:text-[#1d1d1f] hover:bg-[#f5f5f7] active:scale-90 transition-all flex items-center justify-center cursor-pointer" 
+                      className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white hover:bg-[#f5f5f7] dark:hover:bg-slate-700 active:scale-90 transition-all flex items-center justify-center cursor-pointer" 
                       id="clear-search-btn" 
                       onClick={() => setSearchQuery('')}
                       type="button"
@@ -352,7 +352,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   )}
                   <button 
                     aria-label="Quick suggestions" 
-                    className="w-8 h-8 rounded-full text-[#8e8e93] hover:text-[#1d1d1f] hover:bg-black/5 active:scale-90 transition-colors flex items-center justify-center cursor-pointer" 
+                    className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full text-[#8e8e93] hover:text-[#1d1d1f] dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 active:scale-90 transition-colors flex items-center justify-center cursor-pointer" 
                     onClick={() => {
                       const prompts = [
                         "United Kingdom",
@@ -368,7 +368,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     title="Quick suggestions" 
                     type="button"
                   >
-                    <svg className="w-4 h-4 text-[#86868b]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 text-[#86868b] dark:text-slate-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                       <path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" strokeLinecap="round" strokeLinejoin="round" />
                       <path d="M19 10v2a7 7 0 01-14 0v-2" strokeLinecap="round" strokeLinejoin="round" />
                       <line strokeLinecap="round" strokeLinejoin="round" x1="12" x2="12" y1="19" y2="23" />
@@ -387,63 +387,63 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
             {/* Instant Fuzzy Dropdown on Mobile */}
             {showDropdown && (
-              <div className="bg-white border-b border-[#e5e5ea] p-2 max-h-52 overflow-y-auto no-scrollbar space-y-1">
-                <div className="px-2 py-0.5 flex items-center justify-between text-[10.5px] font-bold text-[#86868b]">
+              <div className="bg-white dark:bg-slate-900 border-b border-[#e5e5ea] dark:border-slate-800 p-2 max-h-52 overflow-y-auto no-scrollbar space-y-1">
+                <div className="px-2 py-0.5 flex items-center justify-between text-[10.5px] font-bold text-[#86868b] dark:text-slate-400">
                   <span>Match Suggestions</span>
-                  <span className="text-[#0066cc] font-semibold">{matchedCountries.length + matchedServices.length} found</span>
+                  <span className="text-[#0066cc] dark:text-sky-400 font-semibold">{matchedCountries.length + matchedServices.length} found</span>
                 </div>
                 {matchedCountries.map((c) => (
                   <button
                     key={c.code}
                     onClick={() => handleSelectResult('destination', c.name)}
-                    className="w-full text-left flex items-center gap-2 p-1.5 rounded-lg hover:bg-[#f5f5f7] text-xs transition-colors"
+                    className="w-full text-left flex items-center gap-2 p-2 rounded-lg hover:bg-[#f5f5f7] dark:hover:bg-slate-800 text-xs transition-colors min-h-[44px]"
                   >
-                    <span className="text-sm">{c.flagEmoji}</span>
-                    <span className="font-bold text-[#1d1d1f] flex-1">{c.name}</span>
-                    <span className="text-[10px] text-[#0066cc] font-semibold">Explore →</span>
+                    <span className="text-base">{c.flagEmoji}</span>
+                    <span className="font-bold text-[#1d1d1f] dark:text-white flex-1">{c.name}</span>
+                    <span className="text-[11px] text-[#0066cc] dark:text-sky-400 font-semibold">Explore →</span>
                   </button>
                 ))}
                 {matchedServices.map((s) => (
                   <button
                     key={s.id}
                     onClick={() => handleSelectResult('service', s.title)}
-                    className="w-full text-left flex items-center gap-2 p-1.5 rounded-lg hover:bg-[#f5f5f7] text-xs transition-colors"
+                    className="w-full text-left flex items-center gap-2 p-2 rounded-lg hover:bg-[#f5f5f7] dark:hover:bg-slate-800 text-xs transition-colors min-h-[44px]"
                   >
-                    <span className="material-symbols-outlined text-[13px] text-amber-600">{s.iconName}</span>
-                    <span className="font-bold text-[#1d1d1f] flex-1">{s.title}</span>
-                    <span className="text-[10px] text-amber-600 font-semibold">View →</span>
+                    <span className="material-symbols-outlined text-[15px] text-amber-600 dark:text-amber-400">{s.iconName}</span>
+                    <span className="font-bold text-[#1d1d1f] dark:text-white flex-1">{s.title}</span>
+                    <span className="text-[11px] text-amber-600 dark:text-amber-400 font-semibold">View →</span>
                   </button>
                 ))}
                 {matchedCountries.length === 0 && matchedServices.length === 0 && (
-                  <div className="p-2.5 text-center text-[11px] text-[#86868b]">
+                  <div className="p-3 text-center text-xs text-[#86868b] dark:text-slate-400">
                     No exact match. Click "Find Programs" below.
                   </div>
                 )}
               </div>
             )}
 
-            {/* Unified Inset Grouped Filter Matrix - 3-Column Strip */}
-            <div className="grid grid-cols-3 divide-x divide-[#e5e5ea] bg-[#fafafc] border-b border-[#e5e5ea]" data-purpose="inset-filter-matrix">
+            {/* Unified Inset Grouped Filter Matrix - 3-Column Strip with Apple-Grade Touch Target */}
+            <div className="grid grid-cols-3 divide-x divide-[#e5e5ea] dark:divide-slate-800 bg-[#fafafc] dark:bg-slate-900/60 border-b border-[#e5e5ea] dark:border-slate-800" data-purpose="inset-filter-matrix">
               {/* Column 1: DESTINATION */}
-              <label className="relative px-2 min-[390px]:px-2.5 py-2 min-[390px]:py-2.5 flex items-center gap-1.5 xs:gap-2 min-w-0 hover:bg-[#f5f5f7] active:bg-[#ebebed] transition-colors cursor-pointer select-none">
-                <div className="w-5 h-5 rounded-[6px] bg-[#eef5fc] text-[#0066cc] flex items-center justify-center shrink-0">
+              <label className="relative px-2 min-[390px]:px-2.5 py-2.5 min-[390px]:py-3 min-h-[48px] min-[390px]:min-h-[50px] flex items-center gap-1.5 xs:gap-2 min-w-0 hover:bg-[#f5f5f7] dark:hover:bg-slate-800/50 active:bg-[#ebebed] dark:active:bg-slate-800 transition-colors cursor-pointer select-none">
+                <div className="w-5 h-5 rounded-[6px] bg-[#eef5fc] dark:bg-blue-950/60 text-[#0066cc] dark:text-blue-400 flex items-center justify-center shrink-0">
                   <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
                     <circle cx="12" cy="12" r="9" />
                     <path d="M3.6 9h16.8M3.6 15h16.8M12 3a14 14 0 014 9 14 14 0 01-4 9 14 14 0 01-4-9 14 14 0 014-9z" strokeLinecap="round" />
                   </svg>
                 </div>
-                <div className="flex-1 min-w-0 flex flex-col justify-center h-[34px]">
+                <div className="flex-1 min-w-0 flex flex-col justify-center">
                   <span className={`text-[9px] min-[390px]:text-[9.5px] font-bold tracking-[0.05em] uppercase leading-none block truncate transition-all duration-300 ease-out transform ${
                     selectedDestination !== 'all'
                       ? 'text-[#f59e0b] dark:text-[#fbbf24] scale-[1.04] translate-x-0.5'
-                      : 'text-[#86868b]'
+                      : 'text-[#86868b] dark:text-slate-400'
                   }`}>
                     DESTINATION {selectedDestination !== 'all' ? `• ${selectedDestination}` : ''}
                   </span>
                   <select
                     value={selectedDestination}
                     onChange={(e) => setSelectedDestination(e.target.value)}
-                    className="appearance-none -webkit-appearance-none w-full bg-transparent text-[12px] min-[390px]:text-[12.5px] font-semibold text-[#1d1d1f] dark:text-white tracking-tight truncate border-0 p-0 m-0 mt-0.5 focus:ring-2 focus:ring-[#fbb034]/40 focus:outline-none cursor-pointer leading-tight h-[18px] rounded-lg transition-all"
+                    className="appearance-none -webkit-appearance-none w-full bg-transparent text-[12px] min-[390px]:text-[12.5px] font-semibold text-[#1d1d1f] dark:text-white tracking-tight truncate border-0 p-0 m-0 mt-0.5 focus:ring-0 focus:outline-none cursor-pointer leading-tight h-[20px]"
                   >
                     <option value="all">All Destinations</option>
                     <option value="Malaysia">Malaysia</option>
@@ -462,20 +462,20 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               </label>
 
               {/* Column 2: LEVEL */}
-              <label className="relative px-2 min-[390px]:px-2.5 py-2 min-[390px]:py-2.5 flex items-center gap-1.5 xs:gap-2 min-w-0 hover:bg-[#f5f5f7] active:bg-[#ebebed] transition-colors cursor-pointer select-none">
-                <div className="w-5 h-5 rounded-[6px] bg-[#fff8eb] text-[#d97706] flex items-center justify-center shrink-0">
+              <label className="relative px-2 min-[390px]:px-2.5 py-2.5 min-[390px]:py-3 min-h-[48px] min-[390px]:min-h-[50px] flex items-center gap-1.5 xs:gap-2 min-w-0 hover:bg-[#f5f5f7] dark:hover:bg-slate-800/50 active:bg-[#ebebed] dark:active:bg-slate-800 transition-colors cursor-pointer select-none">
+                <div className="w-5 h-5 rounded-[6px] bg-[#fff8eb] dark:bg-amber-950/60 text-[#d97706] dark:text-amber-400 flex items-center justify-center shrink-0">
                   <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
                     <path d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </div>
-                <div className="flex-1 min-w-0 flex flex-col justify-center h-[34px]">
-                  <span className="text-[9px] min-[390px]:text-[9.5px] font-bold tracking-[0.05em] uppercase text-[#86868b] leading-none block truncate">
+                <div className="flex-1 min-w-0 flex flex-col justify-center">
+                  <span className="text-[9px] min-[390px]:text-[9.5px] font-bold tracking-[0.05em] uppercase text-[#86868b] dark:text-slate-400 leading-none block truncate">
                     LEVEL
                   </span>
                   <select
                     value={selectedLevel}
                     onChange={(e) => setSelectedLevel(e.target.value)}
-                    className="appearance-none -webkit-appearance-none w-full bg-transparent text-[12px] min-[390px]:text-[12.5px] font-semibold text-[#1d1d1f] tracking-tight truncate border-0 p-0 m-0 mt-0.5 focus:ring-0 focus:outline-none cursor-pointer leading-tight h-[18px]"
+                    className="appearance-none -webkit-appearance-none w-full bg-transparent text-[12px] min-[390px]:text-[12.5px] font-semibold text-[#1d1d1f] dark:text-white tracking-tight truncate border-0 p-0 m-0 mt-0.5 focus:ring-0 focus:outline-none cursor-pointer leading-tight h-[20px]"
                   >
                     <option value="all">All</option>
                     <option value="undergraduate">Undergrad</option>
@@ -487,14 +487,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               </label>
 
               {/* Column 3: FIELD */}
-              <label className="relative px-2 min-[390px]:px-2.5 py-2 min-[390px]:py-2.5 flex items-center gap-1.5 xs:gap-2 min-w-0 hover:bg-[#f5f5f7] active:bg-[#ebebed] transition-colors cursor-pointer select-none">
-                <div className="w-5 h-5 rounded-[6px] bg-[#ecfdf5] text-[#059669] flex items-center justify-center shrink-0">
+              <label className="relative px-2 min-[390px]:px-2.5 py-2.5 min-[390px]:py-3 min-h-[48px] min-[390px]:min-h-[50px] flex items-center gap-1.5 xs:gap-2 min-w-0 hover:bg-[#f5f5f7] dark:hover:bg-slate-800/50 active:bg-[#ebebed] dark:active:bg-slate-800 transition-colors cursor-pointer select-none">
+                <div className="w-5 h-5 rounded-[6px] bg-[#ecfdf5] dark:bg-emerald-950/60 text-[#059669] dark:text-emerald-400 flex items-center justify-center shrink-0">
                   <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
                     <path d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </div>
-                <div className="flex-1 min-w-0 flex flex-col justify-center h-[34px]">
-                  <span className="text-[9px] min-[390px]:text-[9.5px] font-bold tracking-[0.05em] uppercase text-[#86868b] leading-none block truncate">
+                <div className="flex-1 min-w-0 flex flex-col justify-center">
+                  <span className="text-[9px] min-[390px]:text-[9.5px] font-bold tracking-[0.05em] uppercase text-[#86868b] dark:text-slate-400 leading-none block truncate">
                     FIELD
                   </span>
                   <input
@@ -502,21 +502,21 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     placeholder="Any"
                     value={fieldOfStudy}
                     onChange={(e) => setFieldOfStudy(e.target.value)}
-                    className="appearance-none -webkit-appearance-none w-full bg-transparent text-[12px] min-[390px]:text-[12.5px] font-semibold text-[#1d1d1f] placeholder:text-[#86868b] tracking-tight truncate border-0 p-0 m-0 mt-0.5 focus:ring-0 focus:outline-none leading-tight h-[18px]"
+                    className="appearance-none -webkit-appearance-none w-full bg-transparent text-[12px] min-[390px]:text-[12.5px] font-semibold text-[#1d1d1f] dark:text-white placeholder:text-[#86868b] dark:placeholder:text-slate-500 tracking-tight truncate border-0 p-0 m-0 mt-0.5 focus:ring-0 focus:outline-none leading-tight h-[20px]"
                   />
                 </div>
               </label>
             </div>
 
             {/* Bottom Actions: Find Programs Button + Quick Navigation Pills + Stats Ticker */}
-            <div className="p-3 bg-white">
+            <div className="p-3 bg-white dark:bg-slate-900">
               {/* Find Programs -> GEES Amber Capsule Button with Apple-Grade Proportions */}
               <button
                 id="find-programs-button"
                 onClick={handleFindPrograms}
                 type="button"
                 data-purpose="compact-btn"
-                className="w-full h-11 min-h-[44px] rounded-full bg-[#fbb034] hover:bg-[#f59e0b] active:bg-[#d97706] text-slate-950 font-black text-[15px] tracking-tight flex items-center justify-center space-x-2 transition-all shadow-sm active:scale-[0.98] cursor-pointer"
+                className="w-full h-12 min-h-[44px] rounded-full bg-[#fbb034] hover:bg-[#f59e0b] active:bg-[#d97706] text-slate-950 font-black text-[15px] tracking-tight flex items-center justify-center space-x-2 transition-all shadow-sm active:scale-[0.98] cursor-pointer"
               >
                 <span>Find Programs</span>
                 <svg className="w-4 h-4 stroke-[2.4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -524,13 +524,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 </svg>
               </button>
 
-              {/* 2x2 Clean Rounded White Pill Buttons */}
+              {/* 2x2 Clean Rounded White Pill Buttons with 44px min touch target */}
               <div className="grid grid-cols-2 gap-2 mt-2.5" data-purpose="quick-navigation-grid">
                 <button
                   onClick={() => onNavigate('universities')}
                   type="button"
                   data-purpose="compact-btn"
-                  className="w-full h-11 min-h-[44px] rounded-full border border-[#e5e5ea] bg-white hover:bg-[#f5f5f7] active:bg-[#ebebed] text-[#1d1d1f] font-semibold text-[13px] tracking-tight text-center transition-all shadow-none flex items-center justify-center active:scale-[0.97] cursor-pointer"
+                  className="w-full h-11 min-h-[44px] rounded-full border border-[#e5e5ea] dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-[#f5f5f7] dark:hover:bg-slate-750 active:bg-[#ebebed] text-[#1d1d1f] dark:text-white font-semibold text-[13px] tracking-tight text-center transition-all shadow-none flex items-center justify-center active:scale-[0.97] cursor-pointer"
                 >
                   Universities
                 </button>
@@ -538,7 +538,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   onClick={() => onNavigate('courses')}
                   type="button"
                   data-purpose="compact-btn"
-                  className="w-full h-11 min-h-[44px] rounded-full border border-[#e5e5ea] bg-white hover:bg-[#f5f5f7] active:bg-[#ebebed] text-[#1d1d1f] font-semibold text-[13px] tracking-tight text-center transition-all shadow-none flex items-center justify-center active:scale-[0.97] cursor-pointer"
+                  className="w-full h-11 min-h-[44px] rounded-full border border-[#e5e5ea] dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-[#f5f5f7] dark:hover:bg-slate-750 active:bg-[#ebebed] text-[#1d1d1f] dark:text-white font-semibold text-[13px] tracking-tight text-center transition-all shadow-none flex items-center justify-center active:scale-[0.97] cursor-pointer"
                 >
                   Courses
                 </button>
@@ -546,7 +546,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   onClick={() => onNavigate('services', 'ielts-preparation')}
                   type="button"
                   data-purpose="compact-btn"
-                  className="w-full h-11 min-h-[44px] rounded-full border border-[#e5e5ea] bg-white hover:bg-[#f5f5f7] active:bg-[#ebebed] text-[#1d1d1f] font-semibold text-[13px] tracking-tight text-center transition-all shadow-none flex items-center justify-center active:scale-[0.97] cursor-pointer"
+                  className="w-full h-11 min-h-[44px] rounded-full border border-[#e5e5ea] dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-[#f5f5f7] dark:hover:bg-slate-750 active:bg-[#ebebed] text-[#1d1d1f] dark:text-white font-semibold text-[13px] tracking-tight text-center transition-all shadow-none flex items-center justify-center active:scale-[0.97] cursor-pointer"
                 >
                   IELTS Prep
                 </button>
@@ -554,44 +554,44 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   onClick={() => onNavigate('blog')}
                   type="button"
                   data-purpose="compact-btn"
-                  className="w-full h-11 min-h-[44px] rounded-full border border-[#e5e5ea] bg-white hover:bg-[#f5f5f7] active:bg-[#ebebed] text-[#1d1d1f] font-semibold text-[13px] tracking-tight text-center transition-all shadow-none flex items-center justify-center active:scale-[0.97] cursor-pointer"
+                  className="w-full h-11 min-h-[44px] rounded-full border border-[#e5e5ea] dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-[#f5f5f7] dark:hover:bg-slate-750 active:bg-[#ebebed] text-[#1d1d1f] dark:text-white font-semibold text-[13px] tracking-tight text-center transition-all shadow-none flex items-center justify-center active:scale-[0.97] cursor-pointer"
                 >
                   Blogs &amp; News
                 </button>
               </div>
 
               {/* Stats Overview Row with Vertical Hairline Dividers */}
-              <div className="flex items-center justify-between mt-3 pt-2.5 pb-0.5 border-t border-[#e5e5ea] px-1.5" data-purpose="stats-overview-grid">
+              <div className="flex items-center justify-between mt-3 pt-2.5 pb-0.5 border-t border-[#e5e5ea] dark:border-slate-800 px-1.5" data-purpose="stats-overview-grid">
                 <div className="flex-1 text-center min-w-0">
                   <div className="flex items-baseline justify-center leading-none">
-                    <span className="text-[15px] font-bold tracking-tight text-[#1d1d1f]">100</span>
-                    <span className="text-[11px] font-semibold text-[#1d1d1f]">+</span>
+                    <span className="text-[15px] font-bold tracking-tight text-[#1d1d1f] dark:text-white">100</span>
+                    <span className="text-[11px] font-semibold text-[#1d1d1f] dark:text-slate-300">+</span>
                   </div>
-                  <p className="text-[10px] font-normal text-[#86868b] mt-0.5 whitespace-nowrap truncate tracking-tight">Students</p>
+                  <p className="text-[10px] font-normal text-[#86868b] dark:text-slate-400 mt-0.5 whitespace-nowrap truncate tracking-tight">Students</p>
                 </div>
-                <div className="w-[1px] h-4.5 bg-[#e5e5ea] shrink-0" />
+                <div className="w-[1px] h-4.5 bg-[#e5e5ea] dark:bg-slate-800 shrink-0" />
                 <div className="flex-1 text-center min-w-0">
                   <div className="flex items-baseline justify-center leading-none">
-                    <span className="text-[15px] font-bold tracking-tight text-[#1d1d1f]">167</span>
-                    <span className="text-[11px] font-semibold text-[#1d1d1f]">+</span>
+                    <span className="text-[15px] font-bold tracking-tight text-[#1d1d1f] dark:text-white">167</span>
+                    <span className="text-[11px] font-semibold text-[#1d1d1f] dark:text-slate-300">+</span>
                   </div>
-                  <p className="text-[10px] font-normal text-[#86868b] mt-0.5 whitespace-nowrap truncate tracking-tight">Partner Unis</p>
+                  <p className="text-[10px] font-normal text-[#86868b] dark:text-slate-400 mt-0.5 whitespace-nowrap truncate tracking-tight">Partner Unis</p>
                 </div>
-                <div className="w-[1px] h-4.5 bg-[#e5e5ea] shrink-0" />
+                <div className="w-[1px] h-4.5 bg-[#e5e5ea] dark:bg-slate-800 shrink-0" />
                 <div className="flex-1 text-center min-w-0">
                   <div className="flex items-baseline justify-center leading-none">
-                    <span className="text-[15px] font-bold tracking-tight text-[#1d1d1f]">95</span>
-                    <span className="text-[11px] font-semibold text-[#1d1d1f]">%</span>
+                    <span className="text-[15px] font-bold tracking-tight text-[#1d1d1f] dark:text-white">95</span>
+                    <span className="text-[11px] font-semibold text-[#1d1d1f] dark:text-slate-300">%</span>
                   </div>
-                  <p className="text-[10px] font-normal text-[#86868b] mt-0.5 whitespace-nowrap truncate tracking-tight">Visa Rate</p>
+                  <p className="text-[10px] font-normal text-[#86868b] dark:text-slate-400 mt-0.5 whitespace-nowrap truncate tracking-tight">Visa Rate</p>
                 </div>
-                <div className="w-[1px] h-4.5 bg-[#e5e5ea] shrink-0" />
+                <div className="w-[1px] h-4.5 bg-[#e5e5ea] dark:bg-slate-800 shrink-0" />
                 <div className="flex-1 text-center min-w-0">
                   <div className="flex items-baseline justify-center leading-none">
-                    <span className="text-[15px] font-bold tracking-tight text-[#1d1d1f]">2</span>
-                    <span className="text-[11px] font-semibold text-[#1d1d1f]">+</span>
+                    <span className="text-[15px] font-bold tracking-tight text-[#1d1d1f] dark:text-white">2</span>
+                    <span className="text-[11px] font-semibold text-[#1d1d1f] dark:text-slate-300">+</span>
                   </div>
-                  <p className="text-[10px] font-normal text-[#86868b] mt-0.5 whitespace-nowrap truncate tracking-tight">Offices</p>
+                  <p className="text-[10px] font-normal text-[#86868b] dark:text-slate-400 mt-0.5 whitespace-nowrap truncate tracking-tight">Offices</p>
                 </div>
               </div>
             </div>

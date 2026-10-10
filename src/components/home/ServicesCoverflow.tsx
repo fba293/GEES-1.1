@@ -50,19 +50,19 @@ export const ServicesCoverflow: React.FC<ServicesCoverflowProps> = ({
     >
       <div className="gees-services-coverflow__shell w-full flex flex-col items-center">
         {/* Section Heading matching index.html */}
-        <div className="gees-services-coverflow__head text-center mb-6 sm:mb-12 px-4 max-w-5xl mx-auto">
+        <div className="gees-services-coverflow__head text-center mb-6 sm:mb-12 px-4 max-w-3xl mx-auto">
           <div>
             <h2 
-              className="gees-section-title text-2xl xs:text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center justify-center flex-wrap gap-2 sm:gap-3 leading-tight"
+              className="gees-section-title text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold font-display tracking-tight text-slate-900 dark:text-white flex items-center justify-center flex-wrap gap-2 sm:gap-3 md:gap-3.5 leading-tight text-center"
               id="geesServicesTitle"
             >
               <span>Our</span>
-              <span className="gees-section-highlight px-3 sm:px-5 py-0.5 sm:py-1 bg-[#fbb034] text-slate-950 rounded-xl sm:rounded-2xl inline-block shadow-sm font-black tracking-tight">
+              <span className="gees-section-highlight bg-[#fbb034] text-slate-950 px-3.5 sm:px-5 md:px-6 py-0.5 sm:py-1 md:py-1.5 rounded-xl sm:rounded-2xl inline-block shadow-sm font-black tracking-tight leading-none shrink-0">
                 Services
               </span>
             </h2>
-            <p className="gees-services-coverflow__eyebrow text-xs sm:text-sm tracking-[0.16em] sm:tracking-[0.22em] font-bold text-slate-500 dark:text-slate-400 uppercase mt-2 sm:mt-3 px-2">
-              Everything you need, in one place
+            <p className="mt-2.5 sm:mt-3 text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-400 font-normal leading-relaxed max-w-2xl mx-auto px-2 text-center">
+              Everything you need, in one place — from admissions to visa support.
             </p>
           </div>
         </div>
@@ -70,7 +70,7 @@ export const ServicesCoverflow: React.FC<ServicesCoverflowProps> = ({
         {/* 3D Coverflow Viewport Stage */}
         <div 
           aria-label="GEES services 3D coverflow"
-          className="relative w-full max-w-7xl mx-auto flex flex-col items-center justify-center py-2 px-4"
+          className="relative w-full max-w-[95%] mx-auto flex flex-col items-center justify-center py-2 px-4"
         >
           <CoverflowCarousel
             slides={slides}

@@ -7,8 +7,10 @@
 import React, { useState } from 'react';
 import { mockLeads, mockCounselors } from '../../data/mockDatabase.ts';
 import { Lead, LeadStatus } from '../../types/index.ts';
+import { useCurrency } from '../../context/CurrencyContext.tsx';
 
 export const CrmView: React.FC = () => {
+  const { formatUSD } = useCurrency();
   const [leads, setLeads] = useState<Lead[]>(mockLeads);
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [showAddLeadModal, setShowAddLeadModal] = useState(false);
@@ -90,6 +92,7 @@ export const CrmView: React.FC = () => {
       </div>
 
       {/* Stats Cards */}
+      {/* Stats Cards with Expected Commission Tracking */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
           <span className="text-xs text-slate-400 font-bold uppercase">Total Active Leads</span>
@@ -97,18 +100,20 @@ export const CrmView: React.FC = () => {
           <span className="text-[11px] text-emerald-500 font-semibold">+18% this month</span>
         </div>
         <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
-          <span className="text-xs text-slate-400 font-bold uppercase">In Counseling</span>
-          <div className="text-3xl font-black text-blue-600 mt-1">42</div>
-          <span className="text-[11px] text-slate-400">Active sessions</span>
-        </div>
-        <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
           <span className="text-xs text-slate-400 font-bold uppercase">Applications Lodged</span>
-          <div className="text-3xl font-black text-amber-500 mt-1">56</div>
+          <div className="text-3xl font-black text-blue-600 mt-1">56</div>
           <span className="text-[11px] text-slate-400">For Fall & Spring intakes</span>
         </div>
         <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
+          <span className="text-xs text-slate-400 font-bold uppercase">Expected Commission</span>
+          <div className="text-2xl sm:text-3xl font-black text-emerald-600 dark:text-emerald-400 mt-1">
+            {formatUSD(68500)}
+          </div>
+          <span className="text-[11px] text-emerald-500 font-semibold">Intake pipeline projection</span>
+        </div>
+        <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
           <span className="text-xs text-slate-400 font-bold uppercase">Conversion Rate</span>
-          <div className="text-3xl font-black text-emerald-600 mt-1">28.4%</div>
+          <div className="text-3xl font-black text-amber-500 mt-1">28.4%</div>
           <span className="text-[11px] text-emerald-500 font-semibold">Industry leading</span>
         </div>
       </div>

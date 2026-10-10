@@ -13,6 +13,8 @@
 import React, { useState, useRef } from 'react';
 import { UserRole } from '../../types/index.ts';
 import { InteractiveHoverButton } from '../ui/interactive-hover-button.tsx';
+import { HeaderCurrencyExchangeIcon } from '../CurrencySwitcher.tsx';
+import { ThemeToggle } from '../ThemeToggle.tsx';
 
 interface NavbarProps {
   currentView: string;
@@ -51,24 +53,24 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 w-full z-50 pointer-events-none px-3 sm:px-6 lg:px-8 pt-3 sm:pt-4 lg:pt-5">
-      <div className="pointer-events-auto max-w-7xl mx-auto bg-white/95 dark:bg-[#0f172a]/95 backdrop-blur-md rounded-full border border-slate-200 dark:border-slate-800 shadow-xl px-4 sm:px-6 lg:px-8 h-14 sm:h-16 lg:h-20 flex items-center justify-between transition-all">
+    <header className="fixed top-0 left-0 right-0 w-full z-50 pointer-events-none px-2.5 xs:px-3 sm:px-6 md:px-8 lg:px-10 xl:px-12 pt-2.5 xs:pt-3 sm:pt-4 lg:pt-5">
+      <div className="pointer-events-auto max-w-[95%] w-full mx-auto bg-white/95 dark:bg-[#0f172a]/95 backdrop-blur-md rounded-full border border-slate-200 dark:border-slate-800 shadow-xl px-3 xs:px-4 sm:px-6 md:px-7 lg:px-8 xl:px-10 h-13 xs:h-14 sm:h-16 lg:h-20 flex items-center justify-between gap-6 sm:gap-8 transition-all">
         {/* Brand Logo */}
-        <button
+        <div
           onClick={() => onNavigate('home')}
           className="flex items-center gap-1.5 sm:gap-2 group shrink-0 focus:outline-none cursor-pointer"
         >
           <span
-            className="text-2xl sm:text-[28px] lg:text-[32px] font-extrabold tracking-tight text-slate-900 dark:text-white"
+            className="text-xl xs:text-2xl sm:text-[28px] lg:text-[32px] font-extrabold tracking-tight text-slate-900 dark:text-white"
             style={{ fontFamily: '"ITC Benguiat", "Benguiat", serif', fontWeight: 700 }}
           >
             GEES
           </span>
-          <span className="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full bg-[#FBBF24]"></span>
-        </button>
+          <span className="w-1.5 xs:w-2 sm:w-2.5 h-1.5 xs:h-2 sm:h-2.5 rounded-full bg-[#FBBF24]"></span>
+        </div>
 
-        {/* Universal Desktop Navigation Bar */}
-        <nav className="hidden xl:flex items-center gap-7 lg:gap-8 text-sm font-semibold text-slate-900 dark:text-slate-200">
+        {/* Universal Desktop Navigation Bar with Expanded Breathing Room */}
+        <nav className="hidden xl:flex items-center gap-6 sm:gap-8 text-sm font-semibold text-slate-900 dark:text-slate-200">
           {/* 1. Countries Mega-Menu */}
           <div className="relative group cursor-pointer py-6">
             <button
@@ -494,29 +496,22 @@ export const Navbar: React.FC<NavbarProps> = ({
         </nav>
 
         {/* Right Action Controls */}
-        <div className="flex items-center gap-1.5 sm:gap-2.5 lg:gap-3 shrink-0">
-          {/* Search Trigger Button */}
+        <div className="flex items-center gap-1.5 xs:gap-2 sm:gap-3 lg:gap-3.5 shrink-0">
+          {/* Header Multi-Currency Switcher (Circular Exchange Icon, properly visible on mobile, tablet & desktop) */}
+          <HeaderCurrencyExchangeIcon />
+
           {/* Search Trigger Button with 0.2s ease-in-out translateY tactile animation */}
           <button
             aria-label="Search Catalog"
             onClick={onOpenSearch}
-            className="w-9 h-9 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-900 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600 transition-all duration-200 ease-in-out transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer shadow-xs"
+            className="w-8.5 h-8.5 xs:w-9 xs:h-9 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-900 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600 transition-all duration-200 ease-in-out transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer shadow-xs"
             type="button"
           >
-            <span className="material-symbols-outlined text-[18px] sm:text-[20px]">search</span>
+            <span className="material-symbols-outlined text-[17px] xs:text-[18px] sm:text-[20px]">search</span>
           </button>
 
-          {/* Theme Toggle Button */}
-          <button
-            aria-label="Toggle Theme"
-            onClick={onToggleTheme}
-            className="w-9 h-9 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-900 dark:text-amber-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95 cursor-pointer shadow-xs"
-            type="button"
-          >
-            <span className="material-symbols-outlined text-[18px] sm:text-[20px]">
-              {isDark ? 'light_mode' : 'dark_mode'}
-            </span>
-          </button>
+          {/* Theme Toggle Button (Matching globaleducationexpert.com exact sun/moon icon design & smooth rotation/fade transition) */}
+          <ThemeToggle isDark={isDark} onToggle={onToggleTheme} />
 
           {/* Portal Popover with Sliding Pill Tab Switcher */}
           <div
@@ -788,7 +783,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             aria-label="Navigation Menu"
             onClick={onOpenMobileMenu}
-            className="xl:hidden group w-9 h-9 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/80 flex items-center justify-center hover:bg-amber-50 dark:hover:bg-slate-700 hover:border-amber-400 dark:hover:border-amber-400/60 text-slate-900 dark:text-slate-200 hover:text-[#fbb034] dark:hover:text-[#fbb034] transition-all duration-200 ease-in-out transform hover:scale-105 hover:rotate-3 active:scale-95 active:rotate-0 shadow-xs cursor-pointer shrink-0"
+            className="xl:hidden group w-8.5 h-8.5 xs:w-9 xs:h-9 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/80 flex items-center justify-center hover:bg-amber-50 dark:hover:bg-slate-700 hover:border-amber-400 dark:hover:border-amber-400/60 text-slate-900 dark:text-slate-200 hover:text-[#fbb034] dark:hover:text-[#fbb034] transition-all duration-200 ease-in-out transform hover:scale-105 hover:rotate-3 active:scale-95 active:rotate-0 shadow-xs cursor-pointer shrink-0"
             type="button"
           >
             <svg

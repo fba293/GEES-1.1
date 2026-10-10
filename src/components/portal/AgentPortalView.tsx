@@ -8,8 +8,10 @@ import React, { useState } from 'react';
 import { mockAgents, mockCommissions } from '../../data/mockDatabase.ts';
 import { Agent, Commission } from '../../types/index.ts';
 import { InteractiveHoverButton } from '../ui/interactive-hover-button.tsx';
+import { useCurrency } from '../../context/CurrencyContext.tsx';
 
 export const AgentPortalView: React.FC = () => {
+  const { formatUSD } = useCurrency();
   const [agents] = useState<Agent[]>(mockAgents);
   const [selectedAgentId, setSelectedAgentId] = useState<string>(mockAgents[0].id);
   const [commissions, setCommissions] = useState<Commission[]>(mockCommissions);
@@ -58,7 +60,7 @@ export const AgentPortalView: React.FC = () => {
   };
 
   const handleRequestPayout = () => {
-    setPayoutSuccess(`Payout request for $${currentAgent.pendingCommissionsUSD.toLocaleString()} USD submitted to GEES Finance.`);
+    setPayoutSuccess(`Payout request for ${formatUSD(currentAgent.pendingCommissionsUSD)} submitted to GEES Finance.`);
     setShowPayoutModal(false);
     setTimeout(() => setPayoutSuccess(null), 4000);
   };
@@ -143,7 +145,7 @@ export const AgentPortalView: React.FC = () => {
             </span>
           </div>
           <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
-            ${currentAgent.totalCommissionsEarnedUSD.toLocaleString()}
+            {formatUSD(currentAgent.totalCommissionsEarnedUSD)}
           </div>
           <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-1 font-semibold flex items-center gap-1">
             <span className="material-symbols-outlined text-sm">trending_up</span>
@@ -159,7 +161,7 @@ export const AgentPortalView: React.FC = () => {
             </span>
           </div>
           <div className="text-2xl sm:text-3xl font-black text-amber-600 dark:text-amber-400">
-            ${currentAgent.pendingCommissionsUSD.toLocaleString()}
+            {formatUSD(currentAgent.pendingCommissionsUSD)}
           </div>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             Awaiting university fee reconciliation
@@ -261,13 +263,13 @@ export const AgentPortalView: React.FC = () => {
                       {comm.universityName}
                     </td>
                     <td className="px-4 py-4 font-mono font-medium">
-                      ${comm.tuitionFeePaidUSD.toLocaleString()}
+                      {formatUSD(comm.tuitionFeePaidUSD)}
                     </td>
                     <td className="px-4 py-4 font-mono text-xs font-bold text-purple-600 dark:text-purple-400">
                       {comm.commissionPct}%
                     </td>
                     <td className="px-4 py-4 font-bold text-emerald-600 dark:text-emerald-400 font-mono">
-                      ${comm.amountUSD.toLocaleString()}
+                      {formatUSD(comm.amountUSD)}
                     </td>
                     <td className="px-4 py-4">
                       <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold capitalize ${
@@ -413,7 +415,7 @@ export const AgentPortalView: React.FC = () => {
               Confirm Payout Request
             </h3>
             <p className="text-sm text-slate-600 dark:text-slate-300 mb-6">
-              You are requesting wire transfer settlement of <strong>${currentAgent.pendingCommissionsUSD.toLocaleString()} USD</strong> to {currentAgent.agencyName}'s verified corporate account.
+              You are requesting wire transfer settlement of <strong>{formatUSD(currentAgent.pendingCommissionsUSD)}</strong> to {currentAgent.agencyName}'s verified corporate account.
             </p>
             <div className="flex gap-3">
               <button

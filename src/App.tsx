@@ -16,6 +16,7 @@ import { ConsultationModal } from './components/common/ConsultationModal.tsx';
 import { SearchModal } from './components/common/SearchModal.tsx';
 import { MobileDrawer } from './components/common/MobileDrawer.tsx';
 import { BackToTopButton } from './components/common/BackToTopButton.tsx';
+import { FloatingBottomNav } from './components/common/FloatingBottomNav.tsx';
 
 // Home Page Sections
 import { HeroSection } from './components/home/HeroSection.tsx';
@@ -39,17 +40,12 @@ import { AgentPortalView } from './components/portal/AgentPortalView.tsx';
 import { ContactUsView } from './components/contact/ContactUsView.tsx';
 import { BlogHubView } from './components/blog/BlogHubView.tsx';
 import { ServicesView } from './components/services/ServicesView.tsx';
+import { CurrencyProvider } from './context/CurrencyContext.tsx';
+import { ThemeProvider, useTheme } from './context/ThemeContext.tsx';
 
-export default function App() {
-  // Theme state: dark / light
-  const [isDark, setIsDark] = useState<boolean>(() => {
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('gees-theme');
-      if (stored) return stored === 'dark';
-      return document.documentElement.classList.contains('dark');
-    }
-    return false;
-  });
+function AppContent() {
+  // Theme state from global ThemeContext
+  const { isDark, toggleTheme } = useTheme();
 
   // Current view routing state
   const [currentView, setCurrentView] = useState<string>(() => {
@@ -80,22 +76,6 @@ export default function App() {
 
   // Selected service detail popup
   const [selectedServiceDetail, setSelectedServiceDetail] = useState<ServiceItem | null>(null);
-
-  // Sync theme to HTML root
-  useEffect(() => {
-    const root = document.documentElement;
-    if (isDark) {
-      root.classList.add('dark');
-      localStorage.setItem('gees-theme', 'dark');
-    } else {
-      root.classList.remove('dark');
-      localStorage.setItem('gees-theme', 'light');
-    }
-  }, [isDark]);
-
-  const toggleTheme = () => {
-    setIsDark(prev => !prev);
-  };
 
   // Main navigation handler
   const handleNavigate = (view: string, payload?: any) => {
@@ -176,7 +156,7 @@ export default function App() {
       />
 
       {/* Main Content Area */}
-      <main className="pt-20 sm:pt-24 lg:pt-28">
+      <main className="pt-20 sm:pt-24 lg:pt-28 pb-20 md:pb-0">
         {/* VIEW: HOME */}
         {currentView === 'home' && (
           <>
@@ -241,7 +221,7 @@ export default function App() {
 
         {/* VIEW: UNIVERSITIES */}
         {currentView === 'universities' && (
-          <div className="py-2">
+          <div className="py-2 max-w-[95%] mx-auto w-full">
             <UniversityExplorerView
               initialSlug={typeof navPayload === 'string' ? navPayload : undefined}
               onApply={(uniName) => handleOpenConsultation(`Admissions Representative for ${uniName}`)}
@@ -251,7 +231,7 @@ export default function App() {
 
         {/* VIEW: COURSES & COMPARISON ENGINE */}
         {currentView === 'courses' && (
-          <div className="py-2">
+          <div className="py-2 max-w-[95%] mx-auto w-full">
             <CourseExplorerView
               onApply={(courseInfo) => handleOpenConsultation(`Admissions for ${courseInfo}`)}
               onNavigateToUni={(uniSlug) => handleNavigate('universities', uniSlug)}
@@ -476,6 +456,25 @@ export default function App() {
 
       {/* Floating Back-to-Top Button */}
       <BackToTopButton />
+
+      {/* Custom Floating Island Mobile Bottom Navigation Dock (GEES-1.1 across all pages) */}
+      <FloatingBottomNav
+        currentView={currentView}
+        onNavigate={handleNavigate}
+        onOpenMobileMenu={() => setIsMobileMenuOpen(true)}
+        onOpenSearch={() => setIsSearchModalOpen(true)}
+        onOpenConsultation={handleOpenConsultation}
+      />
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <CurrencyProvider>
+        <AppContent />
+      </CurrencyProvider>
+    </ThemeProvider>
   );
 }

@@ -14,6 +14,8 @@
  */
 
 import React, { useState, useRef, useEffect, useLayoutEffect, useMemo } from 'react';
+import { SelectCurrencyDropdown } from '../CurrencySwitcher.tsx';
+import { GoogleTranslate } from '../GoogleTranslate.tsx';
 
 interface FooterProps {
   onNavigate: (view: string, payload?: any) => void;
@@ -654,6 +656,17 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               ))}
             </ul>
           </div>
+
+          {/* Preferences Strip (Currency & Language) — Positioned directly on top of the divider line */}
+          <div className="col-span-full pt-3 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 dark:text-slate-400 border-t border-slate-200/60 dark:border-slate-800/60">
+            <span className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+              Regional Settings & Preferences
+            </span>
+            <div className="flex items-center gap-2.5 sm:gap-3 flex-wrap">
+              <SelectCurrencyDropdown compact placement="top" />
+              <GoogleTranslate compact={true} className="scale-90 origin-left sm:scale-95" />
+            </div>
+          </div>
         </div>
 
         {/* 8 Social Media Icons Strip directly above Legal Bar */}
@@ -679,14 +692,16 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             ))}
           </div>
 
-          {/* Legal Links: Privacy Policy, Refund Policy, Terms & Conditions */}
-          <div className="flex items-center gap-4 sm:gap-5 flex-wrap">
+          {/* Legal Links */}
+          <div className="flex items-center gap-3 text-slate-500 dark:text-slate-400">
             <button type="button" onClick={() => onNavigate('home')} className="hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer">
               Privacy Policy
             </button>
+            <span className="text-slate-300 dark:text-slate-700">·</span>
             <button type="button" onClick={() => onNavigate('home')} className="hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer">
               Refund Policy
             </button>
+            <span className="text-slate-300 dark:text-slate-700">·</span>
             <button type="button" onClick={() => onNavigate('home')} className="hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer">
               Terms & Conditions
             </button>

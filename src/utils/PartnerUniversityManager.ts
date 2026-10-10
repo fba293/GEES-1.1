@@ -837,7 +837,13 @@ function buildUniversity(entry: CollaboratedUniversityEntry, index: number): Uni
     intakes: entry.intakes || (countryConfig ? [countryConfig.intakeText] : ['September', 'January']),
     avgTuitionAnnualUSD: entry.avgTuitionAnnualUSD || 10000,
     currency: countryConfig ? countryConfig.currency : 'USD',
-    minIeltsScore: 6.0,
+    minIeltsScore: (() => {
+      if (numericRank && numericRank <= 150) return 7.0;
+      if (numericRank && numericRank <= 500) return 6.5;
+      if (entry.country === 'United Kingdom' || entry.country === 'Australia') return 6.0;
+      if (entry.type?.toLowerCase().includes('college') || (entry.avgTuitionAnnualUSD && entry.avgTuitionAnnualUSD < 5000)) return 5.5;
+      return 6.0;
+    })(),
     acceptanceRatePct: 65,
     popularPrograms,
     scholarshipsAvailable: true,

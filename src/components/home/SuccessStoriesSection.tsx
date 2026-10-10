@@ -75,17 +75,17 @@ export const SuccessStoriesSection: React.FC<SuccessStoriesSectionProps> = ({ on
     <section className="w-full bg-white dark:bg-[#070b19] py-14 sm:py-20 border-t border-slate-100 dark:border-slate-800">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
         {/* Header */}
-        <div className="flex items-center justify-center flex-wrap gap-2 sm:gap-3 mb-2 text-center max-w-full px-2">
-          <h2 className="text-2xl xs:text-3xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
-            Success
+        <div className="text-center max-w-3xl mx-auto mb-6 sm:mb-8 px-2">
+          <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold font-display tracking-tight text-slate-900 dark:text-white flex items-center justify-center flex-wrap gap-2 sm:gap-3 md:gap-3.5 leading-tight text-center">
+            <span>Success</span>
+            <span className="bg-[#fbb034] text-slate-950 px-3.5 sm:px-5 md:px-6 py-0.5 sm:py-1 md:py-1.5 rounded-xl sm:rounded-2xl font-black tracking-tight leading-none shadow-sm shrink-0">
+              Stories
+            </span>
           </h2>
-          <span className="text-2xl xs:text-3xl sm:text-5xl font-black text-slate-950 px-3.5 sm:px-6 py-0.5 sm:py-1 rounded-xl sm:rounded-2xl bg-[#fbb034] inline-flex items-center shadow-xs leading-tight">
-            Stories
-          </span>
+          <p className="mt-2.5 sm:mt-3 text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-400 font-normal leading-relaxed max-w-2xl mx-auto px-2 text-center">
+            Real student experiences with admission, visa and arrival support.
+          </p>
         </div>
-        <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 text-center max-w-2xl mb-8 font-normal leading-relaxed px-2">
-          Real student experiences with admission, visa and arrival support.
-        </p>
 
         {/* Filter Segmented Tab Bar with Universal 120 FPS Sliding Indicator */}
         <div className="w-full max-w-2xl mb-8 sm:mb-10 flex justify-center">

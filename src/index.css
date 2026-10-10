@@ -9,6 +9,48 @@
     --brand-amber: #FBB034;
     --brand-amber-dark: #F59E0B;
     --brand-blue: #2563EB;
+
+    --background: #ffffff;
+    --foreground: #0f172a;
+    --card: #ffffff;
+    --card-foreground: #0f172a;
+    --popover: #ffffff;
+    --popover-foreground: #0f172a;
+    --primary: #FBB034;
+    --primary-foreground: #0f172a;
+    --secondary: #f1f5f9;
+    --secondary-foreground: #0f172a;
+    --muted: #f1f5f9;
+    --muted-foreground: #475569;
+    --accent: #f1f5f9;
+    --accent-foreground: #0f172a;
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+    --border: #e2e8f0;
+    --input: #e2e8f0;
+    --ring: #FBB034;
+  }
+
+  .dark {
+    --background: #070D1E;
+    --foreground: #f8fafc;
+    --card: #0f172a;
+    --card-foreground: #f8fafc;
+    --popover: #0f172a;
+    --popover-foreground: #f8fafc;
+    --primary: #FBB034;
+    --primary-foreground: #0f172a;
+    --secondary: #1e293b;
+    --secondary-foreground: #f8fafc;
+    --muted: #1e293b;
+    --muted-foreground: #94a3b8;
+    --accent: #1e293b;
+    --accent-foreground: #f8fafc;
+    --destructive: #7f1d1d;
+    --destructive-foreground: #f8fafc;
+    --border: #1e293b;
+    --input: #1e293b;
+    --ring: #FBB034;
   }
 
   html {
@@ -38,9 +80,13 @@
     -webkit-text-size-adjust: 100%;
   }
 
-  body {
-    overflow-x: clip;
+  html,
+  body,
+  #root,
+  main {
+    overflow-x: clip !important;
     width: 100%;
+    max-width: 100vw;
   }
 
   /* 1. Typography Hierarchy & Apple Negative Tracking */
@@ -92,7 +138,7 @@
   main button:not(.no-min-touch):not([data-purpose="subtle-chip"]):not(.carousel-dot),
   main select,
   main input[type="search"],
-  main input[type="text"] {
+  main input[type="text"]:not([data-purpose="inset-filter-input"]) {
     min-height: 44px;
     touch-action: manipulation;
   }
@@ -141,8 +187,8 @@
 
   [data-purpose="inset-filter-matrix"] select,
   [data-purpose="inset-filter-matrix"] input {
-    min-height: 24px;
-    height: 24px;
+    min-height: 22px !important;
+    height: 22px !important;
   }
 
   /* 6. Card Proportions & Image Geometry */
@@ -159,7 +205,7 @@
   }
 
   .animated-tabs-item {
-    min-height: 40px;
+    min-height: 44px;
     padding-left: 0.85rem;
     padding-right: 0.85rem;
   }
@@ -386,5 +432,312 @@
 .magnetic-btn:hover .circle {
   transform: scale(1.08);
 }
+
+/* ==========================================================================
+   Google Translate Premium EdTech / Fintech Aesthetic Styling
+   ========================================================================== */
+
+/* Prevent Google Translate top banner frame from shifting page body */
+.goog-te-banner-frame.skiptranslate,
+.goog-te-banner-frame {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+}
+
+body {
+  top: 0px !important;
+  position: static !important;
+}
+
+#google_translate_element {
+  display: inline-flex;
+  align-items: center;
+}
+
+.goog-te-gadget-simple {
+  background-color: transparent !important;
+  border: none !important;
+  padding: 0 4px !important;
+  font-size: 11px !important;
+  line-height: 1.2 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  cursor: pointer !important;
+  font-family: inherit !important;
+  color: inherit !important;
+}
+
+.goog-te-gadget-simple .goog-te-menu-value {
+  color: #334155 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 2px !important;
+}
+
+.dark .goog-te-gadget-simple .goog-te-menu-value {
+  color: #e2e8f0 !important;
+}
+
+.goog-te-gadget-simple .goog-te-menu-value span {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  border-left: none !important;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif !important;
+}
+
+/* Hide default Google Translate logo and redundant separator arrows */
+.goog-te-gadget-simple img {
+  display: none !important;
+}
+
+.goog-te-gadget-simple .goog-te-menu-value span:nth-child(3),
+.goog-te-gadget-simple .goog-te-menu-value span:nth-child(5) {
+  display: none !important;
+}
+
+/* Subtle custom arrow indicator */
+.goog-te-gadget-simple .goog-te-menu-value::after {
+  content: '▾';
+  font-size: 10px;
+  margin-left: 2px;
+  color: #94a3b8;
+}
+
+/* Google Translate dropdown menu frame */
+.goog-te-menu-frame {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+  border-radius: 1rem !important;
+  border: 1px solid rgba(226, 232, 240, 0.8) !important;
+}
+
+/* Tooltip popup suppression */
+#goog-gt-tt {
+  display: none !important;
+  visibility: hidden !important;
+}
+.goog-text-highlight {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* ==========================================================================
+   Global Reusable Sliding Entrance Animations (120 FPS GPU Accelerated)
+   ========================================================================== */
+
+@keyframes slide-in-right {
+  from {
+    transform: translate3d(100%, 0, 0);
+    opacity: 0;
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in-left {
+  from {
+    transform: translate3d(-100%, 0, 0);
+    opacity: 0;
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in-bottom {
+  from {
+    transform: translate3d(0, 32px, 0);
+    opacity: 0;
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in-top {
+  from {
+    transform: translate3d(0, -32px, 0);
+    opacity: 0;
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+.animate-slide-in-bottom {
+  animation: slide-in-bottom 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+.animate-slide-in-top {
+  animation: slide-in-top 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+.slide-panel-drawer {
+  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.32s ease;
+  will-change: transform;
+}
+
+/* ==========================================================================
+   Standardized Button Base Styles & Click Ripple Tactile Feedback
+   ========================================================================== */
+
+.btn-tactile {
+  touch-action: manipulation;
+  user-select: none;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-tactile:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+/* ==========================================================================
+   GEES Theme Toggle Motion & Animation Controls (globaleducationexpert.com)
+   ========================================================================== */
+
+:root {
+  --gees-motion-gold: #efc459;
+  --gees-motion-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --gees-motion-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.gees-theme-motion {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  color: currentColor;
+  transform: translateZ(0);
+}
+
+.gees-theme-motion svg {
+  display: block;
+  width: 22px !important;
+  height: 22px !important;
+  overflow: visible;
+}
+
+.gees-theme-motion__sun,
+.gees-theme-motion__moon,
+.gees-theme-motion__stars {
+  transform-origin: 12px 12px;
+  transition:
+    opacity 0.32s ease,
+    transform 0.56s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.gees-theme-motion__sun {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+.gees-theme-motion__sun circle {
+  fill: currentColor;
+}
+
+.gees-theme-motion__sun path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+}
+
+.gees-theme-motion__moon {
+  opacity: 0;
+  transform: rotate(-84deg) scale(0.46);
+}
+
+.gees-theme-motion__moon path {
+  fill: currentColor;
+}
+
+.gees-theme-motion__stars {
+  opacity: 0;
+  transform: translateY(3px) scale(0.4);
+}
+
+.gees-theme-motion__stars circle {
+  fill: var(--gees-motion-gold, #efc459);
+}
+
+/* Dark mode state */
+[data-theme-state="dark"] .gees-theme-motion__sun,
+.dark [data-theme-state="dark"] .gees-theme-motion__sun,
+.dark .gees-action--theme .gees-theme-motion__sun {
+  opacity: 0;
+  transform: rotate(126deg) scale(0.38);
+}
+
+[data-theme-state="dark"] .gees-theme-motion__moon,
+.dark [data-theme-state="dark"] .gees-theme-motion__moon,
+.dark .gees-action--theme .gees-theme-motion__moon {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+[data-theme-state="dark"] .gees-theme-motion__stars,
+.dark [data-theme-state="dark"] .gees-theme-motion__stars,
+.dark .gees-action--theme .gees-theme-motion__stars {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  transition-delay: 0.1s;
+}
+
+/* Popping and halo micro-animations when toggled */
+.gees-action--theme.is-theme-transitioning .gees-theme-motion {
+  animation: geesThemeTogglePop 0.48s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.gees-action--theme {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.gees-action--theme::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  width: auto;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(239, 196, 89, 0.62), transparent 68%);
+  opacity: 0;
+  transform: scale(0.45);
+  pointer-events: none;
+}
+
+.gees-action--theme.is-theme-transitioning::after {
+  animation: geesThemeHalo 0.48s ease-out !important;
+}
+
+@keyframes geesThemeTogglePop {
+  0% { transform: rotate(0deg) scale(1); }
+  48% { transform: rotate(22deg) scale(0.82); }
+  100% { transform: rotate(0deg) scale(1); }
+}
+
+@keyframes geesThemeHalo {
+  0% { opacity: 0.7; transform: scale(0.45); }
+  100% { opacity: 0; transform: scale(1.75); }
+}
+
 
 

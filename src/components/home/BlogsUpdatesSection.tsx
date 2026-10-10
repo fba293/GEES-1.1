@@ -119,16 +119,14 @@ export const BlogsUpdatesSection: React.FC<BlogsUpdatesSectionProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* 1. Header (Classic GEES Signature Style) */}
         <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12 px-2">
-          <div className="flex items-center justify-center flex-wrap gap-2 sm:gap-3 mb-2 text-center max-w-full px-2">
-            <h2 className="text-2xl xs:text-3xl sm:text-5xl lg:text-6xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
-              Blogs &
-            </h2>
-            <span className="text-2xl xs:text-3xl sm:text-5xl lg:text-6xl font-black text-slate-950 px-3.5 sm:px-6 py-0.5 sm:py-1 rounded-xl sm:rounded-2xl bg-[#fbb034] inline-flex items-center shadow-xs leading-tight">
+          <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold font-display tracking-tight text-slate-900 dark:text-white flex items-center justify-center flex-wrap gap-2 sm:gap-3 md:gap-3.5 leading-tight text-center">
+            <span>Blogs &</span>
+            <span className="bg-[#fbb034] text-slate-950 px-3.5 sm:px-5 md:px-6 py-0.5 sm:py-1 md:py-1.5 rounded-xl sm:rounded-2xl font-black tracking-tight leading-none shadow-sm shrink-0">
               Updates
             </span>
-          </div>
-          <p className="mt-2.5 sm:mt-3 text-sm sm:text-lg text-slate-500 dark:text-slate-400 font-normal leading-relaxed px-2">
-            Latest immigration advisories, university admission trends, and scholarship guides.
+          </h2>
+          <p className="mt-2.5 sm:mt-3 text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-400 font-normal leading-relaxed max-w-4xl mx-auto px-2 text-center lg:whitespace-nowrap">
+            Get the latest news, visa updates, student stories, and scholarship guides.
           </p>
 
           {/* Category Tabs */}
@@ -218,26 +216,9 @@ export const BlogsUpdatesSection: React.FC<BlogsUpdatesSectionProps> = ({
                     </h3>
 
                     {/* Excerpt */}
-                    <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 line-clamp-2 leading-relaxed mb-4">
+                    <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 line-clamp-3 leading-relaxed mb-4">
                       {post.excerpt}
                     </p>
-
-                    {/* Key Takeaways Box (Signature GEES Feature) */}
-                    {post.takeaways && post.takeaways.length > 0 && (
-                      <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/80 mb-4 space-y-1.5">
-                        <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 dark:text-slate-500 block">
-                          Key Highlights
-                        </span>
-                        {post.takeaways.slice(0, 2).map((item, idx) => (
-                          <div key={idx} className="flex items-start gap-1.5 text-xs text-slate-700 dark:text-slate-300">
-                            <span className="material-symbols-outlined text-emerald-500 text-sm shrink-0 leading-tight">
-                              check_circle
-                            </span>
-                            <span className="line-clamp-1 leading-snug">{item}</span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
                   </div>
 
                   {/* Card Bottom Actions */}
@@ -245,12 +226,9 @@ export const BlogsUpdatesSection: React.FC<BlogsUpdatesSectionProps> = ({
                     <button
                       type="button"
                       onClick={() => setSelectedArticle(post)}
-                      className="min-h-[44px] inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-blue-600 hover:text-blue-700 dark:text-[#fbb034] dark:hover:text-amber-300 transition-colors py-2 cursor-pointer"
+                      className="min-h-[44px] inline-flex items-center text-xs sm:text-sm font-bold text-blue-600 hover:text-blue-700 dark:text-[#fbb034] dark:hover:text-amber-300 transition-colors py-2 cursor-pointer"
                     >
-                      <span>Read Full Guide</span>
-                      <span className="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">
-                        arrow_forward
-                      </span>
+                      Read More
                     </button>
 
                     <button
@@ -268,21 +246,18 @@ export const BlogsUpdatesSection: React.FC<BlogsUpdatesSectionProps> = ({
           })}
         </div>
 
-        {/* 3. Bottom CTA: "More Articles" Redirect Button */}
-        <div className="mt-12 sm:mt-16 text-center flex flex-col items-center justify-center gap-3">
+        {/* 3. Bottom CTA: "All Articles" Redirect Button */}
+        <div className="mt-12 sm:mt-16 text-center flex items-center justify-center">
           <a
             href="/blog.html"
             onClick={handleRedirectToBlog}
             className="inline-flex items-center justify-center focus:outline-none"
           >
             <InteractiveHoverButton
-              text="More Articles"
+              text="All Articles"
               className="min-h-[44px] text-sm sm:text-base py-3 px-8 shadow-md cursor-pointer"
             />
           </a>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
-            Explore 50+ detailed destination guides, scholarship roadmaps & visa checklists.
-          </p>
         </div>
       </div>
 
