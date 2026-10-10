@@ -457,26 +457,26 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
     : [];
 
   return (
-    <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
-      {/* Header */}
-      <div className="bg-[#0a1120] rounded-3xl p-8 sm:p-12 mb-8 shadow-2xl relative">
+    <div className="w-full max-w-[1600px] mx-auto px-2 xs:px-3 sm:px-6 lg:px-8 py-2 sm:py-10">
+      {/* Header Banner - Compact & Precision-Optimised for Small Mobile Screens */}
+      <div className="bg-[#0a1120] rounded-xl sm:rounded-3xl p-3.5 xs:p-4 sm:p-12 mb-3 sm:mb-8 shadow-lg sm:shadow-2xl relative overflow-hidden">
         {selectedUniSlug && (
           <button
             onClick={() => setSelectedUniSlug(null)}
-            className="absolute top-8 right-8 inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-slate-800 text-slate-300 text-xs font-bold hover:bg-slate-700 transition-colors cursor-pointer shadow-xs"
+            className="absolute top-2.5 right-2.5 sm:top-8 sm:right-8 inline-flex items-center gap-1 px-2 py-0.5 sm:px-4 sm:py-2.5 rounded-full bg-slate-800/90 text-slate-300 text-[9px] sm:text-xs font-bold hover:bg-slate-700 transition-colors cursor-pointer shadow-xs z-10"
           >
-            <span className="material-symbols-outlined text-[16px]">arrow_back</span>
-            <span>Back to All</span>
+            <span className="material-symbols-outlined text-[13px] sm:text-[16px]">arrow_back</span>
+            <span>Back</span>
           </button>
         )}
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-500 text-[10px] font-bold uppercase tracking-widest mb-6">
+        <div className="inline-flex items-center gap-1.5 px-2 py-0.5 sm:px-3 sm:py-1 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-500 text-[8.5px] xs:text-[9px] sm:text-[10px] font-bold uppercase tracking-wider sm:tracking-widest mb-1.5 sm:mb-6">
           <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
           WORLD-CLASS EDUCATION
         </div>
-        <h1 className="text-4xl sm:text-6xl font-black text-white tracking-tighter leading-tight mb-6">
-          Top <span className="bg-[#fbb034] text-slate-950 px-3 py-1 rounded-lg">Universities</span> Worldwide
+        <h1 className="text-lg xs:text-xl sm:text-6xl font-black text-white tracking-tight sm:tracking-tighter leading-snug sm:leading-tight mb-1.5 sm:mb-6">
+          Top <span className="bg-[#fbb034] text-slate-950 px-1.5 py-0.5 sm:px-3 sm:py-1 rounded-md sm:rounded-lg">Universities</span> Worldwide
         </h1>
-        <p className="text-lg text-slate-300 max-w-xl leading-relaxed whitespace-nowrap">
+        <p className="text-[10px] xs:text-[11px] sm:text-lg text-slate-300 font-medium max-w-full sm:max-w-xl leading-tight sm:leading-relaxed whitespace-nowrap truncate">
           Browse 167+ partner universities across 6+ countries
         </p>
       </div>
@@ -903,12 +903,12 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
         </div>
       ) : (
         /* VIEW B: Universities Faceted Directory with Filter Tick Options & Top Search */
-        <div className="space-y-6">
+        <div className="space-y-3 sm:space-y-6">
           {/* Top Search Bar & Sort Controls */}
-          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 p-4 sm:p-5 shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
-            {/* Search Input Bar (h-12 / 48px height, medium font weight) */}
+          <div className="bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl border border-slate-200/90 dark:border-slate-800 p-3 xs:p-4 sm:p-5 shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5 sm:gap-4">
+            {/* Search Input Bar */}
             <div className="relative flex-1">
-              <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-[20px] pointer-events-none">
+              <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px] sm:text-[20px] pointer-events-none">
                 search
               </span>
               <input
@@ -919,7 +919,7 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
                   setSearchQuery(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="w-full h-12 pl-11 pr-10 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-sm font-medium text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 shadow-xs transition-all"
+                className="w-full h-10 sm:h-12 pl-9 sm:pl-11 pr-9 rounded-lg sm:rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm font-medium text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 shadow-xs transition-all"
               />
               {searchQuery && (
                 <button
@@ -929,33 +929,33 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
                     setSearchQuery('');
                     setCurrentPage(1);
                   }}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-white flex items-center justify-center cursor-pointer transition-colors"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 w-5 h-5 sm:w-6 sm:h-6 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-white flex items-center justify-center cursor-pointer transition-colors"
                 >
-                  <span className="material-symbols-outlined text-[16px]">close</span>
+                  <span className="material-symbols-outlined text-[14px] sm:text-[16px]">close</span>
                 </button>
               )}
             </div>
 
             {/* Mobile Filter Button + Sort Dropdown */}
-            <div className="flex items-center gap-3 justify-between md:justify-end shrink-0">
+            <div className="flex items-center gap-2 sm:gap-3 justify-between md:justify-end shrink-0">
               {/* Mobile Filter Trigger Button */}
               <button
                 type="button"
                 onClick={() => setIsMobileFilterOpen(true)}
-                className="lg:hidden h-12 px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center gap-2 shadow-xs cursor-pointer active:scale-95 transition-all"
+                className="lg:hidden h-10 sm:h-12 px-3 sm:px-4 rounded-lg sm:rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center gap-1.5 sm:gap-2 shadow-xs cursor-pointer active:scale-95 transition-all"
               >
-                <span className="material-symbols-outlined text-[18px] text-blue-600">tune</span>
+                <span className="material-symbols-outlined text-[16px] sm:text-[18px] text-blue-600">tune</span>
                 <span>Filters</span>
                 {activeFiltersCount > 0 && (
-                  <span className="w-5 h-5 rounded-full bg-blue-600 text-white text-[10px] font-black flex items-center justify-center">
+                  <span className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-blue-600 text-white text-[9px] sm:text-[10px] font-black flex items-center justify-center">
                     {activeFiltersCount}
                   </span>
                 )}
               </button>
 
               {/* Sort By Dropdown */}
-              <div className="relative w-full md:w-[280px]">
-                <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px] pointer-events-none">
+              <div className="relative flex-1 md:flex-none w-full md:w-[280px]">
+                <span className="material-symbols-outlined absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[16px] sm:text-[18px] pointer-events-none">
                   sort
                 </span>
                 <select
@@ -964,7 +964,7 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
                     setSortBy(e.target.value);
                     setCurrentPage(1);
                   }}
-                  className="w-full h-12 pl-10 pr-10 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-sm font-semibold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 shadow-xs transition-all appearance-none cursor-pointer"
+                  className="w-full h-10 sm:h-12 pl-8 sm:pl-10 pr-8 sm:pr-10 rounded-lg sm:rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm font-semibold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 shadow-xs transition-all appearance-none cursor-pointer"
                 >
                   <option value="recommended">Sort: Recommended</option>
                   <option value="qs">Sort: QS World Ranking</option>
@@ -973,7 +973,7 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
                   <option value="fee-desc">Sort: Tuition (High to Low)</option>
                   <option value="established">Sort: Established Year</option>
                 </select>
-                <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px] pointer-events-none">
+                <span className="material-symbols-outlined absolute right-2.5 sm:right-3 top-1/2 -translate-y-1/2 text-slate-400 text-[16px] sm:text-[18px] pointer-events-none">
                   expand_more
                 </span>
               </div>
@@ -981,7 +981,7 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
           </div>
 
           {/* Main Grid: Left Filter Sidebar + Right Cards Area */}
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-3 sm:gap-8 items-start">
             {/* DESKTOP FILTER SIDEBAR */}
             <aside className="hidden lg:block lg:col-span-1 space-y-6 lg:sticky lg:top-24 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-xs max-h-[calc(100vh-120px)] overflow-y-auto sleek-scrollbar">
               {/* Sidebar Header: Refine Search + Reset */}
@@ -1703,9 +1703,9 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
             </aside>
 
             {/* RIGHT CONTENT AREA: Results Bar, Grid & Pagination */}
-            <div className="lg:col-span-3 space-y-6">
+            <div className="lg:col-span-3 space-y-3 sm:space-y-6">
               {/* Results bar header */}
-              <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 p-4 space-y-3 shadow-xs">
+              <div className="bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl border border-slate-200/90 dark:border-slate-800 p-3 xs:p-4 space-y-2.5 sm:space-y-3 shadow-xs">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
@@ -1891,8 +1891,10 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent"></div>
-                            <div className="absolute top-3 left-3 right-3 flex items-center justify-between">
-                              <span className="text-2xl drop-shadow">{uni.flagEmoji}</span>
+                            <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2">
+                              <span className="px-2.5 py-1 rounded-full bg-slate-950/70 backdrop-blur-md border border-white/20 text-white text-[11px] font-extrabold shadow-md">
+                                {uni.country}
+                              </span>
                               {uni.qsRank2027 ? (
                                 <span className="px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[10.5px] font-black shadow-xs flex items-center gap-1">
                                   <span>QS 2027:</span>

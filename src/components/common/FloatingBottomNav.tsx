@@ -270,24 +270,28 @@ export const FloatingBottomNav: React.FC<FloatingBottomNavProps> = ({
                 : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
             }`}
           >
-            <div className="w-full flex items-center justify-center pointer-events-none">
+            <div className="flex flex-col items-center justify-center pointer-events-none">
               <svg
-                className={`tab-icon w-5 h-5 xs:w-[22px] xs:h-[22px] fill-current stroke-none transition-transform duration-200 ${
+                className={`tab-icon w-4 h-4 xs:w-[18px] xs:h-[18px] stroke-current fill-none transition-transform duration-200 ${
                   activeIndex === 0 ? 'scale-110' : ''
                 }`}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
                 viewBox="0 0 24 24"
               >
-                <path d="M12 2.69l8 6.4V20a1.5 1.5 0 0 1-1.5 1.5H14a1 1 0 0 1-1-1v-4.5a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1V20.5a1 1 0 0 1-1 1H4.5A1.5 1.5 0 0 1 3 20V9.09l8-6.4z" />
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
               </svg>
+              <span className="text-[10px] xs:text-[11px] font-semibold mt-0.5 tracking-tight">Home</span>
             </div>
-            <span className="sr-only">Home</span>
           </button>
 
-          {/* TAB 1: UNIVERSITIES / MEDIA EXPLORER */}
+          {/* TAB 1: EXPLORE */}
           <button
             type="button"
             onClick={() => handleTabClick(1)}
-            aria-label="Universities & Programs"
+            aria-label="Explore"
             aria-current={activeIndex === 1 ? 'page' : undefined}
             className={`dock-tab relative flex-1 h-full flex flex-col items-center justify-center active:scale-90 transition-transform duration-150 z-10 cursor-pointer ${
               activeIndex === 1
@@ -295,9 +299,9 @@ export const FloatingBottomNav: React.FC<FloatingBottomNavProps> = ({
                 : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
             }`}
           >
-            <div className="w-full flex items-center justify-center pointer-events-none">
+            <div className="flex flex-col items-center justify-center pointer-events-none">
               <svg
-                className={`tab-icon w-5 h-5 xs:w-[22px] xs:h-[22px] stroke-current fill-none transition-transform duration-200 ${
+                className={`tab-icon w-4 h-4 xs:w-[18px] xs:h-[18px] stroke-current fill-none transition-transform duration-200 ${
                   activeIndex === 1 ? 'scale-110' : ''
                 }`}
                 strokeLinecap="round"
@@ -305,18 +309,18 @@ export const FloatingBottomNav: React.FC<FloatingBottomNavProps> = ({
                 strokeWidth="2"
                 viewBox="0 0 24 24"
               >
-                <rect height="18" rx="5" width="18" x="3" y="3" />
-                <polygon fill="currentColor" points="10 8 16 12 10 16 10 8" />
+                <circle cx="12" cy="12" r="10"></circle>
+                <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
               </svg>
+              <span className="text-[10px] xs:text-[11px] font-semibold mt-0.5 tracking-tight">Explore</span>
             </div>
-            <span className="sr-only">Universities</span>
           </button>
 
-          {/* TAB 2: CENTER ACTION / FILTER FAST-TRACK (With Red '13' Badge) */}
+          {/* TAB 2: COURSES (With Red '13' Badge) */}
           <button
             type="button"
             onClick={() => handleTabClick(2)}
-            aria-label="Quick Filters & Fast-Track Actions"
+            aria-label="Courses"
             aria-expanded={isQuickActionsOpen}
             className={`dock-tab relative flex-1 h-full flex flex-col items-center justify-center active:scale-90 transition-transform duration-150 z-10 cursor-pointer ${
               isQuickActionsOpen
@@ -324,75 +328,75 @@ export const FloatingBottomNav: React.FC<FloatingBottomNavProps> = ({
                 : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
             }`}
           >
-            <div className="relative flex items-center justify-center pointer-events-none">
-              <svg
-                className={`tab-icon w-5 h-5 xs:w-[22px] xs:h-[22px] stroke-current fill-none transition-transform duration-200 ${
-                  isQuickActionsOpen ? 'scale-110' : ''
-                }`}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2.2"
-                viewBox="0 0 24 24"
-              >
-                <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z" />
-              </svg>
-              {/* Red Badge '13' matching design spec */}
-              <span className="absolute -top-1.5 -right-2.5 min-w-[18px] h-4.5 px-1 rounded-full bg-red-500 text-white font-black text-[9px] flex items-center justify-center shadow-md border-2 border-white dark:border-[#131722] animate-bounce">
-                13
-              </span>
+            <div className="flex flex-col items-center justify-center pointer-events-none relative">
+              <div className="relative">
+                <svg
+                  className={`tab-icon w-4 h-4 xs:w-[18px] xs:h-[18px] stroke-current fill-none transition-transform duration-200 ${
+                    isQuickActionsOpen ? 'scale-110' : ''
+                  }`}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                  <path d="M6 12v5c0 2 3 3 6 3s6-1 6-3v-5"></path>
+                </svg>
+                {/* Red Badge '13' matching design spec */}
+                <span className="absolute -top-1.5 -right-3 min-w-[16px] h-4 px-1 rounded-full bg-red-500 text-white font-black text-[9px] flex items-center justify-center shadow-md border border-white dark:border-[#131722] animate-bounce">
+                  13
+                </span>
+              </div>
+              <span className="text-[10px] xs:text-[11px] font-semibold mt-0.5 tracking-tight">Courses</span>
             </div>
-            <span className="sr-only">Quick Filters</span>
           </button>
 
-          {/* TAB 3: SEARCH & CONSULTATION */}
+          {/* TAB 3: SEARCH */}
           <button
             type="button"
             onClick={() => handleTabClick(3)}
-            aria-label="Search Programs & Universities"
+            aria-label="Search"
             className="dock-tab relative flex-1 h-full flex flex-col items-center justify-center active:scale-90 transition-transform duration-150 z-10 cursor-pointer text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200"
           >
-            <div className="w-full flex items-center justify-center pointer-events-none">
+            <div className="flex flex-col items-center justify-center pointer-events-none">
               <svg
-                className="tab-icon w-5 h-5 xs:w-[22px] xs:h-[22px] stroke-current fill-none"
+                className="tab-icon w-4 h-4 xs:w-[18px] xs:h-[18px] stroke-current fill-none"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth="2.2"
+                strokeWidth="2"
                 viewBox="0 0 24 24"
               >
-                <circle cx="11" cy="11" r="7" />
-                <path d="M21 21l-4.35-4.35" />
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
               </svg>
+              <span className="text-[10px] xs:text-[11px] font-semibold mt-0.5 tracking-tight">Search</span>
             </div>
-            <span className="sr-only">Search</span>
           </button>
 
-          {/* TAB 4: PROFILE / MENU DRAWER (Avatar with Red Status Badge) */}
+          {/* TAB 4: PROFILE */}
           <button
             type="button"
             onClick={() => handleTabClick(4)}
-            aria-label="Profile and Navigation Menu"
+            aria-label="Profile"
             className={`dock-tab relative flex-1 h-full flex flex-col items-center justify-center active:scale-90 transition-transform duration-150 z-10 cursor-pointer ${
               activeIndex === 4
                 ? 'text-[#fbb034] drop-shadow-[0_0_8px_rgba(251,176,52,0.45)]'
                 : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
             }`}
           >
-            <div className="relative flex items-center justify-center pointer-events-none">
-              <div
-                className={`w-6 h-6 xs:w-7 xs:h-7 rounded-full overflow-hidden border transition-all duration-200 flex items-center justify-center ${
-                  activeIndex === 4
-                    ? 'border-[#fbb034] ring-2 ring-[#fbb034]/40 scale-105'
-                    : 'border-slate-300 dark:border-white/20'
-                } bg-gradient-to-tr from-amber-400 to-rose-500 p-0.5`}
+            <div className="flex flex-col items-center justify-center pointer-events-none">
+              <svg
+                className="tab-icon w-4 h-4 xs:w-[18px] xs:h-[18px] stroke-current fill-none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
               >
-                <div className="w-full h-full bg-white dark:bg-[#1b1c20] rounded-full flex items-center justify-center font-black text-[10px] text-slate-900 dark:text-white">
-                  GE
-                </div>
-              </div>
-              {/* Red active status notification dot */}
-              <span className="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-red-500 border border-white dark:border-[#131722]" />
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              <span className="text-[10px] xs:text-[11px] font-semibold mt-0.5 tracking-tight">Profile</span>
             </div>
-            <span className="sr-only">Menu & Profile</span>
           </button>
         </div>
       </nav>

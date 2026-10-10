@@ -500,11 +500,11 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Header Multi-Currency Switcher (Circular Exchange Icon, properly visible on mobile, tablet & desktop) */}
           <HeaderCurrencyExchangeIcon />
 
-          {/* Search Trigger Button with 0.2s ease-in-out translateY tactile animation */}
+          {/* Search Trigger Button with 0.2s ease-in-out translateY tactile animation (Hidden on mobile) */}
           <button
             aria-label="Search Catalog"
             onClick={onOpenSearch}
-            className="w-8.5 h-8.5 xs:w-9 xs:h-9 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-900 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600 transition-all duration-200 ease-in-out transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer shadow-xs"
+            className="hidden md:flex w-8.5 h-8.5 xs:w-9 xs:h-9 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-full border border-slate-200 dark:border-slate-700 items-center justify-center text-slate-900 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600 transition-all duration-200 ease-in-out transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer shadow-xs"
             type="button"
           >
             <span className="material-symbols-outlined text-[17px] xs:text-[18px] sm:text-[20px]">search</span>
@@ -772,11 +772,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
           </div>
 
-          {/* Primary Universal CTA: Apply with Interactive Hover Button Animation */}
+          {/* Primary Universal CTA: Apply with Interactive Hover Button Animation (Hidden on mobile, visible on tablet & desktop) */}
           <InteractiveHoverButton
             text="Apply"
             onClick={() => onNavigate('apply')}
-            className="hidden sm:inline-flex h-9 sm:h-10 lg:h-11 w-24 sm:w-28 rounded-full bg-[#fbb034] text-slate-950 border-amber-400 font-bold text-xs sm:text-sm items-center justify-center cursor-pointer select-none shadow-xs"
+            className="hidden md:inline-flex h-9 sm:h-10 lg:h-11 w-24 sm:w-28 rounded-full bg-[#fbb034] text-slate-950 border-amber-400 font-bold text-xs sm:text-sm items-center justify-center cursor-pointer select-none shadow-xs"
           />
 
           {/* Mobile Hamburger Navigation Button with Subtle Scaling, Rotation & Color-Shifting Animation */}
