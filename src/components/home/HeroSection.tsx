@@ -159,14 +159,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   const [toastMsg, setToastMsg] = useState<string | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  // Auto-focus effect on the search input when user navigates into view
+  // Guarantee page starts at top of Hero section on initial mount
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (searchInputRef.current) {
-        searchInputRef.current.focus({ preventScroll: true });
-      }
-    }, 400);
-    return () => clearTimeout(timer);
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    }
   }, []);
 
   // Search input looping typewriter placeholder matching uploaded screen
@@ -524,21 +521,21 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 </svg>
               </button>
 
-              {/* 2x2 Clean Rounded White Pill Buttons with 44px min touch target */}
-              <div className="grid grid-cols-2 gap-2 mt-2.5" data-purpose="quick-navigation-grid">
+              {/* 4 Clean Rounded White Pill Buttons in 1 SINGLE ROW to save space on small phones */}
+              <div className="grid grid-cols-4 gap-1 xs:gap-1.5 mt-2" data-purpose="quick-navigation-grid">
                 <button
                   onClick={() => onNavigate('universities')}
                   type="button"
                   data-purpose="compact-btn"
-                  className="w-full h-11 min-h-[44px] rounded-full border border-[#e5e5ea] dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-[#f5f5f7] dark:hover:bg-slate-750 active:bg-[#ebebed] text-[#1d1d1f] dark:text-white font-semibold text-[13px] tracking-tight text-center transition-all shadow-none flex items-center justify-center active:scale-[0.97] cursor-pointer"
+                  className="w-full h-9 min-h-[36px] px-0.5 rounded-full border border-[#e5e5ea] dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-[#f5f5f7] dark:hover:bg-slate-750 active:bg-[#ebebed] text-[#1d1d1f] dark:text-white font-semibold text-[11px] min-[380px]:text-[12px] tracking-tight text-center transition-all shadow-none flex items-center justify-center active:scale-[0.97] cursor-pointer truncate"
                 >
-                  Universities
+                  Unis
                 </button>
                 <button
                   onClick={() => onNavigate('courses')}
                   type="button"
                   data-purpose="compact-btn"
-                  className="w-full h-11 min-h-[44px] rounded-full border border-[#e5e5ea] dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-[#f5f5f7] dark:hover:bg-slate-750 active:bg-[#ebebed] text-[#1d1d1f] dark:text-white font-semibold text-[13px] tracking-tight text-center transition-all shadow-none flex items-center justify-center active:scale-[0.97] cursor-pointer"
+                  className="w-full h-9 min-h-[36px] px-0.5 rounded-full border border-[#e5e5ea] dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-[#f5f5f7] dark:hover:bg-slate-750 active:bg-[#ebebed] text-[#1d1d1f] dark:text-white font-semibold text-[11px] min-[380px]:text-[12px] tracking-tight text-center transition-all shadow-none flex items-center justify-center active:scale-[0.97] cursor-pointer truncate"
                 >
                   Courses
                 </button>
@@ -546,52 +543,62 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   onClick={() => onNavigate('services', 'ielts-preparation')}
                   type="button"
                   data-purpose="compact-btn"
-                  className="w-full h-11 min-h-[44px] rounded-full border border-[#e5e5ea] dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-[#f5f5f7] dark:hover:bg-slate-750 active:bg-[#ebebed] text-[#1d1d1f] dark:text-white font-semibold text-[13px] tracking-tight text-center transition-all shadow-none flex items-center justify-center active:scale-[0.97] cursor-pointer"
+                  className="w-full h-9 min-h-[36px] px-0.5 rounded-full border border-[#e5e5ea] dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-[#f5f5f7] dark:hover:bg-slate-750 active:bg-[#ebebed] text-[#1d1d1f] dark:text-white font-semibold text-[11px] min-[380px]:text-[12px] tracking-tight text-center transition-all shadow-none flex items-center justify-center active:scale-[0.97] cursor-pointer truncate"
                 >
-                  IELTS Prep
+                  IELTS
                 </button>
                 <button
                   onClick={() => onNavigate('blog')}
                   type="button"
                   data-purpose="compact-btn"
-                  className="w-full h-11 min-h-[44px] rounded-full border border-[#e5e5ea] dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-[#f5f5f7] dark:hover:bg-slate-750 active:bg-[#ebebed] text-[#1d1d1f] dark:text-white font-semibold text-[13px] tracking-tight text-center transition-all shadow-none flex items-center justify-center active:scale-[0.97] cursor-pointer"
+                  className="w-full h-9 min-h-[36px] px-0.5 rounded-full border border-[#e5e5ea] dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-[#f5f5f7] dark:hover:bg-slate-750 active:bg-[#ebebed] text-[#1d1d1f] dark:text-white font-semibold text-[11px] min-[380px]:text-[12px] tracking-tight text-center transition-all shadow-none flex items-center justify-center active:scale-[0.97] cursor-pointer truncate"
                 >
-                  Blogs &amp; News
+                  Blogs
                 </button>
               </div>
 
-              {/* Stats Overview Row with Vertical Hairline Dividers */}
-              <div className="flex items-center justify-between mt-3 pt-2.5 pb-0.5 border-t border-[#e5e5ea] dark:border-slate-800 px-1.5" data-purpose="stats-overview-grid">
-                <div className="flex-1 text-center min-w-0">
-                  <div className="flex items-baseline justify-center leading-none">
-                    <span className="text-[15px] font-bold tracking-tight text-[#1d1d1f] dark:text-white">100</span>
-                    <span className="text-[11px] font-semibold text-[#1d1d1f] dark:text-slate-300">+</span>
-                  </div>
-                  <p className="text-[10px] font-normal text-[#86868b] dark:text-slate-400 mt-0.5 whitespace-nowrap truncate tracking-tight">Students</p>
+              {/* Stats Overview Row - Space-Optimized 1-Line Format for Mobile */}
+              <div className="flex items-center justify-between gap-1 mt-2.5 pt-2 pb-0.5 border-t border-[#e5e5ea] dark:border-slate-800 px-1" data-purpose="stats-overview-grid">
+                <div className="flex-1 flex items-center justify-center gap-1 min-w-0 text-center leading-none">
+                  <span className="text-[12px] min-[390px]:text-[13px] font-extrabold tracking-tight text-[#1d1d1f] dark:text-white shrink-0">
+                    100+
+                  </span>
+                  <span className="text-[10.5px] min-[390px]:text-[11px] font-semibold text-[#86868b] dark:text-slate-400 tracking-tight truncate">
+                    Students
+                  </span>
                 </div>
-                <div className="w-[1px] h-4.5 bg-[#e5e5ea] dark:bg-slate-800 shrink-0" />
-                <div className="flex-1 text-center min-w-0">
-                  <div className="flex items-baseline justify-center leading-none">
-                    <span className="text-[15px] font-bold tracking-tight text-[#1d1d1f] dark:text-white">167</span>
-                    <span className="text-[11px] font-semibold text-[#1d1d1f] dark:text-slate-300">+</span>
-                  </div>
-                  <p className="text-[10px] font-normal text-[#86868b] dark:text-slate-400 mt-0.5 whitespace-nowrap truncate tracking-tight">Partner Unis</p>
+
+                <div className="w-[1px] h-3.5 bg-[#e5e5ea] dark:bg-slate-800 shrink-0" />
+
+                <div className="flex-1 flex items-center justify-center gap-1 min-w-0 text-center leading-none">
+                  <span className="text-[12px] min-[390px]:text-[13px] font-extrabold tracking-tight text-[#1d1d1f] dark:text-white shrink-0">
+                    167+
+                  </span>
+                  <span className="text-[10.5px] min-[390px]:text-[11px] font-semibold text-[#86868b] dark:text-slate-400 tracking-tight truncate">
+                    Unis
+                  </span>
                 </div>
-                <div className="w-[1px] h-4.5 bg-[#e5e5ea] dark:bg-slate-800 shrink-0" />
-                <div className="flex-1 text-center min-w-0">
-                  <div className="flex items-baseline justify-center leading-none">
-                    <span className="text-[15px] font-bold tracking-tight text-[#1d1d1f] dark:text-white">95</span>
-                    <span className="text-[11px] font-semibold text-[#1d1d1f] dark:text-slate-300">%</span>
-                  </div>
-                  <p className="text-[10px] font-normal text-[#86868b] dark:text-slate-400 mt-0.5 whitespace-nowrap truncate tracking-tight">Visa Rate</p>
+
+                <div className="w-[1px] h-3.5 bg-[#e5e5ea] dark:bg-slate-800 shrink-0" />
+
+                <div className="flex-1 flex items-center justify-center gap-1 min-w-0 text-center leading-none">
+                  <span className="text-[12px] min-[390px]:text-[13px] font-extrabold tracking-tight text-[#1d1d1f] dark:text-white shrink-0">
+                    95%
+                  </span>
+                  <span className="text-[10.5px] min-[390px]:text-[11px] font-semibold text-[#86868b] dark:text-slate-400 tracking-tight truncate">
+                    Visa
+                  </span>
                 </div>
-                <div className="w-[1px] h-4.5 bg-[#e5e5ea] dark:bg-slate-800 shrink-0" />
-                <div className="flex-1 text-center min-w-0">
-                  <div className="flex items-baseline justify-center leading-none">
-                    <span className="text-[15px] font-bold tracking-tight text-[#1d1d1f] dark:text-white">2</span>
-                    <span className="text-[11px] font-semibold text-[#1d1d1f] dark:text-slate-300">+</span>
-                  </div>
-                  <p className="text-[10px] font-normal text-[#86868b] dark:text-slate-400 mt-0.5 whitespace-nowrap truncate tracking-tight">Offices</p>
+
+                <div className="w-[1px] h-3.5 bg-[#e5e5ea] dark:bg-slate-800 shrink-0" />
+
+                <div className="flex-1 flex items-center justify-center gap-1 min-w-0 text-center leading-none">
+                  <span className="text-[12px] min-[390px]:text-[13px] font-extrabold tracking-tight text-[#1d1d1f] dark:text-white shrink-0">
+                    2+
+                  </span>
+                  <span className="text-[10.5px] min-[390px]:text-[11px] font-semibold text-[#86868b] dark:text-slate-400 tracking-tight truncate">
+                    Offices
+                  </span>
                 </div>
               </div>
             </div>

@@ -101,17 +101,14 @@ export const FloatingBottomNav: React.FC<FloatingBottomNavProps> = ({
           ref={quickActionsRef}
           role="dialog"
           aria-label="Quick Filters & Fast-Track Actions"
-          className="md:hidden fixed bottom-24 inset-x-4 max-w-[390px] mx-auto p-4 rounded-3xl bg-white/95 dark:bg-[#151924]/95 backdrop-blur-2xl border border-slate-200/90 dark:border-white/15 shadow-[0_16px_40px_rgba(0,0,0,0.35)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.7)] z-50 animate-in fade-in slide-in-from-bottom-4 duration-250 ease-out select-none"
+          className="md:hidden fixed bottom-24 inset-x-4 max-w-[390px] mx-auto p-3.5 sm:p-4 rounded-3xl bg-white/95 dark:bg-[#151924]/95 backdrop-blur-2xl border border-slate-200/90 dark:border-white/15 shadow-[0_16px_40px_rgba(0,0,0,0.35)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.7)] z-50 animate-in fade-in slide-in-from-bottom-4 duration-250 ease-out select-none max-h-[78vh] overflow-y-auto no-scrollbar"
         >
           {/* Header */}
-          <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-white/10 mb-2.5">
+          <div className="flex items-center justify-between pb-2.5 border-b border-slate-100 dark:border-white/10 mb-2">
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span>
+              <span className="w-2.5 h-2.5 rounded-full bg-blue-600 dark:bg-blue-500 animate-pulse"></span>
               <span className="text-xs font-black tracking-wider uppercase text-slate-900 dark:text-slate-100 font-sans">
-                Fast-Track Actions & Filters
-              </span>
-              <span className="px-1.5 py-0.2 rounded-full bg-red-500/10 text-red-600 dark:text-red-400 font-bold text-[10px]">
-                13
+                Quick Actions & Navigation
               </span>
             </div>
             <button
@@ -126,9 +123,9 @@ export const FloatingBottomNav: React.FC<FloatingBottomNavProps> = ({
             </button>
           </div>
 
-          {/* Action List */}
-          <div className="space-y-1.5 pt-1">
-            {/* Action 1: Explore Courses & Universities */}
+          {/* Action List - Screenshot Styled Menu Items */}
+          <div className="space-y-1">
+            {/* 1. Explore Universities */}
             <button
               type="button"
               onClick={() => {
@@ -136,25 +133,104 @@ export const FloatingBottomNav: React.FC<FloatingBottomNavProps> = ({
                 onNavigate('universities');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="w-full p-2.5 rounded-2xl hover:bg-slate-100 dark:hover:bg-white/10 flex items-center gap-3 transition-all text-left group cursor-pointer"
+              className="w-full py-2.5 px-3 rounded-2xl flex items-center justify-between hover:bg-slate-100/80 dark:hover:bg-white/10 active:scale-[0.98] transition-all text-left cursor-pointer group"
             >
-              <div className="w-9 h-9 rounded-xl bg-blue-500/15 dark:bg-blue-500/25 text-blue-600 dark:text-blue-400 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
-                <svg className="w-4.5 h-4.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                </svg>
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+                  <span className="material-symbols-outlined text-[19px]">school</span>
+                </div>
+                <span className="text-[14px] font-semibold text-slate-900 dark:text-slate-100 tracking-tight truncate">
+                  Universities & Partner Colleges
+                </span>
               </div>
-              <div className="min-w-0 flex-1">
-                <div className="text-xs font-bold text-slate-900 dark:text-white flex items-center justify-between">
-                  <span>Explore 167+ Universities</span>
-                  <span className="text-[10px] text-blue-600 dark:text-blue-400 font-semibold group-hover:translate-x-0.5 transition-transform">Browse →</span>
-                </div>
-                <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
-                  Filter by QS rank, budget, IELTS & intakes
-                </div>
+              <div className="flex items-center gap-1.5 shrink-0 ml-2">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300">
+                  167+
+                </span>
+                <span className="material-symbols-outlined text-[18px] text-slate-400 dark:text-slate-500 group-hover:translate-x-0.5 transition-transform">
+                  chevron_right
+                </span>
               </div>
             </button>
 
-            {/* Action 2: Book 1-on-1 Consultation */}
+            {/* 2. Courses & Degree Search */}
+            <button
+              type="button"
+              onClick={() => {
+                setIsQuickActionsOpen(false);
+                onNavigate('courses');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="w-full py-2.5 px-3 rounded-2xl flex items-center justify-between hover:bg-slate-100/80 dark:hover:bg-white/10 active:scale-[0.98] transition-all text-left cursor-pointer group"
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                  <span className="material-symbols-outlined text-[19px]">auto_stories</span>
+                </div>
+                <span className="text-[14px] font-semibold text-slate-900 dark:text-slate-100 tracking-tight truncate">
+                  Courses & Degree Search
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0 ml-2">
+                <span className="material-symbols-outlined text-[18px] text-slate-400 dark:text-slate-500 group-hover:translate-x-0.5 transition-transform">
+                  chevron_right
+                </span>
+              </div>
+            </button>
+
+            {/* 3. Study Destinations */}
+            <button
+              type="button"
+              onClick={() => {
+                setIsQuickActionsOpen(false);
+                onNavigate('destinations');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="w-full py-2.5 px-3 rounded-2xl flex items-center justify-between hover:bg-slate-100/80 dark:hover:bg-white/10 active:scale-[0.98] transition-all text-left cursor-pointer group"
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-8 h-8 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
+                  <span className="material-symbols-outlined text-[19px]">public</span>
+                </div>
+                <span className="text-[14px] font-semibold text-slate-900 dark:text-slate-100 tracking-tight truncate">
+                  Study Destinations
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0 ml-2">
+                <span className="material-symbols-outlined text-[18px] text-slate-400 dark:text-slate-500 group-hover:translate-x-0.5 transition-transform">
+                  chevron_right
+                </span>
+              </div>
+            </button>
+
+            {/* 4. Services & Admission Support */}
+            <button
+              type="button"
+              onClick={() => {
+                setIsQuickActionsOpen(false);
+                onNavigate('services');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="w-full py-2.5 px-3 rounded-2xl flex items-center justify-between hover:bg-slate-100/80 dark:hover:bg-white/10 active:scale-[0.98] transition-all text-left cursor-pointer group"
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-8 h-8 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
+                  <span className="material-symbols-outlined text-[19px]">support_agent</span>
+                </div>
+                <span className="text-[14px] font-semibold text-slate-900 dark:text-slate-100 tracking-tight truncate">
+                  Services & Admission Support
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0 ml-2">
+                <span className="material-symbols-outlined text-[18px] text-slate-400 dark:text-slate-500 group-hover:translate-x-0.5 transition-transform">
+                  chevron_right
+                </span>
+              </div>
+            </button>
+
+            <div className="border-b border-slate-100 dark:border-white/10 my-1"></div>
+
+            {/* 5. Book 1-on-1 Consultation */}
             <button
               type="button"
               onClick={() => {
@@ -165,51 +241,27 @@ export const FloatingBottomNav: React.FC<FloatingBottomNavProps> = ({
                   onNavigate('contact');
                 }
               }}
-              className="w-full p-2.5 rounded-2xl hover:bg-slate-100 dark:hover:bg-white/10 flex items-center gap-3 transition-all text-left group cursor-pointer"
+              className="w-full py-2.5 px-3 rounded-2xl flex items-center justify-between hover:bg-slate-100/80 dark:hover:bg-white/10 active:scale-[0.98] transition-all text-left cursor-pointer group"
             >
-              <div className="w-9 h-9 rounded-xl bg-amber-500/15 dark:bg-amber-500/25 text-[#fbb034] flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
-                <svg className="w-4.5 h-4.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+                  <span className="material-symbols-outlined text-[19px]">event_available</span>
+                </div>
+                <span className="text-[14px] font-semibold text-slate-900 dark:text-slate-100 tracking-tight truncate">
+                  Free Counselor Consultation
+                </span>
               </div>
-              <div className="min-w-0 flex-1">
-                <div className="text-xs font-bold text-slate-900 dark:text-white flex items-center justify-between">
-                  <span>Book Free Consultation</span>
-                  <span className="text-[10px] text-amber-500 font-semibold group-hover:translate-x-0.5 transition-transform">Book →</span>
-                </div>
-                <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
-                  1-on-1 visa & scholarship eligibility assessment
-                </div>
+              <div className="flex items-center gap-1.5 shrink-0 ml-2">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300">
+                  Free
+                </span>
+                <span className="material-symbols-outlined text-[18px] text-slate-400 dark:text-slate-500 group-hover:translate-x-0.5 transition-transform">
+                  chevron_right
+                </span>
               </div>
             </button>
 
-            {/* Action 3: Course Comparison Engine */}
-            <button
-              type="button"
-              onClick={() => {
-                setIsQuickActionsOpen(false);
-                onNavigate('courses');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
-              className="w-full p-2.5 rounded-2xl hover:bg-slate-100 dark:hover:bg-white/10 flex items-center gap-3 transition-all text-left group cursor-pointer"
-            >
-              <div className="w-9 h-9 rounded-xl bg-emerald-500/15 dark:bg-emerald-500/25 text-emerald-600 dark:text-emerald-400 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
-                <svg className="w-4.5 h-4.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="text-xs font-bold text-slate-900 dark:text-white flex items-center justify-between">
-                  <span>Compare Courses & Fees</span>
-                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold group-hover:translate-x-0.5 transition-transform">Compare →</span>
-                </div>
-                <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
-                  Side-by-side tuition, duration & degree tiers
-                </div>
-              </div>
-            </button>
-
-            {/* Action 4: Student Application Tracker / Portal */}
+            {/* 6. EMGS Visa & Document Tracker */}
             <button
               type="button"
               onClick={() => {
@@ -217,23 +269,97 @@ export const FloatingBottomNav: React.FC<FloatingBottomNavProps> = ({
                 onNavigate('student-portal');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="w-full p-2.5 rounded-2xl hover:bg-slate-100 dark:hover:bg-white/10 flex items-center gap-3 transition-all text-left group cursor-pointer"
+              className="w-full py-2.5 px-3 rounded-2xl flex items-center justify-between hover:bg-slate-100/80 dark:hover:bg-white/10 active:scale-[0.98] transition-all text-left cursor-pointer group"
             >
-              <div className="w-9 h-9 rounded-xl bg-purple-500/15 dark:bg-purple-500/25 text-purple-600 dark:text-purple-400 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
-                <svg className="w-4.5 h-4.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-8 h-8 rounded-xl bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center shrink-0">
+                  <span className="material-symbols-outlined text-[19px]">description</span>
+                </div>
+                <span className="text-[14px] font-semibold text-slate-900 dark:text-slate-100 tracking-tight truncate">
+                  Visa & Document Tracker
+                </span>
               </div>
-              <div className="min-w-0 flex-1">
-                <div className="text-xs font-bold text-slate-900 dark:text-white flex items-center justify-between">
-                  <span>EMGS Visa & Document Tracker</span>
-                  <span className="text-[10px] text-purple-600 dark:text-purple-400 font-semibold group-hover:translate-x-0.5 transition-transform">Track →</span>
-                </div>
-                <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
-                  Real-time VAL status & compliance clearance
-                </div>
+              <div className="flex items-center gap-1.5 shrink-0 ml-2">
+                <span className="material-symbols-outlined text-[18px] text-slate-400 dark:text-slate-500 group-hover:translate-x-0.5 transition-transform">
+                  chevron_right
+                </span>
               </div>
             </button>
+
+            {/* 7. Student Video Stories */}
+            <button
+              type="button"
+              onClick={() => {
+                setIsQuickActionsOpen(false);
+                onNavigate('home');
+                const el = document.getElementById('student-stories-reels');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="w-full py-2.5 px-3 rounded-2xl flex items-center justify-between hover:bg-slate-100/80 dark:hover:bg-white/10 active:scale-[0.98] transition-all text-left cursor-pointer group"
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-8 h-8 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0">
+                  <span className="material-symbols-outlined text-[19px]">play_circle</span>
+                </div>
+                <span className="text-[14px] font-semibold text-slate-900 dark:text-slate-100 tracking-tight truncate">
+                  Student Video Stories & Reels
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0 ml-2">
+                <span className="material-symbols-outlined text-[18px] text-slate-400 dark:text-slate-500 group-hover:translate-x-0.5 transition-transform">
+                  chevron_right
+                </span>
+              </div>
+            </button>
+
+            {/* 8. Blogs & Latest News */}
+            <button
+              type="button"
+              onClick={() => {
+                setIsQuickActionsOpen(false);
+                if (typeof window !== 'undefined') window.location.href = '/blog.html';
+              }}
+              className="w-full py-2.5 px-3 rounded-2xl flex items-center justify-between hover:bg-slate-100/80 dark:hover:bg-white/10 active:scale-[0.98] transition-all text-left cursor-pointer group"
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-8 h-8 rounded-xl bg-orange-500/10 text-orange-600 dark:text-orange-400 flex items-center justify-center shrink-0">
+                  <span className="material-symbols-outlined text-[19px]">newspaper</span>
+                </div>
+                <span className="text-[14px] font-semibold text-slate-900 dark:text-slate-100 tracking-tight truncate">
+                  Blogs & News Updates
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0 ml-2">
+                <span className="material-symbols-outlined text-[18px] text-slate-400 dark:text-slate-500 group-hover:translate-x-0.5 transition-transform">
+                  chevron_right
+                </span>
+              </div>
+            </button>
+
+            {/* 9. FAQ & Knowledge Center */}
+            <button
+              type="button"
+              onClick={() => {
+                setIsQuickActionsOpen(false);
+                if (typeof window !== 'undefined') window.location.href = '/faq.html';
+              }}
+              className="w-full py-2.5 px-3 rounded-2xl flex items-center justify-between hover:bg-slate-100/80 dark:hover:bg-white/10 active:scale-[0.98] transition-all text-left cursor-pointer group"
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-8 h-8 rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400 flex items-center justify-center shrink-0">
+                  <span className="material-symbols-outlined text-[19px]">help_outline</span>
+                </div>
+                <span className="text-[14px] font-semibold text-slate-900 dark:text-slate-100 tracking-tight truncate">
+                  FAQ & Knowledge Center
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0 ml-2">
+                <span className="material-symbols-outlined text-[18px] text-slate-400 dark:text-slate-500 group-hover:translate-x-0.5 transition-transform">
+                  chevron_right
+                </span>
+              </div>
+            </button>
+
           </div>
         </div>
       )}
@@ -241,11 +367,11 @@ export const FloatingBottomNav: React.FC<FloatingBottomNavProps> = ({
       {/* Floating Island Navigation Dock */}
       <nav
         aria-label="Mobile Bottom Navigation"
-        className="md:hidden fixed bottom-3 sm:bottom-4 inset-x-3.5 z-40 max-w-[400px] mx-auto select-none pointer-events-auto"
+        className="md:hidden fixed bottom-3 sm:bottom-4 inset-x-2 xs:inset-x-3.5 z-40 max-w-[440px] xs:max-w-[480px] mx-auto select-none pointer-events-auto"
         data-purpose="floating-island-wrapper"
       >
         <div
-          className="relative w-full h-[60px] xs:h-[64px] bg-white/90 dark:bg-[#131722]/90 backdrop-blur-2xl border border-slate-300/80 dark:border-white/15 rounded-full shadow-[0_14px_38px_rgba(0,0,0,0.18)] dark:shadow-[0_18px_48px_rgba(0,0,0,0.65)] px-1.5 py-1 flex items-center justify-between overflow-hidden"
+          className="relative w-full h-[62px] xs:h-[68px] bg-white/92 dark:bg-[#131722]/92 backdrop-blur-2xl border border-slate-300/80 dark:border-white/15 rounded-full shadow-[0_14px_38px_rgba(0,0,0,0.18)] dark:shadow-[0_18px_48px_rgba(0,0,0,0.65)] px-2 py-1 flex items-center justify-between overflow-visible"
           id="dock-pill"
         >
           {/* Liquid Glass Capsule Indicator Behind Active Item */}
@@ -316,38 +442,41 @@ export const FloatingBottomNav: React.FC<FloatingBottomNavProps> = ({
             </div>
           </button>
 
-          {/* TAB 2: COURSES (With Red '13' Badge) */}
+          {/* TAB 2: CENTER THEME PLUS BUTTON (Triggers Fast-Track Actions Modal) */}
           <button
             type="button"
             onClick={() => handleTabClick(2)}
-            aria-label="Courses"
+            aria-label="Quick Fast-Track Actions"
             aria-expanded={isQuickActionsOpen}
-            className={`dock-tab relative flex-1 h-full flex flex-col items-center justify-center active:scale-90 transition-transform duration-150 z-10 cursor-pointer ${
-              isQuickActionsOpen
-                ? 'text-[#fbb034] drop-shadow-[0_0_8px_rgba(251,176,52,0.45)]'
-                : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
-            }`}
+            className="dock-tab relative flex-1 h-full flex flex-col items-center justify-center active:scale-95 transition-transform duration-200 z-20 cursor-pointer group -mt-3.5 xs:-mt-4"
           >
-            <div className="flex flex-col items-center justify-center pointer-events-none relative">
-              <div className="relative">
+            <div className="relative flex flex-col items-center pointer-events-none">
+              {/* Theme-matching circular Plus button */}
+              <div
+                className={`w-11 h-11 xs:w-12 xs:h-12 rounded-full bg-gradient-to-tr from-amber-500 via-amber-400 to-yellow-300 dark:from-[#fbb034] dark:to-[#ff9300] text-slate-950 flex items-center justify-center shadow-[0_6px_20px_rgba(251,176,52,0.55)] dark:shadow-[0_8px_25px_rgba(251,176,52,0.65)] ring-4 ring-white/90 dark:ring-[#131722]/90 transition-all duration-300 ${
+                  isQuickActionsOpen
+                    ? 'rotate-45 scale-105 !bg-red-500 !from-red-500 !to-rose-600 text-white !shadow-red-500/50'
+                    : 'group-hover:scale-105'
+                }`}
+              >
                 <svg
-                  className={`tab-icon w-4 h-4 xs:w-[18px] xs:h-[18px] stroke-current fill-none transition-transform duration-200 ${
-                    isQuickActionsOpen ? 'scale-110' : ''
-                  }`}
+                  className="w-6 h-6 stroke-[2.8] stroke-current fill-none transition-transform duration-300"
+                  viewBox="0 0 24 24"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  strokeWidth="2"
-                  viewBox="0 0 24 24"
                 >
-                  <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
-                  <path d="M6 12v5c0 2 3 3 6 3s6-1 6-3v-5"></path>
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
                 </svg>
-                {/* Red Badge '13' matching design spec */}
-                <span className="absolute -top-1.5 -right-3 min-w-[16px] h-4 px-1 rounded-full bg-red-500 text-white font-black text-[9px] flex items-center justify-center shadow-md border border-white dark:border-[#131722] animate-bounce">
-                  13
-                </span>
               </div>
-              <span className="text-[10px] xs:text-[11px] font-semibold mt-0.5 tracking-tight">Courses</span>
+
+              <span
+                className={`text-[10px] xs:text-[11px] font-bold mt-1 tracking-tight transition-colors ${
+                  isQuickActionsOpen ? 'text-[#fbb034]' : 'text-slate-600 dark:text-slate-300'
+                }`}
+              >
+                Actions
+              </span>
             </div>
           </button>
 

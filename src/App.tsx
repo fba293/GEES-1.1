@@ -77,6 +77,16 @@ function AppContent() {
   // Selected service detail popup
   const [selectedServiceDetail, setSelectedServiceDetail] = useState<ServiceItem | null>(null);
 
+  // Force browser scroll restoration to manual and scroll to top (0,0) on initial render
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      if ('scrollRestoration' in window.history) {
+        window.history.scrollRestoration = 'manual';
+      }
+      window.scrollTo(0, 0);
+    }
+  }, []);
+
   // Main navigation handler
   const handleNavigate = (view: string, payload?: any) => {
     if (view === 'apply') {

@@ -2054,21 +2054,21 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
           {/* MOBILE FILTER MODAL DRAWER */}
           {isMobileFilterOpen && (
             <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-slate-950/70 backdrop-blur-xs p-0 sm:p-4 animate-fadeIn">
-              <div className="relative w-full sm:max-w-lg bg-white dark:bg-slate-900 rounded-t-3xl sm:rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-2xl max-h-[85vh] flex flex-col">
+              <div className="relative w-full sm:max-w-lg bg-white dark:bg-slate-900 rounded-t-2xl sm:rounded-3xl p-3.5 xs:p-4 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-2xl max-h-[85vh] flex flex-col">
                 {/* Header */}
-                <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800 shrink-0">
-                  <div className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-[#fbb034] text-xl font-bold">tune</span>
-                    <h3 className="font-extrabold text-base text-slate-900 dark:text-white uppercase tracking-wider">
+                <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-slate-100 dark:border-slate-800 shrink-0">
+                  <div className="flex items-center gap-1.5 sm:gap-2">
+                    <span className="material-symbols-outlined text-[#fbb034] text-lg sm:text-xl font-bold">tune</span>
+                    <h3 className="font-extrabold text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider">
                       Refine Search
                     </h3>
                     {activeFiltersCount > 0 && (
-                      <span className="px-2 py-0.5 rounded-full bg-[#fbb034] text-slate-950 text-xs font-black">
+                      <span className="px-2 py-0.5 rounded-full bg-[#fbb034] text-slate-950 text-[10px] sm:text-xs font-black">
                         {activeFiltersCount}
                       </span>
                     )}
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 sm:gap-3">
                     <button
                       type="button"
                       onClick={resetAllFilters}
@@ -2083,19 +2083,19 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
                     <button
                       type="button"
                       onClick={() => setIsMobileFilterOpen(false)}
-                      className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white flex items-center justify-center cursor-pointer"
+                      className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white flex items-center justify-center cursor-pointer"
                     >
-                      <span className="material-symbols-outlined text-base">close</span>
+                      <span className="material-symbols-outlined text-sm sm:text-base">close</span>
                     </button>
                   </div>
                 </div>
 
                 {/* Scrollable Filter List */}
-                <div className="flex-1 overflow-y-auto space-y-5 py-4 pr-1 sleek-scrollbar">
+                <div className="flex-1 overflow-y-auto space-y-3.5 sm:space-y-5 py-3 sm:py-4 pr-1 sleek-scrollbar">
                   {/* Destinations */}
-                  <div className="space-y-2">
+                  <div className="space-y-1.5 sm:space-y-2">
                     <div className="flex items-center justify-between">
-                      <label className="text-[11px] uppercase font-extrabold tracking-wider text-slate-400 block">
+                      <label className="text-[10px] sm:text-[11px] uppercase font-extrabold tracking-wider text-slate-400 block">
                         Destinations
                       </label>
                       {selectedCountries.length > 0 && (
