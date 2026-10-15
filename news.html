@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en" class="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Global Education News & Student Visa Bulletins | GEES Updates</title>
+    <meta
+      name="description"
+      content="Get verified news on UK student visa financial changes, Australia Genuine Student guidelines, Malaysia MOHE scholarships, and global university entry requirements from GEES Global Education."
+    />
+
+    <!-- Google Fonts & Material Symbols -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    />
+
+    <!-- OpenGraph & Social Sharing Cards -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Global Education News & Student Visa Bulletins | GEES Updates" />
+    <meta
+      property="og:description"
+      content="Get verified updates on UK student visa funds, Australia GS rules, Malaysia scholarships, and global university admissions from GEES Global Education."
+    />
+    <meta property="og:site_name" content="GEES Global Education Expert Services" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Global Education News & Visa Bulletins | GEES" />
+    <meta
+      name="twitter:description"
+      content="Verified updates on UK student visa rules, Australia GS requirements, Malaysia scholarships, and university admissions."
+    />
+
+    <!-- Schema.org NewsMediaOrganization & NewsArticle JSON-LD -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "NewsMediaOrganization",
+        "name": "GEES Global Education Expert Services News Desk",
+        "url": "https://globaleducationexpert.com",
+        "description": "Official global study abroad news desk, student visa bulletins, and international scholarship alerts.",
+        "areaServed": "Global",
+        "knowsAbout": [
+          "UK Student Visa Requirements",
+          "Australia Genuine Student Criterion",
+          "Malaysia MOHE Scholarships",
+          "International Student Admissions"
+        ]
+      }
+    </script>
+
+    <!-- Theme Detection Script (Prevents Dark/Light Flash) -->
+    <script>
+      (function () {
+        try {
+          var savedTheme = localStorage.getItem('gees_theme');
+          var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (savedTheme === 'dark' || (!savedTheme && systemDark)) {
+            document.documentElement.classList.add('dark');
+            document.documentElement.classList.remove('light');
+          } else {
+            document.documentElement.classList.add('light');
+            document.documentElement.classList.remove('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body class="bg-slate-50 dark:bg-[#070D1E] text-slate-900 dark:text-slate-100 font-sans antialiased selection:bg-[#fbb034]/30">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -18,11 +18,11 @@ export const PreFooterCta: React.FC<PreFooterCtaProps> = ({
 }) => {
   return (
     <section className="relative w-full overflow-hidden bg-white dark:bg-[#0B1329] transition-colors" id="cta-reveal">
-      <div className="w-full flex flex-col justify-between overflow-hidden pt-8 pb-12 md:pb-16 bg-white dark:bg-[#0B1329]">
+      <div className="w-full flex flex-col justify-between overflow-hidden pt-6 pb-8 md:pb-16 bg-white dark:bg-[#0B1329]">
         {/* MAIN CTA CARD STAGE WITH OVERLAPPING "GEES" STYLING */}
-        <div className="relative w-full max-w-6xl mx-auto px-4 sm:px-6 md:px-8 z-10 my-auto">
+        <div className="relative w-full max-w-full sm:max-w-6xl mx-auto px-4 sm:px-6 md:px-8 z-10 my-auto">
           {/* Outer card with gentle ambient border & shadow */}
-          <div className="relative bg-white dark:bg-[#0f172a] rounded-3xl md:rounded-[2.5rem] p-6 sm:p-10 md:p-14 lg:p-16 shadow-[0_20px_60px_-15px_rgba(15,23,42,0.08)] border border-slate-200/80 dark:border-slate-800 overflow-hidden flex flex-col items-center text-center transition-all duration-300">
+          <div className="relative bg-white dark:bg-[#0f172a] rounded-3xl md:rounded-[2.5rem] p-5 sm:p-10 md:p-14 lg:p-16 shadow-[0_20px_60px_-15px_rgba(15,23,42,0.08)] border border-slate-200/80 dark:border-slate-800 overflow-hidden flex flex-col items-center text-center transition-all duration-300">
             {/* Amber accent bar on top center of the card */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-28 md:w-36 h-1.5 bg-[#fbb034] rounded-b-full shadow-sm" />
 

@@ -15,7 +15,7 @@ interface SuccessStoriesSectionProps {
 
 export const SuccessStoriesSection: React.FC<SuccessStoriesSectionProps> = ({ onNavigate }) => {
   const [selectedFilter, setSelectedFilter] = useState<'all' | 'malaysia' | 'australia' | 'new zealand' | 'uk'>('all');
-  const [currentIndex, setCurrentIndex] = useState(2); // Default to Tahmid Rahman
+  const [currentIndex, setCurrentIndex] = useState(0); // Default to Riyad Hossain
   const [selectedCaseStudy, setSelectedCaseStudy] = useState<any | null>(null);
 
   // Touch swipe gesture refs
@@ -72,7 +72,7 @@ export const SuccessStoriesSection: React.FC<SuccessStoriesSectionProps> = ({ on
   };
 
   return (
-    <section className="w-full bg-white dark:bg-[#070b19] py-14 sm:py-20 border-t border-slate-100 dark:border-slate-800">
+    <section className="w-full bg-white dark:bg-[#070b19] py-8 min-[390px]:py-10 sm:py-20 border-t border-slate-100 dark:border-slate-800">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-6 sm:mb-8 px-2">
@@ -88,7 +88,7 @@ export const SuccessStoriesSection: React.FC<SuccessStoriesSectionProps> = ({ on
         </div>
 
         {/* Filter Segmented Tab Bar with Universal 120 FPS Sliding Indicator */}
-        <div className="w-full max-w-2xl mb-8 sm:mb-10 flex justify-center">
+        <div className="w-full max-w-3xl mb-8 sm:mb-10 flex justify-center">
           <AnimatedTabs
             tabs={tabs}
             activeId={selectedFilter}
@@ -105,7 +105,7 @@ export const SuccessStoriesSection: React.FC<SuccessStoriesSectionProps> = ({ on
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
-          className="w-full max-w-5xl bg-white dark:bg-slate-900 rounded-3xl sm:rounded-[36px] p-6 sm:p-10 lg:p-12 shadow-xl border border-slate-100 dark:border-slate-800 transition-[opacity,transform] duration-300 ease-out will-change-[opacity,transform] select-none"
+          className="w-full max-w-5xl bg-white dark:bg-slate-900 rounded-3xl sm:rounded-[36px] p-4 min-[390px]:p-5 sm:p-10 lg:p-12 shadow-xl border border-slate-100 dark:border-slate-800 transition-[opacity,transform] duration-300 ease-out will-change-[opacity,transform] select-none max-sm:overflow-hidden"
         >
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-center">
             {/* Left 3D Perspective Photo Stack */}

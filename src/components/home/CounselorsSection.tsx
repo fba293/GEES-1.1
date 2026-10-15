@@ -29,7 +29,7 @@ export const CounselorsSection: React.FC<CounselorsSectionProps> = ({ onOpenBook
     : mockCounselors.filter(c => c.department === activeDepartment);
 
   return (
-    <section id="counselors-section" className="py-16 md:py-24 relative overflow-hidden bg-white dark:bg-[#070b19] border-t border-slate-100 dark:border-slate-800">
+    <section id="counselors-section" className="py-8 min-[390px]:py-10 sm:py-16 md:py-24 relative overflow-hidden bg-white dark:bg-[#070b19] border-t border-slate-100 dark:border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-14 px-2">
@@ -91,10 +91,10 @@ export const CounselorsSection: React.FC<CounselorsSectionProps> = ({ onOpenBook
                   {/* Scrim and bottom info */}
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent"></div>
                   <div className="absolute bottom-0 inset-x-0 p-2.5 text-white">
-                    <span className="text-[8.5px] uppercase font-black tracking-wider text-[#fbb034] block mb-0.5 truncate">
+                    <span className="text-[10px] min-[390px]:text-[10.5px] uppercase font-black tracking-wider text-[#fbb034] block mb-0.5 truncate">
                       {c.role}
                     </span>
-                    <h4 className="text-[12px] font-bold leading-tight truncate text-white">{c.name}</h4>
+                    <h4 className="text-[13px] min-[390px]:text-[14px] font-bold leading-tight truncate text-white">{c.name}</h4>
                   </div>
                 </div>
               );
@@ -187,6 +187,7 @@ export const CounselorsSection: React.FC<CounselorsSectionProps> = ({ onOpenBook
                       className={`w-full h-full object-cover transition-all duration-500 ${isHovered ? 'grayscale-0' : 'grayscale'}`}
                       loading="lazy"
                       decoding="async"
+                      referrerPolicy="no-referrer"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-900/20 to-transparent"></div>
                     <div className="absolute bottom-0 inset-x-0 p-3 sm:p-4 text-white">

@@ -223,13 +223,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   };
 
   return (
-    <section className="relative w-full bg-white dark:bg-[#070b19] pt-1 xs:pt-4 sm:pt-12 pb-16 lg:pb-24 transition-colors duration-300">
-      <div className="max-w-[95%] w-full mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-start relative z-10">
+    <section className="relative w-full bg-white dark:bg-[#070b19] pt-3 min-[390px]:pt-4 sm:pt-12 pb-10 sm:pb-16 lg:pb-24 transition-colors duration-300">
+      <div className="w-full max-w-full sm:max-w-[95%] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-start relative z-10">
         
         {/* Title + Graduate Graphic Header */}
         <div className="w-full flex flex-col lg:flex-row items-start lg:items-end justify-between gap-6 sm:gap-10 relative">
           <div className="flex flex-col items-start flex-1 relative z-20">
-            <h1 className="hero-study-in text-[32px] min-[390px]:text-[38px] xs:text-[46px] sm:text-[76px] lg:text-[96px] font-black tracking-[-0.03em] text-slate-900 dark:text-white leading-[1.02] select-none">
+            <h1 className="hero-study-in text-[32px] min-[390px]:text-[38px] xs:text-[46px] sm:text-[76px] lg:text-[96px] font-black tracking-[-0.03em] text-slate-900 dark:text-white leading-[1.02] select-none text-balance">
               Study in
             </h1>
             
@@ -241,7 +241,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               </span>
             </div>
 
-            <p className="hero-connecting-text mt-3 sm:mt-6 font-bold text-[10px] min-[390px]:text-[11px] sm:text-[13px] tracking-[0.14em] sm:tracking-[0.22em] uppercase text-slate-600 dark:text-slate-300 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xs px-2 py-1 rounded-md inline-block max-w-full truncate sm:whitespace-normal">
+            <p className="hero-connecting-text mt-3 sm:mt-6 font-bold text-[11px] min-[390px]:text-[12px] sm:text-[13px] tracking-[0.08em] min-[390px]:tracking-[0.14em] sm:tracking-[0.22em] uppercase text-slate-600 dark:text-slate-300 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xs px-2 py-1 rounded-md inline-block max-w-full truncate sm:whitespace-normal">
               CONNECTING YOU TO WORLD CLASS EDUCATION
             </p>
           </div>
@@ -430,19 +430,19 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   </svg>
                 </div>
                 <div className="flex-1 min-w-0 flex flex-col justify-center">
-                  <span className={`text-[9px] min-[390px]:text-[9.5px] font-bold tracking-[0.05em] uppercase leading-none block truncate transition-all duration-300 ease-out transform ${
+                  <span className={`text-[10px] min-[390px]:text-[11px] font-bold tracking-[0.05em] uppercase leading-none block truncate transition-all duration-300 ease-out transform ${
                     selectedDestination !== 'all'
                       ? 'text-[#f59e0b] dark:text-[#fbbf24] scale-[1.04] translate-x-0.5'
                       : 'text-[#86868b] dark:text-slate-400'
                   }`}>
-                    DESTINATION {selectedDestination !== 'all' ? `• ${selectedDestination}` : ''}
+                    DESTINATION
                   </span>
                   <select
                     value={selectedDestination}
                     onChange={(e) => setSelectedDestination(e.target.value)}
                     className="appearance-none -webkit-appearance-none w-full bg-transparent text-[12px] min-[390px]:text-[12.5px] font-semibold text-[#1d1d1f] dark:text-white tracking-tight truncate border-0 p-0 m-0 mt-0.5 focus:ring-0 focus:outline-none cursor-pointer leading-tight h-[20px]"
                   >
-                    <option value="all">All Destinations</option>
+                    <option value="all">All</option>
                     <option value="Malaysia">Malaysia</option>
                     <option value="UK">United Kingdom</option>
                     <option value="Australia">Australia</option>
@@ -466,7 +466,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   </svg>
                 </div>
                 <div className="flex-1 min-w-0 flex flex-col justify-center">
-                  <span className="text-[9px] min-[390px]:text-[9.5px] font-bold tracking-[0.05em] uppercase text-[#86868b] dark:text-slate-400 leading-none block truncate">
+                  <span className={`text-[10px] min-[390px]:text-[11px] font-bold tracking-[0.05em] uppercase leading-none block truncate transition-all duration-300 ease-out transform ${
+                    selectedLevel !== 'all'
+                      ? 'text-[#d97706] dark:text-amber-400 scale-[1.04] translate-x-0.5'
+                      : 'text-[#86868b] dark:text-slate-400'
+                  }`}>
                     LEVEL
                   </span>
                   <select
@@ -491,16 +495,31 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   </svg>
                 </div>
                 <div className="flex-1 min-w-0 flex flex-col justify-center">
-                  <span className="text-[9px] min-[390px]:text-[9.5px] font-bold tracking-[0.05em] uppercase text-[#86868b] dark:text-slate-400 leading-none block truncate">
+                  <span className={`text-[10px] min-[390px]:text-[11px] font-bold tracking-[0.05em] uppercase leading-none block truncate transition-all duration-300 ease-out transform ${
+                    fieldOfStudy !== 'all'
+                      ? 'text-[#059669] dark:text-[#34d399] scale-[1.04] translate-x-0.5'
+                      : 'text-[#86868b] dark:text-slate-400'
+                  }`}>
                     FIELD
                   </span>
-                  <input
-                    type="text"
-                    placeholder="Any"
+                  <select
                     value={fieldOfStudy}
                     onChange={(e) => setFieldOfStudy(e.target.value)}
-                    className="appearance-none -webkit-appearance-none w-full bg-transparent text-[12px] min-[390px]:text-[12.5px] font-semibold text-[#1d1d1f] dark:text-white placeholder:text-[#86868b] dark:placeholder:text-slate-500 tracking-tight truncate border-0 p-0 m-0 mt-0.5 focus:ring-0 focus:outline-none leading-tight h-[20px]"
-                  />
+                    className="appearance-none -webkit-appearance-none w-full bg-transparent text-[12px] min-[390px]:text-[12.5px] font-semibold text-[#1d1d1f] dark:text-white tracking-tight truncate border-0 p-0 m-0 mt-0.5 focus:ring-0 focus:outline-none cursor-pointer leading-tight h-[20px]"
+                  >
+                    <option value="all">All</option>
+                    <option value="cs">CompSci & IT</option>
+                    <option value="business">Business & Mgmt</option>
+                    <option value="engineering">Engineering</option>
+                    <option value="health">Health & Medicine</option>
+                    <option value="arts">Arts & Design</option>
+                    <option value="social">Social Sciences</option>
+                    <option value="natural">Natural Sciences</option>
+                    <option value="education">Education</option>
+                    <option value="hospitality">Hospitality</option>
+                    <option value="law">Law</option>
+                    <option value="architecture">Architecture</option>
+                  </select>
                 </div>
               </label>
             </div>
@@ -521,13 +540,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 </svg>
               </button>
 
-              {/* 4 Clean Rounded White Pill Buttons in 1 SINGLE ROW to save space on small phones */}
-              <div className="grid grid-cols-4 gap-1 xs:gap-1.5 mt-2" data-purpose="quick-navigation-grid">
+              {/* 4 Clean Rounded White Pill Buttons with Apple-Grade 44px Touch Targets */}
+              <div className="grid grid-cols-4 gap-1 xs:gap-1.5 mt-2.5" data-purpose="quick-navigation-grid">
                 <button
                   onClick={() => onNavigate('universities')}
                   type="button"
                   data-purpose="compact-btn"
-                  className="w-full h-9 min-h-[36px] px-0.5 rounded-full border border-[#e5e5ea] dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-[#f5f5f7] dark:hover:bg-slate-750 active:bg-[#ebebed] text-[#1d1d1f] dark:text-white font-semibold text-[11px] min-[380px]:text-[12px] tracking-tight text-center transition-all shadow-none flex items-center justify-center active:scale-[0.97] cursor-pointer truncate"
+                  className="w-full h-11 min-h-[44px] px-1 rounded-full border border-[#e5e5ea] dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-[#f5f5f7] dark:hover:bg-slate-750 active:bg-[#ebebed] text-[#1d1d1f] dark:text-white font-semibold text-[11.5px] min-[380px]:text-[12px] tracking-tight text-center transition-all shadow-none flex items-center justify-center active:scale-[0.96] cursor-pointer truncate"
                 >
                   Unis
                 </button>
@@ -535,7 +554,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   onClick={() => onNavigate('courses')}
                   type="button"
                   data-purpose="compact-btn"
-                  className="w-full h-9 min-h-[36px] px-0.5 rounded-full border border-[#e5e5ea] dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-[#f5f5f7] dark:hover:bg-slate-750 active:bg-[#ebebed] text-[#1d1d1f] dark:text-white font-semibold text-[11px] min-[380px]:text-[12px] tracking-tight text-center transition-all shadow-none flex items-center justify-center active:scale-[0.97] cursor-pointer truncate"
+                  className="w-full h-11 min-h-[44px] px-1 rounded-full border border-[#e5e5ea] dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-[#f5f5f7] dark:hover:bg-slate-750 active:bg-[#ebebed] text-[#1d1d1f] dark:text-white font-semibold text-[11.5px] min-[380px]:text-[12px] tracking-tight text-center transition-all shadow-none flex items-center justify-center active:scale-[0.96] cursor-pointer truncate"
                 >
                   Courses
                 </button>
@@ -543,7 +562,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   onClick={() => onNavigate('services', 'ielts-preparation')}
                   type="button"
                   data-purpose="compact-btn"
-                  className="w-full h-9 min-h-[36px] px-0.5 rounded-full border border-[#e5e5ea] dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-[#f5f5f7] dark:hover:bg-slate-750 active:bg-[#ebebed] text-[#1d1d1f] dark:text-white font-semibold text-[11px] min-[380px]:text-[12px] tracking-tight text-center transition-all shadow-none flex items-center justify-center active:scale-[0.97] cursor-pointer truncate"
+                  className="w-full h-11 min-h-[44px] px-1 rounded-full border border-[#e5e5ea] dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-[#f5f5f7] dark:hover:bg-slate-750 active:bg-[#ebebed] text-[#1d1d1f] dark:text-white font-semibold text-[11.5px] min-[380px]:text-[12px] tracking-tight text-center transition-all shadow-none flex items-center justify-center active:scale-[0.96] cursor-pointer truncate"
                 >
                   IELTS
                 </button>
@@ -551,7 +570,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   onClick={() => onNavigate('blog')}
                   type="button"
                   data-purpose="compact-btn"
-                  className="w-full h-9 min-h-[36px] px-0.5 rounded-full border border-[#e5e5ea] dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-[#f5f5f7] dark:hover:bg-slate-750 active:bg-[#ebebed] text-[#1d1d1f] dark:text-white font-semibold text-[11px] min-[380px]:text-[12px] tracking-tight text-center transition-all shadow-none flex items-center justify-center active:scale-[0.97] cursor-pointer truncate"
+                  className="w-full h-11 min-h-[44px] px-1 rounded-full border border-[#e5e5ea] dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-[#f5f5f7] dark:hover:bg-slate-750 active:bg-[#ebebed] text-[#1d1d1f] dark:text-white font-semibold text-[11.5px] min-[380px]:text-[12px] tracking-tight text-center transition-all shadow-none flex items-center justify-center active:scale-[0.96] cursor-pointer truncate"
                 >
                   Blogs
                 </button>
@@ -563,7 +582,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   <span className="text-[12px] min-[390px]:text-[13px] font-extrabold tracking-tight text-[#1d1d1f] dark:text-white shrink-0">
                     100+
                   </span>
-                  <span className="text-[10.5px] min-[390px]:text-[11px] font-semibold text-[#86868b] dark:text-slate-400 tracking-tight truncate">
+                  <span className="text-[11px] min-[390px]:text-[12px] font-semibold text-[#86868b] dark:text-slate-400 tracking-tight truncate">
                     Students
                   </span>
                 </div>
@@ -574,7 +593,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   <span className="text-[12px] min-[390px]:text-[13px] font-extrabold tracking-tight text-[#1d1d1f] dark:text-white shrink-0">
                     167+
                   </span>
-                  <span className="text-[10.5px] min-[390px]:text-[11px] font-semibold text-[#86868b] dark:text-slate-400 tracking-tight truncate">
+                  <span className="text-[11px] min-[390px]:text-[12px] font-semibold text-[#86868b] dark:text-slate-400 tracking-tight truncate">
                     Unis
                   </span>
                 </div>
@@ -585,7 +604,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   <span className="text-[12px] min-[390px]:text-[13px] font-extrabold tracking-tight text-[#1d1d1f] dark:text-white shrink-0">
                     95%
                   </span>
-                  <span className="text-[10.5px] min-[390px]:text-[11px] font-semibold text-[#86868b] dark:text-slate-400 tracking-tight truncate">
+                  <span className="text-[11px] min-[390px]:text-[12px] font-semibold text-[#86868b] dark:text-slate-400 tracking-tight truncate">
                     Visa
                   </span>
                 </div>
@@ -596,7 +615,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   <span className="text-[12px] min-[390px]:text-[13px] font-extrabold tracking-tight text-[#1d1d1f] dark:text-white shrink-0">
                     2+
                   </span>
-                  <span className="text-[10.5px] min-[390px]:text-[11px] font-semibold text-[#86868b] dark:text-slate-400 tracking-tight truncate">
+                  <span className="text-[11px] min-[390px]:text-[12px] font-semibold text-[#86868b] dark:text-slate-400 tracking-tight truncate">
                     Offices
                   </span>
                 </div>

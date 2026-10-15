@@ -366,3 +366,41 @@ export interface BlogPost {
   takeaways: string[];
   saved?: boolean;
 }
+
+export interface EventItem {
+  id: string;
+  title: string;
+  slug: string;
+  type: 'Spot Assessment Fair' | 'Roadshow' | 'Webinar' | 'Visa & Scholarship Clinic' | 'IELTS Workshop';
+  locationType: 'Dhaka' | 'Malaysia' | 'Virtual' | 'Hybrid';
+  venueName: string;
+  venueAddress: string;
+  dateText: string;
+  timeText: string;
+  isUpcoming: boolean;
+  featured: boolean;
+  bannerUrl: string;
+  participatingUniversities: { name: string; country: string; flagEmoji: string }[];
+  highlights: string[];
+  description: string;
+  benefits: string[];
+}
+
+export interface NewsArticle {
+  id: string;
+  slug: string;
+  title: string;
+  category: 'Visa Update' | 'Scholarship Alert' | 'University Partnership' | 'Immigration Policy' | 'GEES Announcement';
+  countryTag?: string;
+  flagEmoji?: string;
+  publishedDate: string;
+  readTime: string;
+  author: string;
+  source: string;
+  isUrgent: boolean;
+  featured: boolean;
+  summary: string;
+  content: string[];
+  imageUrl: string;
+  keyPoints: string[];
+}

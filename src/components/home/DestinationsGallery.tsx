@@ -167,7 +167,7 @@ export const DestinationsGallery: React.FC<DestinationsGalleryProps> = ({
   };
 
   return (
-    <section className="relative w-full bg-white dark:bg-[#070b19] py-16 sm:py-24 overflow-hidden border-t border-slate-100 dark:border-slate-800 select-none">
+    <section className="relative w-full bg-white dark:bg-[#070b19] py-8 min-[390px]:py-10 sm:py-24 overflow-hidden border-t border-slate-100 dark:border-slate-800 select-none">
       {/* Header - Big, Bold, and Centered matching other major sections */}
       <div className="max-w-[95%] w-full mx-auto px-4 sm:px-6 lg:px-8 mb-10 sm:mb-14 text-center">
         <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold font-display text-slate-900 dark:text-white tracking-tight flex items-center justify-center flex-wrap gap-2 sm:gap-3 md:gap-3.5 leading-tight text-center">
@@ -203,7 +203,7 @@ export const DestinationsGallery: React.FC<DestinationsGalleryProps> = ({
 
       {/* Expanded Grid View vs Compact Infinite Carousel with Smooth CSS Transitions */}
       {isExpanded ? (
-        <div className="max-w-[95%] w-full mx-auto px-4 sm:px-6 lg:px-8 py-2 transition-all duration-500 ease-out animate-fadeIn">
+        <div className="w-full max-w-full sm:max-w-[95%] mx-auto px-4 sm:px-6 lg:px-8 py-2 transition-all duration-500 ease-out animate-fadeIn">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 sm:gap-6">
             {mockDestinations.map((dest) => (
               <div
@@ -221,8 +221,11 @@ export const DestinationsGallery: React.FC<DestinationsGalleryProps> = ({
                 <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-slate-950/60 to-transparent" />
 
                 <div className="absolute bottom-0 inset-x-0 p-5 z-10 flex flex-col justify-end text-white">
-                  <span className="text-[10px] font-black tracking-widest text-amber-400 uppercase mb-0.5">
-                    {dest.code}
+                  <span className="inline-flex items-center gap-1.5 text-[10px] font-black tracking-widest text-amber-400 uppercase mb-0.5">
+                    <span className="text-sm sm:text-base leading-none select-none" role="img" aria-label={`${dest.name} flag`}>
+                      {dest.flagEmoji}
+                    </span>
+                    <span>{dest.code}</span>
                   </span>
                   <h3 className="text-2xl font-black tracking-tight leading-tight mb-2 group-hover:text-amber-300 transition-colors">
                     {dest.name}
@@ -331,8 +334,11 @@ export const DestinationsGallery: React.FC<DestinationsGalleryProps> = ({
 
                 {/* Bottom Info Area */}
                 <div className="absolute bottom-0 inset-x-0 p-3.5 xs:p-4 sm:p-6 z-10 flex flex-col justify-end text-white">
-                  <span className="text-[9.5px] sm:text-[11px] font-black tracking-widest text-amber-400 uppercase mb-0.5 sm:mb-1">
-                    STUDY IN
+                  <span className="inline-flex items-center gap-1.5 text-[9.5px] sm:text-[11px] font-black tracking-widest text-amber-400 uppercase mb-0.5 sm:mb-1">
+                    <span className="text-sm sm:text-base leading-none select-none" role="img" aria-label={`${dest.name} flag`}>
+                      {dest.flagEmoji}
+                    </span>
+                    <span>STUDY IN</span>
                   </span>
                   <h3 className="text-lg xs:text-xl sm:text-3xl font-black text-white tracking-tight mb-2 sm:mb-3">
                     {dest.name}

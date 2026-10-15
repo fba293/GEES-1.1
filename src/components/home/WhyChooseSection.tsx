@@ -75,7 +75,7 @@ export const WhyChooseSection: React.FC<WhyChooseSectionProps> = ({ onSelectCoun
   };
 
   return (
-    <section className="relative z-10 w-full max-w-[95%] mx-auto px-3.5 sm:px-6 lg:px-8 py-10 xs:py-12 sm:py-20 bg-white dark:bg-[#070b19]">
+    <section className="relative z-10 w-full max-w-full sm:max-w-[95%] mx-auto px-4 sm:px-6 lg:px-8 py-8 min-[390px]:py-10 sm:py-20 bg-white dark:bg-[#070b19]">
       {/* Header with High-Impact Typography */}
       <div className="text-center mb-8 sm:mb-14 px-2 max-w-3xl mx-auto">
         <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold font-display tracking-tight text-slate-900 dark:text-white leading-tight flex items-center justify-center flex-wrap gap-2 sm:gap-3 md:gap-3.5 select-none text-center">
@@ -90,7 +90,7 @@ export const WhyChooseSection: React.FC<WhyChooseSectionProps> = ({ onSelectCoun
       </div>
 
       {/* Grid: 3 Features on Left & Counselor Visual with Stats on Right */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10 lg:gap-14 items-center">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10 lg:gap-14 items-stretch">
         {/* Left Column: Interactive Features with Subtle Mouse-Move Parallax Tilt */}
         <div
           ref={featureContainerRef}
@@ -100,12 +100,12 @@ export const WhyChooseSection: React.FC<WhyChooseSectionProps> = ({ onSelectCoun
             transform: `perspective(1000px) rotateX(${parallaxTilt.x}deg) rotateY(${parallaxTilt.y}deg)`,
             transition: 'transform 0.15s ease-out'
           }}
-          className="lg:col-span-5 flex flex-col space-y-2.5 sm:space-y-3 will-change-transform"
+          className="lg:col-span-5 flex flex-col justify-between space-y-2.5 sm:space-y-3 lg:space-y-3.5 h-full will-change-transform"
         >
           {/* Feature 01 */}
           <div
             onClick={() => setActiveFeature(1)}
-            className={`p-3.5 sm:p-5 rounded-xl sm:rounded-2xl cursor-pointer transition-all border-l-4 transform hover:scale-[1.01] duration-300 ${
+            className={`p-3.5 sm:p-5 rounded-xl sm:rounded-2xl cursor-pointer transition-all border-l-4 transform hover:scale-[1.01] duration-300 flex-1 flex flex-col justify-center ${
               activeFeature === 1
                 ? 'border-[#F6BE48] bg-slate-50 dark:bg-slate-800/90 shadow-md ring-1 ring-amber-400/20'
                 : 'border-transparent hover:bg-slate-50/60 dark:hover:bg-slate-800/40'
@@ -129,7 +129,7 @@ export const WhyChooseSection: React.FC<WhyChooseSectionProps> = ({ onSelectCoun
           {/* Feature 02 */}
           <div
             onClick={() => setActiveFeature(2)}
-            className={`p-3.5 sm:p-5 rounded-xl sm:rounded-2xl cursor-pointer transition-all border-l-4 transform hover:scale-[1.01] duration-300 ${
+            className={`p-3.5 sm:p-5 rounded-xl sm:rounded-2xl cursor-pointer transition-all border-l-4 transform hover:scale-[1.01] duration-300 flex-1 flex flex-col justify-center ${
               activeFeature === 2
                 ? 'border-[#F6BE48] bg-slate-50 dark:bg-slate-800/90 shadow-md ring-1 ring-amber-400/20'
                 : 'border-transparent hover:bg-slate-50/60 dark:hover:bg-slate-800/40'
@@ -153,7 +153,7 @@ export const WhyChooseSection: React.FC<WhyChooseSectionProps> = ({ onSelectCoun
           {/* Feature 03 */}
           <div
             onClick={() => setActiveFeature(3)}
-            className={`p-3.5 sm:p-5 rounded-xl sm:rounded-2xl cursor-pointer transition-all border-l-4 transform hover:scale-[1.01] duration-300 ${
+            className={`p-3.5 sm:p-5 rounded-xl sm:rounded-2xl cursor-pointer transition-all border-l-4 transform hover:scale-[1.01] duration-300 flex-1 flex flex-col justify-center ${
               activeFeature === 3
                 ? 'border-[#F6BE48] bg-slate-50 dark:bg-slate-800/90 shadow-md ring-1 ring-amber-400/20'
                 : 'border-transparent hover:bg-slate-50/60 dark:hover:bg-slate-800/40'
@@ -176,8 +176,8 @@ export const WhyChooseSection: React.FC<WhyChooseSectionProps> = ({ onSelectCoun
         </div>
 
         {/* Right Column: Visual with Admission Badge and Click Ripple Effect on Stats */}
-        <div className="lg:col-span-7 relative">
-          <div className="relative w-full rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl bg-slate-100 dark:bg-slate-800 h-[280px] xs:h-[340px] sm:h-[480px] border border-white dark:border-slate-700">
+        <div className="lg:col-span-7 relative flex flex-col h-full">
+          <div className="relative w-full rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl bg-slate-100 dark:bg-slate-800 h-[280px] xs:h-[340px] sm:h-[420px] lg:h-full border border-white dark:border-slate-700 min-h-[300px]">
             {/* Live Status Pill in Header */}
             <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20">
               <div className="flex items-center gap-1.5 sm:gap-2 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-full border border-white/80 shadow-md text-[11px] sm:text-xs font-bold text-slate-800 dark:text-slate-200">
@@ -193,7 +193,7 @@ export const WhyChooseSection: React.FC<WhyChooseSectionProps> = ({ onSelectCoun
             <img
               src="https://lh3.googleusercontent.com/aida-public/AB6AXuAFUG3LimCmQdFr1k1-wNK5zT18LimOcioRecatV_qZg4szgdi5Ix8xIvlJ4Q7J8YmCDAvemCEjGNIDpGh2KWrFc7XFraLsXflSPATEL6Al2PwyPU5x1RkoLaoKeE2T8_uF1xN7vXihk-zpG_tJwt6W-zYs6xlGwaXZXEgT6lZwp-f8tCo5vNklh45dzRpmetB0jwHwbqh2lkMwOfurbWkTsgixGDUJzk1KOJ5hRIqEZaAc6bEXXq3BPyZ5wXzkn8D2lV_yNf2dKtJWWmE"
               alt="GEES Educational Counselor advising students"
-              className="w-full h-full object-cover object-center transform hover:scale-105 transition-transform duration-700"
+              className="w-full h-full object-cover object-center transform hover:scale-105 transition-transform duration-700 min-h-full"
               loading="lazy"
               decoding="async"
             />
@@ -222,21 +222,33 @@ export const WhyChooseSection: React.FC<WhyChooseSectionProps> = ({ onSelectCoun
                 ))}
 
                 <div className="grid grid-cols-4 divide-x divide-slate-200 dark:divide-slate-800 text-center items-center">
-                  <div className="px-1 sm:px-2">
-                    <div className="text-base xs:text-xl sm:text-2xl font-black text-slate-900 dark:text-white">100+</div>
-                    <div className="text-[8px] xs:text-[10px] sm:text-xs font-bold text-slate-600 dark:text-slate-400 mt-0.5 leading-tight">Students Placed</div>
+                  <div className="px-0.5 sm:px-2">
+                    <div className="text-sm xs:text-base sm:text-2xl font-black text-slate-900 dark:text-white">100+</div>
+                    <div className="text-[9.5px] min-[390px]:text-[10.5px] sm:text-xs font-bold text-slate-600 dark:text-slate-400 mt-0.5 leading-tight truncate">
+                      <span className="sm:hidden">Students</span>
+                      <span className="hidden sm:inline">Students Placed</span>
+                    </div>
                   </div>
-                  <div className="px-1 sm:px-2">
-                    <div className="text-base xs:text-xl sm:text-2xl font-black text-slate-900 dark:text-white">167+</div>
-                    <div className="text-[8px] xs:text-[10px] sm:text-xs font-bold text-slate-600 dark:text-slate-400 mt-0.5 leading-tight">Partner Unis</div>
+                  <div className="px-0.5 sm:px-2">
+                    <div className="text-sm xs:text-base sm:text-2xl font-black text-slate-900 dark:text-white">167+</div>
+                    <div className="text-[9.5px] min-[390px]:text-[10.5px] sm:text-xs font-bold text-slate-600 dark:text-slate-400 mt-0.5 leading-tight truncate">
+                      <span className="sm:hidden">Unis</span>
+                      <span className="hidden sm:inline">Partner Universities</span>
+                    </div>
                   </div>
-                  <div className="px-1 sm:px-2">
-                    <div className="text-base xs:text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400">95%</div>
-                    <div className="text-[8px] xs:text-[10px] sm:text-xs font-bold text-slate-600 dark:text-slate-400 mt-0.5 leading-tight">Visa Success</div>
+                  <div className="px-0.5 sm:px-2">
+                    <div className="text-sm xs:text-base sm:text-2xl font-black text-slate-900 dark:text-white">95%</div>
+                    <div className="text-[9.5px] min-[390px]:text-[10.5px] sm:text-xs font-bold text-slate-600 dark:text-slate-400 mt-0.5 leading-tight truncate">
+                      <span className="sm:hidden">Visa</span>
+                      <span className="hidden sm:inline">Visa Success</span>
+                    </div>
                   </div>
-                  <div className="px-1 sm:px-2">
-                    <div className="text-base xs:text-xl sm:text-2xl font-black text-[#fbb034]">2+</div>
-                    <div className="text-[8px] xs:text-[10px] sm:text-xs font-bold text-slate-600 dark:text-slate-400 mt-0.5 leading-tight">Global Offices</div>
+                  <div className="px-0.5 sm:px-2">
+                    <div className="text-sm xs:text-base sm:text-2xl font-black text-slate-900 dark:text-white">2+</div>
+                    <div className="text-[9.5px] min-[390px]:text-[10.5px] sm:text-xs font-bold text-slate-600 dark:text-slate-400 mt-0.5 leading-tight truncate">
+                      <span className="sm:hidden">Offices</span>
+                      <span className="hidden sm:inline">Global Offices</span>
+                    </div>
                   </div>
                 </div>
               </div>

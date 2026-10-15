@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en" class="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Referral & B2B Partner Program | Earn Referral Rewards | GEES</title>
+    <meta
+      name="description"
+      content="Official GEES Student Referral & Institutional Partner Program. Refer friends, family, or students to study abroad and earn up to $1,000 per enrolled student. Transparent tracking and fast payouts for student ambassadors and educational agencies."
+    />
+    <link rel="canonical" href="https://gees-edu.com/student-referral.html" />
+
+    <!-- Open Graph / Social Sharing -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://gees-edu.com/student-referral.html" />
+    <meta property="og:title" content="Student Referral & B2B Partner Program | GEES" />
+    <meta
+      property="og:description"
+      content="Refer students to top global universities and earn lucrative referral bonuses. Join the GEES Ambassador network or register as an institutional B2B partner."
+    />
+    <meta property="og:image" content="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&q=80&w=1200" />
+    <meta property="og:site_name" content="Global Education Expert Services (GEES)" />
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="GEES Student Referral Program" />
+    <meta
+      name="twitter:description"
+      content="Earn cash rewards for helping students achieve their study abroad dreams. Fast, transparent payouts and dedicated counselor support."
+    />
+    <meta name="twitter:image" content="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&q=80&w=1200" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Google Fonts & Material Symbols -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function () {
+        try {
+          var savedTheme = localStorage.getItem('gees-theme');
+          var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (savedTheme === 'dark' || (!savedTheme && systemDark)) {
+            document.documentElement.classList.add('dark');
+            document.documentElement.classList.remove('light');
+          } else {
+            document.documentElement.classList.add('light');
+            document.documentElement.classList.remove('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
+
+    <!-- Schema.org JSON-LD Structured Data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "EducationalOccupationalProgram",
+        "name": "GEES Student Referral & B2B Agency Partnership Program",
+        "description": "Referral reward program for students, alumni, and educational institutions to refer prospective study abroad candidates to GEES.",
+        "provider": {
+          "@type": "EducationalOrganization",
+          "name": "Global Education Expert Services (GEES)",
+          "url": "https://gees-edu.com",
+          "logo": "https://gees-edu.com/favicon.svg"
+        },
+        "hasCourse": [
+          {
+            "@type": "Course",
+            "name": "Student Ambassador Referral Network",
+            "description": "Peer-to-peer student referral bonuses for successful university enrollments."
+          },
+          {
+            "@type": "Course",
+            "name": "B2B Educational Agent & School Partnership",
+            "description": "Institutional partnership for education agents, high schools, and language centers."
+          }
+        ]
+      }
+    </script>
+  </head>
+  <body class="bg-white dark:bg-[#0b0f19] text-slate-900 dark:text-slate-100 antialiased selection:bg-blue-600 selection:text-white">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

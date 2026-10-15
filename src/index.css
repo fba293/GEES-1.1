@@ -1,4 +1,7 @@
 @import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+@import "leaflet.markercluster/dist/MarkerCluster.css";
+@import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -29,6 +32,7 @@
     --border: #e2e8f0;
     --input: #e2e8f0;
     --ring: #FBB034;
+    --destination-section-py: clamp(1.75rem, 4.5vw, 5rem);
   }
 
   .dark {
@@ -92,44 +96,111 @@
   /* 1. Typography Hierarchy & Apple Negative Tracking */
   /* Confident, balanced headlines with Apple's signature negative letter-tracking */
   main h1 {
-    font-size: clamp(2rem, 8.5vw, 2.5rem);
-    letter-spacing: -0.028em;
-    line-height: 1.08;
-    font-weight: 800;
+    font-size: clamp(1.9rem, 7.8vw, 2.25rem) !important;
+    letter-spacing: -0.028em !important;
+    line-height: 1.08 !important;
+    font-weight: 800 !important;
+    text-wrap: balance !important;
   }
 
-  main h2 {
-    font-size: clamp(1.65rem, 7vw, 2.15rem);
-    letter-spacing: -0.022em;
-    line-height: 1.15;
-    font-weight: 800;
+  main h2,
+  .gees-section-title {
+    font-size: clamp(1.48rem, 6.4vw, 1.82rem) !important;
+    letter-spacing: -0.024em !important;
+    line-height: 1.15 !important;
+    font-weight: 800 !important;
+    text-wrap: balance !important;
+  }
+
+  /* Golden Pill Highlight Badge in Section Titles */
+  .gees-section-highlight,
+  h2 > span.bg-\[\#fbb034\],
+  h2 > span.bg-amber-400,
+  h2 > span.bg-amber-500,
+  main h2 > span:last-child,
+  #cta-reveal span.bg-\[\#fbb034\] {
+    font-size: 0.92em !important;
+    padding: 0.22rem 0.72rem !important;
+    border-radius: 0.75rem !important;
+    line-height: 1.12 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    vertical-align: middle !important;
+    letter-spacing: -0.02em !important;
+    font-weight: 800 !important;
+    white-space: nowrap !important;
   }
 
   main h3 {
-    font-size: clamp(1.15rem, 5vw, 1.4rem);
-    letter-spacing: -0.018em;
-    line-height: 1.25;
-    font-weight: 700;
+    font-size: clamp(1.05rem, 4.6vw, 1.25rem) !important;
+    letter-spacing: -0.018em !important;
+    line-height: 1.25 !important;
+    font-weight: 700 !important;
+  }
+
+  /* Section Supporting Descriptions: clean, readable 14px with Apple leading */
+  main > section header p,
+  main > section [data-purpose="section-header"] p,
+  main > section .gees-services-coverflow__head p,
+  main > section > div > div.text-center > p,
+  #cta-reveal p,
+  .home-partners-section p {
+    font-size: 14px !important;
+    line-height: 1.48 !important;
+    letter-spacing: -0.012em !important;
+    max-width: 27rem !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    margin-top: 0.55rem !important;
   }
 
   /* Controlled paragraph reading line-height without breaking micro-labels */
-  main > section > div p:not([class*="text-["]):not([class*="text-xs"]) {
-    font-size: 15px;
-    line-height: 1.48;
-    letter-spacing: -0.012em;
+  main > section p:not([class*="text-["]):not([class*="text-xs"]):not(.hero-connecting-text) {
+    font-size: 14.5px !important;
+    line-height: 1.5 !important;
+    letter-spacing: -0.012em !important;
+    max-width: 27rem !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
   }
 
   /* 2. Section Spacing & Vertical Rhythm */
-  /* Consistent Apple-style 48px - 56px (3rem - 3.5rem) rhythm across mobile sections */
+  /* Consistent Apple-style 48px (3rem) rhythm across mobile sections */
   main > section {
-    padding-top: 3.25rem !important;
-    padding-bottom: 3.25rem !important;
+    padding-top: 3rem !important;
+    padding-bottom: 3rem !important;
   }
 
   /* Hero section sits directly beneath header without excessive dead air */
   main > section:first-of-type {
     padding-top: 0.75rem !important;
-    padding-bottom: 2.25rem !important;
+    padding-bottom: 2rem !important;
+  }
+
+  /* Pre-Footer CTA: remove redundant double padding on mobile */
+  #cta-reveal > div {
+    padding-top: 0 !important;
+    padding-bottom: 0.5rem !important;
+  }
+
+  #cta-reveal .rounded-3xl,
+  #cta-reveal [class*="rounded-3xl"],
+  #cta-reveal [class*="rounded-\[2.5rem\]"] {
+    border-radius: 1.5rem !important;
+    padding: 1.5rem 1.25rem !important;
+  }
+
+  /* Consistent Header to Content Vertical Rhythm (24px) */
+  main > section header,
+  main > section .gees-services-coverflow__head,
+  main > section [data-purpose="section-header"],
+  #steps-roadmap-section header,
+  #counselors-section > div > div:first-of-type,
+  #blogs-section > div > div:first-of-type,
+  #home-services .gees-services-coverflow__head,
+  section[aria-labelledby="geesServicesTitle"] .gees-services-coverflow__head,
+  #partners-section [data-purpose="section-header"] {
+    margin-bottom: 1.5rem !important;
   }
 
   /* 3. Touch Targets & Interaction Rhythm */
@@ -138,17 +209,20 @@
   main button:not(.no-min-touch):not([data-purpose="subtle-chip"]):not(.carousel-dot),
   main select,
   main input[type="search"],
-  main input[type="text"]:not([data-purpose="inset-filter-input"]) {
-    min-height: 44px;
+  main input[type="text"]:not([data-purpose="inset-filter-input"]),
+  [data-purpose="compact-btn"],
+  .interactive-hover-button {
+    min-height: 44px !important;
     touch-action: manipulation;
   }
 
   /* Apple's signature active/pressed micro-interaction on interactive elements */
   main button:active:not(:disabled),
   main a:active:not(:disabled),
-  .tap-scale:active {
+  .tap-scale:active,
+  [role="button"]:active {
     transform: scale(0.97) !important;
-    transition: transform 0.08s ease-out;
+    transition: transform 0.08s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   /* 4. Smooth Momentum Scrolling & Viewport Containment */
@@ -191,23 +265,53 @@
     height: 22px !important;
   }
 
-  /* 6. Card Proportions & Image Geometry */
-  .partner-card {
-    min-width: 230px !important;
-    height: 4.5rem !important;
-    border-radius: 1rem !important;
+  /* 6. Partner University Logo Proportions on Mobile */
+  .home-partners-section .partner-logo {
+    flex: 0 0 150px !important;
+    width: 150px !important;
+    height: 68px !important;
+    min-height: 68px !important;
+    border-radius: 16px !important;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06) !important;
+  }
+
+  .home-partners-section .partner-logo img {
+    max-height: 38px !important;
+    max-width: 118px !important;
+    width: 76% !important;
+  }
+
+  .home-partners-section .marquee-mask {
+    gap: 0.75rem !important;
+  }
+
+  .home-partners-section .partner-sequence {
+    gap: 12px !important;
+    padding-right: 12px !important;
   }
 
   /* 7. Animated Tabs Horizontal Track & Momentum Scrolling */
-  .animated-tabs-track {
-    min-height: 44px;
-    gap: 0.35rem;
+  .animated-tabs-track,
+  [role="tablist"] {
+    min-height: 44px !important;
+    touch-action: pan-x !important;
   }
 
-  .animated-tabs-item {
-    min-height: 44px;
-    padding-left: 0.85rem;
-    padding-right: 0.85rem;
+  [role="tablist"] button[role="tab"] {
+    min-height: 40px !important;
+    padding-left: 0.85rem !important;
+    padding-right: 0.85rem !important;
+    font-size: 12.5px !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.01em !important;
+    touch-action: manipulation !important;
+  }
+
+  /* 8. Full-Width CTAs on Mobile with 44px+ Hitbox */
+  #cta-reveal button,
+  #cta-reveal a,
+  [data-purpose="compact-btn"] {
+    min-height: 44px !important;
   }
 }
 
@@ -352,56 +456,145 @@
   transform: translateY(0px);
 }
 
-/* Infinite Marquee Animations for Partners */
-@keyframes marquee-scroll-forward {
-  0% {
+/* Authentic GEES Reference Website Buttery-Smooth Marquee */
+@keyframes geesPartnersRightToLeftSmooth {
+  from {
     transform: translate3d(0, 0, 0);
   }
-  100% {
+  to {
     transform: translate3d(-50%, 0, 0);
   }
 }
 
-@keyframes marquee-scroll-reverse {
-  0% {
+@keyframes geesPartnersLeftToRightSmooth {
+  from {
     transform: translate3d(-50%, 0, 0);
   }
-  100% {
+  to {
     transform: translate3d(0, 0, 0);
   }
 }
 
-.animate-marquee-forward {
-  display: flex;
-  width: max-content;
-  animation: marquee-scroll-forward 42s linear infinite;
-  will-change: transform;
+.home-partners-section .marquee-wrapper {
+  position: relative !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
 }
 
-.animate-marquee-reverse {
-  display: flex;
-  width: max-content;
-  animation: marquee-scroll-reverse 42s linear infinite;
-  will-change: transform;
+.home-partners-section .marquee-track {
+  display: flex !important;
+  align-items: center !important;
+  width: max-content !important;
+  min-width: max-content !important;
+  will-change: transform !important;
+  animation-duration: 70s !important;
+  animation-timing-function: linear !important;
+  animation-iteration-count: infinite !important;
+  animation-play-state: running !important;
+  backface-visibility: hidden !important;
+  -webkit-backface-visibility: hidden !important;
+  transform: translate3d(0, 0, 0);
 }
 
-.marquee-wrapper:hover .animate-marquee-forward,
-.marquee-wrapper:hover .animate-marquee-reverse {
-  animation-play-state: paused;
+.home-partners-section .partner-sequence {
+  display: flex;
+  align-items: center;
+  gap: clamp(18px, 2.5vw, 32px);
+  padding-right: clamp(18px, 2.5vw, 32px);
+  flex-shrink: 0;
+}
+
+.home-partners-section .marquee-wrapper[data-direction="left"] .marquee-track {
+  animation-name: geesPartnersRightToLeftSmooth !important;
+}
+
+.home-partners-section .marquee-wrapper[data-direction="right"] .marquee-track {
+  animation-name: geesPartnersLeftToRightSmooth !important;
+}
+
+.home-partners-section .marquee-wrapper:hover .marquee-track,
+.home-partners-section .marquee-wrapper:focus-within .marquee-track {
+  animation-play-state: paused !important;
+}
+
+.home-partners-section .partner-logo {
+  flex: 0 0 clamp(170px, 18vw, 245px) !important;
+  width: clamp(170px, 18vw, 245px) !important;
+  height: 92px !important;
+  min-height: 92px !important;
+  display: grid !important;
+  place-items: center !important;
+  overflow: hidden !important;
+  border-radius: 22px !important;
+  background: #ffffff !important;
+  border: 1px solid rgba(255, 215, 106, 0.64) !important;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.1) !important;
+  contain: layout paint;
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease !important;
+  cursor: pointer;
+}
+
+.home-partners-section .partner-logo:hover {
+  transform: translateY(-4px) scale(1.02) !important;
+  border-color: #fbb034 !important;
+  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.16) !important;
+}
+
+.home-partners-section .partner-logo:active {
+  transform: scale(0.96) !important;
+}
+
+.home-partners-section .partner-logo img {
+  width: 78% !important;
+  max-width: 170px !important;
+  height: auto !important;
+  max-height: 60px !important;
+  object-fit: contain !important;
+  filter: none !important;
+  opacity: 1 !important;
+  mix-blend-mode: normal !important;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Dark mode specifications matching reference website */
+html.dark .home-partners-section .partner-logo,
+[data-theme="dark"] .home-partners-section .partner-logo {
+  background: #ffffff !important;
+  border-color: rgba(255, 215, 106, 0.74) !important;
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.28) !important;
+}
+
+html.dark .home-partners-section .partner-logo:hover,
+[data-theme="dark"] .home-partners-section .partner-logo:hover {
+  border-color: #fbb034 !important;
+  box-shadow: 0 20px 40px rgba(251, 176, 52, 0.25) !important;
+}
+
+@media (max-width: 768px) {
+  .home-partners-section .partner-logo {
+    flex: 0 0 clamp(160px, 40vw, 195px) !important;
+    width: clamp(160px, 40vw, 195px) !important;
+    height: 80px !important;
+    min-height: 80px !important;
+    border-radius: 18px !important;
+  }
+  .home-partners-section .partner-logo img {
+    max-height: 48px !important;
+    max-width: 140px !important;
+  }
+  .home-partners-section .marquee-track {
+    animation-duration: 60s !important;
+  }
 }
 
 .marquee-mask {
   mask-image: linear-gradient(to right, transparent 0%, black 2%, black 98%, transparent 100%);
   -webkit-mask-image: linear-gradient(to right, transparent 0%, black 2%, black 98%, transparent 100%);
-}
-
-.partner-card {
-  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.partner-card:hover {
-  transform: translateY(-4px) scale(1.025);
-  box-shadow: 0 16px 32px -8px rgba(15, 23, 42, 0.12), 0 4px 12px -2px rgba(15, 23, 42, 0.06);
-  border-color: #94a3b8;
 }
 
 .magnetic-btn {
@@ -739,5 +932,196 @@ body {
   100% { opacity: 0; transform: scale(1.75); }
 }
 
+/* Course Wishlist subtle scaling bounce animation */
+@keyframes wishlistBounce {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.24); }
+  65% { transform: scale(0.92); }
+  100% { transform: scale(1); }
+}
+
+.animate-wishlist-bounce {
+  animation: wishlistBounce 0.48s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes slideInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-slideInUp {
+  animation: slideInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes bounceSubtle {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+
+.animate-bounce-subtle {
+  animation: bounceSubtle 0.6s ease-in-out;
+}
 
 
+
+
+/* ==========================================================================
+   GEES Custom Leaflet Map Styling
+   ========================================================================== */
+.gees-leaflet-container {
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+  border-radius: 1.25rem;
+  z-index: 1;
+}
+
+.gees-custom-marker {
+  background: transparent;
+  border: none;
+}
+
+.gees-marker-pin {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #0a1120;
+  border: 2.5px solid #fbb034;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fbb034;
+  font-weight: 800;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.gees-marker-pin:hover {
+  transform: scale(1.18);
+  background: #fbb034;
+  color: #0a1120;
+  box-shadow: 0 8px 20px rgba(251, 176, 52, 0.5);
+}
+
+.leaflet-popup-content-wrapper {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-radius: 1.25rem !important;
+  padding: 0 !important;
+  box-shadow: 0 20px 30px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid rgba(226, 232, 240, 0.9) !important;
+  overflow: hidden !important;
+}
+
+.dark .leaflet-popup-content-wrapper {
+  background: #0f172a !important;
+  color: #f8fafc !important;
+  border-color: rgba(30, 41, 59, 0.9) !important;
+}
+
+.leaflet-popup-content {
+  margin: 0 !important;
+  line-height: 1.4 !important;
+  width: 280px !important;
+}
+
+@media (min-width: 640px) {
+  .leaflet-popup-content {
+    width: 320px !important;
+  }
+}
+
+.leaflet-popup-tip {
+  background: #ffffff !important;
+}
+
+.dark .leaflet-popup-tip {
+  background: #0f172a !important;
+}
+
+/* Custom MarkerCluster Styling matching GEES Brand */
+.marker-cluster-gees {
+  background-color: rgba(10, 17, 32, 0.9) !important;
+  border: 2px solid #fbb034 !important;
+  color: #fbb034 !important;
+  font-weight: 900 !important;
+  font-size: 13px !important;
+  border-radius: 50% !important;
+  box-shadow: 0 4px 16px rgba(251, 176, 52, 0.35) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.marker-cluster-gees div {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Leaflet Tile Container explicit overrides */
+.leaflet-container {
+  width: 100% !important;
+  height: 100% !important;
+  background-color: #e5e3df !important;
+  font-family: inherit !important;
+}
+
+.leaflet-tile-pane {
+  z-index: 2 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.leaflet-tile-container img,
+.leaflet-tile {
+  max-width: none !important;
+  max-height: none !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  mix-blend-mode: normal !important;
+}
+
+/* ==========================================================================
+   GEES Interactive Map Buttery-Smooth GPU-Accelerated Entry Animation
+   ========================================================================== */
+@keyframes geesMapScaleFadeIn {
+  0% {
+    opacity: 0;
+    transform: scale3d(0.965, 0.965, 1) translateY(14px);
+    filter: blur(5px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale3d(1, 1, 1) translateY(0);
+    filter: blur(0px);
+  }
+}
+
+.animate-gees-map-entry {
+  animation: geesMapScaleFadeIn 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity, filter;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform-style: preserve-3d;
+}
+
+/* Skeleton Loader Shimmer Keyframes */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-shimmer {
+  animation: shimmer 1.6s infinite linear;
+}

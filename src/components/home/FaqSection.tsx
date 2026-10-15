@@ -277,7 +277,7 @@ export const FaqSection: React.FC<FaqSectionProps> = ({
   };
 
   return (
-    <section id="faqs" className={`w-full bg-white dark:bg-[#070b19] border-t border-slate-100 dark:border-slate-800/80 transition-colors relative overflow-hidden ${isCompact ? 'py-12 sm:py-16' : 'py-16 sm:py-24'}`}>
+    <section id="faqs" className={`w-full bg-white dark:bg-[#070b19] border-t border-slate-100 dark:border-slate-800/80 transition-colors relative overflow-hidden ${isCompact ? 'py-8 min-[390px]:py-10 sm:py-16' : 'py-12 sm:py-24'}`}>
       {/* Background Ambient Accents */}
       <div className="pointer-events-none absolute top-10 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-blue-500/5 dark:bg-blue-600/10 rounded-full blur-3xl -z-10" />
 

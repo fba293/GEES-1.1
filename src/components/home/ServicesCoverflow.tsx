@@ -44,7 +44,7 @@ export const ServicesCoverflow: React.FC<ServicesCoverflowProps> = ({
   return (
     <section 
       aria-labelledby="geesServicesTitle"
-      className="gees-services-coverflow relative w-full bg-white dark:bg-[#070b19] py-10 xs:py-12 sm:py-24 select-none border-b border-slate-100 dark:border-slate-800"
+      className="gees-services-coverflow relative w-full bg-white dark:bg-[#070b19] py-8 min-[390px]:py-10 sm:py-24 select-none border-b border-slate-100 dark:border-slate-800"
       data-home-section="services"
       id="home-services"
     >
@@ -70,7 +70,7 @@ export const ServicesCoverflow: React.FC<ServicesCoverflowProps> = ({
         {/* 3D Coverflow Viewport Stage */}
         <div 
           aria-label="GEES services 3D coverflow"
-          className="relative w-full max-w-[95%] mx-auto flex flex-col items-center justify-center py-2 px-4"
+          className="relative w-full max-w-full sm:max-w-[95%] mx-auto flex flex-col items-center justify-center py-2 px-2 sm:px-4"
         >
           <CoverflowCarousel
             slides={slides}

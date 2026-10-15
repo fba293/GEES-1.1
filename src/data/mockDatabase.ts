@@ -94,28 +94,14 @@ export const mockCounselors: Counselor[] = [
     availableToday: true,
     totalPlacedStudents: 520
   },
-  {
-    id: 'counselor-5',
-    name: 'Nusrat Jahan',
-    role: 'Visa Compliance Lead',
-    department: 'counseling',
-    photoUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC-Ttx5OOqgkt7NuG5E7UNK-NocHXiF9pl3eLQDK23QV1t2OZxu4S9NHOokGY1C0zbtNRadsQDbgo6JAmJzk2LU6VSH0fO6c1-VGWqzoR6Oja66i3CKm_i3EDJgPU2kUGhefKeW7i26L5Fo0SCARaIrGX6MrKZecYrW4zRGZt92K4mG0VeR3U5V6BIXIstu9usYfwri1N_v4pmoA1jMvaGYMyWeHYZy_kWvGSIrNb92bJDVVLhBtyZChQ',
-    email: 'nusrat@globaleducationexpert.com',
-    phone: '+8801805529582',
-    linkedInUrl: 'https://www.linkedin.com/company/globaleduexpert',
-    experienceYears: 9,
-    specialties: ['Financial Paper Verification', 'Mock Visa Interviews', 'Refusal Turnaround Strategy'],
-    destinationsManaged: ['UK', 'Belgium', 'Cyprus', 'Finland'],
-    availableToday: true,
-    totalPlacedStudents: 890
-  },
+
   {
     id: 'counselor-6',
-    name: 'Ariful Hasan',
-    role: 'Director of Global Admissions',
-    department: 'leadership',
-    photoUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCVFM9KisbtpiDa2Qm9ErDY8mmEjLph39a0RF_qXMxKAMPY6-TJGOqXdg1mnpy7yi_OwUeGZC7-G2a71WbpPqj9Ab-D_2b_s4YGadTmHo6cWZ6InF-0ik0o8eNyVBPSeB-0tZaIRgTh2GqiLye5KMYjOPF7QHVTlRk2Jswv5U5lmd1l1YlFAs7Kc7SIg2Zg8SU-du3kdYq38lsimWgIh5e6y3pStzN_SrOxkVNXX34gpgtzztTklQHHOQ',
-    email: 'ariful@globaleducationexpert.com',
+    name: 'Syed Mufattih',
+    role: 'Compliance Executive',
+    department: 'counseling',
+    photoUrl: 'https://trustworthy-turquoise-alligator.globaleducationexpert.com//assets/images/counselors/mufattih.webp',
+    email: 'mufattih@globaleducationexpert.com',
     phone: '+8801805529583',
     linkedInUrl: 'https://www.linkedin.com/company/globaleduexpert',
     experienceYears: 11,
@@ -381,7 +367,7 @@ export const mockServices: ServiceItem[] = [
     desc: 'Prestigious Group of Eight universities, exceptional lifestyle, part-time work rights, and post-study work visas.',
     bgColor: '#198754',
     iconName: 'public',
-    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAHYlN5zXQ-dzjZHyIlwvfZcc2UWexdtmJFkTXVGzcaLfA_7dJQv7S82aFKUGhZRLClGa4BUZBdZ1QZudkqRCZ4doIlOOrnWPNoj3cdp-6-_Xfa3ec3Stitcm67A-2aNdthXMyfUs1D3GlgQnaVdfXExgN0pNouD198US-ufi3wNKdZ3X7zM8ZRo1v9zM_3SuvLZHkqSMJqA8t5MCLGzk_D6KMM6StuU1E0Nc7BW-7PZHiFJ849Af4pvA'
+    imageUrl: 'https://www.worldbank.org/ext/en/country/media_15f31f5babc696917cc95a74bc9e62ceca811efec.jpg?width=1200&format=pjpg&optimize=medium'
   },
   {
     id: 'srv-23',
@@ -392,7 +378,7 @@ export const mockServices: ServiceItem[] = [
     desc: 'World-class education in innovative institutions like Te Pūkenga, stunning landscapes, and post-study work pathways.',
     bgColor: '#0dcaf0',
     iconName: 'landscape',
-    imageUrl: 'https://images.unsplash.com/photo-1507699622108-4be3ab695d3f?q=80&w=1200&auto=format&fit=crop'
+    imageUrl: 'https://images.zicasso.com/1613b7fe4e02309dcd902b3f19405262.jpg'
   },
   {
     id: 'srv-24',
@@ -591,64 +577,64 @@ export const mockReels: ReelStory[] = [
 // ============================================================================
 export const mockTestimonials: TestimonialStory[] = [
   {
-    id: 'moni',
-    name: 'Moni Akter',
-    degree: "Bachelor's Degree in Media & Communications",
-    university: 'International Islamic University Malaysia (IIUM)',
+    id: 'riyad',
+    name: 'Riyad Hossain',
+    degree: 'Diploma · IHM College',
+    university: 'IHM College',
     country: 'malaysia',
     locationBadge: '📍 Kuala Lumpur, Malaysia 🇲🇾',
-    quote: 'Smoothest experience for Malaysia student visa. GEES kept me updated at every EMGS stage and ensured my arrival was seamless.',
+    quote: 'Very fast service! My EMGS status was stuck, but GEES followed up with the university and cleared the issue quickly.',
     rating: '5.0',
-    avatarUrl: 'https://lh3.googleusercontent.com/aida/AEtjO1VQ8Fv12AYr9e1huzIh9CMH2ZejsKouMv-Zgd_zTUTODfaymQzgZqkMWSs0CfGf0L0riONkuNFbDm9zKznxEFHz-4XK96atOKhkw9rj0aKFvYQloQO_kBBkaAzMQQ3DZRZ5gDg121plrVdceq_8eB07NLMJU3730hIq0p8fXckofCzleXVnbypz_UN9ONomr4w0v2NEaFOVxZp9BKDeB3lbhJhEgv0S6FE3HNrMnI6ylkJx_qOEAt2uiG-q',
+    avatarUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDXglkog8Bv0ktvmFTcDx2kRVqs1x7BCAZcuHuVQmMj1T0ue8Z9WWwpS5R5YD-hc-Ayz60CJJsPro-DVegiTQdvGeKAWgjJGgi5kfvvAr2qXRug1aoTve6WV0ij225paCerORnIp7ZrY4T9_rauyU2z7D2HPWBTY7gPktgk5SO9sT7lcra_ZRQwmOo-N-TjkOHw2uxLt6FQ-9b4EYnuoBd0nyR6jhur8vY_xgsCRDFJJWBmUya1o8uL6INVJ4ZZk5klnMrgN9-_K_r8ZbM',
     flagEmoji: '🇲🇾'
   },
   {
     id: 'rasel',
     name: 'Rasel Ahmed',
-    degree: 'PhD in Information Technology',
+    degree: 'PhD Student · ALFA University College',
     university: 'ALFA University College',
     country: 'malaysia',
     locationBadge: '📍 Subang Jaya, Malaysia 🇲🇾',
-    quote: 'I was worried about my 2-year study gap. GEES handled my case with absolute professionalism and fast-tracked my VAL within weeks.',
+    quote: 'I was worried about my 2-year study gap. GEES handled my case professionally and guided me through the EMGS process.',
     rating: '5.0',
     avatarUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBkvtGOJ05B3oe6vZG2eDRDP7jJ6kh4m0upFYHf3yttIZtAUvFV0mNaSf3obw1DzQfQA2X9o6ow7xa_Een_2ogNQsU91Z4_pOLAd9oBKwh_fSJLxTm_DXzW8ZjkNKAINAoNu6aCqubnBiX33XmkyypLtrntohIruHuAAq_2KJFEqQ7lqMPS5us7qZZaldml6yPC5MOmNBd_ZmyfpRqprAKwo05s6csGvnN0_EqeqK2ahljrtqK7nL_FM6t8kjaFyvc9U3l4E9y02zSBv-8',
     flagEmoji: '🇲🇾'
   },
   {
     id: 'tahmid',
-    name: 'Tahmid Rahman',
-    degree: 'Bachelor of Science in Computer Science',
-    university: 'University of Auckland',
-    country: 'new zealand',
-    locationBadge: '📍 Auckland, New Zealand 🇳🇿',
-    quote: 'Secured direct admission and my New Zealand student visa within 3 weeks with full scholarship guidance from senior GEES counselors.',
+    name: 'Sadia Rahman',
+    degree: 'Masters',
+    university: 'Alfa University College',
+    country: 'malaysia',
+    locationBadge: '📍 Subang Jaya, Malaysia 🇲🇾',
+    quote: 'The agency was extremely helpful — always keeping us updated with fast assistance at any hour',
     rating: '5.0',
-    avatarUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDXglkog8Bv0ktvmFTcDx2kRVqs1x7BCAZcuHuVQmMj1T0ue8Z9WWwpS5R5YD-hc-Ayz60CJJsPro-DVegiTQdvGeKAWgjJGgi5kfvvAr2qXRug1aoTve6WV0ij225paCerORnIp7ZrY4T9_rauyU2z7D2HPWBTY7gPktgk5SO9sT7lcra_ZRQwmOo-N-TjkOHw2uxLt6FQ-9b4EYnuoBd0nyR6jhur8vY_xgsCRDFJJWBmUya1o8uL6INVJ4ZZk5klnMrgN9-_K_r8ZbM',
-    flagEmoji: '🇳🇿'
+    avatarUrl: 'https://trustworthy-turquoise-alligator.globaleducationexpert.com/assets/images/reviews/review-03-sadia.webp?v=75.0.0',
+    flagEmoji: '🇲🇾'
   },
   {
     id: 'nabila',
-    name: 'Nabila Khan',
+    name: 'Moni Akter',
     degree: 'Bachelor of Biomedical Science',
-    university: 'Monash University',
-    country: 'australia',
-    locationBadge: '📍 Melbourne, Australia 🇦🇺',
-    quote: 'Unmatched dedication! The mock visa interview sessions prepared me completely for my embassy assessment and scholarship interview.',
+    university: 'IIUM',
+    country: 'malaysia',
+    locationBadge: '📍 Gombak, Malaysia 🇲🇾',
+    quote: 'Smoothest experience for Malaysia student visa. They are very fast with EMGS updates.',
     rating: '5.0',
-    avatarUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=800&auto=format&fit=crop',
-    flagEmoji: '🇦🇺'
+    avatarUrl: 'https://trustworthy-turquoise-alligator.globaleducationexpert.com/assets/images/reviews/review-04-moni.webp?v=75.0.0',
+    flagEmoji: '🇲🇾'
   },
   {
     id: 'ayesha',
-    name: 'Ayesha Siddiqua',
-    degree: 'MSc in Data Science',
-    university: "King's College London",
-    country: 'uk',
-    locationBadge: '📍 London, United Kingdom 🇬🇧',
-    quote: "Dream admission at King's College London! GEES negotiated my merit scholarship and assisted through CAS generation seamlessly.",
+    name: 'Mashuk Ahmed Aziz',
+    degree: 'Bachelors in Data Science',
+    university: "Segi College",
+    country: 'malaysia',
+    locationBadge: '📍 Subang Jaya, Malaysia 🇲🇾',
+    quote: "I was referred to Global Education Expert Services (GEES) by a mutual friend after finishing my A-levels, as I was looking for universities in Malaysia. They were very helpful throughout the entire process. We visited Malaysia to explore universities, and they arranged visits to SEGi and INTI through official representatives for career consultations. They also assisted me with finding Airbnb accommodation. If anyone is looking to study abroad, I would highly recommend this agency.",
     rating: '5.0',
-    avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=800&auto=format&fit=crop',
-    flagEmoji: '🇬🇧'
+    avatarUrl: 'https://trustworthy-turquoise-alligator.globaleducationexpert.com/assets/images/reviews/review-06-mashuk-.webp',
+    flagEmoji: '🇲🇾'
   }
 ];
 
@@ -823,8 +809,8 @@ export const mockLeads: Lead[] = [
     ieltsScore: 7.0,
     source: 'agent_referral',
     status: 'offer_received',
-    assignedCounselorId: 'counselor-5',
-    assignedCounselorName: 'Nusrat Jahan',
+    assignedCounselorId: 'counselor-2',
+    assignedCounselorName: 'Syed Ekhlas',
     notes: "Received conditional offer from King's College London. Reviewing scholarship.",
     createdAt: '2026-09-15T12:00:00Z',
     updatedAt: '2026-09-27T10:00:00Z'

@@ -40,8 +40,29 @@ import { AgentPortalView } from './components/portal/AgentPortalView.tsx';
 import { ContactUsView } from './components/contact/ContactUsView.tsx';
 import { BlogHubView } from './components/blog/BlogHubView.tsx';
 import { ServicesView } from './components/services/ServicesView.tsx';
+import { EventsView } from './components/events/EventsView.tsx';
+import { NewsView } from './components/news/NewsView.tsx';
+import { AboutUsView } from './components/about/AboutUsView.tsx';
+import { SuccessStoriesView } from './components/stories/SuccessStoriesView.tsx';
+import { LanguageCentersView } from './components/language/LanguageCentersView.tsx';
+import { StudentsGuideView } from './components/guide/StudentsGuideView.tsx';
+import { ResourcesHubView } from './components/resources/ResourcesHubView.tsx';
+import { LeadershipDirectorView } from './components/about/LeadershipDirectorView.tsx';
+import { AdmissionSupportView } from './components/services/AdmissionSupportView.tsx';
+import { SchoolAdmissionView } from './components/services/SchoolAdmissionView.tsx';
+import { StudentReferralView } from './components/services/StudentReferralView.tsx';
+import { StudentVisaAssistanceView } from './components/services/StudentVisaAssistanceView.tsx';
+import { DependentVisaView } from './components/services/DependentVisaView.tsx';
+import { TouristVisaView } from './components/services/TouristVisaView.tsx';
+import { MM2HView } from './components/services/MM2HView.tsx';
+import { HealthInsuranceView } from './components/services/HealthInsuranceView.tsx';
+import { FlightTicketingView } from './components/services/FlightTicketingView.tsx';
+import { WishlistPortal } from './components/portal/WishlistPortal.tsx';
+import { StudyDestinationPage } from './components/destination/StudyDestinationPage.tsx';
+import { normalizeDestinationSlug } from './data/destinationDataRegistry.ts';
 import { CurrencyProvider } from './context/CurrencyContext.tsx';
 import { ThemeProvider, useTheme } from './context/ThemeContext.tsx';
+import { WishlistProvider } from './context/WishlistContext.tsx';
 
 function AppContent() {
   // Theme state from global ThemeContext
@@ -51,10 +72,29 @@ function AppContent() {
   const [currentView, setCurrentView] = useState<string>(() => {
     if (typeof window !== 'undefined') {
       const path = window.location.pathname.toLowerCase();
+      if (path.includes('study-in-') || path.includes('study-malaysia') || path.includes('study-uk') || path.includes('study-australia')) return 'study-destination';
+      if (path.includes('wishlist') || path.includes('saved-courses')) return 'wishlist';
+      if (path.includes('flight-ticketing') || path.includes('flight') || path.includes('ticket')) return 'flight-ticketing';
+      if (path.includes('health-insurance') || path.includes('insurance') || path.includes('oshc')) return 'health-insurance';
+      if (path.includes('mm2h') || path.includes('malaysia-second-home') || path.includes('malaysia-my-second-home')) return 'mm2h';
+      if (path.includes('tourist-visa') || path.includes('tourist') || path.includes('visitor-visa')) return 'tourist-visa';
+      if (path.includes('dependent-visa') || path.includes('dependent')) return 'dependent-visa';
+      if (path.includes('student-visa-assistance') || path.includes('visa-assistance') || path.includes('student-visa')) return 'student-visa-assistance';
+      if (path.includes('student-referral') || path.includes('referral')) return 'student-referral';
+      if (path.includes('school-admission')) return 'school-admission';
+      if (path.includes('admission-support') || path.includes('admission')) return 'admission-support';
       if (path.includes('blog')) return 'blog';
+      if (path.includes('news')) return 'news';
+      if (path.includes('about')) return 'about';
       if (path.includes('faq')) return 'faq';
+      if (path.includes('event')) return 'events';
       if (path.includes('contact')) return 'contact';
       if (path.includes('services')) return 'services';
+      if (path.includes('success-stories') || path.includes('stories')) return 'success-stories';
+      if (path.includes('language-centers') || path.includes('language')) return 'language-centers';
+      if (path.includes('students-guide') || path.includes('guide')) return 'students-guide';
+      if (path.includes('resources')) return 'resources';
+      if (path.includes('leadership')) return 'leadership-director';
       if (path.includes('countries') || path.includes('destinations')) return 'destinations';
       if (path.includes('courses') || path.includes('course')) return 'courses';
       if (path.includes('universities') || path.includes('university')) return 'universities';
@@ -63,7 +103,15 @@ function AppContent() {
   });
 
   // Navigation payload (e.g. selected university slug or destination)
-  const [navPayload, setNavPayload] = useState<any>(null);
+  const [navPayload, setNavPayload] = useState<any>(() => {
+    if (typeof window !== 'undefined') {
+      const path = window.location.pathname.toLowerCase().replace(/^\/+/, '');
+      if (path.includes('study-in-') || path.includes('study-')) {
+        return path;
+      }
+    }
+    return null;
+  });
 
   // Active user role context for portals
   const [activeRole, setActiveRole] = useState<UserRole>('student');
@@ -102,7 +150,199 @@ function AppContent() {
       return;
     }
 
-    if (view === 'home' && typeof window !== 'undefined' && (window.location.pathname.includes('blog') || window.location.pathname.includes('services') || window.location.pathname.includes('faq') || window.location.pathname.includes('contact') || window.location.pathname.includes('countries') || window.location.pathname.includes('universities') || window.location.pathname.includes('courses'))) {
+    if (view === 'faq' || view === 'faqs') {
+      setCurrentView('faq');
+      setNavPayload(payload || null);
+      if (typeof window !== 'undefined' && window.location.pathname.includes('.html')) {
+        window.history.pushState({}, '', 'faq.html');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (view === 'events' || view === 'event') {
+      setCurrentView('events');
+      setNavPayload(payload || null);
+      if (typeof window !== 'undefined' && window.location.pathname.includes('.html')) {
+        window.history.pushState({}, '', 'events.html');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (view === 'about' || view === 'about-us') {
+      setCurrentView('about');
+      setNavPayload(payload || null);
+      if (typeof window !== 'undefined' && window.location.pathname.includes('.html')) {
+        window.history.pushState({}, '', 'about-us.html');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (view === 'news') {
+      setCurrentView('news');
+      setNavPayload(payload || null);
+      if (typeof window !== 'undefined' && window.location.pathname.includes('.html')) {
+        window.history.pushState({}, '', 'news.html');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (view === 'success-stories' || view === 'stories') {
+      setCurrentView('success-stories');
+      setNavPayload(payload || null);
+      if (typeof window !== 'undefined' && window.location.pathname.includes('.html')) {
+        window.history.pushState({}, '', 'success-stories.html');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (view === 'language-centers' || view === 'language') {
+      setCurrentView('language-centers');
+      setNavPayload(payload || null);
+      if (typeof window !== 'undefined' && window.location.pathname.includes('.html')) {
+        window.history.pushState({}, '', 'language-centers.html');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (view === 'students-guide' || view === 'guide') {
+      setCurrentView('students-guide');
+      setNavPayload(payload || null);
+      if (typeof window !== 'undefined' && window.location.pathname.includes('.html')) {
+        window.history.pushState({}, '', 'students-guide.html');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (view === 'resources') {
+      setCurrentView('resources');
+      setNavPayload(payload || null);
+      if (typeof window !== 'undefined' && window.location.pathname.includes('.html')) {
+        window.history.pushState({}, '', 'resources.html');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (view === 'leadership-director' || view === 'leadership') {
+      setCurrentView('leadership-director');
+      setNavPayload(payload || null);
+      if (typeof window !== 'undefined' && window.location.pathname.includes('.html')) {
+        window.history.pushState({}, '', 'leadership-director.html');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (view === 'flight-ticketing' || view === 'flight' || view === 'tickets' || (view === 'services' && (payload === 'flight-ticketing' || payload === 'flight' || payload === 'tickets' || payload === 'airfare'))) {
+      setCurrentView('flight-ticketing');
+      setNavPayload(payload || null);
+      if (typeof window !== 'undefined' && window.location.pathname.includes('.html')) {
+        window.history.pushState({}, '', 'flight-ticketing.html');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (view === 'health-insurance' || view === 'insurance' || (view === 'services' && (payload === 'health-insurance' || payload === 'insurance' || payload === 'oshc' || payload === 'student-insurance'))) {
+      setCurrentView('health-insurance');
+      setNavPayload(payload || null);
+      if (typeof window !== 'undefined' && window.location.pathname.includes('.html')) {
+        window.history.pushState({}, '', 'health-insurance.html');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (view === 'mm2h' || (view === 'services' && (payload === 'mm2h' || payload === 'malaysia-second-home' || payload === 'sarawak-mm2h'))) {
+      setCurrentView('mm2h');
+      setNavPayload(payload || null);
+      if (typeof window !== 'undefined' && window.location.pathname.includes('.html')) {
+        window.history.pushState({}, '', 'mm2h.html');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (view === 'tourist-visa' || view === 'tourist' || view === 'visitor' || (view === 'services' && (payload === 'tourist-visa' || payload === 'tourist'))) {
+      setCurrentView('tourist-visa');
+      setNavPayload(payload || null);
+      if (typeof window !== 'undefined' && window.location.pathname.includes('.html')) {
+        window.history.pushState({}, '', 'tourist-visa.html');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (view === 'dependent-visa' || view === 'dependent' || (view === 'services' && (payload === 'dependent-visa' || payload === 'dependent'))) {
+      setCurrentView('dependent-visa');
+      setNavPayload(payload || null);
+      if (typeof window !== 'undefined' && window.location.pathname.includes('.html')) {
+        window.history.pushState({}, '', 'dependent-visa.html');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (view === 'student-visa-assistance' || view === 'student-visa' || view === 'visa-assistance' || (view === 'services' && (payload === 'student-visa-assistance' || payload === 'visa-assistance' || payload === 'student-visa'))) {
+      setCurrentView('student-visa-assistance');
+      setNavPayload(payload || null);
+      if (typeof window !== 'undefined' && window.location.pathname.includes('.html')) {
+        window.history.pushState({}, '', 'student-visa-assistance.html');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (view === 'student-referral' || view === 'referral' || (view === 'services' && payload === 'b2b-partnership')) {
+      setCurrentView('student-referral');
+      setNavPayload(payload || null);
+      if (typeof window !== 'undefined' && window.location.pathname.includes('.html')) {
+        window.history.pushState({}, '', 'student-referral.html');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (view === 'school-admission' || (view === 'services' && payload === 'school-admission')) {
+      setCurrentView('school-admission');
+      setNavPayload(payload || null);
+      if (typeof window !== 'undefined' && window.location.pathname.includes('.html')) {
+        window.history.pushState({}, '', 'school-admission.html');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (view === 'admission-support' || (view === 'services' && payload === 'admission-support')) {
+      setCurrentView('admission-support');
+      setNavPayload(payload || null);
+      if (typeof window !== 'undefined' && window.location.pathname.includes('.html')) {
+        window.history.pushState({}, '', 'admission-support.html');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (view === 'study-destination' || view === 'study-in-malaysia' || view.startsWith('study-in-') || ((view === 'destinations' || view === 'countries') && payload)) {
+      const countryTarget = typeof payload === 'string' ? payload : (view.startsWith('study-in-') ? view : 'study-in-malaysia');
+      const normalizedSlug = normalizeDestinationSlug(countryTarget);
+      setCurrentView('study-destination');
+      setNavPayload(normalizedSlug);
+      if (typeof window !== 'undefined') {
+        window.history.pushState({}, '', `/${normalizedSlug}`);
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (view === 'home' && typeof window !== 'undefined' && (window.location.pathname.includes('blog') || window.location.pathname.includes('news') || window.location.pathname.includes('services') || window.location.pathname.includes('faq') || window.location.pathname.includes('event') || window.location.pathname.includes('contact') || window.location.pathname.includes('countries') || window.location.pathname.includes('universities') || window.location.pathname.includes('courses') || window.location.pathname.includes('study-in-'))) {
       window.location.href = '/';
       return;
     }
@@ -121,6 +361,10 @@ function AppContent() {
 
     if (view === 'courses' && typeof window !== 'undefined' && window.location.pathname.includes('.html')) {
       window.history.pushState({}, '', 'courses.html');
+    }
+
+    if ((view === 'wishlist' || view === 'saved-courses') && typeof window !== 'undefined' && window.location.pathname.includes('.html')) {
+      window.history.pushState({}, '', 'wishlist.html');
     }
 
     setNavPayload(payload || null);
@@ -152,7 +396,7 @@ function AppContent() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#070D1E] text-slate-900 dark:text-slate-100 font-sans selection:bg-[#fbb034]/30 transition-colors duration-200">
+    <div className="min-h-screen bg-white dark:bg-[#070D1E] text-slate-900 dark:text-slate-100 font-sans selection:bg-[#fbb034]/30 transition-colors duration-200">
       {/* Floating Universal Header */}
       <Navbar
         currentView={currentView}
@@ -166,7 +410,7 @@ function AppContent() {
       />
 
       {/* Main Content Area */}
-      <main className="pt-20 sm:pt-24 lg:pt-28 pb-20 md:pb-0">
+      <main className="pt-20 sm:pt-24 lg:pt-28 pb-20 md:pb-0 bg-white dark:bg-[#070D1E]">
         {/* VIEW: HOME */}
         {currentView === 'home' && (
           <>
@@ -245,10 +489,22 @@ function AppContent() {
             <CourseExplorerView
               onApply={(courseInfo) => handleOpenConsultation(`Admissions for ${courseInfo}`)}
               onNavigateToUni={(uniSlug) => handleNavigate('universities', uniSlug)}
+              onNavigateToWishlist={() => handleNavigate('wishlist')}
               initialQuery={navPayload && typeof navPayload === 'object' ? navPayload.query : (typeof navPayload === 'string' ? navPayload : '')}
               initialCountry={navPayload && typeof navPayload === 'object' ? navPayload.destination : 'all'}
               initialLevel={navPayload && typeof navPayload === 'object' ? navPayload.level : 'all'}
               initialField={navPayload && typeof navPayload === 'object' ? navPayload.field : 'all'}
+            />
+          </div>
+        )}
+
+        {/* VIEW: COURSE WISHLIST PORTAL */}
+        {currentView === 'wishlist' && (
+          <div className="py-2 max-w-[95%] mx-auto w-full">
+            <WishlistPortal
+              onNavigate={handleNavigate}
+              onOpenConsultation={handleOpenConsultation}
+              onNavigateToUni={(uniSlug) => handleNavigate('universities', uniSlug)}
             />
           </div>
         )}
@@ -259,6 +515,15 @@ function AppContent() {
             onBackToHome={() => handleNavigate('home')}
             onOpenConsultation={handleOpenConsultation}
             initialSelectedServiceSlug={typeof navPayload === 'string' ? navPayload : undefined}
+          />
+        )}
+
+        {/* VIEW: REUSABLE STUDY DESTINATION PAGE */}
+        {currentView === 'study-destination' && (
+          <StudyDestinationPage
+            countrySlugOrName={typeof navPayload === 'string' ? navPayload : 'study-in-malaysia'}
+            onNavigate={handleNavigate}
+            onOpenConsultation={handleOpenConsultation}
           />
         )}
 
@@ -360,6 +625,159 @@ function AppContent() {
               onNavigate={handleNavigate}
             />
           </div>
+        )}
+
+        {/* VIEW: EVENTS & EDUCATION FAIRS */}
+        {currentView === 'events' && (
+          <EventsView
+            onBackToHome={() => handleNavigate('home')}
+            onOpenConsultation={handleOpenConsultation}
+            onNavigate={handleNavigate}
+          />
+        )}
+
+        {/* VIEW: GLOBAL NEWS & VISA BULLETINS */}
+        {currentView === 'news' && (
+          <NewsView
+            onBackToHome={() => handleNavigate('home')}
+            onOpenConsultation={handleOpenConsultation}
+            onNavigate={handleNavigate}
+          />
+        )}
+
+        {/* VIEW: ABOUT US */}
+        {currentView === 'about' && (
+          <AboutUsView
+            onBackToHome={() => handleNavigate('home')}
+            onOpenConsultation={handleOpenConsultation}
+            onNavigate={handleNavigate}
+          />
+        )}
+
+        {/* VIEW: SUCCESS STORIES */}
+        {currentView === 'success-stories' && (
+          <SuccessStoriesView
+            onBackToHome={() => handleNavigate('home')}
+            onOpenConsultation={handleOpenConsultation}
+            onNavigate={handleNavigate}
+          />
+        )}
+
+        {/* VIEW: LANGUAGE CENTERS */}
+        {currentView === 'language-centers' && (
+          <LanguageCentersView
+            onBackToHome={() => handleNavigate('home')}
+            onOpenConsultation={handleOpenConsultation}
+            onNavigate={handleNavigate}
+          />
+        )}
+
+        {/* VIEW: STUDENTS GUIDE */}
+        {currentView === 'students-guide' && (
+          <StudentsGuideView
+            onBackToHome={() => handleNavigate('home')}
+            onOpenConsultation={handleOpenConsultation}
+            onNavigate={handleNavigate}
+          />
+        )}
+
+        {/* VIEW: RESOURCES HUB */}
+        {currentView === 'resources' && (
+          <ResourcesHubView
+            onBackToHome={() => handleNavigate('home')}
+            onOpenConsultation={handleOpenConsultation}
+            onNavigate={handleNavigate}
+          />
+        )}
+
+        {/* VIEW: LEADERSHIP & DIRECTOR */}
+        {currentView === 'leadership-director' && (
+          <LeadershipDirectorView
+            onBackToHome={() => handleNavigate('home')}
+            onOpenConsultation={handleOpenConsultation}
+            onNavigate={handleNavigate}
+          />
+        )}
+
+        {/* VIEW: ADMISSION SUPPORT */}
+        {currentView === 'admission-support' && (
+          <AdmissionSupportView
+            onBackToHome={() => handleNavigate('home')}
+            onOpenConsultation={handleOpenConsultation}
+            onNavigate={handleNavigate}
+          />
+        )}
+
+        {/* VIEW: SCHOOL ADMISSION */}
+        {currentView === 'school-admission' && (
+          <SchoolAdmissionView
+            onBackToHome={() => handleNavigate('home')}
+            onOpenConsultation={handleOpenConsultation}
+            onNavigate={handleNavigate}
+          />
+        )}
+
+        {/* VIEW: STUDENT REFERRAL */}
+        {currentView === 'student-referral' && (
+          <StudentReferralView
+            onBackToHome={() => handleNavigate('home')}
+            onOpenConsultation={handleOpenConsultation}
+            onNavigate={handleNavigate}
+          />
+        )}
+
+        {/* VIEW: STUDENT VISA ASSISTANCE */}
+        {currentView === 'student-visa-assistance' && (
+          <StudentVisaAssistanceView
+            onBackToHome={() => handleNavigate('home')}
+            onOpenConsultation={handleOpenConsultation}
+            onNavigate={handleNavigate}
+          />
+        )}
+
+        {/* VIEW: DEPENDENT VISA */}
+        {currentView === 'dependent-visa' && (
+          <DependentVisaView
+            onBackToHome={() => handleNavigate('home')}
+            onOpenConsultation={handleOpenConsultation}
+            onNavigate={handleNavigate}
+          />
+        )}
+
+        {/* VIEW: TOURIST VISA */}
+        {currentView === 'tourist-visa' && (
+          <TouristVisaView
+            onBackToHome={() => handleNavigate('home')}
+            onOpenConsultation={handleOpenConsultation}
+            onNavigate={handleNavigate}
+          />
+        )}
+
+        {/* VIEW: MM2H MALAYSIA RESIDENCY */}
+        {currentView === 'mm2h' && (
+          <MM2HView
+            onBackToHome={() => handleNavigate('home')}
+            onOpenConsultation={handleOpenConsultation}
+            onNavigate={handleNavigate}
+          />
+        )}
+
+        {/* VIEW: HEALTH INSURANCE & MEDICAL COVER */}
+        {currentView === 'health-insurance' && (
+          <HealthInsuranceView
+            onBackToHome={() => handleNavigate('home')}
+            onOpenConsultation={handleOpenConsultation}
+            onNavigate={handleNavigate}
+          />
+        )}
+
+        {/* VIEW: FLIGHT TICKETING & STUDENT TRAVEL LOGISTICS */}
+        {currentView === 'flight-ticketing' && (
+          <FlightTicketingView
+            onBackToHome={() => handleNavigate('home')}
+            onOpenConsultation={handleOpenConsultation}
+            onNavigate={handleNavigate}
+          />
         )}
 
         {/* VIEW: CONTACT US */}
@@ -483,7 +901,9 @@ export default function App() {
   return (
     <ThemeProvider>
       <CurrencyProvider>
-        <AppContent />
+        <WishlistProvider>
+          <AppContent />
+        </WishlistProvider>
       </CurrencyProvider>
     </ThemeProvider>
   );

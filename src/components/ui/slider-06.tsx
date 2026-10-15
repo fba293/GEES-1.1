@@ -138,6 +138,44 @@ export default function Slider06({
             ));
           })()}
         </div>
+
+        {/* Direct Granular Numeric Input Boxes for Fee Estimation */}
+        <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100 dark:border-slate-800/80">
+          <div>
+            <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 block mb-1">
+              Min ({currencySymbol})
+            </label>
+            <input
+              type="number"
+              min={min}
+              max={high}
+              step={step}
+              value={low}
+              onChange={(e) => {
+                const val = Math.max(min, Math.min(high, Number(e.target.value) || 0));
+                handleRangeChange([val, high]);
+              }}
+              className="w-full px-2 py-1 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800 text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-[#fbb034] transition-all"
+            />
+          </div>
+          <div>
+            <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 block mb-1">
+              Max ({currencySymbol})
+            </label>
+            <input
+              type="number"
+              min={low}
+              max={max}
+              step={step}
+              value={high}
+              onChange={(e) => {
+                const val = Math.min(max, Math.max(low, Number(e.target.value) || max));
+                handleRangeChange([low, val]);
+              }}
+              className="w-full px-2 py-1 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800 text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-[#fbb034] transition-all"
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

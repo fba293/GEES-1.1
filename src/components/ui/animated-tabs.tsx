@@ -86,13 +86,20 @@ const AnimatedTabsComponent: React.FC<AnimatedTabsProps> = ({
       opacity: 1
     });
 
-    // On mobile, gently scroll active tab into visible center
-    if (scrollWrapperRef.current && window.innerWidth < 640) {
-      activeEl.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-        inline: 'center'
-      });
+    // On mobile or narrow viewports, scroll active tab into view without cutting off the left pill
+    if (scrollWrapperRef.current) {
+      if (activeId === tabs[0]?.id) {
+        scrollWrapperRef.current.scrollTo({
+          left: 0,
+          behavior: 'smooth'
+        });
+      } else if (window.innerWidth < 640) {
+        activeEl.scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest',
+          inline: 'nearest'
+        });
+      }
     }
   };
 
@@ -100,7 +107,7 @@ const AnimatedTabsComponent: React.FC<AnimatedTabsProps> = ({
     updateIndicatorPosition();
   }, [activeId, tabs]);
 
-  // ResizeObserver for zero-latency dynamic adjustments
+  // ResizeObserver and fonts ready listener for zero-latency dynamic adjustments
   useEffect(() => {
     if (!containerRef.current || typeof ResizeObserver === 'undefined') return;
 
@@ -109,6 +116,13 @@ const AnimatedTabsComponent: React.FC<AnimatedTabsProps> = ({
     });
 
     ro.observe(containerRef.current);
+
+    if (typeof document !== 'undefined' && 'fonts' in document) {
+      document.fonts.ready.then(() => {
+        updateIndicatorPosition();
+      });
+    }
+
     return () => ro.disconnect();
   }, [activeId]);
 
@@ -121,12 +135,12 @@ const AnimatedTabsComponent: React.FC<AnimatedTabsProps> = ({
   return (
     <div 
       ref={scrollWrapperRef}
-      className={`w-full max-w-full overflow-x-auto no-scrollbar flex items-center justify-start sm:justify-center px-4 sm:px-0 touch-pan-x ${containerClassName}`}
+      className={`w-full max-w-full overflow-x-auto no-scrollbar flex items-center justify-start px-4 sm:px-6 touch-pan-x scroll-smooth ${containerClassName}`}
     >
       <div
         ref={containerRef}
         role="tablist"
-        className={`relative inline-flex items-center p-1 sm:p-1.5 bg-slate-100 dark:bg-slate-800/90 rounded-full border border-slate-200 dark:border-slate-700/80 shadow-xs whitespace-nowrap gap-1 select-none shrink-0 ${className}`}
+        className={`relative inline-flex items-center p-1 sm:p-1.5 bg-slate-100 dark:bg-slate-800/90 rounded-full border border-slate-200 dark:border-slate-700/80 shadow-xs whitespace-nowrap gap-1 select-none shrink-0 sm:mx-auto ${className}`}
         style={{
           transform: 'translateZ(0)',
           backfaceVisibility: 'hidden'

@@ -119,7 +119,7 @@ export const ContactUsView: React.FC<ContactUsViewProps> = ({
   };
 
   return (
-    <div className="w-full min-h-screen bg-[#f7f9fd] dark:bg-[#070D1E] text-slate-800 dark:text-slate-100 transition-colors">
+    <div className="w-full min-h-screen bg-white dark:bg-[#070D1E] text-slate-800 dark:text-slate-100 transition-colors">
       {/* Subtle Atmospheric Top Glow */}
       <div className="absolute top-0 inset-x-0 h-96 pointer-events-none overflow-hidden select-none z-0">
         <div className="w-full h-full bg-radial from-blue-200/40 via-amber-100/20 to-transparent dark:from-blue-900/20 dark:via-transparent dark:to-transparent opacity-80" />

@@ -106,10 +106,10 @@ export const StepsRoadmapSection: React.FC<StepsRoadmapSectionProps> = ({ onOpen
   };
 
   return (
-    <section id="steps-roadmap-section" className="w-full py-12 sm:py-20 px-4 sm:px-6 lg:px-8 bg-slate-50/60 dark:bg-[#0B1329] border-t border-slate-100 dark:border-slate-800">
-      <div className="max-w-[95%] w-full mx-auto">
+    <section id="steps-roadmap-section" className="w-full py-8 min-[390px]:py-10 sm:py-20 px-4 sm:px-6 lg:px-8 bg-slate-50/60 dark:bg-[#0B1329] border-t border-slate-100 dark:border-slate-800">
+      <div className="w-full max-w-full sm:max-w-[95%] mx-auto">
         {/* Header */}
-        <header className="text-center max-w-3xl mx-auto mb-10 sm:mb-16 px-2">
+        <header className="text-center max-w-3xl mx-auto mb-8 sm:mb-16 px-2">
           <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold font-display tracking-tight text-slate-900 dark:text-white flex items-center justify-center flex-wrap gap-2 sm:gap-3 md:gap-3.5 leading-tight text-center">
             <span>6 Steps to</span>
             <span className="bg-[#fbb034] text-slate-950 px-3.5 sm:px-5 md:px-6 py-0.5 sm:py-1 md:py-1.5 rounded-xl sm:rounded-2xl font-black tracking-tight leading-none shadow-sm shrink-0">
@@ -122,20 +122,20 @@ export const StepsRoadmapSection: React.FC<StepsRoadmapSectionProps> = ({ onOpen
         </header>
 
         {/* Process Grid: Left Visual Card & Right Accordion */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start mb-10 sm:mb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch mb-10 sm:mb-12">
           {/* Left Column: Counselor session photo with trust pill */}
-          <div className="lg:col-span-5 flex flex-col items-center lg:sticky lg:top-24">
-            <div className="relative w-full aspect-[4/3] xs:aspect-[4/5] max-w-sm rounded-3xl overflow-hidden shadow-xl bg-slate-200 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+          <div className="lg:col-span-5 flex flex-col items-center justify-between h-full">
+            <div className="relative w-full h-full min-h-[250px] xs:min-h-[280px] sm:min-h-[380px] lg:min-h-[500px] max-w-md lg:max-w-full rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl bg-slate-200 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 group">
               <img
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmxWeNh7tryz5Ui6SbdMmMasVp5_mcakVeZkNW8gNg_1gZe6pLxsfqJ-cVa6DhoMo8dyDswM0Bvk51sqpt2_dcePWC8WkmRxGM5ZWvkNM7IV8x0PJ9tG2E7DOIwirLxoErAea2uVmX_N0pFBSj31KKXgVwt499uf26nRiNZ1jC400Vj9ndQVmAJRbyCDHQWWqyxAnb0Mh7atoeoHJSHyN0jFPwKJ2pZJUpg_fP79mwsGDDS0HDlBR_dLXXCz5y-sELihI"
                 alt="GEES Counselor advising family"
-                className="w-full h-full object-cover object-top"
+                className="absolute inset-0 w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700 ease-out"
                 loading="lazy"
                 decoding="async"
               />
               {/* Floating Trust Pill */}
               <div className="absolute bottom-3 xs:bottom-5 inset-x-2 xs:inset-x-4 flex justify-center z-10">
-                <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md px-2.5 min-[390px]:px-3 xs:px-4 py-1.5 xs:py-2 sm:py-2.5 rounded-full shadow-lg border border-white/60 dark:border-slate-800 flex items-center justify-center gap-1 min-[390px]:gap-1.5 xs:gap-2 text-[9.5px] min-[390px]:text-[10.5px] xs:text-[11px] sm:text-xs font-bold text-slate-900 dark:text-slate-100 max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
+                <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md px-2.5 min-[390px]:px-3 xs:px-4 py-1.5 xs:py-2 sm:py-2.5 rounded-full shadow-lg border border-white/60 dark:border-slate-800 flex items-center justify-center gap-1 min-[390px]:gap-1.5 xs:gap-2 text-[11px] min-[390px]:text-[12px] sm:text-xs font-bold text-slate-900 dark:text-slate-100 max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
                   <span>No service charge</span>
                   <span className="text-slate-300 dark:text-slate-600 font-light select-none">|</span>
                   <span>No hidden fees</span>
@@ -144,7 +144,7 @@ export const StepsRoadmapSection: React.FC<StepsRoadmapSectionProps> = ({ onOpen
                 </div>
               </div>
             </div>
-            <div className="mt-4 flex items-center justify-center gap-2 text-xs font-semibold text-slate-500 text-center">
+            <div className="mt-3 flex items-center justify-center gap-2 text-xs font-semibold text-slate-500 text-center shrink-0">
               <span className="w-5 h-[2px] bg-[#fbbf24] rounded-full inline-block"></span>
               <span>Guidance for students and families, at every step.</span>
               <span className="w-5 h-[2px] bg-[#fbbf24] rounded-full inline-block"></span>

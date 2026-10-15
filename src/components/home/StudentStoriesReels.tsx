@@ -177,7 +177,7 @@ export const StudentStoriesReels: React.FC = () => {
   };
 
   return (
-    <section className="relative w-full max-w-full overflow-hidden bg-white dark:bg-[#070b19] py-10 sm:py-16 md:py-24 px-3 sm:px-6 lg:px-8 select-none">
+    <section className="relative w-full max-w-full overflow-hidden bg-white dark:bg-[#070b19] py-8 min-[390px]:py-10 sm:py-16 md:py-24 px-4 sm:px-6 lg:px-8 select-none">
       <div className="max-w-[1440px] mx-auto w-full overflow-hidden">
         {/* Header */}
         <header className="text-center max-w-3xl mx-auto mb-6 sm:mb-10 md:mb-14 px-2">
@@ -286,11 +286,11 @@ export const StudentStoriesReels: React.FC = () => {
 
                     {/* Top Location and Views Glass Pills */}
                     <div className="absolute top-2 xs:top-2.5 sm:top-4 inset-x-2 xs:inset-x-2.5 sm:inset-x-3.5 flex items-center justify-between z-20 pointer-events-none">
-                      <span className="px-1.5 xs:px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full bg-slate-950/70 backdrop-blur-md text-white text-[8px] xs:text-[9px] sm:text-[11px] font-semibold flex items-center gap-0.5 xs:gap-1 border border-white/20">
+                      <span className="px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full bg-slate-950/75 backdrop-blur-md text-white text-[9.5px] min-[390px]:text-[10px] sm:text-[11px] font-semibold flex items-center gap-1 border border-white/20">
                         <span>{reel.flagEmoji}</span>
-                        <span className="truncate max-w-[55px] xs:max-w-none">{reel.location}</span>
+                        <span className="truncate max-w-[65px] xs:max-w-none">{reel.location}</span>
                       </span>
-                      <span className="px-1.5 xs:px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full bg-slate-950/70 backdrop-blur-md text-white text-[8px] xs:text-[9px] sm:text-[11px] font-semibold flex items-center gap-0.5 xs:gap-1 border border-white/20">
+                      <span className="px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full bg-slate-950/75 backdrop-blur-md text-white text-[9.5px] min-[390px]:text-[10px] sm:text-[11px] font-semibold flex items-center gap-1 border border-white/20">
                         <span className="text-[#fbb034]">👁</span>
                         <span>{reel.viewsText}</span>
                       </span>
@@ -298,8 +298,8 @@ export const StudentStoriesReels: React.FC = () => {
 
                     {/* Center Hover Play Icon */}
                     <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
-                      <div className="w-7 h-7 xs:w-8 xs:h-8 sm:w-12 sm:h-12 rounded-full bg-white/30 backdrop-blur-md text-white flex items-center justify-center opacity-90 sm:opacity-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300 shadow-md">
-                        <span className="material-symbols-outlined text-sm xs:text-base sm:text-2xl">play_arrow</span>
+                      <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-white/30 backdrop-blur-md text-white flex items-center justify-center opacity-90 sm:opacity-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300 shadow-md">
+                        <span className="material-symbols-outlined text-base sm:text-2xl">play_arrow</span>
                       </div>
                     </div>
 
@@ -308,32 +308,34 @@ export const StudentStoriesReels: React.FC = () => {
 
                     {/* Bottom Card Content */}
                     <div className="absolute bottom-0 inset-x-0 p-2.5 xs:p-3 sm:p-5 z-20 text-white flex flex-col justify-end pointer-events-none">
-                      <div className="flex items-center justify-between mb-0.5 xs:mb-1 sm:mb-1.5">
-                        <span className="text-[7px] xs:text-[8px] sm:text-[10px] tracking-wide uppercase px-1.5 xs:px-2 py-0.5 rounded font-black bg-[#fbb034] text-slate-950">
+                      <div className="flex items-center justify-between mb-1 sm:mb-1.5">
+                        <span className="text-[9px] min-[390px]:text-[9.5px] sm:text-[10px] tracking-wide uppercase px-1.5 xs:px-2 py-0.5 rounded font-black bg-[#fbb034] text-slate-950">
                           {reel.categoryBadge}
                         </span>
-                        <span className="text-[8px] xs:text-[9px] sm:text-[11px] text-slate-200 flex items-center gap-0.5 xs:gap-1 font-mono">
-                          <span className="w-1 xs:w-1.5 h-1 xs:h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span className="text-[9px] min-[390px]:text-[9.5px] sm:text-[11px] text-slate-200 flex items-center gap-1 font-mono">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                           <span>{reel.durationText}</span>
                         </span>
                       </div>
                       <div className="flex items-center justify-between gap-1">
                         <div className="pr-1 min-w-0 flex-1">
-                          <h3 className="font-bold text-[11px] xs:text-xs sm:text-base leading-snug truncate">
+                          <h3 className="font-bold text-xs min-[390px]:text-[13px] sm:text-base leading-snug truncate">
                             {reel.name}
                           </h3>
-                          <p className="text-[9px] xs:text-[10px] sm:text-xs text-slate-300 truncate">
+                          <p className="text-[10px] min-[390px]:text-[11px] sm:text-xs text-slate-300 truncate mt-0.5">
                             {reel.universityAndCourse}
                           </p>
                         </div>
-                        {/* Clean Fullscreen Expand Button */}
+                        {/* Apple-Grade 44px Touch Target Container with Compact Visual Glyph */}
                         <button
                           type="button"
                           aria-label="Expand story"
                           data-purpose="compact-reel-btn"
-                          className="w-7 h-7 xs:w-8 xs:h-8 sm:w-7 sm:h-7 rounded-full bg-white/25 backdrop-blur-md flex items-center justify-center text-white shrink-0 hover:bg-white/40 transition-colors pointer-events-auto cursor-pointer p-0 active:scale-90"
+                          className="w-11 h-11 min-w-[44px] min-h-[44px] -mr-1.5 -mb-1.5 flex items-center justify-center text-white shrink-0 pointer-events-auto cursor-pointer active:scale-90"
                         >
-                          <span className="material-symbols-outlined text-[13px] xs:text-[15px] sm:text-[14px] leading-none select-none">fullscreen</span>
+                          <span className="w-7 h-7 sm:w-7 sm:h-7 rounded-full bg-white/25 backdrop-blur-md flex items-center justify-center hover:bg-white/40 transition-colors">
+                            <span className="material-symbols-outlined text-[14px] leading-none select-none">fullscreen</span>
+                          </span>
                         </button>
                       </div>
                     </div>

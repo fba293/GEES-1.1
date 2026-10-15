@@ -15,6 +15,7 @@ import { UserRole } from '../../types/index.ts';
 import { InteractiveHoverButton } from '../ui/interactive-hover-button.tsx';
 import { HeaderCurrencyExchangeIcon } from '../CurrencySwitcher.tsx';
 import { ThemeToggle } from '../ThemeToggle.tsx';
+import { useWishlist } from '../../context/WishlistContext.tsx';
 
 interface NavbarProps {
   currentView: string;
@@ -37,6 +38,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   isDark,
   onToggleTheme
 }) => {
+  const { wishlistCount } = useWishlist();
   const [portalTab, setPortalTab] = useState<'signin' | 'signup'>('signin');
   const [portalOpen, setPortalOpen] = useState(false);
   const portalTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -241,7 +243,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     ].map((s) => (
                       <li key={s.label}>
                         <button
-                          onClick={() => onNavigate('services', s.slug)}
+                          onClick={() => onNavigate(s.slug === 'admission-support' || s.slug === 'school-admission' || s.slug === 'b2b-partnership' ? (s.slug === 'b2b-partnership' ? 'student-referral' : s.slug) : 'services', s.slug)}
                           className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-blue-600 transition-colors font-medium text-xs text-left cursor-pointer"
                         >
                           <span className="text-base leading-none">{s.icon}</span>
@@ -263,13 +265,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                   <ul className="space-y-1">
                     {[
                       { icon: '🛂', label: 'Student Visa', slug: 'student-visa-assistance' },
-                      { icon: '👨‍👩‍👧', label: 'Dependent', slug: 'student-visa-assistance' },
-                      { icon: '✈️', label: 'Tourist Visa', slug: 'student-visa-assistance' },
-                      { icon: '🏡', label: 'MM2H', slug: 'student-visa-assistance' }
+                      { icon: '👨‍👩‍👧', label: 'Dependent', slug: 'dependent-visa' },
+                      { icon: '✈️', label: 'Tourist Visa', slug: 'tourist-visa' },
+                      { icon: '🏡', label: 'MM2H', slug: 'mm2h' }
                     ].map((s) => (
                       <li key={s.label}>
                         <button
-                          onClick={() => onNavigate('services', s.slug)}
+                          onClick={() => onNavigate(s.slug === 'dependent-visa' ? 'dependent-visa' : (s.slug === 'tourist-visa' ? 'tourist-visa' : (s.slug === 'mm2h' ? 'mm2h' : 'student-visa-assistance')), s.slug)}
                           className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-blue-600 transition-colors font-medium text-xs text-left cursor-pointer"
                         >
                           <span className="text-base leading-none">{s.icon}</span>
@@ -291,7 +293,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   <ul className="space-y-1">
                     {[
                       { icon: '🏢', label: 'Accommodation', slug: 'student-accommodation' },
-                      { icon: '🏥', label: 'Insurance', slug: 'student-accommodation' },
+                      { icon: '🏥', label: 'Insurance', slug: 'health-insurance' },
                       { icon: '🎫', label: 'Flights', slug: 'flight-ticketing' },
                       { icon: '🚕', label: 'Airport Pickup', slug: 'flight-ticketing' },
                       { icon: '🧳', label: 'Tours', slug: 'flight-ticketing' },
@@ -299,7 +301,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     ].map((s) => (
                       <li key={s.label}>
                         <button
-                          onClick={() => onNavigate('services', s.slug)}
+                          onClick={() => onNavigate(s.slug === 'health-insurance' ? 'health-insurance' : (s.slug === 'flight-ticketing' ? 'flight-ticketing' : 'services'), s.slug)}
                           className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-blue-600 transition-colors font-medium text-xs text-left cursor-pointer"
                         >
                           <span className="text-base leading-none">{s.icon}</span>
@@ -409,20 +411,16 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </div>
                 <ul className="space-y-1">
                   {[
+                    { icon: '🏢', label: 'About Us', action: () => onNavigate('about') },
                     { icon: '📞', label: 'Contact Us', action: () => onNavigate('contact') },
-                    { icon: '🏫', label: 'Language Centers', action: () => onNavigate('apply') },
+                    { icon: '🏫', label: 'Language Centers', action: () => onNavigate('language-centers') },
                     { icon: '🎓', label: 'Application Tracker', action: () => { onRoleChange('student'); onNavigate('student-portal'); } },
-                    { icon: '📘', label: 'Students Guide', action: () => onNavigate('apply') },
-                    { icon: '📚', label: 'Resources', action: () => onNavigate('courses') },
+                    { icon: '📘', label: 'Students Guide', action: () => onNavigate('students-guide') },
+                    { icon: '📚', label: 'Resources', action: () => onNavigate('resources') },
                     { 
                       icon: '❓', 
                       label: 'FAQs', 
-                      action: () => {
-                        onNavigate('home');
-                        setTimeout(() => {
-                          document.getElementById('faqs')?.scrollIntoView({ behavior: 'smooth' });
-                        }, 120);
-                      } 
+                      action: () => onNavigate('faq')
                     }
                   ].map((item) => (
                     <li key={item.label}>
@@ -448,9 +446,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </div>
                 <ul className="space-y-1">
                   {[
-                    { icon: '🏛️', label: 'About Us', action: () => onNavigate('home') },
-                    { icon: '👔', label: 'Message from Director', action: () => onNavigate('home') },
-                    { icon: '⭐', label: 'Success Stories', action: () => { onNavigate('home'); setTimeout(() => { window.scrollTo({ top: 1800, behavior: 'smooth' }); }, 100); } }
+                    { icon: '🏛️', label: 'About Us Overview', action: () => onNavigate('about') },
+                    { icon: '👔', label: 'Leadership & Director', action: () => onNavigate('leadership-director') },
+                    { icon: '⭐', label: 'Success Stories', action: () => onNavigate('success-stories') }
                   ].map((item) => (
                     <li key={item.label}>
                       <button
@@ -475,9 +473,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </div>
                 <ul className="space-y-1">
                   {[
-                    { icon: '📅', label: 'Events', action: () => onNavigate('blog') },
-                    { icon: '📰', label: 'News', action: () => onNavigate('blog') },
-                    { icon: '✍️', label: 'Blog', action: () => onNavigate('blog') }
+                    { icon: '📅', label: 'Events & Fairs', action: () => onNavigate('events') },
+                    { icon: '📰', label: 'News & Visa Bulletins', action: () => onNavigate('news') },
+                    { icon: '✍️', label: 'Blog & Articles', action: () => onNavigate('blog') }
                   ].map((item) => (
                     <li key={item.label}>
                       <button
@@ -500,18 +498,36 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Header Multi-Currency Switcher (Circular Exchange Icon, properly visible on mobile, tablet & desktop) */}
           <HeaderCurrencyExchangeIcon />
 
-          {/* Search Trigger Button with 0.2s ease-in-out translateY tactile animation (Hidden on mobile) */}
+          {/* Saved Courses Wishlist Trigger with Dynamic Counter Badge */}
+          <button
+            aria-label="Saved Courses Wishlist"
+            onClick={() => onNavigate('wishlist')}
+            title="Saved Courses Wishlist"
+            className={`relative w-8.5 h-8.5 xs:w-9 xs:h-9 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-900 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-[#fbb034] transition-all duration-200 ease-in-out transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer shadow-xs ${
+              currentView === 'wishlist' ? 'bg-amber-50 dark:bg-amber-950/60 border-[#fbb034] text-[#fbb034] font-bold' : ''
+            }`}
+            type="button"
+          >
+            <span className="material-symbols-outlined text-[17px] xs:text-[18px] sm:text-[20px]">bookmark</span>
+            {wishlistCount > 0 && (
+              <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-[#fbb034] text-slate-950 font-black text-[10px] leading-none flex items-center justify-center shadow-md border border-white dark:border-slate-900 animate-scaleUp">
+                {wishlistCount}
+              </span>
+            )}
+          </button>
+
+          {/* Search Trigger Button with 0.2s ease-in-out translateY tactile animation (Hidden on phone viewports < sm) */}
           <button
             aria-label="Search Catalog"
             onClick={onOpenSearch}
-            className="hidden md:flex w-8.5 h-8.5 xs:w-9 xs:h-9 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-full border border-slate-200 dark:border-slate-700 items-center justify-center text-slate-900 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600 transition-all duration-200 ease-in-out transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer shadow-xs"
+            className="hidden sm:flex w-8.5 h-8.5 xs:w-9 xs:h-9 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-full border border-slate-200 dark:border-slate-700 items-center justify-center text-slate-900 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600 transition-all duration-200 ease-in-out transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer shadow-xs"
             type="button"
           >
             <span className="material-symbols-outlined text-[17px] xs:text-[18px] sm:text-[20px]">search</span>
           </button>
 
-          {/* Theme Toggle Button (Matching globaleducationexpert.com exact sun/moon icon design & smooth rotation/fade transition) */}
-          <ThemeToggle isDark={isDark} onToggle={onToggleTheme} />
+          {/* Theme Toggle Button (Hidden on phone viewports < sm, visible on tablet & desktop) */}
+          <ThemeToggle isDark={isDark} onToggle={onToggleTheme} className="hidden sm:flex" />
 
           {/* Portal Popover with Sliding Pill Tab Switcher */}
           <div

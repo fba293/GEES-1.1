@@ -613,7 +613,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 { label: 'Study Abroad Guidance', view: 'services', slug: 'admission-support' },
                 { label: 'University Selection Support', view: 'universities' },
                 { label: 'Admission & Application Process', view: 'services', slug: 'student-visa-assistance' },
-                { label: 'Student Success Stories', view: 'home' },
+                { label: 'Student Success Stories', view: 'success-stories' },
                 { label: 'Latest News & Updates', view: 'blog' },
                 { label: 'FAQ', view: 'faq' },
               ].map((link) => (
@@ -637,6 +637,10 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             </h4>
             <ul className="space-y-2 text-xs text-slate-600 dark:text-slate-300">
               {[
+                { label: 'About Us', view: 'about' },
+                { label: 'News & Bulletins', view: 'news' },
+                { label: 'Events & Fairs', view: 'events' },
+                { label: 'FAQ', view: 'faq' },
                 { label: 'Blog', view: 'blog' },
                 { label: 'Courses', view: 'courses' },
                 { label: 'Home', view: 'home' },
@@ -657,11 +661,8 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             </ul>
           </div>
 
-          {/* Preferences Strip (Currency & Language) — Positioned directly on top of the divider line */}
-          <div className="col-span-full pt-3 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 dark:text-slate-400 border-t border-slate-200/60 dark:border-slate-800/60">
-            <span className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
-              Regional Settings & Preferences
-            </span>
+          {/* Preferences Strip (Currency & Language) */}
+          <div className="col-span-full pt-3 flex flex-col sm:flex-row items-center justify-end gap-3 text-xs text-slate-500 dark:text-slate-400 border-t border-slate-200/60 dark:border-slate-800/60">
             <div className="flex items-center gap-2.5 sm:gap-3 flex-wrap">
               <SelectCurrencyDropdown compact placement="top" />
               <GoogleTranslate compact={true} className="scale-90 origin-left sm:scale-95" />

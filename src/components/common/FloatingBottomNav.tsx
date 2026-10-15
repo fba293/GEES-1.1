@@ -178,6 +178,31 @@ export const FloatingBottomNav: React.FC<FloatingBottomNavProps> = ({
               </div>
             </button>
 
+            {/* 2b. Saved Courses Wishlist */}
+            <button
+              type="button"
+              onClick={() => {
+                setIsQuickActionsOpen(false);
+                onNavigate('wishlist');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="w-full py-2.5 px-3 rounded-2xl flex items-center justify-between hover:bg-slate-100/80 dark:hover:bg-white/10 active:scale-[0.98] transition-all text-left cursor-pointer group"
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+                  <span className="material-symbols-outlined text-[19px]">bookmark</span>
+                </div>
+                <span className="text-[14px] font-semibold text-slate-900 dark:text-slate-100 tracking-tight truncate">
+                  Saved Courses Wishlist
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0 ml-2">
+                <span className="material-symbols-outlined text-[18px] text-slate-400 dark:text-slate-500 group-hover:translate-x-0.5 transition-transform">
+                  chevron_right
+                </span>
+              </div>
+            </button>
+
             {/* 3. Study Destinations */}
             <button
               type="button"

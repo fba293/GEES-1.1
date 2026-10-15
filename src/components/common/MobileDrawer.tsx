@@ -309,7 +309,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
                           {group.items.map((s) => (
                             <button
                               key={s.id}
-                              onClick={() => handleNav('services', s.slug)}
+                              onClick={() => handleNav(s.slug === 'admission-support' || s.slug === 'school-admission' || s.slug === 'b2b-partnership' || s.slug === 'student-visa-assistance' || s.slug === 'student-visa' || s.slug === 'dependent-visa' || s.slug === 'dependent' || s.slug === 'tourist-visa' || s.slug === 'tourist' || s.slug === 'mm2h' || s.slug === 'health-insurance' || s.slug === 'insurance' || s.slug === 'flight-ticketing' || s.slug === 'flight' ? (s.slug === 'b2b-partnership' ? 'student-referral' : (s.slug === 'student-visa' ? 'student-visa-assistance' : (s.slug === 'dependent' ? 'dependent-visa' : (s.slug === 'tourist' ? 'tourist-visa' : (s.slug === 'mm2h' ? 'mm2h' : (s.slug === 'insurance' ? 'health-insurance' : (s.slug === 'flight-ticketing' || s.slug === 'flight' ? 'flight-ticketing' : s.slug))))))) : 'services', s.slug)}
                               className="text-left px-2.5 py-1.5 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600 dark:hover:text-blue-400 font-medium active:scale-[0.98] transition-all cursor-pointer flex items-center gap-1.5 truncate"
                             >
                               <span className="material-symbols-outlined text-[15px] text-slate-400 shrink-0">
@@ -330,17 +330,6 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
                     </button>
                   </div>
                 )}
-              </div>
-
-              {/* Blog */}
-              <div>
-                <button
-                  onClick={() => handleNav('blog')}
-                  className="w-full flex items-center justify-between py-1 text-[21px] sm:text-[22px] font-bold text-slate-900 dark:text-slate-100 hover:text-blue-600 transition-colors text-left"
-                >
-                  <span>Blog</span>
-                  <span className="material-symbols-outlined text-slate-300 text-[20px]">chevron_right</span>
-                </button>
               </div>
 
               {/* Portal Accordion */}
@@ -579,12 +568,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
                           { 
                             icon: '❓', 
                             label: 'FAQs', 
-                            action: () => {
-                              handleNav('home');
-                              setTimeout(() => {
-                                document.getElementById('faqs')?.scrollIntoView({ behavior: 'smooth' });
-                              }, 120);
-                            } 
+                            action: () => handleNav('faq')
                           }
                         ].map((btn, i) => (
                           <button
@@ -631,8 +615,8 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
                       </div>
                       <div className="grid grid-cols-2 gap-1.5 text-xs">
                         {[
-                          { icon: '📅', label: 'Events', action: () => handleNav('blog') },
-                          { icon: '📰', label: 'News & Press', action: () => handleNav('blog') },
+                          { icon: '📅', label: 'Events & Fairs', action: () => handleNav('events') },
+                          { icon: '📰', label: 'News & Press', action: () => handleNav('news') },
                           { icon: '✍️', label: 'Blog & Articles', action: () => handleNav('blog') }
                         ].map((btn, i) => (
                           <button

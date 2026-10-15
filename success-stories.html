@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en" class="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Success Stories & Verified Testimonials | GEES Global Education</title>
+    <meta
+      name="description"
+      content="Read 15,000+ verified student success stories from GEES alumni studying in the UK, Australia, Malaysia, Canada, USA, and Europe. Real testimonials, visa approval timelines, and university placement case studies."
+    />
+    <link rel="canonical" href="https://gees-edu.com/success-stories.html" />
+
+    <!-- Open Graph / Social Sharing -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://gees-edu.com/success-stories.html" />
+    <meta property="og:title" content="Student Success Stories & Verified Testimonials | GEES Global Education" />
+    <meta
+      property="og:description"
+      content="Discover real journey stories of students who achieved 100% scholarship awards and instant visa approvals at world-top universities with GEES expert counseling."
+    />
+    <meta property="og:image" content="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=1200" />
+    <meta property="og:site_name" content="Global Education Expert Services (GEES)" />
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Student Success Stories & Verified Testimonials | GEES" />
+    <meta
+      name="twitter:description"
+      content="15,000+ students placed with 98.4% visa approval record. Read verified success stories and watch video interviews."
+    />
+    <meta name="twitter:image" content="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=1200" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Google Fonts & Material Symbols -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    />
+
+    <!-- Theme Initialization Script -->
+    <script>
+      (function () {
+        try {
+          const theme = localStorage.getItem('gees_theme');
+          if (
+            theme === 'dark' ||
+            (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)
+          ) {
+            document.documentElement.classList.add('dark');
+            document.documentElement.classList.remove('light');
+          } else {
+            document.documentElement.classList.add('light');
+            document.documentElement.classList.remove('dark');
+          }
+        } catch (e) {
+          document.documentElement.classList.add('light');
+        }
+      })();
+    </script>
+
+    <!-- Schema.org EducationalOrganization & Review JSON-LD -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "EducationalOrganization",
+        "name": "GEES Global Education Expert Services",
+        "url": "https://gees-edu.com",
+        "logo": "https://gees-edu.com/logo.png",
+        "description": "Verified student testimonials and study abroad success stories.",
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.9",
+          "reviewCount": "1280",
+          "bestRating": "5",
+          "worstRating": "1"
+        }
+      }
+    </script>
+  </head>
+  <body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 antialiased font-sans">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

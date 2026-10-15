@@ -114,7 +114,7 @@ export const BlogsUpdatesSection: React.FC<BlogsUpdatesSectionProps> = ({
   return (
     <section
       id="blogs-section"
-      className="w-full bg-slate-50 dark:bg-[#070D1E] py-14 sm:py-20 border-t border-slate-100 dark:border-slate-800 transition-colors"
+      className="w-full bg-slate-50 dark:bg-[#070D1E] py-8 min-[390px]:py-10 sm:py-20 border-t border-slate-100 dark:border-slate-800 transition-colors"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* 1. Header (Classic GEES Signature Style) */}
