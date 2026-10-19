@@ -106,26 +106,26 @@ export const StepsRoadmapSection: React.FC<StepsRoadmapSectionProps> = ({ onOpen
   };
 
   return (
-    <section id="steps-roadmap-section" className="w-full py-8 min-[390px]:py-10 sm:py-20 px-4 sm:px-6 lg:px-8 bg-slate-50/60 dark:bg-[#0B1329] border-t border-slate-100 dark:border-slate-800">
+    <section id="steps-roadmap-section" className="w-full py-6 sm:py-20 px-4 sm:px-6 lg:px-8 bg-slate-50/60 dark:bg-[#0B1329] border-t border-slate-100 dark:border-slate-800">
       <div className="w-full max-w-full sm:max-w-[95%] mx-auto">
         {/* Header */}
-        <header className="text-center max-w-3xl mx-auto mb-8 sm:mb-16 px-2">
+        <header className="text-center max-w-3xl mx-auto mb-6 sm:mb-16 px-2">
           <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold font-display tracking-tight text-slate-900 dark:text-white flex items-center justify-center flex-wrap gap-2 sm:gap-3 md:gap-3.5 leading-tight text-center">
             <span>6 Steps to</span>
             <span className="bg-[#fbb034] text-slate-950 px-3.5 sm:px-5 md:px-6 py-0.5 sm:py-1 md:py-1.5 rounded-xl sm:rounded-2xl font-black tracking-tight leading-none shadow-sm shrink-0">
               Your Goal
             </span>
           </h2>
-          <p className="mt-2.5 sm:mt-3 text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-400 font-normal leading-relaxed max-w-2xl mx-auto px-2 text-center">
+          <p className="mt-2 sm:mt-3 text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-400 font-normal leading-relaxed max-w-2xl mx-auto px-2 text-center">
             From your first conversation to confident departure.
           </p>
         </header>
 
         {/* Process Grid: Left Visual Card & Right Accordion */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch mb-10 sm:mb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 items-stretch mb-8 sm:mb-12">
           {/* Left Column: Counselor session photo with trust pill */}
           <div className="lg:col-span-5 flex flex-col items-center justify-between h-full">
-            <div className="relative w-full h-full min-h-[250px] xs:min-h-[280px] sm:min-h-[380px] lg:min-h-[500px] max-w-md lg:max-w-full rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl bg-slate-200 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 group">
+            <div className="relative w-full h-full min-h-[190px] xs:min-h-[220px] sm:min-h-[380px] lg:min-h-[500px] max-w-md lg:max-w-full rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl bg-slate-200 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 group">
               <img
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmxWeNh7tryz5Ui6SbdMmMasVp5_mcakVeZkNW8gNg_1gZe6pLxsfqJ-cVa6DhoMo8dyDswM0Bvk51sqpt2_dcePWC8WkmRxGM5ZWvkNM7IV8x0PJ9tG2E7DOIwirLxoErAea2uVmX_N0pFBSj31KKXgVwt499uf26nRiNZ1jC400Vj9ndQVmAJRbyCDHQWWqyxAnb0Mh7atoeoHJSHyN0jFPwKJ2pZJUpg_fP79mwsGDDS0HDlBR_dLXXCz5y-sELihI"
                 alt="GEES Counselor advising family"
@@ -134,8 +134,8 @@ export const StepsRoadmapSection: React.FC<StepsRoadmapSectionProps> = ({ onOpen
                 decoding="async"
               />
               {/* Floating Trust Pill */}
-              <div className="absolute bottom-3 xs:bottom-5 inset-x-2 xs:inset-x-4 flex justify-center z-10">
-                <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md px-2.5 min-[390px]:px-3 xs:px-4 py-1.5 xs:py-2 sm:py-2.5 rounded-full shadow-lg border border-white/60 dark:border-slate-800 flex items-center justify-center gap-1 min-[390px]:gap-1.5 xs:gap-2 text-[11px] min-[390px]:text-[12px] sm:text-xs font-bold text-slate-900 dark:text-slate-100 max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
+              <div className="absolute bottom-2.5 xs:bottom-4 inset-x-2 xs:inset-x-4 flex justify-center z-10">
+                <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md px-2.5 min-[390px]:px-3 xs:px-4 py-1.5 sm:py-2.5 rounded-full shadow-lg border border-white/60 dark:border-slate-800 flex items-center justify-center gap-1 min-[390px]:gap-1.5 xs:gap-2 text-[11px] min-[390px]:text-[12px] sm:text-xs font-bold text-slate-900 dark:text-slate-100 max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
                   <span>No service charge</span>
                   <span className="text-slate-300 dark:text-slate-600 font-light select-none">|</span>
                   <span>No hidden fees</span>
@@ -144,7 +144,7 @@ export const StepsRoadmapSection: React.FC<StepsRoadmapSectionProps> = ({ onOpen
                 </div>
               </div>
             </div>
-            <div className="mt-3 flex items-center justify-center gap-2 text-xs font-semibold text-slate-500 text-center shrink-0">
+            <div className="mt-2.5 flex items-center justify-center gap-2 text-xs font-semibold text-slate-500 text-center shrink-0">
               <span className="w-5 h-[2px] bg-[#fbbf24] rounded-full inline-block"></span>
               <span>Guidance for students and families, at every step.</span>
               <span className="w-5 h-[2px] bg-[#fbbf24] rounded-full inline-block"></span>
@@ -157,7 +157,7 @@ export const StepsRoadmapSection: React.FC<StepsRoadmapSectionProps> = ({ onOpen
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: '-60px' }}
-            className="lg:col-span-7 flex flex-col justify-center space-y-3"
+            className="lg:col-span-7 flex flex-col justify-center space-y-2"
           >
             {stepsData.map((step, idx) => {
               const stepNumber = idx + 1;
@@ -167,17 +167,17 @@ export const StepsRoadmapSection: React.FC<StepsRoadmapSectionProps> = ({ onOpen
                   key={step.num}
                   variants={cardVariants}
                   onClick={() => setActiveStep(isActive ? null : stepNumber)}
-                  className={`rounded-2xl border transition-all duration-300 overflow-hidden cursor-pointer ${
+                  className={`rounded-xl sm:rounded-2xl border transition-all duration-300 overflow-hidden cursor-pointer ${
                     isActive
                       ? 'border-[#f59e0b] bg-amber-50/50 dark:bg-slate-800 shadow-md ring-1 ring-amber-400/40'
                       : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300 hover:shadow-sm'
                   }`}
                 >
-                  <div className="w-full flex items-center justify-between py-3.5 px-3.5 sm:px-5 min-h-[50px]">
-                    <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0 flex-1 pr-2">
+                  <div className="w-full flex items-center justify-between py-2.5 px-3 sm:px-5 min-h-[44px] sm:min-h-[50px]">
+                    <div className="flex items-center gap-2 sm:gap-3.5 min-w-0 flex-1 pr-2">
                       {/* Step Number Badge */}
                       <div
-                        className={`w-9 h-9 sm:w-10 sm:h-10 font-black text-xs sm:text-sm flex items-center justify-center rounded-full transition-all shrink-0 ${
+                        className={`w-7 h-7 sm:w-10 sm:h-10 font-black text-[11px] sm:text-sm flex items-center justify-center rounded-full transition-all shrink-0 ${
                           isActive
                             ? 'bg-[#f59e0b] text-white shadow-sm'
                             : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
@@ -189,20 +189,20 @@ export const StepsRoadmapSection: React.FC<StepsRoadmapSectionProps> = ({ onOpen
                       {/* Staggered Fade-In Step Icon */}
                       <motion.div
                         variants={iconVariants}
-                        className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors shrink-0 ${
+                        className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-colors shrink-0 ${
                           isActive
                             ? 'bg-amber-400/20 text-amber-600 dark:text-amber-400'
                             : 'bg-slate-50 dark:bg-slate-800/60 text-slate-400'
                         }`}
                       >
-                        <span className="material-symbols-outlined text-[19px]">{step.icon}</span>
+                        <span className="material-symbols-outlined text-[16px] sm:text-[19px]">{step.icon}</span>
                       </motion.div>
 
-                      <span className="text-[15px] sm:text-lg font-bold text-slate-900 dark:text-white tracking-tight truncate sm:whitespace-normal">
+                      <span className="text-sm sm:text-lg font-bold text-slate-900 dark:text-white tracking-tight truncate sm:whitespace-normal">
                         {step.title}
                       </span>
                     </div>
-                    <span className={`material-symbols-outlined text-xl text-slate-400 transition-transform duration-300 shrink-0 ${isActive ? 'rotate-180 text-amber-600' : ''}`}>
+                    <span className={`material-symbols-outlined text-lg sm:text-xl text-slate-400 transition-transform duration-300 shrink-0 ${isActive ? 'rotate-180 text-amber-600' : ''}`}>
                       keyboard_arrow_down
                     </span>
                   </div>

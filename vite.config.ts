@@ -3,9 +3,49 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import {defineConfig} from 'vite';
 
+function apiTrackVisaPlugin() {
+  return {
+    name: 'api-track-visa-plugin',
+    configureServer(server: any) {
+      server.middlewares.use('/api/track-visa', async (req: any, res: any) => {
+        if (req.method === 'POST') {
+          let body = '';
+          req.on('data', (chunk: any) => { body += chunk; });
+          req.on('end', () => {
+            try {
+              const data = JSON.parse(body || '{}');
+              const passport = (data.passportNumber || '').trim().toUpperCase();
+              const nationality = (data.nationalityCode || '').trim().toUpperCase();
+
+              res.setHeader('Content-Type', 'application/json');
+              res.statusCode = 200;
+              res.end(JSON.stringify({
+                success: false,
+                errorCode: 'DIRECT_VERIFICATION_REQUIRED',
+                error: 'Official EMGS live status lookup requires direct Malaysian government portal verification. Please verify directly on the official tracker.',
+                officialTrackerUrl: 'https://visa.educationmalaysia.gov.my/emgs/application/searchForm/',
+                suggestOfficialPortal: true,
+                normalizedPassport: passport,
+                nationalityCode: nationality
+              }));
+            } catch {
+              res.statusCode = 400;
+              res.setHeader('Content-Type', 'application/json');
+              res.end(JSON.stringify({ success: false, error: 'Invalid JSON' }));
+            }
+          });
+        } else {
+          res.statusCode = 405;
+          res.end('Method Not Allowed');
+        }
+      });
+    }
+  };
+}
+
 export default defineConfig(() => {
   return {
-    plugins: [react(), tailwindcss()],
+    plugins: [react(), tailwindcss(), apiTrackVisaPlugin()],
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),
@@ -44,6 +84,7 @@ export default defineConfig(() => {
           'study-in-mauritius': path.resolve(__dirname, 'study-in-mauritius.html'),
           'study-in-netherlands': path.resolve(__dirname, 'study-in-netherlands.html'),
           'study-in-india': path.resolve(__dirname, 'study-in-india.html'),
+          'track-visa': path.resolve(__dirname, 'track-visa.html'),
         },
       },
     },

@@ -28,15 +28,15 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
     onToggle();
     setTimeout(() => {
       setIsTransitioning(false);
-    }, 480);
+    }, 350);
   };
 
   const sizeClasses =
     size === 'sm'
-      ? 'w-8.5 h-8.5 sm:w-9 sm:h-9'
+      ? 'w-8 h-8 sm:w-9 sm:h-9'
       : size === 'lg'
       ? 'w-10 h-10 sm:w-11 sm:h-11 lg:w-12 lg:h-12'
-      : 'w-8.5 h-8.5 xs:w-9 xs:h-9 sm:w-10 sm:h-10 lg:w-11 lg:h-11';
+      : 'w-10 h-10 sm:w-10 sm:h-10 lg:w-11 lg:h-11';
 
   return (
     <button
@@ -47,34 +47,51 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
       aria-pressed={isDark}
       title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
       onClick={handleClick}
-      className={`gees-action--theme relative rounded-full border border-slate-200 dark:border-slate-700 bg-white/90 dark:bg-slate-800/80 flex items-center justify-center text-slate-900 dark:text-[#efc459] hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600 dark:hover:text-[#efc459] transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95 cursor-pointer shadow-xs ${
-        isTransitioning ? 'is-theme-transitioning' : ''
-      } ${sizeClasses} ${className}`}
+      className={`gees-action--theme group relative rounded-full border flex items-center justify-center transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95 cursor-pointer shadow-xs shrink-0 ${
+        isDark
+          ? 'bg-[#070b19] border-slate-700/60 text-[#fbb034]'
+          : 'bg-white border-slate-200/90 text-slate-900'
+      } ${isTransitioning ? 'is-theme-transitioning' : ''} ${sizeClasses} ${className}`}
     >
-      <span className="gees-theme-motion" aria-hidden="true">
+      <span className="relative w-[18px] h-[18px] sm:w-[20px] sm:h-[20px] flex items-center justify-center pointer-events-none" aria-hidden="true">
+        {/* Sun Icon (Screenshot 1 - Dark Navy Sun with Solid Center & 8 Radial Dashes) */}
         <svg
           viewBox="0 0 24 24"
           focusable="false"
-          className="w-[20px] h-[20px] sm:w-[22px] sm:h-[22px]"
+          className={`absolute inset-0 w-full h-full transition-all duration-300 ease-out ${
+            !isDark
+              ? 'opacity-100 rotate-0 scale-100'
+              : 'opacity-0 -rotate-90 scale-50 pointer-events-none'
+          }`}
         >
-          {/* Sun group with center circle and 8 directional rays */}
-          <g className="gees-theme-motion__sun">
-            <circle cx="12" cy="12" r="4" />
-            <path d="M12 2.5v2.1M12 19.4v2.1M2.5 12h2.1M19.4 12h2.1M5.28 5.28l1.49 1.49M17.23 17.23l1.49 1.49M18.72 5.28l-1.49 1.49M6.77 17.23l-1.49 1.49" />
-          </g>
+          <circle cx="12" cy="12" r="4.2" fill="#0f172a" />
+          <path
+            d="M12 2.5v2.2M12 19.3v2.2M4.2 12H2M22 12h-2.2M5.64 5.64l1.55 1.55M16.81 16.81l1.55 1.55M5.64 18.36l1.55-1.55M16.81 7.19l1.55-1.55"
+            stroke="#0f172a"
+            strokeWidth="2.4"
+            strokeLinecap="round"
+          />
+        </svg>
 
-          {/* Crescent Moon path */}
-          <g className="gees-theme-motion__moon">
-            <path d="M18.8 15.2A7.6 7.6 0 0 1 8.8 5.1a7.7 7.7 0 1 0 10 10.1Z" />
-          </g>
-
-          {/* Sparkle/Star accents */}
-          <g className="gees-theme-motion__stars">
-            <circle cx="18.7" cy="6" r="1" />
-            <circle cx="20.1" cy="10" r="0.65" />
-          </g>
+        {/* Crescent Moon Icon (Screenshot 2 - Golden Crescent Moon with 2 Star Dots) */}
+        <svg
+          viewBox="0 0 24 24"
+          focusable="false"
+          className={`absolute inset-0 w-full h-full transition-all duration-300 ease-out ${
+            isDark
+              ? 'opacity-100 rotate-0 scale-100'
+              : 'opacity-0 rotate-90 scale-50 pointer-events-none'
+          }`}
+        >
+          <path
+            d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"
+            fill="#fbb034"
+          />
+          <circle cx="17.8" cy="5.2" r="1.15" fill="#fbb034" />
+          <circle cx="19.8" cy="9.2" r="0.85" fill="#fbb034" />
         </svg>
       </span>
     </button>
   );
 };
+

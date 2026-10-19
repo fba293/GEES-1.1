@@ -4,7 +4,7 @@
  * GEES Mobile Navigation Drawer with Accordions, Search, and Social Links
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { mockServices } from '../../data/mockDatabase.ts';
 import { UserRole } from '../../types/index.ts';
 import { ThemeToggle } from '../ThemeToggle.tsx';
@@ -32,6 +32,25 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
   const [portalTab, setPortalTab] = useState<'signin' | 'signup'>('signin');
   const [searchQuery, setSearchQuery] = useState('');
   const [showLiveSearch, setShowLiveSearch] = useState(false);
+  const [isRendered, setIsRendered] = useState(isOpen);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setIsRendered(true);
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setIsAnimating(true);
+        });
+      });
+    } else {
+      setIsAnimating(false);
+      const timer = setTimeout(() => {
+        setIsRendered(false);
+      }, 400); // 400ms matching reference duration
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen]);
 
   const toggleSection = (sec: string) => {
     setOpenSection(openSection === sec ? null : sec);
@@ -54,22 +73,27 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
+  if (!isRendered) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden">
-      {/* Dimmed Backdrop */}
+    <div className="fixed inset-0 z-[70] overflow-hidden">
+      {/* Dimmed Backdrop with smooth blur and fade */}
       <div 
-        className="fixed inset-0 bg-slate-900/60 dark:bg-black/80 backdrop-blur-xs animate-in fade-in duration-300 will-change-[opacity]"
+        className={`fixed inset-0 bg-black/25 backdrop-blur-sm transition-all duration-400 ease-out will-change-[opacity,backdrop-filter] ${
+          isAnimating ? 'opacity-100 backdrop-blur-sm' : 'opacity-0 backdrop-blur-none'
+        }`}
         onClick={onClose}
       />
 
-      {/* Drawer Panel with GPU-Accelerated Slide-In Animation */}
+      {/* Drawer Panel with butter-smooth Apple-grade cubic-bezier spring slide */}
       <aside
-        className="fixed top-0 right-0 bottom-0 w-[88vw] xs:w-[84vw] max-w-[320px] xs:max-w-[350px] sm:max-w-md bg-white dark:bg-[#0B1329] shadow-2xl z-50 flex flex-col justify-between overflow-y-auto no-scrollbar border-l border-slate-200 dark:border-slate-800 animate-in slide-in-from-right duration-300 ease-out will-change-transform"
+        className={`fixed top-0 right-0 bottom-0 w-[88vw] xs:w-[84vw] max-w-[320px] xs:max-w-[350px] sm:max-w-md bg-white dark:bg-[#0B1329] shadow-2xl z-50 flex flex-col justify-between overflow-y-auto no-scrollbar border-l border-slate-200 dark:border-slate-800 will-change-transform transition-all duration-500 ${
+          isAnimating ? 'translate-x-0 opacity-100 shadow-2xl' : 'translate-x-full opacity-90 shadow-none'
+        }`}
         style={{
-          transform: 'translate3d(0, 0, 0)',
-          backfaceVisibility: 'hidden'
+          transitionTimingFunction: 'cubic-bezier(0.19, 1, 0.22, 1)',
+          backfaceVisibility: 'hidden',
+          WebkitFontSmoothing: 'antialiased'
         }}
       >
         <div className="p-4 xs:p-5 sm:p-6 flex flex-col min-h-full justify-between">
@@ -87,25 +111,25 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
               </button>
 
               <div className="flex items-center gap-1.5 sm:gap-2">
-                {/* Search Toggle */}
+                {/* Search Toggle with Premium Butter-Smooth Animation */}
                 <button
                   onClick={() => setShowLiveSearch(!showLiveSearch)}
-                  className="w-8.5 h-8.5 sm:w-10 sm:h-10 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center justify-center text-slate-700 dark:text-slate-200 shadow-xs hover:bg-slate-50 transition-colors"
+                  className="group w-8.5 h-8.5 sm:w-10 sm:h-10 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center justify-center text-slate-700 dark:text-slate-200 shadow-xs hover:bg-slate-50 dark:hover:bg-slate-700 transition-all duration-300 ease-out transform hover:scale-105 active:scale-95 cursor-pointer"
                   title="Search"
                 >
-                  <span className="material-symbols-outlined text-[16px] sm:text-[18px]">search</span>
+                  <span className="material-symbols-outlined text-[16px] sm:text-[18px] transition-transform duration-500 ease-out group-hover:scale-110 group-hover:rotate-12">search</span>
                 </button>
 
                 {/* Theme Toggle (Matching globaleducationexpert.com exact motion icon & animation) */}
                 <ThemeToggle isDark={isDark} onToggle={onToggleTheme} size="sm" />
 
-                {/* Circular Dark Close Button */}
+                {/* Circular Dark Close Button with Premium Rotation & Scale Animation */}
                 <button
                   onClick={onClose}
-                  className="w-8.5 h-8.5 sm:w-10 sm:h-10 rounded-full bg-slate-900 dark:bg-blue-600 text-white flex items-center justify-center hover:bg-slate-800 dark:hover:bg-blue-500 transition-all shadow-xs"
+                  className="group w-8.5 h-8.5 sm:w-10 sm:h-10 rounded-full bg-slate-900 dark:bg-blue-600 text-white flex items-center justify-center hover:bg-slate-800 dark:hover:bg-blue-500 transition-all duration-300 ease-out shadow-xs transform active:scale-95 cursor-pointer"
                   title="Close Menu"
                 >
-                  <span className="material-symbols-outlined text-[16px] sm:text-[18px]">close</span>
+                  <span className="material-symbols-outlined text-[16px] sm:text-[18px] transition-transform duration-500 ease-out group-hover:rotate-90">close</span>
                 </button>
               </div>
             </div>
@@ -171,56 +195,28 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
                 </button>
                 {openSection === 'countries' && (
                   <div className="pl-3 pt-2.5 pb-2 border-l-2 border-slate-200 dark:border-slate-800 space-y-3.5 max-h-[380px] sm:max-h-[440px] overflow-y-auto no-scrollbar">
-                    <div>
-                      <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1.5 flex items-center gap-1">
-                        <span className="material-symbols-outlined text-[13px] text-[#fbb034]">star</span>
-                        <span>Popular Destinations</span>
-                      </div>
-                      <div className="grid grid-cols-2 gap-1.5 text-xs">
-                        {['🇲🇾 Malaysia', '🇬🇧 United Kingdom', '🇦🇺 Australia', '🇳🇿 New Zealand'].map((c, i) => (
-                          <button
-                            key={i}
-                            onClick={() => handleNav('destinations', c.split(' ').slice(1).join(' '))}
-                            className="text-left px-2.5 py-2 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 font-medium active:scale-[0.98] transition-all cursor-pointer truncate"
-                          >
-                            {c}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                    <div>
-                      <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1.5 flex items-center gap-1">
-                        <span className="material-symbols-outlined text-[13px] text-blue-500">public</span>
-                        <span>Europe</span>
-                      </div>
-                      <div className="grid grid-cols-2 gap-1.5 text-xs">
-                        {['🇧🇪 Belgium', '🇫🇮 Finland', '🇬🇷 Greece', '🇳🇱 Netherlands'].map((c, i) => (
-                          <button
-                            key={i}
-                            onClick={() => handleNav('destinations', c.split(' ').slice(1).join(' '))}
-                            className="text-left px-2.5 py-2 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 font-medium active:scale-[0.98] transition-all cursor-pointer truncate"
-                          >
-                            {c}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                    <div>
-                      <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1.5 flex items-center gap-1">
-                        <span className="material-symbols-outlined text-[13px] text-emerald-500">travel_explore</span>
-                        <span>Mediterranean & Asia</span>
-                      </div>
-                      <div className="grid grid-cols-2 gap-1.5 text-xs">
-                        {['🇨🇾 Cyprus', '🇲🇺 Mauritius', '🇮🇳 India'].map((c, i) => (
-                          <button
-                            key={i}
-                            onClick={() => handleNav('destinations', c.split(' ').slice(1).join(' '))}
-                            className="text-left px-2.5 py-2 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 font-medium active:scale-[0.98] transition-all cursor-pointer truncate"
-                          >
-                            {c}
-                          </button>
-                        ))}
-                      </div>
+                    <div className="grid grid-cols-2 gap-1.5 text-xs">
+                      {[
+                        '🇲🇾 Malaysia',
+                        '🇬🇧 United Kingdom',
+                        '🇦🇺 Australia',
+                        '🇳🇿 New Zealand',
+                        '🇧🇪 Belgium',
+                        '🇫🇮 Finland',
+                        '🇬🇷 Greece',
+                        '🇳🇱 Netherlands',
+                        '🇨🇾 Cyprus',
+                        '🇲🇺 Mauritius',
+                        '🇮🇳 India'
+                      ].map((c, i) => (
+                        <button
+                          key={i}
+                          onClick={() => handleNav('destinations', c.split(' ').slice(1).join(' '))}
+                          className="text-left px-2.5 py-2 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 font-medium active:scale-[0.98] transition-all cursor-pointer truncate"
+                        >
+                          {c}
+                        </button>
+                      ))}
                     </div>
                     <button
                       onClick={() => handleNav('destinations')}
@@ -239,13 +235,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
                   onClick={() => handleNav('universities')}
                   className="w-full flex items-center justify-between py-1 text-[21px] sm:text-[22px] font-bold text-slate-900 dark:text-slate-100 hover:text-blue-600 transition-colors text-left"
                 >
-                  <span className="flex items-center gap-2.5">
-                    <span>Universities</span>
-                    <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/40 text-[#f59e0b] border border-amber-200/80">
-                      TOP RANKED
-                    </span>
-                  </span>
-                  <span className="material-symbols-outlined text-slate-300 text-[20px]">chevron_right</span>
+                  <span>Universities</span>
                 </button>
               </div>
 
@@ -256,7 +246,6 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
                   className="w-full flex items-center justify-between py-1 text-[21px] sm:text-[22px] font-bold text-slate-900 dark:text-slate-100 hover:text-blue-600 transition-colors text-left"
                 >
                   <span>Courses</span>
-                  <span className="material-symbols-outlined text-slate-300 text-[20px]">chevron_right</span>
                 </button>
               </div>
 
@@ -309,7 +298,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
                           {group.items.map((s) => (
                             <button
                               key={s.id}
-                              onClick={() => handleNav(s.slug === 'admission-support' || s.slug === 'school-admission' || s.slug === 'b2b-partnership' || s.slug === 'student-visa-assistance' || s.slug === 'student-visa' || s.slug === 'dependent-visa' || s.slug === 'dependent' || s.slug === 'tourist-visa' || s.slug === 'tourist' || s.slug === 'mm2h' || s.slug === 'health-insurance' || s.slug === 'insurance' || s.slug === 'flight-ticketing' || s.slug === 'flight' ? (s.slug === 'b2b-partnership' ? 'student-referral' : (s.slug === 'student-visa' ? 'student-visa-assistance' : (s.slug === 'dependent' ? 'dependent-visa' : (s.slug === 'tourist' ? 'tourist-visa' : (s.slug === 'mm2h' ? 'mm2h' : (s.slug === 'insurance' ? 'health-insurance' : (s.slug === 'flight-ticketing' || s.slug === 'flight' ? 'flight-ticketing' : s.slug))))))) : 'services', s.slug)}
+                              onClick={() => handleNav(s.slug === 'track-visa' ? 'track-visa' : (s.slug === 'admission-support' || s.slug === 'school-admission' || s.slug === 'b2b-partnership' || s.slug === 'student-visa-assistance' || s.slug === 'student-visa' || s.slug === 'dependent-visa' || s.slug === 'dependent' || s.slug === 'tourist-visa' || s.slug === 'tourist' || s.slug === 'mm2h' || s.slug === 'health-insurance' || s.slug === 'insurance' || s.slug === 'flight-ticketing' || s.slug === 'flight' ? (s.slug === 'b2b-partnership' ? 'student-referral' : (s.slug === 'student-visa' ? 'student-visa-assistance' : (s.slug === 'dependent' ? 'dependent-visa' : (s.slug === 'tourist' ? 'tourist-visa' : (s.slug === 'mm2h' ? 'mm2h' : (s.slug === 'insurance' ? 'health-insurance' : (s.slug === 'flight-ticketing' || s.slug === 'flight' ? 'flight-ticketing' : s.slug))))))) : 'services'), s.slug)}
                               className="text-left px-2.5 py-1.5 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600 dark:hover:text-blue-400 font-medium active:scale-[0.98] transition-all cursor-pointer flex items-center gap-1.5 truncate"
                             >
                               <span className="material-symbols-outlined text-[15px] text-slate-400 shrink-0">

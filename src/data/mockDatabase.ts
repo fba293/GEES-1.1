@@ -161,6 +161,17 @@ export const mockServices: ServiceItem[] = [
     imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCsHKjsy9tBK8RIFw9LwD58wl1FYemvIA2piPLg31ifbdFcw_Sglfco1aJAQKN3p1P__ykTM-eK32bjco9eJmHilsYlDJDggbEsuw2RCbi4E8vcFcS647pBb1cGnqq76NI158dhDtY-3mdrkm1INWKEaRYjgc2Ee5JdwrqDdItzyCl1mevGdYbUvxVTJrLBhAHrTS2CAweslYNXWu-GHWzKYrz-ztxiZK-2LGPOSfkdUY7pEKZPmzm5jxqruFY6J-DuCvQ'
   },
   {
+    id: 'srv-track-visa',
+    title: 'EMGS Visa Tracking',
+    slug: 'track-visa',
+    category: 'Immigration',
+    badge: 'Live Status',
+    desc: 'Instant online tracking for Malaysian student visa (VAL) application status via official EMGS government gateway.',
+    bgColor: '#fbb034',
+    iconName: 'travel_explore',
+    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCsHKjsy9tBK8RIFw9LwD58wl1FYemvIA2piPLg31ifbdFcw_Sglfco1aJAQKN3p1P__ykTM-eK32bjco9eJmHilsYlDJDggbEsuw2RCbi4E8vcFcS647pBb1cGnqq76NI158dhDtY-3mdrkm1INWKEaRYjgc2Ee5JdwrqDdItzyCl1mevGdYbUvxVTJrLBhAHrTS2CAweslYNXWu-GHWzKYrz-ztxiZK-2LGPOSfkdUY7pEKZPmzm5jxqruFY6J-DuCvQ'
+  },
+  {
     id: 'srv-4',
     title: 'Dependent Visa',
     slug: 'dependent-visa',

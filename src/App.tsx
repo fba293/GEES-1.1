@@ -60,6 +60,7 @@ import { FlightTicketingView } from './components/services/FlightTicketingView.t
 import { WishlistPortal } from './components/portal/WishlistPortal.tsx';
 import { StudyDestinationPage } from './components/destination/StudyDestinationPage.tsx';
 import { normalizeDestinationSlug } from './data/destinationDataRegistry.ts';
+import { TrackVisaPage } from './pages/TrackVisaPage.tsx';
 import { CurrencyProvider } from './context/CurrencyContext.tsx';
 import { ThemeProvider, useTheme } from './context/ThemeContext.tsx';
 import { WishlistProvider } from './context/WishlistContext.tsx';
@@ -72,6 +73,7 @@ function AppContent() {
   const [currentView, setCurrentView] = useState<string>(() => {
     if (typeof window !== 'undefined') {
       const path = window.location.pathname.toLowerCase();
+      if (path.includes('track-visa') || path.includes('emgs') || path.includes('track-my-visa')) return 'track-visa';
       if (path.includes('study-in-') || path.includes('study-malaysia') || path.includes('study-uk') || path.includes('study-australia')) return 'study-destination';
       if (path.includes('wishlist') || path.includes('saved-courses')) return 'wishlist';
       if (path.includes('flight-ticketing') || path.includes('flight') || path.includes('ticket')) return 'flight-ticketing';
@@ -330,6 +332,17 @@ function AppContent() {
       return;
     }
 
+    if (view === 'track-visa' || view === 'track' || view === 'emgs' || view === 'visa-tracking') {
+      setCurrentView('track-visa');
+      setNavPayload(payload || null);
+      if (typeof window !== 'undefined') {
+        const isHtml = window.location.pathname.includes('.html');
+        window.history.pushState({}, '', isHtml ? 'track-visa.html' : '/track-visa');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
     if (view === 'study-destination' || view === 'study-in-malaysia' || view.startsWith('study-in-') || ((view === 'destinations' || view === 'countries') && payload)) {
       const countryTarget = typeof payload === 'string' ? payload : (view.startsWith('study-in-') ? view : 'study-in-malaysia');
       const normalizedSlug = normalizeDestinationSlug(countryTarget);
@@ -342,7 +355,7 @@ function AppContent() {
       return;
     }
 
-    if (view === 'home' && typeof window !== 'undefined' && (window.location.pathname.includes('blog') || window.location.pathname.includes('news') || window.location.pathname.includes('services') || window.location.pathname.includes('faq') || window.location.pathname.includes('event') || window.location.pathname.includes('contact') || window.location.pathname.includes('countries') || window.location.pathname.includes('universities') || window.location.pathname.includes('courses') || window.location.pathname.includes('study-in-'))) {
+    if (view === 'home' && typeof window !== 'undefined' && (window.location.pathname.includes('blog') || window.location.pathname.includes('news') || window.location.pathname.includes('services') || window.location.pathname.includes('faq') || window.location.pathname.includes('event') || window.location.pathname.includes('contact') || window.location.pathname.includes('countries') || window.location.pathname.includes('universities') || window.location.pathname.includes('courses') || window.location.pathname.includes('study-in-') || window.location.pathname.includes('track-visa'))) {
       window.location.href = '/';
       return;
     }
@@ -410,7 +423,7 @@ function AppContent() {
       />
 
       {/* Main Content Area */}
-      <main className="pt-20 sm:pt-24 lg:pt-28 pb-20 md:pb-0 bg-white dark:bg-[#070D1E]">
+      <main className="pt-24 sm:pt-28 lg:pt-32 pb-20 md:pb-0 bg-white dark:bg-[#070D1E]">
         {/* VIEW: HOME */}
         {currentView === 'home' && (
           <>
@@ -524,6 +537,14 @@ function AppContent() {
             countrySlugOrName={typeof navPayload === 'string' ? navPayload : 'study-in-malaysia'}
             onNavigate={handleNavigate}
             onOpenConsultation={handleOpenConsultation}
+          />
+        )}
+
+        {/* VIEW: EMGS MALAYSIA STUDENT VISA TRACKING */}
+        {currentView === 'track-visa' && (
+          <TrackVisaPage
+            onNavigate={handleNavigate}
+            onOpenConsultation={() => handleOpenConsultation('EMGS Visa Tracking Support')}
           />
         )}
 

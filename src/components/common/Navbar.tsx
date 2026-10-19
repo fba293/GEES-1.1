@@ -1,16 +1,4 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- * GEES Universal Floating Pill Header
- * Replaces the header with the universal floating pill header from index.html:
- * - Fixed floating rounded-full navbar with backdrop blur and border shadow
- * - "GEES" Serif typography logo with golden accent dot
- * - Mega-menus: Countries (Popular, Europe, Asia & More), Services (Admissions, Immigration, Arrival, Living, Prep & B2B), and Contact
- * - Direct links: Universities & Courses
- * - Action buttons: Search trigger, Light/Dark theme toggle, Portals popover with sliding Sign In / Sign Up tabs, Apply CTA, and Mobile menu toggle
- */
-
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { UserRole } from '../../types/index.ts';
 import { InteractiveHoverButton } from '../ui/interactive-hover-button.tsx';
 import { HeaderCurrencyExchangeIcon } from '../CurrencySwitcher.tsx';
@@ -28,6 +16,50 @@ interface NavbarProps {
   onToggleTheme: () => void;
 }
 
+function useScrollHeader(compactThreshold = 50, expandThreshold = 30) {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const isScrolledRef = useRef(false);
+
+  useEffect(() => {
+    let ticking = false;
+    let rafId: number | null = null;
+
+    const updateScrollState = () => {
+      const scrollY = window.scrollY || window.pageYOffset || 0;
+      const currentlyScrolled = isScrolledRef.current;
+
+      if (!currentlyScrolled && scrollY > compactThreshold) {
+        isScrolledRef.current = true;
+        React.startTransition(() => {
+          setIsScrolled(true);
+        });
+      } else if (currentlyScrolled && scrollY < expandThreshold) {
+        isScrolledRef.current = false;
+        React.startTransition(() => {
+          setIsScrolled(false);
+        });
+      }
+      ticking = false;
+    };
+
+    const handleScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        rafId = window.requestAnimationFrame(updateScrollState);
+      }
+    };
+
+    updateScrollState();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (rafId !== null) window.cancelAnimationFrame(rafId);
+    };
+  }, [compactThreshold, expandThreshold]);
+
+  return isScrolled;
+}
+
 export const Navbar: React.FC<NavbarProps> = ({
   currentView,
   onNavigate,
@@ -38,6 +70,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   isDark,
   onToggleTheme
 }) => {
+  const isScrolled = useScrollHeader(50, 30);
   const { wishlistCount } = useWishlist();
   const [portalTab, setPortalTab] = useState<'signin' | 'signup'>('signin');
   const [portalOpen, setPortalOpen] = useState(false);
@@ -54,31 +87,139 @@ export const Navbar: React.FC<NavbarProps> = ({
     }, 220);
   };
 
+  const scrolledBtnClass = isScrolled
+    ? (isDark
+        ? 'border-white/20 bg-white/10 text-white hover:border-[#fbb034] hover:text-[#fbb034]'
+        : 'border-slate-200 bg-white text-slate-800 hover:bg-slate-100 hover:text-blue-600 shadow-xs')
+    : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/80 text-slate-900 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600';
+
   return (
-    <header className="fixed top-0 left-0 right-0 w-full z-50 pointer-events-none px-2.5 xs:px-3 sm:px-6 md:px-8 lg:px-10 xl:px-12 pt-2.5 xs:pt-3 sm:pt-4 lg:pt-5">
-      <div className="pointer-events-auto max-w-[95%] w-full mx-auto bg-white/95 dark:bg-[#0f172a]/95 backdrop-blur-md rounded-full border border-slate-200 dark:border-slate-800 shadow-xl px-3 xs:px-4 sm:px-6 md:px-7 lg:px-8 xl:px-10 h-13 xs:h-14 sm:h-16 lg:h-20 flex items-center justify-between gap-6 sm:gap-8 transition-all">
+    <header className={`gees-header-wrapper ${isScrolled ? 'scrolled' : ''}`}>
+      {/* 1. Top Information Bar (Dreambuzz-Architecture Reference) */}
+      <div className="gees-topbar-wrapper select-none">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-full flex items-center justify-between text-xs font-medium text-white/90">
+          {/* Left Block: Help Line & Office Hours */}
+          <div className="flex items-center gap-3">
+            <a
+              href="https://wa.me/8801805529578"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Direct WhatsApp Helpline"
+              className="flex items-center gap-1.5 text-white/90 hover:text-[#fbb034] transition-colors cursor-pointer group"
+            >
+              <span className="material-symbols-outlined text-[15px] text-[#fbb034] group-hover:scale-110 transition-transform">
+                call
+              </span>
+              <span className="text-white/70 hidden min-[400px]:inline">Help Line:</span>
+              <strong className="text-white font-semibold tracking-wide font-mono">+880 1805-529578</strong>
+            </a>
+            <span className="text-white/20 hidden md:inline">|</span>
+            <div className="hidden md:flex items-center gap-1.5 text-white/70">
+              <span className="material-symbols-outlined text-[14px] text-amber-400">schedule</span>
+              <span>Sun – Thu: 10:00 AM – 5:00 PM</span>
+            </div>
+          </div>
+
+          {/* Right Block: Email & Social Icons */}
+          <div className="flex items-center gap-3 sm:gap-4">
+            <a
+              href="mailto:info@globaleducationexpert.com"
+              className="hidden lg:flex items-center gap-1.5 text-white/80 hover:text-[#fbb034] transition-colors cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-[14px] text-[#fbb034]">mail</span>
+              <span>info@globaleducationexpert.com</span>
+            </a>
+
+            {/* Social Icons matching Dreambuzz Top-Bar circular pill buttons */}
+            <div className="flex items-center gap-1.5">
+              {[
+                {
+                  name: 'Facebook',
+                  href: 'https://www.facebook.com/globaleduexpert',
+                  icon: (
+                    <svg className="w-2.5 h-2.5 fill-current" viewBox="0 0 24 24">
+                      <path d="M9 8H6v4h3v12h5V12h3.642L18 8h-4V6.333C14 5.374 14.5 5 15.69 5H18V0h-3.808C10.596 0 9 1.583 9 4.615V8z" />
+                    </svg>
+                  )
+                },
+                {
+                  name: 'WhatsApp',
+                  href: 'https://wa.me/8801805529578',
+                  icon: (
+                    <svg className="w-2.5 h-2.5 fill-current" viewBox="0 0 24 24">
+                      <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z" />
+                    </svg>
+                  )
+                },
+                {
+                  name: 'LinkedIn',
+                  href: 'https://www.linkedin.com/company/globaleduexpert',
+                  icon: (
+                    <svg className="w-2.5 h-2.5 fill-current" viewBox="0 0 24 24">
+                      <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                    </svg>
+                  )
+                },
+                {
+                  name: 'YouTube',
+                  href: 'https://www.youtube.com/@globaleduexpert',
+                  icon: (
+                    <svg className="w-2.5 h-2.5 fill-current" viewBox="0 0 24 24">
+                      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                    </svg>
+                  )
+                }
+              ].map((s) => (
+                <a
+                  key={s.name}
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title={s.name}
+                  className="w-6 h-6 rounded-full border border-white/25 hover:border-[#fbb034] text-white/80 hover:text-[#fbb034] hover:bg-white/10 flex items-center justify-center transition-all cursor-pointer"
+                >
+                  {s.icon}
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 2. Main Navigation Bar with Fluid Morphing */}
+      <div
+        className={`gees-main-navbar ${
+          isScrolled ? (isDark ? 'scrolled-dark' : 'scrolled-light') : 'expanded'
+        } -mt-1 xs:-mt-1.5 sm:mt-0 px-3 xs:px-4 sm:px-6 md:px-7 lg:px-8 xl:px-10 h-[60px] sm:h-[72px] flex items-center justify-between gap-1.5 xs:gap-2 sm:gap-6 rounded-full shadow-lg shadow-black/5 dark:shadow-black/40 border border-slate-200/80 dark:border-slate-800`}
+      >
         {/* Brand Logo */}
         <div
           onClick={() => onNavigate('home')}
-          className="flex items-center gap-1.5 sm:gap-2 group shrink-0 focus:outline-none cursor-pointer"
+          className="flex items-center gap-1.5 sm:gap-2 group shrink-0 focus:outline-none cursor-pointer select-none"
         >
           <span
-            className="text-xl xs:text-2xl sm:text-[28px] lg:text-[32px] font-extrabold tracking-tight text-slate-900 dark:text-white"
+            className={`gees-brand-text text-xl xs:text-2xl sm:text-[28px] lg:text-[32px] font-extrabold tracking-tight transition-colors duration-300 ${
+              isScrolled ? (isDark ? 'text-white' : 'text-slate-900') : 'text-slate-900 dark:text-white'
+            }`}
             style={{ fontFamily: '"ITC Benguiat", "Benguiat", serif', fontWeight: 700 }}
           >
             GEES
           </span>
-          <span className="w-1.5 xs:w-2 sm:w-2.5 h-1.5 xs:h-2 sm:h-2.5 rounded-full bg-[#FBBF24]"></span>
+          <span className="w-1.5 xs:w-2 sm:w-2.5 h-1.5 xs:h-2 sm:h-2.5 rounded-full bg-[#fbb034] shadow-xs"></span>
         </div>
 
-        {/* Universal Desktop Navigation Bar with Expanded Breathing Room */}
-        <nav className="hidden xl:flex items-center gap-6 sm:gap-8 text-sm font-semibold text-slate-900 dark:text-slate-200">
+        {/* Universal Desktop Navigation Bar */}
+        <nav className="hidden xl:flex items-center gap-6 sm:gap-8 text-sm font-semibold">
           {/* 1. Countries Mega-Menu */}
-          <div className="relative group cursor-pointer py-6">
+          <div className="relative group cursor-pointer py-5">
             <button
               type="button"
-              className={`flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-semibold group-hover:text-blue-600 dark:group-hover:text-blue-400 cursor-pointer ${
-                currentView === 'destinations' ? 'text-blue-600 dark:text-blue-400' : ''
+              className={`gees-nav-link flex items-center gap-1 transition-colors font-semibold cursor-pointer ${
+                isScrolled
+                  ? (isDark
+                      ? (currentView === 'destinations' ? 'gees-nav-link-active text-[#fbb034] font-bold' : 'text-white/90 hover:text-[#fbb034]')
+                      : (currentView === 'destinations' ? 'gees-nav-link-active text-blue-600 font-bold' : 'text-slate-800 hover:text-blue-600'))
+                  : (currentView === 'destinations' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-slate-900 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400')
               }`}
             >
               <span>Countries</span>
@@ -193,8 +334,12 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* 2. Universities */}
           <button
             onClick={() => onNavigate('universities')}
-            className={`hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer ${
-              currentView === 'universities' ? 'text-blue-600 dark:text-blue-400 font-bold' : ''
+            className={`gees-nav-link transition-colors cursor-pointer ${
+              isScrolled
+                ? (isDark
+                    ? (currentView === 'universities' ? 'gees-nav-link-active text-[#fbb034] font-bold' : 'text-white/90 hover:text-[#fbb034]')
+                    : (currentView === 'universities' ? 'gees-nav-link-active text-blue-600 font-bold' : 'text-slate-800 hover:text-blue-600'))
+                : (currentView === 'universities' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-slate-900 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400')
             }`}
           >
             Universities
@@ -203,19 +348,27 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* 3. Courses */}
           <button
             onClick={() => onNavigate('courses')}
-            className={`hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer ${
-              currentView === 'courses' ? 'text-blue-600 dark:text-blue-400 font-bold' : ''
+            className={`gees-nav-link transition-colors cursor-pointer ${
+              isScrolled
+                ? (isDark
+                    ? (currentView === 'courses' ? 'gees-nav-link-active text-[#fbb034] font-bold' : 'text-white/90 hover:text-[#fbb034]')
+                    : (currentView === 'courses' ? 'gees-nav-link-active text-blue-600 font-bold' : 'text-slate-800 hover:text-blue-600'))
+                : (currentView === 'courses' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-slate-900 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400')
             }`}
           >
             Courses
           </button>
 
           {/* 4. Services Mega-Menu */}
-          <div className="relative group cursor-pointer py-6">
+          <div className="relative group cursor-pointer py-5">
             <button
               type="button"
-              className={`flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-semibold group-hover:text-blue-600 dark:group-hover:text-blue-400 cursor-pointer ${
-                currentView === 'services' ? 'text-blue-600 dark:text-blue-400' : ''
+              className={`gees-nav-link flex items-center gap-1 transition-colors font-semibold cursor-pointer ${
+                isScrolled
+                  ? (isDark
+                      ? (currentView === 'services' ? 'gees-nav-link-active text-[#fbb034] font-bold' : 'text-white/90 hover:text-[#fbb034]')
+                      : (currentView === 'services' ? 'gees-nav-link-active text-blue-600 font-bold' : 'text-slate-800 hover:text-blue-600'))
+                  : (currentView === 'services' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-slate-900 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400')
               }`}
             >
               <span>Services</span>
@@ -265,13 +418,14 @@ export const Navbar: React.FC<NavbarProps> = ({
                   <ul className="space-y-1">
                     {[
                       { icon: '🛂', label: 'Student Visa', slug: 'student-visa-assistance' },
+                      { icon: '🔍', label: 'Track Visa', slug: 'track-visa' },
                       { icon: '👨‍👩‍👧', label: 'Dependent', slug: 'dependent-visa' },
                       { icon: '✈️', label: 'Tourist Visa', slug: 'tourist-visa' },
                       { icon: '🏡', label: 'MM2H', slug: 'mm2h' }
                     ].map((s) => (
                       <li key={s.label}>
                         <button
-                          onClick={() => onNavigate(s.slug === 'dependent-visa' ? 'dependent-visa' : (s.slug === 'tourist-visa' ? 'tourist-visa' : (s.slug === 'mm2h' ? 'mm2h' : 'student-visa-assistance')), s.slug)}
+                          onClick={() => onNavigate(s.slug === 'track-visa' ? 'track-visa' : (s.slug === 'dependent-visa' ? 'dependent-visa' : (s.slug === 'tourist-visa' ? 'tourist-visa' : (s.slug === 'mm2h' ? 'mm2h' : 'student-visa-assistance'))), s.slug)}
                           className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-blue-600 transition-colors font-medium text-xs text-left cursor-pointer"
                         >
                           <span className="text-base leading-none">{s.icon}</span>
@@ -385,12 +539,16 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
 
           {/* 5. Contact Mega-Menu */}
-          <div className="relative group cursor-pointer py-6">
+          <div className="relative group cursor-pointer py-5">
             <button
               type="button"
               onClick={() => onNavigate('contact')}
-              className={`flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-semibold group-hover:text-blue-600 dark:group-hover:text-blue-400 cursor-pointer ${
-                currentView === 'contact' ? 'text-blue-600 dark:text-blue-400 font-bold' : ''
+              className={`gees-nav-link flex items-center gap-1 transition-colors font-semibold cursor-pointer ${
+                isScrolled
+                  ? (isDark
+                      ? (currentView === 'contact' ? 'gees-nav-link-active text-[#fbb034] font-bold' : 'text-white/90 hover:text-[#fbb034]')
+                      : (currentView === 'contact' ? 'gees-nav-link-active text-blue-600 font-bold' : 'text-slate-800 hover:text-blue-600'))
+                  : (currentView === 'contact' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-slate-900 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400')
               }`}
             >
               <span>Contact</span>
@@ -415,6 +573,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     { icon: '📞', label: 'Contact Us', action: () => onNavigate('contact') },
                     { icon: '🏫', label: 'Language Centers', action: () => onNavigate('language-centers') },
                     { icon: '🎓', label: 'Application Tracker', action: () => { onRoleChange('student'); onNavigate('student-portal'); } },
+                    { icon: '🇲🇾', label: 'EMGS Visa Tracker', action: () => onNavigate('track-visa') },
                     { icon: '📘', label: 'Students Guide', action: () => onNavigate('students-guide') },
                     { icon: '📚', label: 'Resources', action: () => onNavigate('resources') },
                     { 
@@ -494,17 +653,21 @@ export const Navbar: React.FC<NavbarProps> = ({
         </nav>
 
         {/* Right Action Controls */}
-        <div className="flex items-center gap-1.5 xs:gap-2 sm:gap-3 lg:gap-3.5 shrink-0">
-          {/* Header Multi-Currency Switcher (Circular Exchange Icon, properly visible on mobile, tablet & desktop) */}
-          <HeaderCurrencyExchangeIcon />
+        <div className="flex items-center gap-2 xs:gap-2.5 sm:gap-3 lg:gap-3.5 shrink-0">
+          {/* Header Multi-Currency Switcher */}
+          <div className={`transition-all duration-300 ${isScrolled ? 'gees-header-icon-btn rounded-full' : ''}`}>
+            <HeaderCurrencyExchangeIcon />
+          </div>
 
           {/* Saved Courses Wishlist Trigger with Dynamic Counter Badge */}
           <button
             aria-label="Saved Courses Wishlist"
             onClick={() => onNavigate('wishlist')}
             title="Saved Courses Wishlist"
-            className={`relative w-8.5 h-8.5 xs:w-9 xs:h-9 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-900 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-[#fbb034] transition-all duration-200 ease-in-out transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer shadow-xs ${
-              currentView === 'wishlist' ? 'bg-amber-50 dark:bg-amber-950/60 border-[#fbb034] text-[#fbb034] font-bold' : ''
+            className={`gees-header-icon-btn relative w-10 h-10 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-full border flex items-center justify-center transition-all duration-200 ease-in-out transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer shadow-xs ${
+              currentView === 'wishlist'
+                ? 'bg-amber-50 dark:bg-amber-950/60 border-[#fbb034] text-[#fbb034] font-bold'
+                : scrolledBtnClass
             }`}
             type="button"
           >
@@ -516,18 +679,22 @@ export const Navbar: React.FC<NavbarProps> = ({
             )}
           </button>
 
-          {/* Search Trigger Button with 0.2s ease-in-out translateY tactile animation (Hidden on phone viewports < sm) */}
+          {/* Search Trigger Button (Hidden on phone viewports < sm) */}
           <button
             aria-label="Search Catalog"
             onClick={onOpenSearch}
-            className="hidden sm:flex w-8.5 h-8.5 xs:w-9 xs:h-9 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-full border border-slate-200 dark:border-slate-700 items-center justify-center text-slate-900 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600 transition-all duration-200 ease-in-out transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer shadow-xs"
+            className={`gees-header-icon-btn hidden sm:flex w-10 h-10 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-full border items-center justify-center transition-all duration-200 ease-in-out transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer shadow-xs ${scrolledBtnClass}`}
             type="button"
           >
             <span className="material-symbols-outlined text-[17px] xs:text-[18px] sm:text-[20px]">search</span>
           </button>
 
-          {/* Theme Toggle Button (Hidden on phone viewports < sm, visible on tablet & desktop) */}
-          <ThemeToggle isDark={isDark} onToggle={onToggleTheme} className="hidden sm:flex" />
+          {/* Theme Toggle Button (Visible on all viewports) */}
+          <ThemeToggle
+            isDark={isDark}
+            onToggle={onToggleTheme}
+            className={`flex transition-all duration-200 ${scrolledBtnClass}`}
+          />
 
           {/* Portal Popover with Sliding Pill Tab Switcher */}
           <div
@@ -538,7 +705,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               aria-label="Portal"
               onClick={() => setPortalOpen(!portalOpen)}
-              className="w-9 h-9 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-900 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600 transition-colors cursor-pointer"
+              className={`gees-header-icon-btn w-9 h-9 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-full border flex items-center justify-center transition-colors cursor-pointer ${scrolledBtnClass}`}
               type="button"
             >
               <span className="material-symbols-outlined text-[18px] sm:text-[20px]">account_circle</span>
@@ -550,7 +717,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                 portalOpen ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none invisible'
               }`}
             >
-              {/* Compact Sliding Pill Toggle Header */}
               <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800/80 mb-3">
                 <div className="relative flex items-center p-1 bg-gradient-to-r from-blue-50 via-indigo-50/60 to-purple-50/50 dark:from-slate-800/90 dark:via-indigo-950/40 dark:to-slate-800/90 border border-blue-200/60 dark:border-indigo-500/20 rounded-xl w-full shadow-inner select-none">
                   <div
@@ -593,7 +759,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                   {/* Panel 1: Sign In */}
                   <div className="w-1/2 shrink-0 pr-1">
                     <div className="grid gap-1.5 grid-cols-1">
-                      {/* Student Login */}
                       <button
                         onClick={() => {
                           onRoleChange('student');
@@ -602,20 +767,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                         }}
                         className="group relative flex items-center gap-2.5 p-2 rounded-xl bg-blue-50/80 dark:bg-blue-950/30 border border-blue-200/80 dark:border-blue-800/40 hover:bg-blue-100/80 dark:hover:bg-blue-900/40 transition-all shadow-xs text-left cursor-pointer w-full"
                       >
-                        <div className="w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                        <div className="w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
                           <span className="material-symbols-outlined text-[18px]">school</span>
                         </div>
-                        <div className="flex-1 min-w-0 flex items-center justify-between">
-                          <span className="font-semibold text-blue-950 dark:text-blue-100 text-xs truncate">
-                            Student Login
-                          </span>
-                          <span className="text-[10px] font-bold text-blue-600 dark:text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity">
-                            →
-                          </span>
-                        </div>
+                        <span className="font-semibold text-blue-950 dark:text-blue-100 text-xs truncate">
+                          Student Login
+                        </span>
                       </button>
-
-                      {/* Agent Login */}
                       <button
                         onClick={() => {
                           onRoleChange('agent');
@@ -624,20 +782,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                         }}
                         className="group relative flex items-center gap-2.5 p-2 rounded-xl bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200/80 dark:border-emerald-800/40 hover:bg-emerald-100/80 dark:hover:bg-emerald-900/40 transition-all shadow-xs text-left cursor-pointer w-full"
                       >
-                        <div className="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                        <div className="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
                           <span className="material-symbols-outlined text-[18px]">handshake</span>
                         </div>
-                        <div className="flex-1 min-w-0 flex items-center justify-between">
-                          <span className="font-semibold text-emerald-950 dark:text-emerald-100 text-xs truncate">
-                            Agent Login
-                          </span>
-                          <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity">
-                            →
-                          </span>
-                        </div>
+                        <span className="font-semibold text-emerald-950 dark:text-emerald-100 text-xs truncate">
+                          Agent Login
+                        </span>
                       </button>
-
-                      {/* Staff Login */}
                       <button
                         onClick={() => {
                           onRoleChange('counselor');
@@ -646,59 +797,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                         }}
                         className="group relative flex items-center gap-2.5 p-2 rounded-xl bg-indigo-50/80 dark:bg-indigo-950/30 border border-indigo-200/80 dark:border-indigo-800/40 hover:bg-indigo-100/80 dark:hover:bg-indigo-900/40 transition-all shadow-xs text-left cursor-pointer w-full"
                       >
-                        <div className="w-7 h-7 rounded-lg bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                        <div className="w-7 h-7 rounded-lg bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
                           <span className="material-symbols-outlined text-[18px]">badge</span>
                         </div>
-                        <div className="flex-1 min-w-0 flex items-center justify-between">
-                          <span className="font-semibold text-indigo-950 dark:text-indigo-100 text-xs truncate">
-                            Staff Login
-                          </span>
-                          <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity">
-                            →
-                          </span>
-                        </div>
-                      </button>
-
-                      {/* University Login */}
-                      <button
-                        onClick={() => {
-                          onNavigate('universities');
-                          setPortalOpen(false);
-                        }}
-                        className="group relative flex items-center gap-2.5 p-2 rounded-xl bg-amber-50/80 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-800/40 hover:bg-amber-100/80 dark:hover:bg-amber-900/40 transition-all shadow-xs text-left cursor-pointer w-full"
-                      >
-                        <div className="w-7 h-7 rounded-lg bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                          <span className="material-symbols-outlined text-[18px]">account_balance</span>
-                        </div>
-                        <div className="flex-1 min-w-0 flex items-center justify-between">
-                          <span className="font-semibold text-amber-950 dark:text-amber-100 text-xs truncate">
-                            University Login
-                          </span>
-                          <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 opacity-0 group-hover:opacity-100 transition-opacity">
-                            →
-                          </span>
-                        </div>
-                      </button>
-
-                      {/* Admin Login */}
-                      <button
-                        onClick={() => {
-                          onNavigate('analytics');
-                          setPortalOpen(false);
-                        }}
-                        className="group relative flex items-center gap-2.5 p-2 rounded-xl bg-sky-50/80 dark:bg-sky-950/30 border border-sky-200/80 dark:border-sky-800/40 hover:bg-sky-100/80 dark:hover:bg-sky-900/40 transition-all shadow-xs text-left cursor-pointer w-full"
-                      >
-                        <div className="w-7 h-7 rounded-lg bg-sky-100 dark:bg-sky-900/50 text-sky-600 dark:text-sky-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                          <span className="material-symbols-outlined text-[18px]">admin_panel_settings</span>
-                        </div>
-                        <div className="flex-1 min-w-0 flex items-center justify-between">
-                          <span className="font-semibold text-sky-950 dark:text-sky-100 text-xs truncate">
-                            Admin Login
-                          </span>
-                          <span className="text-[10px] font-bold text-sky-600 dark:text-sky-400 opacity-0 group-hover:opacity-100 transition-opacity">
-                            →
-                          </span>
-                        </div>
+                        <span className="font-semibold text-indigo-950 dark:text-indigo-100 text-xs truncate">
+                          Staff Login
+                        </span>
                       </button>
                     </div>
                   </div>
@@ -706,7 +810,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                   {/* Panel 2: Sign Up */}
                   <div className="w-1/2 shrink-0 pl-1">
                     <div className="grid grid-cols-2 gap-1.5">
-                      {/* Student */}
                       <button
                         onClick={() => {
                           onNavigate('apply');
@@ -717,15 +820,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                         <div className="w-6 h-6 text-blue-600 flex items-center justify-center shrink-0">
                           <span className="material-symbols-outlined text-[18px]">person_add</span>
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <span className="font-semibold text-slate-900 dark:text-white text-xs truncate block">
-                            Student
-                          </span>
-                          <p className="text-[10px] text-slate-500 truncate">Join free</p>
-                        </div>
+                        <span className="font-semibold text-slate-900 dark:text-white text-xs truncate block">
+                          Student
+                        </span>
                       </button>
-
-                      {/* Agent */}
                       <button
                         onClick={() => {
                           onNavigate('agent-portal');
@@ -736,50 +834,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                         <div className="w-6 h-6 text-blue-600 flex items-center justify-center shrink-0">
                           <span className="material-symbols-outlined text-[18px]">group_add</span>
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <span className="font-semibold text-slate-900 dark:text-white text-xs truncate block">
-                            Agent
-                          </span>
-                          <p className="text-[10px] text-slate-500 truncate">Partner</p>
-                        </div>
-                      </button>
-
-                      {/* Staff */}
-                      <button
-                        onClick={() => {
-                          onNavigate('crm');
-                          setPortalOpen(false);
-                        }}
-                        className="group relative flex items-center gap-2 p-2 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 hover:border-blue-600 transition-all text-left cursor-pointer"
-                      >
-                        <div className="w-6 h-6 text-blue-600 flex items-center justify-center shrink-0">
-                          <span className="material-symbols-outlined text-[18px]">contact_emergency</span>
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <span className="font-semibold text-slate-900 dark:text-white text-xs truncate block">
-                            Staff
-                          </span>
-                          <p className="text-[10px] text-slate-500 truncate">Onboarding</p>
-                        </div>
-                      </button>
-
-                      {/* University */}
-                      <button
-                        onClick={() => {
-                          onNavigate('universities');
-                          setPortalOpen(false);
-                        }}
-                        className="group relative flex items-center gap-2 p-2 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 hover:border-blue-600 transition-all text-left cursor-pointer"
-                      >
-                        <div className="w-6 h-6 text-blue-600 flex items-center justify-center shrink-0">
-                          <span className="material-symbols-outlined text-[18px]">domain_add</span>
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <span className="font-semibold text-slate-900 dark:text-white text-xs truncate block">
-                            University
-                          </span>
-                          <p className="text-[10px] text-slate-500 truncate">Tie-up</p>
-                        </div>
+                        <span className="font-semibold text-slate-900 dark:text-white text-xs truncate block">
+                          Agent
+                        </span>
                       </button>
                     </div>
                   </div>
@@ -788,22 +845,24 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
           </div>
 
-          {/* Primary Universal CTA: Apply with Interactive Hover Button Animation (Hidden on mobile, visible on tablet & desktop) */}
-          <InteractiveHoverButton
-            text="Apply"
-            onClick={() => onNavigate('apply')}
-            className="hidden md:inline-flex h-9 sm:h-10 lg:h-11 w-24 sm:w-28 rounded-full bg-[#fbb034] text-slate-950 border-amber-400 font-bold text-xs sm:text-sm items-center justify-center cursor-pointer select-none shadow-xs"
-          />
+          {/* Primary Universal CTA: Apply */}
+          <div className="hidden xl:block">
+            <InteractiveHoverButton
+              text="Apply"
+              onClick={() => onNavigate('apply')}
+              className="h-9 sm:h-10 lg:h-11 w-24 sm:w-28 rounded-full bg-[#fbb034] hover:bg-[#f59e0b] text-slate-950 border-amber-400 font-bold text-xs sm:text-sm items-center justify-center cursor-pointer select-none shadow-xs"
+            />
+          </div>
 
-          {/* Mobile Hamburger Navigation Button with Subtle Scaling, Rotation & Color-Shifting Animation */}
+          {/* Mobile Hamburger Navigation Button */}
           <button
             aria-label="Navigation Menu"
             onClick={onOpenMobileMenu}
-            className="xl:hidden group w-8.5 h-8.5 xs:w-9 xs:h-9 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/80 flex items-center justify-center hover:bg-amber-50 dark:hover:bg-slate-700 hover:border-amber-400 dark:hover:border-amber-400/60 text-slate-900 dark:text-slate-200 hover:text-[#fbb034] dark:hover:text-[#fbb034] transition-all duration-200 ease-in-out transform hover:scale-105 hover:rotate-3 active:scale-95 active:rotate-0 shadow-xs cursor-pointer shrink-0"
+            className={`gees-header-icon-btn xl:hidden group w-10 h-10 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-full border flex items-center justify-center transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] transform hover:scale-110 active:scale-90 shadow-xs cursor-pointer shrink-0 ${scrolledBtnClass}`}
             type="button"
           >
             <svg
-              className="w-4 h-4 sm:w-5 sm:h-5 text-current transition-all duration-200 group-hover:scale-110"
+              className="w-4 h-4 sm:w-5 sm:h-5 text-current transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] transform group-hover:scale-110 group-hover:rotate-90 group-active:scale-90 group-active:rotate-180 group-hover:text-[#fbb034] will-change-transform"
               fill="none"
               stroke="currentColor"
               strokeLinecap="round"
@@ -811,9 +870,9 @@ export const Navbar: React.FC<NavbarProps> = ({
               strokeWidth="2.3"
               viewBox="0 0 24 24"
             >
-              <line x1="11" x2="20.5" y1="6.5" y2="6.5"></line>
-              <line x1="3.5" x2="20.5" y1="12" y2="12"></line>
-              <line x1="14.5" x2="20.5" y1="17.5" y2="17.5"></line>
+              <line className="transition-all duration-300 ease-out group-hover:translate-x-[-1px]" x1="11" x2="20.5" y1="6.5" y2="6.5"></line>
+              <line className="transition-all duration-300 ease-out group-hover:translate-x-[1px]" x1="3.5" x2="20.5" y1="12" y2="12"></line>
+              <line className="transition-all duration-300 ease-out group-hover:translate-x-[-1px]" x1="14.5" x2="20.5" y1="17.5" y2="17.5"></line>
             </svg>
           </button>
         </div>

@@ -245,7 +245,7 @@ export const DestinationsGallery: React.FC<DestinationsGalleryProps> = ({
                       e.stopPropagation();
                       onNavigateToCountry(dest.name);
                     }}
-                    className="w-full min-h-[44px] py-2.5 rounded-xl bg-white/15 hover:bg-[#fbbf24] hover:text-slate-950 text-white font-bold text-xs uppercase tracking-wider transition-colors text-center flex items-center justify-center cursor-pointer active:scale-95"
+                    className="w-full min-h-[34px] sm:min-h-[42px] py-1.5 sm:py-2.5 rounded-xl bg-white/15 hover:bg-[#fbbf24] hover:text-slate-950 text-white font-bold text-[11px] sm:text-xs uppercase tracking-wider transition-colors text-center flex items-center justify-center cursor-pointer active:scale-95"
                   >
                     View Universities
                   </button>
@@ -344,9 +344,9 @@ export const DestinationsGallery: React.FC<DestinationsGalleryProps> = ({
                     {dest.name}
                   </h3>
 
-                  <div className="flex items-center justify-between pt-2 sm:pt-3 border-t border-white/20">
-                    <div className="flex items-center gap-1 sm:gap-1.5 text-[11px] sm:text-xs font-semibold text-slate-200">
-                      <span className="material-symbols-outlined text-[14px] sm:text-[16px] text-amber-400">groups</span>
+                  <div className="flex items-center justify-between pt-1.5 xs:pt-2 sm:pt-3 border-t border-white/20">
+                    <div className="flex items-center gap-1 sm:gap-1.5 text-[10px] xs:text-[11px] sm:text-xs font-semibold text-slate-200">
+                      <span className="material-symbols-outlined text-[13px] sm:text-[16px] text-amber-400">groups</span>
                       <span className="truncate">{dest.studentsCountText}</span>
                     </div>
 
@@ -359,10 +359,10 @@ export const DestinationsGallery: React.FC<DestinationsGalleryProps> = ({
                         }
                       }}
                       data-purpose="compact-btn"
-                      className="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 sm:py-1.5 min-h-[44px] rounded-full bg-[#fbbf24] text-slate-950 font-bold text-xs hover:brightness-105 shadow-xs transition-transform active:scale-95 cursor-pointer shrink-0"
+                      className="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 xs:px-3 sm:px-4 py-1 sm:py-1.5 min-h-[30px] xs:min-h-[32px] sm:min-h-[40px] rounded-full bg-[#fbbf24] text-slate-950 font-bold text-[10.5px] xs:text-[11px] sm:text-xs hover:brightness-105 shadow-xs transition-transform active:scale-95 cursor-pointer shrink-0"
                     >
                       <span>Explore</span>
-                      <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+                      <span className="material-symbols-outlined text-[12px] sm:text-[14px]">arrow_forward</span>
                     </button>
                   </div>
                 </div>

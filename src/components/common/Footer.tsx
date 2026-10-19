@@ -610,6 +610,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             <ul className="space-y-2 text-xs text-slate-600 dark:text-slate-300">
               {[
                 { label: 'About Us', view: 'about' },
+                { label: 'Track EMGS Visa', view: 'track-visa' },
                 { label: 'Study Abroad Guidance', view: 'services', slug: 'admission-support' },
                 { label: 'University Selection Support', view: 'universities' },
                 { label: 'Admission & Application Process', view: 'services', slug: 'student-visa-assistance' },
@@ -638,6 +639,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             <ul className="space-y-2 text-xs text-slate-600 dark:text-slate-300">
               {[
                 { label: 'About Us', view: 'about' },
+                { label: 'Track EMGS Visa', view: 'track-visa' },
                 { label: 'News & Bulletins', view: 'news' },
                 { label: 'Events & Fairs', view: 'events' },
                 { label: 'FAQ', view: 'faq' },

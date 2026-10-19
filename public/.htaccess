@@ -1,0 +1,11 @@
+# GEES Production Apache / cPanel configuration
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Route /api/track-visa to /api/track-visa.php
+  RewriteRule ^api/track-visa/?$ api/track-visa.php [L,QSA]
+
+  # Route /track-visa to /track-visa.html
+  RewriteRule ^track-visa/?$ track-visa.html [L]
+</IfModule>

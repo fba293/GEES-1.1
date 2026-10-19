@@ -127,7 +127,7 @@ export const HeaderCurrencyExchangeIcon: React.FC<HeaderCurrencyExchangeIconProp
       ref={containerRef}
       className={`relative inline-flex items-center ${className}`}
     >
-      {/* Header Circular Icon Button */}
+      {/* Header Circular Icon Button with Premium Butter-Smooth Animation */}
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
@@ -135,13 +135,13 @@ export const HeaderCurrencyExchangeIcon: React.FC<HeaderCurrencyExchangeIconProp
         aria-expanded={isOpen}
         aria-haspopup="listbox"
         title={`Current Currency: ${currency}. Click to switch currency.`}
-        className="relative w-8.5 h-8.5 xs:w-9 xs:h-9 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/80 flex items-center justify-center text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600 dark:hover:text-amber-400 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95 cursor-pointer shadow-xs group"
+        className="relative w-10 h-10 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/80 flex items-center justify-center text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600 dark:hover:text-amber-400 transition-all duration-300 ease-out transform hover:scale-110 active:scale-95 cursor-pointer shadow-xs group"
       >
-        <CircularExchangeIcon className="w-4 h-4 xs:w-4.5 xs:h-4.5 sm:w-5 sm:h-5 text-slate-700 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-amber-400 transition-colors" />
+        <CircularExchangeIcon className="w-4 h-4 xs:w-4.5 xs:h-4.5 sm:w-5 sm:h-5 text-slate-700 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-amber-400 transition-transform duration-500 ease-out group-hover:rotate-180" />
 
         {/* Active Currency Badge Pill */}
         <span
-          className="absolute -bottom-1 -right-1 px-1 xs:px-1.5 py-0.2 rounded-full text-[8px] xs:text-[9px] font-black tracking-tight bg-[#fbb034] text-slate-950 shadow-xs ring-1 ring-white dark:ring-slate-900 leading-tight select-none"
+          className="absolute -bottom-0.5 -right-0.5 px-1 xs:px-1.5 py-0.2 rounded-full text-[8px] xs:text-[9px] font-black tracking-tight bg-[#fbb034] text-slate-950 shadow-xs ring-1 ring-white dark:ring-slate-900 leading-tight select-none"
           title={`Active currency: ${currency}`}
         >
           {currency}
@@ -153,7 +153,7 @@ export const HeaderCurrencyExchangeIcon: React.FC<HeaderCurrencyExchangeIconProp
         <div
           role="listbox"
           aria-label="Currency options"
-          className="absolute top-[calc(100%+8px)] right-0 w-64 rounded-2xl bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800 shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 duration-150 origin-top-right ring-1 ring-black/5 dark:ring-white/10"
+          className="absolute sm:absolute fixed sm:inset-auto inset-x-3 top-[calc(100%+8px)] sm:top-[calc(100%+8px)] sm:right-0 sm:left-auto w-auto sm:w-64 max-w-[calc(100vw-24px)] rounded-2xl bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800 shadow-2xl p-2 z-[999] animate-in fade-in zoom-in-95 duration-150 origin-top sm:origin-top-right ring-1 ring-black/5 dark:ring-white/10"
         >
           <div className="flex items-center justify-between px-2.5 py-1.5 border-b border-slate-100 dark:border-slate-800/80 mb-1">
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-400">

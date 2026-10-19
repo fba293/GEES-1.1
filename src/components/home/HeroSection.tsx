@@ -4,9 +4,9 @@
  * GEES Hero Section with Typewriter Country Cycling, Instant Fuzzy Search & Rolling Number Tickers
  */
 
-import React, { useState, useEffect, useRef } from 'react';
-import { mockDestinations, mockServices } from '../../data/mockDatabase.ts';
-import { InteractiveHoverButton } from '../ui/interactive-hover-button.tsx';
+import React, { useState, useEffect, useRef } from "react";
+import { mockDestinations, mockServices } from "../../data/mockDatabase.ts";
+import { InteractiveHoverButton } from "../ui/interactive-hover-button.tsx";
 import AnimatedTextCycle from "@/components/ui/animated-text-cycle";
 
 interface HeroSectionProps {
@@ -24,9 +24,9 @@ interface StatCounterProps {
 
 const StatCounter: React.FC<StatCounterProps> = ({
   value,
-  suffix = '',
+  suffix = "",
   label,
-  duration = 1800
+  duration = 1800,
 }) => {
   const [count, setCount] = useState(0);
   const [hasAnimated, setHasAnimated] = useState(false);
@@ -39,7 +39,7 @@ const StatCounter: React.FC<StatCounterProps> = ({
           setHasAnimated(true);
         }
       },
-      { threshold: 0.2 }
+      { threshold: 0.2 },
     );
 
     if (containerRef.current) {
@@ -63,7 +63,7 @@ const StatCounter: React.FC<StatCounterProps> = ({
       if (!startTime) startTime = currentTime;
       const progress = Math.min((currentTime - startTime) / duration, 1);
       const easedProgress = easeOutExpo(progress);
-      
+
       setCount(Math.floor(easedProgress * value));
 
       if (progress < 1) {
@@ -78,21 +78,19 @@ const StatCounter: React.FC<StatCounterProps> = ({
   }, [hasAnimated, value, duration]);
 
   return (
-    <div 
+    <div
       ref={containerRef}
       className="group relative bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl sm:rounded-3xl p-3.5 sm:p-6 flex flex-col justify-center items-start shadow-xs hover:shadow-md transition-all duration-300 hover:-translate-y-1 overflow-hidden min-w-0"
     >
       <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-amber-400/10 via-transparent to-transparent rounded-tr-3xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      
+
       <div className="flex items-baseline gap-0.5 text-2xl sm:text-4xl font-black tracking-tight text-slate-950 dark:text-white leading-none">
-        <span className="tabular-nums transition-all">
-          {count}
-        </span>
+        <span className="tabular-nums transition-all">{count}</span>
         <span className="text-slate-950 dark:text-white font-black text-lg sm:text-3xl ml-0.5 select-none">
           {suffix}
         </span>
       </div>
-      
+
       <p className="text-slate-600 dark:text-slate-300 font-bold text-[11px] xs:text-xs sm:text-sm mt-2 tracking-tight group-hover:text-slate-950 dark:group-hover:text-white transition-colors truncate w-full block leading-none">
         {label}
       </p>
@@ -102,24 +100,24 @@ const StatCounter: React.FC<StatCounterProps> = ({
 
 export const HeroSection: React.FC<HeroSectionProps> = ({
   onNavigate,
-  onOpenConsultationModal: _onOpenConsultationModal
+  onOpenConsultationModal: _onOpenConsultationModal,
 }) => {
   // 1. Typewriter Animation State
   const countries = [
-    'Malaysia',
-    'United Kingdom',
-    'Australia',
-    'New Zealand',
-    'Cyprus',
-    'Belgium',
-    'Finland',
-    'Greece',
-    'Mauritius',
-    'Netherlands',
-    'India'
+    "Malaysia",
+    "United Kingdom",
+    "Australia",
+    "New Zealand",
+    "Cyprus",
+    "Belgium",
+    "Finland",
+    "Greece",
+    "Mauritius",
+    "Netherlands",
+    "India",
   ];
   const [countryIndex, setCountryIndex] = useState(0);
-  const [displayedText, setDisplayedText] = useState('Malaysia');
+  const [displayedText, setDisplayedText] = useState("Malaysia");
   const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
@@ -151,47 +149,47 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   }, [displayedText, isDeleting, countryIndex]);
 
   // 2. Search & Filter State
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedDestination, setSelectedDestination] = useState('all');
-  const [selectedLevel, setSelectedLevel] = useState('all');
-  const [fieldOfStudy, setFieldOfStudy] = useState('all');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedDestination, setSelectedDestination] = useState("all");
+  const [selectedLevel, setSelectedLevel] = useState("all");
+  const [fieldOfStudy, setFieldOfStudy] = useState("all");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   // Guarantee page starts at top of Hero section on initial mount
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
     }
   }, []);
 
   // Search input looping typewriter placeholder matching uploaded screen
   const typewriterServices = [
-    'Health Insurance',
-    'Universities',
-    'Courses',
-    'Admission Support',
-    'Student Visa',
-    'Accommodations',
-    'Flight Ticketing',
-    'IELTS Preparation',
-    'Scholarships'
+    "Health Insurance",
+    "Universities",
+    "Courses",
+    "Admission Support",
+    "Student Visa",
+    "Accommodations",
+    "Flight Ticketing",
+    "IELTS Preparation",
+    "Scholarships",
   ];
 
   // Instant fuzzy matches
   const q = searchQuery.trim().toLowerCase();
   const matchedCountries = q
-    ? mockDestinations.filter(d => 
-        d.name.toLowerCase().includes(q) || 
-        d.code.toLowerCase().includes(q)
+    ? mockDestinations.filter(
+        (d) =>
+          d.name.toLowerCase().includes(q) || d.code.toLowerCase().includes(q),
       )
     : [];
 
   const matchedServices = q
-    ? mockServices.filter(s => 
-        s.title.toLowerCase().includes(q) || 
-        s.desc.toLowerCase().includes(q)
+    ? mockServices.filter(
+        (s) =>
+          s.title.toLowerCase().includes(q) || s.desc.toLowerCase().includes(q),
       )
     : [];
 
@@ -201,10 +199,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     setSearchQuery(name);
     setDropdownOpen(false);
     showToastNotification(`Selected: ${name}`);
-    if (type === 'destination') {
-      onNavigate('destinations', name);
+    if (type === "destination") {
+      onNavigate("destinations", name);
     } else {
-      onNavigate('services', name);
+      onNavigate("services", name);
     }
   };
 
@@ -214,34 +212,33 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   };
 
   const handleFindPrograms = () => {
-    onNavigate('courses', {
+    onNavigate("courses", {
       query: searchQuery,
       destination: selectedDestination,
       level: selectedLevel,
-      field: fieldOfStudy
+      field: fieldOfStudy,
     });
   };
 
   return (
-    <section className="relative w-full bg-white dark:bg-[#070b19] pt-3 min-[390px]:pt-4 sm:pt-12 pb-10 sm:pb-16 lg:pb-24 transition-colors duration-300">
+    <section className="relative w-full bg-white dark:bg-[#070b19] pt-1 min-[390px]:pt-2 sm:pt-12 pb-10 sm:pb-16 lg:pb-24 transition-colors duration-300">
       <div className="w-full max-w-full sm:max-w-[95%] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-start relative z-10">
-        
         {/* Title + Graduate Graphic Header */}
-        <div className="w-full flex flex-col lg:flex-row items-start lg:items-end justify-between gap-6 sm:gap-10 relative">
+        <div className="w-full flex flex-col lg:flex-row items-start lg:items-end justify-between gap-3 sm:gap-10 relative">
           <div className="flex flex-col items-start flex-1 relative z-20">
             <h1 className="hero-study-in text-[32px] min-[390px]:text-[38px] xs:text-[46px] sm:text-[76px] lg:text-[96px] font-black tracking-[-0.03em] text-slate-900 dark:text-white leading-[1.02] select-none text-balance">
               Study in
             </h1>
-            
+
             {/* Typewriter Highlight Box */}
-            <div className="hero-typewriter-box mt-2 sm:mt-3 inline-block px-3.5 sm:px-8 py-1.5 sm:py-3 rounded-2xl sm:rounded-3xl shadow-sm bg-[#fbb034] transition-all duration-300 max-w-full">
+            <div className="hero-typewriter-box mt-1.5 sm:mt-3 inline-block px-3.5 sm:px-8 py-1.5 sm:py-3 rounded-2xl sm:rounded-3xl shadow-sm bg-[#fbb034] transition-all duration-300 max-w-full">
               <span className="hero-typewriter text-[24px] min-[390px]:text-[28px] xs:text-[36px] sm:text-[68px] lg:text-[88px] font-black tracking-[-0.025em] text-slate-950 leading-none inline-flex items-center min-h-[1.05em] max-w-full overflow-hidden text-ellipsis">
                 <span>{displayedText}</span>
                 <span className="ml-1 inline-block w-[3px] sm:w-[5px] h-[0.75em] bg-slate-950 rounded-sm animate-pulse align-baseline shrink-0"></span>
               </span>
             </div>
 
-            <p className="hero-connecting-text mt-3 sm:mt-6 font-bold text-[11px] min-[390px]:text-[12px] sm:text-[13px] tracking-[0.08em] min-[390px]:tracking-[0.14em] sm:tracking-[0.22em] uppercase text-slate-600 dark:text-slate-300 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xs px-2 py-1 rounded-md inline-block max-w-full truncate sm:whitespace-normal">
+            <p className="hero-connecting-text mt-1.5 sm:mt-3 mb-1 font-bold text-[11px] min-[390px]:text-[12px] sm:text-[13px] tracking-[0.08em] min-[390px]:tracking-[0.14em] sm:tracking-[0.22em] uppercase text-slate-600 dark:text-slate-300 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xs px-2 py-1 rounded-md inline-block max-w-full truncate sm:whitespace-normal">
               CONNECTING YOU TO WORLD CLASS EDUCATION
             </p>
           </div>
@@ -262,42 +259,121 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
         {/* Search & Filter Floating Card */}
         {/* MOBILE VIEW: Uploaded Compact Search & Inset Filter Matrix (< sm) */}
-        <div className="w-full relative z-20 mt-3 sm:mt-0 sm:hidden" data-purpose="mobile-compact-search-container">
-          <section className="bg-white dark:bg-slate-900 rounded-2xl border border-[#e5e5ea] dark:border-slate-800 overflow-hidden shadow-xs" data-purpose="compact-search-widget">
+        <div
+          className="w-full relative z-20 mt-0 sm:mt-0 sm:hidden"
+          data-purpose="mobile-compact-search-container"
+        >
+          <section
+            className="bg-white dark:bg-slate-900 rounded-2xl border border-[#e5e5ea] dark:border-slate-800 overflow-hidden shadow-xs"
+            data-purpose="compact-search-widget"
+          >
             {/* Unified Row 1: Super Compact High-end Search Capsule with Looping Typewriter */}
             <div className="p-2.5 bg-white dark:bg-slate-900 border-b border-[#e5e5ea] dark:border-slate-800">
               <div className="relative flex items-center h-11 pl-2 pr-1 rounded-full bg-white dark:bg-slate-800/90 border border-[#e2e4ea] dark:border-slate-700 transition-all duration-300 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.04)] hover:border-[#cbcfd9] dark:hover:border-slate-600 focus-within:border-amber-500/60 focus-within:shadow-[0_3px_14px_-3px_rgba(245,158,11,0.18)] focus-within:ring-2 focus-within:ring-amber-500/15 overflow-hidden">
                 {/* 3D Glowing Orb */}
-                <div 
+                <div
                   className="emerald-orb-container orb-animating"
                   id="emerald-orb"
                   onClick={() => searchInputRef.current?.focus()}
                   title="Ask GEES AI"
-                  style={{ position: 'relative', width: '30px', height: '30px', flexShrink: 0, cursor: 'pointer', borderRadius: '9999px' }}
+                  style={{
+                    position: "relative",
+                    width: "30px",
+                    height: "30px",
+                    flexShrink: 0,
+                    cursor: "pointer",
+                    borderRadius: "9999px",
+                  }}
                 >
-                  <div 
+                  <div
                     className="emerald-orb-shadow"
-                    style={{ position: 'absolute', inset: '-3px', borderRadius: '9999px', background: 'radial-gradient(circle at 50% 55%, rgba(245, 158, 11, 0.55) 0%, rgba(217, 119, 6, 0.3) 50%, transparent 75%)', filter: 'blur(4px)', zIndex: 1, opacity: 0.85 }}
+                    style={{
+                      position: "absolute",
+                      inset: "-3px",
+                      borderRadius: "9999px",
+                      background:
+                        "radial-gradient(circle at 50% 55%, rgba(245, 158, 11, 0.55) 0%, rgba(217, 119, 6, 0.3) 50%, transparent 75%)",
+                      filter: "blur(4px)",
+                      zIndex: 1,
+                      opacity: 0.85,
+                    }}
                   />
-                  <div 
+                  <div
                     className="emerald-orb-body"
-                    style={{ position: 'absolute', inset: 0, borderRadius: '9999px', zIndex: 2, background: 'radial-gradient(circle at 35% 30%, #fef3c7 0%, #fde68a 18%, #fbbf24 38%, #f59e0b 60%, #d97706 78%, #92400e 92%, #451a03 100%)', boxShadow: 'inset 0 -3px 6px rgba(69, 26, 3, 0.7), inset 0 2px 4px rgba(255, 255, 255, 0.75), 0 3px 10px -1px rgba(245, 158, 11, 0.5), 0 1px 4px rgba(0, 0, 0, 0.15)', overflow: 'hidden' }}
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      borderRadius: "9999px",
+                      zIndex: 2,
+                      background:
+                        "radial-gradient(circle at 35% 30%, #fef3c7 0%, #fde68a 18%, #fbbf24 38%, #f59e0b 60%, #d97706 78%, #92400e 92%, #451a03 100%)",
+                      boxShadow:
+                        "inset 0 -3px 6px rgba(69, 26, 3, 0.7), inset 0 2px 4px rgba(255, 255, 255, 0.75), 0 3px 10px -1px rgba(245, 158, 11, 0.5), 0 1px 4px rgba(0, 0, 0, 0.15)",
+                      overflow: "hidden",
+                    }}
                   >
-                    <div 
+                    <div
                       className="emerald-orb-highlight"
-                      style={{ position: 'absolute', top: '10%', left: '14%', width: '44%', height: '36%', borderRadius: '50% 50% 45% 45% / 60% 60% 35% 35%', background: 'radial-gradient(ellipse at 42% 38%, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.75) 35%, rgba(255, 255, 255, 0) 80%)', transform: 'rotate(-26deg)', filter: 'blur(0.4px)', pointerEvents: 'none', zIndex: 3 }}
+                      style={{
+                        position: "absolute",
+                        top: "10%",
+                        left: "14%",
+                        width: "44%",
+                        height: "36%",
+                        borderRadius: "50% 50% 45% 45% / 60% 60% 35% 35%",
+                        background:
+                          "radial-gradient(ellipse at 42% 38%, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.75) 35%, rgba(255, 255, 255, 0) 80%)",
+                        transform: "rotate(-26deg)",
+                        filter: "blur(0.4px)",
+                        pointerEvents: "none",
+                        zIndex: 3,
+                      }}
                     />
-                    <div 
+                    <div
                       className="emerald-orb-glow-rim"
-                      style={{ position: 'absolute', bottom: '6%', right: '12%', width: '48%', height: '38%', borderRadius: '50%', background: 'radial-gradient(circle, rgba(253, 230, 138, 0.6) 0%, rgba(245, 158, 11, 0.3) 50%, transparent 80%)', filter: 'blur(1px)', pointerEvents: 'none', zIndex: 3 }}
+                      style={{
+                        position: "absolute",
+                        bottom: "6%",
+                        right: "12%",
+                        width: "48%",
+                        height: "38%",
+                        borderRadius: "50%",
+                        background:
+                          "radial-gradient(circle, rgba(253, 230, 138, 0.6) 0%, rgba(245, 158, 11, 0.3) 50%, transparent 80%)",
+                        filter: "blur(1px)",
+                        pointerEvents: "none",
+                        zIndex: 3,
+                      }}
                     />
-                    <span 
+                    <span
                       className="emerald-orb-sparkle"
-                      style={{ position: 'absolute', top: '42%', right: '28%', width: '2.5px', height: '2.5px', background: '#ffffff', borderRadius: '50%', boxShadow: '0 0 4px #fde68a', opacity: 0.75, zIndex: 3 }}
+                      style={{
+                        position: "absolute",
+                        top: "42%",
+                        right: "28%",
+                        width: "2.5px",
+                        height: "2.5px",
+                        background: "#ffffff",
+                        borderRadius: "50%",
+                        boxShadow: "0 0 4px #fde68a",
+                        opacity: 0.75,
+                        zIndex: 3,
+                      }}
                     />
-                    <span 
+                    <span
                       className="emerald-orb-sparkle"
-                      style={{ position: 'absolute', bottom: '32%', left: '45%', width: '1.5px', height: '1.5px', background: '#ffffff', borderRadius: '50%', boxShadow: '0 0 3px #fde68a', opacity: 0.4, zIndex: 3 }}
+                      style={{
+                        position: "absolute",
+                        bottom: "32%",
+                        left: "45%",
+                        width: "1.5px",
+                        height: "1.5px",
+                        background: "#ffffff",
+                        borderRadius: "50%",
+                        boxShadow: "0 0 3px #fde68a",
+                        opacity: 0.4,
+                        zIndex: 3,
+                      }}
                     />
                   </div>
                 </div>
@@ -305,23 +381,23 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 {/* Elegant Text Input with AnimatedTextCycle */}
                 <div className="relative flex-1 h-full flex items-center min-w-0">
                   {!searchQuery && (
-                    <div 
+                    <div
                       onClick={() => searchInputRef.current?.focus()}
                       className="pointer-events-none absolute inset-y-0 left-2 flex items-center text-[13px] min-[380px]:text-[13.5px] min-[410px]:text-[14px] tracking-[-0.015em] text-[#1d1d1f]/75 dark:text-slate-300/80 font-normal select-none pr-1 z-20 whitespace-nowrap max-w-full"
                     >
                       <span className="mr-1 shrink-0">Search</span>
-                      <AnimatedTextCycle 
+                      <AnimatedTextCycle
                         words={typewriterServices}
                         interval={2200}
                         textClassName="text-[#1d1d1f] dark:text-white font-semibold tracking-tight"
                       />
                     </div>
                   )}
-                  <input 
+                  <input
                     ref={searchInputRef}
-                    aria-label="Search services, universities, courses" 
-                    className="typewriter-input w-full h-full pl-2 pr-1 text-[13px] min-[380px]:text-[13.5px] min-[410px]:text-[14px] tracking-[-0.015em] bg-transparent border-0 text-[#1d1d1f] dark:text-white placeholder:text-transparent font-normal focus:outline-none focus:ring-0 transition-all relative z-10" 
-                    id="main-course-search" 
+                    aria-label="Search services, universities, courses"
+                    className="typewriter-input w-full h-full pl-2 pr-1 text-[13px] min-[380px]:text-[13.5px] min-[410px]:text-[14px] tracking-[-0.015em] bg-transparent border-0 text-[#1d1d1f] dark:text-white placeholder:text-transparent font-normal focus:outline-none focus:ring-0 transition-all relative z-10"
+                    id="main-course-search"
                     type="search"
                     value={searchQuery}
                     onChange={(e) => {
@@ -335,48 +411,92 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 {/* Interactive Right Actions: Clear & Suggestion with 44px touch targets */}
                 <div className="flex items-center shrink-0">
                   {searchQuery && (
-                    <button 
-                      aria-label="Clear search" 
-                      className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white hover:bg-[#f5f5f7] dark:hover:bg-slate-700 active:scale-90 transition-all flex items-center justify-center cursor-pointer" 
-                      id="clear-search-btn" 
-                      onClick={() => setSearchQuery('')}
+                    <button
+                      aria-label="Clear search"
+                      className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white hover:bg-[#f5f5f7] dark:hover:bg-slate-700 active:scale-90 transition-all flex items-center justify-center cursor-pointer"
+                      id="clear-search-btn"
+                      onClick={() => setSearchQuery("")}
                       type="button"
                     >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
-                        <path d="M6 18L18 6M6 6l12 12" strokeLinecap="round" strokeLinejoin="round" />
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.2"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M6 18L18 6M6 6l12 12"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
                       </svg>
                     </button>
                   )}
-                  <button 
-                    aria-label="Quick suggestions" 
-                    className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full text-[#8e8e93] hover:text-[#1d1d1f] dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 active:scale-90 transition-colors flex items-center justify-center cursor-pointer" 
+                  <button
+                    aria-label="Quick suggestions"
+                    className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full text-[#8e8e93] hover:text-[#1d1d1f] dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 active:scale-90 transition-colors flex items-center justify-center cursor-pointer"
                     onClick={() => {
                       const prompts = [
                         "United Kingdom",
                         "Computer Science",
                         "Australia",
                         "New Zealand",
-                        "Health Insurance"
+                        "Health Insurance",
                       ];
-                      const pick = prompts[Math.floor(Math.random() * prompts.length)];
+                      const pick =
+                        prompts[Math.floor(Math.random() * prompts.length)];
                       setSearchQuery(pick);
                       setDropdownOpen(true);
-                    }} 
-                    title="Quick suggestions" 
+                    }}
+                    title="Quick suggestions"
                     type="button"
                   >
-                    <svg className="w-4 h-4 text-[#86868b] dark:text-slate-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                      <path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" strokeLinecap="round" strokeLinejoin="round" />
-                      <path d="M19 10v2a7 7 0 01-14 0v-2" strokeLinecap="round" strokeLinejoin="round" />
-                      <line strokeLinecap="round" strokeLinejoin="round" x1="12" x2="12" y1="19" y2="23" />
-                      <line strokeLinecap="round" strokeLinejoin="round" x1="8" x2="16" y1="23" y2="23" />
+                    <svg
+                      className="w-4 h-4 text-[#86868b] dark:text-slate-400"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M19 10v2a7 7 0 01-14 0v-2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <line
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        x1="12"
+                        x2="12"
+                        y1="19"
+                        y2="23"
+                      />
+                      <line
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        x1="8"
+                        x2="16"
+                        y1="23"
+                        y2="23"
+                      />
                     </svg>
                   </button>
                 </div>
                 <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-[2px] overflow-hidden rounded-b-full">
-                  <div 
-                    className="bottom-beam-glow h-full w-[60%] blur-[0.5px]" 
-                    style={{ background: 'linear-gradient(90deg, transparent 0%, rgba(251, 191, 36, 0.25) 20%, rgb(245, 158, 11) 50%, rgb(0, 102, 204) 80%, transparent 100%)', boxShadow: 'rgba(245, 158, 11, 0.65) 0px 0px 8px 1px', animation: '2.8s linear infinite beam-travel' }} 
+                  <div
+                    className="bottom-beam-glow h-full w-[60%] blur-[0.5px]"
+                    style={{
+                      background:
+                        "linear-gradient(90deg, transparent 0%, rgba(251, 191, 36, 0.25) 20%, rgb(245, 158, 11) 50%, rgb(0, 102, 204) 80%, transparent 100%)",
+                      boxShadow: "rgba(245, 158, 11, 0.65) 0px 0px 8px 1px",
+                      animation: "2.8s linear infinite beam-travel",
+                    }}
                   />
                 </div>
               </div>
@@ -387,54 +507,79 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               <div className="bg-white dark:bg-slate-900 border-b border-[#e5e5ea] dark:border-slate-800 p-2 max-h-52 overflow-y-auto no-scrollbar space-y-1">
                 <div className="px-2 py-0.5 flex items-center justify-between text-[10.5px] font-bold text-[#86868b] dark:text-slate-400">
                   <span>Match Suggestions</span>
-                  <span className="text-[#0066cc] dark:text-sky-400 font-semibold">{matchedCountries.length + matchedServices.length} found</span>
+                  <span className="text-[#0066cc] dark:text-sky-400 font-semibold">
+                    {matchedCountries.length + matchedServices.length} found
+                  </span>
                 </div>
                 {matchedCountries.map((c) => (
                   <button
                     key={c.code}
-                    onClick={() => handleSelectResult('destination', c.name)}
+                    onClick={() => handleSelectResult("destination", c.name)}
                     className="w-full text-left flex items-center gap-2 p-2 rounded-lg hover:bg-[#f5f5f7] dark:hover:bg-slate-800 text-xs transition-colors min-h-[44px]"
                   >
                     <span className="text-base">{c.flagEmoji}</span>
-                    <span className="font-bold text-[#1d1d1f] dark:text-white flex-1">{c.name}</span>
-                    <span className="text-[11px] text-[#0066cc] dark:text-sky-400 font-semibold">Explore →</span>
+                    <span className="font-bold text-[#1d1d1f] dark:text-white flex-1">
+                      {c.name}
+                    </span>
+                    <span className="text-[11px] text-[#0066cc] dark:text-sky-400 font-semibold">
+                      Explore →
+                    </span>
                   </button>
                 ))}
                 {matchedServices.map((s) => (
                   <button
                     key={s.id}
-                    onClick={() => handleSelectResult('service', s.title)}
+                    onClick={() => handleSelectResult("service", s.title)}
                     className="w-full text-left flex items-center gap-2 p-2 rounded-lg hover:bg-[#f5f5f7] dark:hover:bg-slate-800 text-xs transition-colors min-h-[44px]"
                   >
-                    <span className="material-symbols-outlined text-[15px] text-amber-600 dark:text-amber-400">{s.iconName}</span>
-                    <span className="font-bold text-[#1d1d1f] dark:text-white flex-1">{s.title}</span>
-                    <span className="text-[11px] text-amber-600 dark:text-amber-400 font-semibold">View →</span>
+                    <span className="material-symbols-outlined text-[15px] text-amber-600 dark:text-amber-400">
+                      {s.iconName}
+                    </span>
+                    <span className="font-bold text-[#1d1d1f] dark:text-white flex-1">
+                      {s.title}
+                    </span>
+                    <span className="text-[11px] text-amber-600 dark:text-amber-400 font-semibold">
+                      View →
+                    </span>
                   </button>
                 ))}
-                {matchedCountries.length === 0 && matchedServices.length === 0 && (
-                  <div className="p-3 text-center text-xs text-[#86868b] dark:text-slate-400">
-                    No exact match. Click "Find Programs" below.
-                  </div>
-                )}
+                {matchedCountries.length === 0 &&
+                  matchedServices.length === 0 && (
+                    <div className="p-3 text-center text-xs text-[#86868b] dark:text-slate-400">
+                      No exact match. Click "Find Programs" below.
+                    </div>
+                  )}
               </div>
             )}
 
-            {/* Unified Inset Grouped Filter Matrix - 3-Column Strip with Apple-Grade Touch Target */}
-            <div className="grid grid-cols-3 divide-x divide-[#e5e5ea] dark:divide-slate-800 bg-[#fafafc] dark:bg-slate-900/60 border-b border-[#e5e5ea] dark:border-slate-800" data-purpose="inset-filter-matrix">
+            {/* Unified Inset Grouped Filter Matrix - 1-Row Scrollable Strip on Mobile */}
+            <div
+              className="flex items-center overflow-x-auto scrollbar-none [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden shrink-0 snap-x divide-x divide-[#e5e5ea] dark:divide-slate-800 bg-[#fafafc] dark:bg-slate-900/60 border-b border-[#e5e5ea] dark:border-slate-800 sm:grid sm:grid-cols-3 sm:overflow-visible"
+              data-purpose="inset-filter-matrix"
+            >
               {/* Column 1: DESTINATION */}
-              <label className="relative px-2 min-[390px]:px-2.5 py-2.5 min-[390px]:py-3 min-h-[48px] min-[390px]:min-h-[50px] flex items-center gap-1.5 xs:gap-2 min-w-0 hover:bg-[#f5f5f7] dark:hover:bg-slate-800/50 active:bg-[#ebebed] dark:active:bg-slate-800 transition-colors cursor-pointer select-none">
-                <div className="w-5 h-5 rounded-[6px] bg-[#eef5fc] dark:bg-blue-950/60 text-[#0066cc] dark:text-blue-400 flex items-center justify-center shrink-0">
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
-                    <circle cx="12" cy="12" r="9" />
-                    <path d="M3.6 9h16.8M3.6 15h16.8M12 3a14 14 0 014 9 14 14 0 01-4 9 14 14 0 01-4-9 14 14 0 014-9z" strokeLinecap="round" />
-                  </svg>
-                </div>
+              <label className="relative px-2.5 py-2.5 min-[390px]:py-3 min-h-[48px] min-[390px]:min-h-[50px] flex items-center gap-2 shrink-0 min-w-[155px] sm:min-w-0 sm:flex-1 hover:bg-[#f5f5f7] dark:hover:bg-slate-800/50 active:bg-[#ebebed] dark:active:bg-slate-800 transition-colors cursor-pointer select-none snap-start">
+                <svg
+                  className="w-5 h-5 text-[#2563eb] dark:text-blue-400 shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                >
+                  <circle cx="12" cy="12" r="9" />
+                  <path
+                    d="M3.6 9h16.8M3.6 15h16.8M12 3a14 14 0 014 9 14 14 0 01-4 9 14 14 0 01-4-9 14 14 0 014-9z"
+                    strokeLinecap="round"
+                  />
+                </svg>
                 <div className="flex-1 min-w-0 flex flex-col justify-center">
-                  <span className={`text-[10px] min-[390px]:text-[11px] font-bold tracking-[0.05em] uppercase leading-none block truncate transition-all duration-300 ease-out transform ${
-                    selectedDestination !== 'all'
-                      ? 'text-[#f59e0b] dark:text-[#fbbf24] scale-[1.04] translate-x-0.5'
-                      : 'text-[#86868b] dark:text-slate-400'
-                  }`}>
+                  <span
+                    className={`text-[10px] min-[390px]:text-[11px] font-bold tracking-[0.05em] uppercase leading-none block truncate transition-all duration-300 ease-out transform ${
+                      selectedDestination !== "all"
+                        ? "text-[#f59e0b] dark:text-[#fbbf24] scale-[1.04] translate-x-0.5"
+                        : "text-[#86868b] dark:text-slate-400"
+                    }`}
+                  >
                     DESTINATION
                   </span>
                   <select
@@ -459,18 +604,27 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               </label>
 
               {/* Column 2: LEVEL */}
-              <label className="relative px-2 min-[390px]:px-2.5 py-2.5 min-[390px]:py-3 min-h-[48px] min-[390px]:min-h-[50px] flex items-center gap-1.5 xs:gap-2 min-w-0 hover:bg-[#f5f5f7] dark:hover:bg-slate-800/50 active:bg-[#ebebed] dark:active:bg-slate-800 transition-colors cursor-pointer select-none">
-                <div className="w-5 h-5 rounded-[6px] bg-[#fff8eb] dark:bg-amber-950/60 text-[#d97706] dark:text-amber-400 flex items-center justify-center shrink-0">
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
-                    <path d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </div>
+              <label className="relative px-2.5 py-2.5 min-[390px]:py-3 min-h-[48px] min-[390px]:min-h-[50px] flex items-center gap-2 shrink-0 min-w-[155px] sm:min-w-0 sm:flex-1 hover:bg-[#f5f5f7] dark:hover:bg-slate-800/50 active:bg-[#ebebed] dark:active:bg-slate-800 transition-colors cursor-pointer select-none snap-start">
+                <svg
+                  className="w-5 h-5 text-[#d97706] dark:text-amber-400 shrink-0"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                  <path d="M6 12v5c3 3 9 3 12 0v-5" />
+                </svg>
                 <div className="flex-1 min-w-0 flex flex-col justify-center">
-                  <span className={`text-[10px] min-[390px]:text-[11px] font-bold tracking-[0.05em] uppercase leading-none block truncate transition-all duration-300 ease-out transform ${
-                    selectedLevel !== 'all'
-                      ? 'text-[#d97706] dark:text-amber-400 scale-[1.04] translate-x-0.5'
-                      : 'text-[#86868b] dark:text-slate-400'
-                  }`}>
+                  <span
+                    className={`text-[10px] min-[390px]:text-[11px] font-bold tracking-[0.05em] uppercase leading-none block truncate transition-all duration-300 ease-out transform ${
+                      selectedLevel !== "all"
+                        ? "text-[#d97706] dark:text-amber-400 scale-[1.04] translate-x-0.5"
+                        : "text-[#86868b] dark:text-slate-400"
+                    }`}
+                  >
                     LEVEL
                   </span>
                   <select
@@ -488,18 +642,29 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               </label>
 
               {/* Column 3: FIELD */}
-              <label className="relative px-2 min-[390px]:px-2.5 py-2.5 min-[390px]:py-3 min-h-[48px] min-[390px]:min-h-[50px] flex items-center gap-1.5 xs:gap-2 min-w-0 hover:bg-[#f5f5f7] dark:hover:bg-slate-800/50 active:bg-[#ebebed] dark:active:bg-slate-800 transition-colors cursor-pointer select-none">
-                <div className="w-5 h-5 rounded-[6px] bg-[#ecfdf5] dark:bg-emerald-950/60 text-[#059669] dark:text-emerald-400 flex items-center justify-center shrink-0">
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
-                    <path d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </div>
+              <label className="relative px-2.5 py-2.5 min-[390px]:py-3 min-h-[48px] min-[390px]:min-h-[50px] flex items-center gap-2 shrink-0 min-w-[155px] sm:min-w-0 sm:flex-1 hover:bg-[#f5f5f7] dark:hover:bg-slate-800/50 active:bg-[#ebebed] dark:active:bg-slate-800 transition-colors cursor-pointer select-none snap-start">
+                <svg
+                  className="w-5 h-5 text-[#059669] dark:text-emerald-400 shrink-0"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                  <path d="M8 7h8" />
+                  <path d="M8 11h6" />
+                </svg>
                 <div className="flex-1 min-w-0 flex flex-col justify-center">
-                  <span className={`text-[10px] min-[390px]:text-[11px] font-bold tracking-[0.05em] uppercase leading-none block truncate transition-all duration-300 ease-out transform ${
-                    fieldOfStudy !== 'all'
-                      ? 'text-[#059669] dark:text-[#34d399] scale-[1.04] translate-x-0.5'
-                      : 'text-[#86868b] dark:text-slate-400'
-                  }`}>
+                  <span
+                    className={`text-[10px] min-[390px]:text-[11px] font-bold tracking-[0.05em] uppercase leading-none block truncate transition-all duration-300 ease-out transform ${
+                      fieldOfStudy !== "all"
+                        ? "text-[#059669] dark:text-[#34d399] scale-[1.04] translate-x-0.5"
+                        : "text-[#86868b] dark:text-slate-400"
+                    }`}
+                  >
                     FIELD
                   </span>
                   <select
@@ -532,90 +697,109 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 onClick={handleFindPrograms}
                 type="button"
                 data-purpose="compact-btn"
-                className="w-full h-12 min-h-[44px] rounded-full bg-[#fbb034] hover:bg-[#f59e0b] active:bg-[#d97706] text-slate-950 font-black text-[15px] tracking-tight flex items-center justify-center space-x-2 transition-all shadow-sm active:scale-[0.98] cursor-pointer"
+                className="w-full h-12 min-h-[48px] rounded-2xl sm:rounded-full bg-[#0a0f1d] hover:bg-[#151c30] active:bg-[#050810] text-white font-extrabold text-[15px] tracking-tight flex items-center justify-center space-x-2.5 transition-all shadow-md hover:shadow-xl active:scale-[0.98] cursor-pointer"
               >
                 <span>Find Programs</span>
-                <svg className="w-4 h-4 stroke-[2.4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" strokeLinecap="round" strokeLinejoin="round" />
+                <svg
+                  className="w-4.5 h-4.5 stroke-[2.8]"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
                 </svg>
               </button>
 
-              {/* 4 Clean Rounded White Pill Buttons with Apple-Grade 44px Touch Targets */}
-              <div className="grid grid-cols-4 gap-1 xs:gap-1.5 mt-2.5" data-purpose="quick-navigation-grid">
+              {/* Quick Navigation Buttons - 1 Row Scrollable with Hand/Mouse Drag */}
+              <div
+                className="flex items-center gap-1.5 overflow-x-auto scrollbar-none [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden mt-2.5 pb-1 -mx-1 px-1 cursor-grab active:cursor-grabbing select-none sm:grid sm:grid-cols-4 sm:overflow-visible sm:cursor-default"
+                data-purpose="quick-navigation-grid"
+              >
                 <button
-                  onClick={() => onNavigate('universities')}
+                  onClick={() => onNavigate("universities")}
                   type="button"
                   data-purpose="compact-btn"
-                  className="w-full h-11 min-h-[44px] px-1 rounded-full border border-[#e5e5ea] dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-[#f5f5f7] dark:hover:bg-slate-750 active:bg-[#ebebed] text-[#1d1d1f] dark:text-white font-semibold text-[11.5px] min-[380px]:text-[12px] tracking-tight text-center transition-all shadow-none flex items-center justify-center active:scale-[0.96] cursor-pointer truncate"
+                  className="shrink-0 min-w-[92px] sm:w-full h-11 min-h-[44px] px-2.5 rounded-full border border-[#e5e5ea] dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-[#f5f5f7] dark:hover:bg-slate-750 active:bg-[#ebebed] text-[#1d1d1f] dark:text-white font-semibold text-[11px] min-[380px]:text-[11.5px] tracking-tight text-center transition-all shadow-none flex items-center justify-center gap-1.5 active:scale-[0.96] cursor-pointer truncate"
                 >
-                  Unis
+                  <svg className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11"/></svg>
+                  <span className="truncate">Unis</span>
                 </button>
                 <button
-                  onClick={() => onNavigate('courses')}
+                  onClick={() => onNavigate("courses")}
                   type="button"
                   data-purpose="compact-btn"
-                  className="w-full h-11 min-h-[44px] px-1 rounded-full border border-[#e5e5ea] dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-[#f5f5f7] dark:hover:bg-slate-750 active:bg-[#ebebed] text-[#1d1d1f] dark:text-white font-semibold text-[11.5px] min-[380px]:text-[12px] tracking-tight text-center transition-all shadow-none flex items-center justify-center active:scale-[0.96] cursor-pointer truncate"
+                  className="shrink-0 min-w-[102px] sm:w-full h-11 min-h-[44px] px-2.5 rounded-full border border-[#e5e5ea] dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-[#f5f5f7] dark:hover:bg-slate-750 active:bg-[#ebebed] text-[#1d1d1f] dark:text-white font-semibold text-[11px] min-[380px]:text-[11.5px] tracking-tight text-center transition-all shadow-none flex items-center justify-center gap-1.5 active:scale-[0.96] cursor-pointer truncate"
                 >
-                  Courses
+                  <svg className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                  <span className="truncate">Courses</span>
                 </button>
                 <button
-                  onClick={() => onNavigate('services', 'ielts-preparation')}
+                  onClick={() => onNavigate("services", "ielts-preparation")}
                   type="button"
                   data-purpose="compact-btn"
-                  className="w-full h-11 min-h-[44px] px-1 rounded-full border border-[#e5e5ea] dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-[#f5f5f7] dark:hover:bg-slate-750 active:bg-[#ebebed] text-[#1d1d1f] dark:text-white font-semibold text-[11.5px] min-[380px]:text-[12px] tracking-tight text-center transition-all shadow-none flex items-center justify-center active:scale-[0.96] cursor-pointer truncate"
+                  className="shrink-0 min-w-[92px] sm:w-full h-11 min-h-[44px] px-2.5 rounded-full border border-[#e5e5ea] dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-[#f5f5f7] dark:hover:bg-slate-750 active:bg-[#ebebed] text-[#1d1d1f] dark:text-white font-semibold text-[11px] min-[380px]:text-[11.5px] tracking-tight text-center transition-all shadow-none flex items-center justify-center gap-1.5 active:scale-[0.96] cursor-pointer truncate"
                 >
-                  IELTS
+                  <svg className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                  <span className="truncate">IELTS</span>
                 </button>
                 <button
-                  onClick={() => onNavigate('blog')}
+                  onClick={() => onNavigate("blog")}
                   type="button"
                   data-purpose="compact-btn"
-                  className="w-full h-11 min-h-[44px] px-1 rounded-full border border-[#e5e5ea] dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-[#f5f5f7] dark:hover:bg-slate-750 active:bg-[#ebebed] text-[#1d1d1f] dark:text-white font-semibold text-[11.5px] min-[380px]:text-[12px] tracking-tight text-center transition-all shadow-none flex items-center justify-center active:scale-[0.96] cursor-pointer truncate"
+                  className="shrink-0 min-w-[92px] sm:w-full h-11 min-h-[44px] px-2.5 rounded-full border border-[#e5e5ea] dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-[#f5f5f7] dark:hover:bg-slate-750 active:bg-[#ebebed] text-[#1d1d1f] dark:text-white font-semibold text-[11px] min-[380px]:text-[11.5px] tracking-tight text-center transition-all shadow-none flex items-center justify-center gap-1.5 active:scale-[0.96] cursor-pointer truncate"
                 >
-                  Blogs
+                  <svg className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg>
+                  <span className="truncate">Blogs</span>
                 </button>
               </div>
 
-              {/* Stats Overview Row - Space-Optimized 1-Line Format for Mobile */}
-              <div className="flex items-center justify-between gap-1 mt-2.5 pt-2 pb-0.5 border-t border-[#e5e5ea] dark:border-slate-800 px-1" data-purpose="stats-overview-grid">
-                <div className="flex-1 flex items-center justify-center gap-1 min-w-0 text-center leading-none">
-                  <span className="text-[12px] min-[390px]:text-[13px] font-extrabold tracking-tight text-[#1d1d1f] dark:text-white shrink-0">
+              {/* Stats Overview Row - Super Compact 1-Line Format for Mobile */}
+              <div
+                className="flex items-center justify-between gap-0.5 mt-1.5 pt-1.5 pb-0.5 border-t border-[#e5e5ea] dark:border-slate-800 px-0.5"
+                data-purpose="stats-overview-grid"
+              >
+                <div className="flex-1 flex items-center justify-center gap-0.5 min-w-0 text-center leading-none">
+                  <span className="text-[11px] min-[390px]:text-[12px] font-extrabold tracking-tight text-[#1d1d1f] dark:text-white shrink-0">
                     100+
                   </span>
-                  <span className="text-[11px] min-[390px]:text-[12px] font-semibold text-[#86868b] dark:text-slate-400 tracking-tight truncate">
+                  <span className="text-[10px] min-[390px]:text-[11px] font-semibold text-[#86868b] dark:text-slate-400 tracking-tight truncate">
                     Students
                   </span>
                 </div>
 
-                <div className="w-[1px] h-3.5 bg-[#e5e5ea] dark:bg-slate-800 shrink-0" />
+                <div className="w-[1px] h-3 bg-[#e5e5ea] dark:bg-slate-800 shrink-0" />
 
-                <div className="flex-1 flex items-center justify-center gap-1 min-w-0 text-center leading-none">
-                  <span className="text-[12px] min-[390px]:text-[13px] font-extrabold tracking-tight text-[#1d1d1f] dark:text-white shrink-0">
+                <div className="flex-1 flex items-center justify-center gap-0.5 min-w-0 text-center leading-none">
+                  <span className="text-[11px] min-[390px]:text-[12px] font-extrabold tracking-tight text-[#1d1d1f] dark:text-white shrink-0">
                     167+
                   </span>
-                  <span className="text-[11px] min-[390px]:text-[12px] font-semibold text-[#86868b] dark:text-slate-400 tracking-tight truncate">
+                  <span className="text-[10px] min-[390px]:text-[11px] font-semibold text-[#86868b] dark:text-slate-400 tracking-tight truncate">
                     Unis
                   </span>
                 </div>
 
-                <div className="w-[1px] h-3.5 bg-[#e5e5ea] dark:bg-slate-800 shrink-0" />
+                <div className="w-[1px] h-3 bg-[#e5e5ea] dark:bg-slate-800 shrink-0" />
 
-                <div className="flex-1 flex items-center justify-center gap-1 min-w-0 text-center leading-none">
-                  <span className="text-[12px] min-[390px]:text-[13px] font-extrabold tracking-tight text-[#1d1d1f] dark:text-white shrink-0">
+                <div className="flex-1 flex items-center justify-center gap-0.5 min-w-0 text-center leading-none">
+                  <span className="text-[11px] min-[390px]:text-[12px] font-extrabold tracking-tight text-[#1d1d1f] dark:text-white shrink-0">
                     95%
                   </span>
-                  <span className="text-[11px] min-[390px]:text-[12px] font-semibold text-[#86868b] dark:text-slate-400 tracking-tight truncate">
+                  <span className="text-[10px] min-[390px]:text-[11px] font-semibold text-[#86868b] dark:text-slate-400 tracking-tight truncate">
                     Visa
                   </span>
                 </div>
 
-                <div className="w-[1px] h-3.5 bg-[#e5e5ea] dark:bg-slate-800 shrink-0" />
+                <div className="w-[1px] h-3 bg-[#e5e5ea] dark:bg-slate-800 shrink-0" />
 
-                <div className="flex-1 flex items-center justify-center gap-1 min-w-0 text-center leading-none">
-                  <span className="text-[12px] min-[390px]:text-[13px] font-extrabold tracking-tight text-[#1d1d1f] dark:text-white shrink-0">
+                <div className="flex-1 flex items-center justify-center gap-0.5 min-w-0 text-center leading-none">
+                  <span className="text-[11px] min-[390px]:text-[12px] font-extrabold tracking-tight text-[#1d1d1f] dark:text-white shrink-0">
                     2+
                   </span>
-                  <span className="text-[11px] min-[390px]:text-[12px] font-semibold text-[#86868b] dark:text-slate-400 tracking-tight truncate">
+                  <span className="text-[10px] min-[390px]:text-[11px] font-semibold text-[#86868b] dark:text-slate-400 tracking-tight truncate">
                     Offices
                   </span>
                 </div>
@@ -625,99 +809,307 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         </div>
 
         {/* DESKTOP VIEW: Search & Filter Floating Card (>= sm screens) */}
-        <div className="w-full relative z-20 mt-2 xs:mt-3 sm:mt-8 hidden sm:block">
-          <div className="relative w-full bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl p-3 sm:p-4">
-            {/* Search Input Bar */}
-            <div className="relative flex items-center w-full bg-slate-50 dark:bg-slate-800/60 rounded-2xl px-4 py-3 border border-slate-200/80 dark:border-slate-700/60 focus-within:border-blue-600 focus-within:bg-white dark:focus-within:bg-slate-800 focus-within:ring-2 focus-within:ring-blue-500/20 transition-all">
-              <span className="material-symbols-outlined text-blue-600 text-[24px] mr-3 shrink-0">search</span>
-              <input
-                ref={searchInputRef}
-                type="text"
-                placeholder="Search universities, courses, destinations, or scholarships..."
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  setDropdownOpen(true);
-                }}
-                onFocus={() => setDropdownOpen(true)}
-                className="w-full bg-transparent text-slate-900 dark:text-white placeholder-slate-400 text-sm sm:text-base font-medium focus:outline-none border-0 p-0 pr-3"
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery('')}
-                  className="p-1 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+        <div className="w-full relative z-20 mt-1 sm:mt-2 hidden sm:block">
+          <section
+            className="bg-white dark:bg-slate-900 rounded-3xl border border-[#e5e5ea] dark:border-slate-800 overflow-hidden shadow-xl"
+            data-purpose="desktop-compact-search-widget"
+          >
+            {/* Row 1: High-end Search Capsule with 3D Glowing Orb & Looping Typewriter */}
+            <div className="p-3 sm:p-4 bg-white dark:bg-slate-900 border-b border-[#e5e5ea] dark:border-slate-800">
+              <div className="relative flex items-center h-13 sm:h-14 pl-3 pr-2 rounded-2xl sm:rounded-full bg-white dark:bg-slate-800/90 border border-[#e2e4ea] dark:border-slate-700 transition-all duration-300 shadow-[0_2px_10px_-2px_rgba(0,0,0,0.04)] hover:border-[#cbcfd9] dark:hover:border-slate-600 focus-within:border-amber-500/60 focus-within:shadow-[0_4px_18px_-3px_rgba(245,158,11,0.2)] focus-within:ring-2 focus-within:ring-amber-500/15 overflow-hidden">
+                {/* 3D Glowing Orb */}
+                <div
+                  className="emerald-orb-container orb-animating"
+                  id="desktop-emerald-orb"
+                  onClick={() => searchInputRef.current?.focus()}
+                  title="Ask GEES AI"
+                  style={{
+                    position: "relative",
+                    width: "36px",
+                    height: "36px",
+                    flexShrink: 0,
+                    cursor: "pointer",
+                    borderRadius: "9999px",
+                  }}
                 >
-                  <span className="material-symbols-outlined text-[18px]">close</span>
-                </button>
-              )}
+                  <div
+                    className="emerald-orb-shadow"
+                    style={{
+                      position: "absolute",
+                      inset: "-4px",
+                      borderRadius: "9999px",
+                      background:
+                        "radial-gradient(circle at 50% 55%, rgba(245, 158, 11, 0.55) 0%, rgba(217, 119, 6, 0.3) 50%, transparent 75%)",
+                      filter: "blur(5px)",
+                      zIndex: 1,
+                      opacity: 0.85,
+                    }}
+                  />
+                  <div
+                    className="emerald-orb-body"
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      borderRadius: "9999px",
+                      zIndex: 2,
+                      background:
+                        "radial-gradient(circle at 35% 30%, #fef3c7 0%, #fde68a 18%, #fbbf24 38%, #f59e0b 60%, #d97706 78%, #92400e 92%, #451a03 100%)",
+                      boxShadow:
+                        "inset 0 -3px 6px rgba(69, 26, 3, 0.7), inset 0 2px 4px rgba(255, 255, 255, 0.75), 0 3px 10px -1px rgba(245, 158, 11, 0.5), 0 1px 4px rgba(0, 0, 0, 0.15)",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div
+                      className="emerald-orb-highlight"
+                      style={{
+                        position: "absolute",
+                        top: "10%",
+                        left: "14%",
+                        width: "44%",
+                        height: "36%",
+                        borderRadius: "50% 50% 45% 45% / 60% 60% 35% 35%",
+                        background:
+                          "radial-gradient(ellipse at 42% 38%, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.75) 35%, rgba(255, 255, 255, 0) 80%)",
+                        transform: "rotate(-26deg)",
+                        filter: "blur(0.4px)",
+                        pointerEvents: "none",
+                        zIndex: 3,
+                      }}
+                    />
+                    <div
+                      className="emerald-orb-glow-rim"
+                      style={{
+                        position: "absolute",
+                        bottom: "6%",
+                        right: "12%",
+                        width: "48%",
+                        height: "38%",
+                        borderRadius: "50%",
+                        background:
+                          "radial-gradient(circle, rgba(253, 230, 138, 0.6) 0%, rgba(245, 158, 11, 0.3) 50%, transparent 80%)",
+                        filter: "blur(1px)",
+                        pointerEvents: "none",
+                        zIndex: 3,
+                      }}
+                    />
+                    <span
+                      className="emerald-orb-sparkle"
+                      style={{
+                        position: "absolute",
+                        top: "42%",
+                        right: "28%",
+                        width: "3px",
+                        height: "3px",
+                        background: "#ffffff",
+                        borderRadius: "50%",
+                        boxShadow: "0 0 4px #fde68a",
+                        opacity: 0.75,
+                        zIndex: 3,
+                      }}
+                    />
+                  </div>
+                </div>
+
+                {/* Text Input with AnimatedTextCycle */}
+                <div className="relative flex-1 h-full flex items-center min-w-0 ml-1">
+                  {!searchQuery && (
+                    <div
+                      onClick={() => searchInputRef.current?.focus()}
+                      className="pointer-events-none absolute inset-y-0 left-2 flex items-center text-sm sm:text-base tracking-[-0.015em] text-[#1d1d1f]/75 dark:text-slate-300/80 font-normal select-none pr-1 z-20 whitespace-nowrap max-w-full"
+                    >
+                      <span className="mr-1.5 shrink-0">Search</span>
+                      <AnimatedTextCycle
+                        words={typewriterServices}
+                        interval={2200}
+                        textClassName="text-[#1d1d1f] dark:text-white font-semibold tracking-tight"
+                      />
+                    </div>
+                  )}
+                  <input
+                    ref={searchInputRef}
+                    aria-label="Search services, universities, courses"
+                    className="typewriter-input w-full h-full pl-2 pr-2 text-sm sm:text-base tracking-[-0.015em] bg-transparent border-0 text-[#1d1d1f] dark:text-white placeholder:text-transparent font-normal focus:outline-none focus:ring-0 transition-all relative z-10"
+                    type="search"
+                    value={searchQuery}
+                    onChange={(e) => {
+                      setSearchQuery(e.target.value);
+                      setDropdownOpen(true);
+                    }}
+                    onFocus={() => setDropdownOpen(true)}
+                  />
+                </div>
+
+                {/* Right Actions: Clear & Quick Suggestions */}
+                <div className="flex items-center shrink-0 gap-1">
+                  {searchQuery && (
+                    <button
+                      aria-label="Clear search"
+                      className="w-10 h-10 rounded-full text-[#86868b] hover:text-[#1d1d1f] dark:hover:text-white hover:bg-[#f5f5f7] dark:hover:bg-slate-700 active:scale-90 transition-all flex items-center justify-center cursor-pointer"
+                      onClick={() => setSearchQuery("")}
+                      type="button"
+                    >
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.2"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M6 18L18 6M6 6l12 12"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </button>
+                  )}
+                  <button
+                    aria-label="Quick suggestions"
+                    className="w-10 h-10 rounded-full text-[#8e8e93] hover:text-[#1d1d1f] dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 active:scale-90 transition-colors flex items-center justify-center cursor-pointer"
+                    onClick={() => {
+                      const prompts = [
+                        "United Kingdom",
+                        "Computer Science",
+                        "Australia",
+                        "New Zealand",
+                        "Health Insurance",
+                      ];
+                      const pick =
+                        prompts[Math.floor(Math.random() * prompts.length)];
+                      setSearchQuery(pick);
+                      setDropdownOpen(true);
+                    }}
+                    title="Quick suggestions"
+                    type="button"
+                  >
+                    <svg
+                      className="w-4.5 h-4.5 text-[#86868b] dark:text-slate-400"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M19 10v2a7 7 0 01-14 0v-2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <line
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        x1="12"
+                        x2="12"
+                        y1="19"
+                        y2="23"
+                      />
+                      <line
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        x1="8"
+                        x2="16"
+                        y1="23"
+                        y2="23"
+                      />
+                    </svg>
+                  </button>
+                </div>
+                <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-[2px] overflow-hidden rounded-b-full">
+                  <div
+                    className="bottom-beam-glow h-full w-[60%] blur-[0.5px]"
+                    style={{
+                      background:
+                        "linear-gradient(90deg, transparent 0%, rgba(251, 191, 36, 0.25) 20%, rgb(245, 158, 11) 50%, rgb(0, 102, 204) 80%, transparent 100%)",
+                      boxShadow: "rgba(245, 158, 11, 0.65) 0px 0px 8px 1px",
+                      animation: "2.8s linear infinite beam-travel",
+                    }}
+                  />
+                </div>
+              </div>
             </div>
 
             {/* Instant Fuzzy Dropdown */}
             {showDropdown && (
-              <div className="absolute left-3 right-3 sm:left-4 sm:right-4 top-full mt-2 bg-white dark:bg-slate-900 backdrop-blur-xl rounded-2xl border border-slate-200 dark:border-slate-700 shadow-2xl z-50 overflow-hidden">
-                <div className="px-4 py-2.5 bg-slate-50 dark:bg-slate-800/60 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-slate-500">
-                  <span>Instant Match Suggestions</span>
-                  <span className="text-blue-600">{matchedCountries.length + matchedServices.length} matches</span>
+              <div className="bg-white dark:bg-slate-900 border-b border-[#e5e5ea] dark:border-slate-800 p-3 max-h-72 overflow-y-auto no-scrollbar space-y-1.5">
+                <div className="px-3 py-1 flex items-center justify-between text-xs font-bold text-[#86868b] dark:text-slate-400">
+                  <span>Match Suggestions</span>
+                  <span className="text-[#0066cc] dark:text-sky-400 font-semibold">
+                    {matchedCountries.length + matchedServices.length} found
+                  </span>
                 </div>
-                <div className="max-h-72 overflow-y-auto p-2 space-y-2 no-scrollbar">
-                  {matchedCountries.map((c) => (
-                    <button
-                      key={c.code}
-                      onClick={() => handleSelectResult('destination', c.name)}
-                      className="w-full text-left flex items-center gap-3 p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                    >
-                      <span className="text-xl">{c.flagEmoji}</span>
-                      <div className="flex-1 min-w-0">
-                        <span className="font-bold text-sm text-slate-900 dark:text-white block">{c.name}</span>
-                        <span className="text-xs text-slate-400">{c.unisCountText} • {c.avgTuitionText}</span>
-                      </div>
-                      <span className="text-xs font-bold text-blue-600">Explore →</span>
-                    </button>
-                  ))}
-                  {matchedServices.map((s) => (
-                    <button
-                      key={s.id}
-                      onClick={() => handleSelectResult('service', s.title)}
-                      className="w-full text-left flex items-center gap-3 p-2.5 rounded-xl hover:bg-amber-50/60 dark:hover:bg-slate-800 transition-colors"
-                    >
-                      <div className="w-7 h-7 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
-                        <span className="material-symbols-outlined text-[16px]">{s.iconName}</span>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <span className="font-bold text-sm text-slate-900 dark:text-white block">{s.title}</span>
-                        <span className="text-xs text-slate-400">{s.category}</span>
-                      </div>
-                      <span className="text-xs font-bold text-amber-600">View →</span>
-                    </button>
-                  ))}
-                  {matchedCountries.length === 0 && matchedServices.length === 0 && (
-                    <div className="p-4 text-center text-xs text-slate-400">
-                      No exact match for "{searchQuery}". Click "Find Programs" to explore the full directory.
-                    </div>
-                  )}
-                </div>
+                {matchedCountries.map((c) => (
+                  <button
+                    key={c.code}
+                    onClick={() => handleSelectResult("destination", c.name)}
+                    className="w-full text-left flex items-center gap-3 p-2.5 rounded-xl hover:bg-[#f5f5f7] dark:hover:bg-slate-800 text-sm transition-colors"
+                  >
+                    <span className="text-xl">{c.flagEmoji}</span>
+                    <span className="font-bold text-[#1d1d1f] dark:text-white flex-1">
+                      {c.name}
+                    </span>
+                    <span className="text-xs text-[#0066cc] dark:text-sky-400 font-semibold">
+                      Explore →
+                    </span>
+                  </button>
+                ))}
+                {matchedServices.map((s) => (
+                  <button
+                    key={s.id}
+                    onClick={() => handleSelectResult("service", s.title)}
+                    className="w-full text-left flex items-center gap-3 p-2.5 rounded-xl hover:bg-[#f5f5f7] dark:hover:bg-slate-800 text-sm transition-colors"
+                  >
+                    <span className="material-symbols-outlined text-[18px] text-amber-600 dark:text-amber-400">
+                      {s.iconName}
+                    </span>
+                    <span className="font-bold text-[#1d1d1f] dark:text-white flex-1">
+                      {s.title}
+                    </span>
+                    <span className="text-xs text-amber-600 dark:text-amber-400 font-semibold">
+                      View →
+                    </span>
+                  </button>
+                ))}
               </div>
             )}
 
-            {/* Filter Row: Destination, Level, Field of Study & CTA */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-2.5 pt-3 mt-2 border-t border-slate-100 dark:border-slate-800 items-center">
-              {/* Destination */}
-              <div className="lg:col-span-3 flex items-center gap-2 px-3 py-2 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-transparent hover:border-slate-200 dark:hover:border-slate-700">
-                <div className="w-7 h-7 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center shrink-0">
-                  <span className="material-symbols-outlined text-[16px]">public</span>
+            {/* Row 2: Inset Grouped Filter Matrix - 3 Columns + Find Programs Button */}
+            <div className="grid grid-cols-12 divide-y lg:divide-y-0 lg:divide-x divide-[#e5e5ea] dark:divide-slate-800 bg-[#fafafc] dark:bg-slate-900/60 border-b border-[#e5e5ea] dark:border-slate-800 items-center">
+              {/* Column 1: DESTINATION */}
+              <label className="col-span-12 lg:col-span-3 relative px-4 py-3 min-h-[56px] flex items-center gap-3 hover:bg-[#f5f5f7] dark:hover:bg-slate-800/50 transition-colors cursor-pointer select-none">
+                <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-[#e3eeff] dark:bg-blue-950/80 text-[#2563eb] dark:text-blue-400 flex items-center justify-center shrink-0 shadow-xs">
+                  <svg
+                    className="w-6.5 h-6.5 sm:w-7 sm:h-7 text-[#2563eb] dark:text-blue-400"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.4"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle cx="12" cy="12" r="9" />
+                    <path
+                      d="M3.6 9h16.8M3.6 15h16.8M12 3a14 14 0 014 9 14 14 0 01-4 9 14 14 0 01-4-9 14 14 0 014-9z"
+                    />
+                  </svg>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <span className={`block font-bold text-[9px] tracking-wider uppercase transition-all duration-300 ease-out transform ${
-                    selectedDestination !== 'all'
-                      ? 'text-amber-500 scale-[1.04] translate-x-0.5'
-                      : 'text-slate-400'
-                  }`}>
-                    Destination {selectedDestination !== 'all' ? `(${selectedDestination})` : ''}
+                <div className="flex-1 min-w-0 flex flex-col justify-center">
+                  <span
+                    className={`text-[11px] font-bold tracking-[0.05em] uppercase leading-none block truncate transition-all duration-300 ${
+                      selectedDestination !== "all"
+                        ? "text-[#f59e0b] dark:text-[#fbbf24]"
+                        : "text-[#86868b] dark:text-slate-400"
+                    }`}
+                  >
+                    DESTINATION
                   </span>
                   <select
                     value={selectedDestination}
                     onChange={(e) => setSelectedDestination(e.target.value)}
-                    className="w-full bg-transparent text-xs font-bold text-slate-900 dark:text-white focus:outline-none cursor-pointer rounded-xl border border-slate-200/80 dark:border-slate-700/80 px-2 py-1.5 transition-all duration-200 hover:border-amber-400/50 focus:border-[#fbb034] focus:ring-2 focus:ring-[#fbb034]/30"
+                    className="w-full bg-transparent text-sm font-semibold text-[#1d1d1f] dark:text-white tracking-tight border-0 p-0 mt-0.5 focus:ring-0 focus:outline-none cursor-pointer leading-tight h-[22px]"
                   >
                     <option value="all">All Destinations</option>
                     <option value="Malaysia">Malaysia</option>
@@ -733,96 +1125,173 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     <option value="India">India</option>
                   </select>
                 </div>
-              </div>
+              </label>
 
-              {/* Level of Study */}
-              <div className="lg:col-span-3 flex items-center gap-2 px-3 py-2 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-transparent hover:border-slate-200 dark:hover:border-slate-700">
-                <div className="w-7 h-7 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
-                  <span className="material-symbols-outlined text-[16px]">school</span>
+              {/* Column 2: LEVEL */}
+              <label className="col-span-12 lg:col-span-3 relative px-4 py-3 min-h-[56px] flex items-center gap-3 hover:bg-[#f5f5f7] dark:hover:bg-slate-800/50 transition-colors cursor-pointer select-none">
+                <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-[#fef3c7] dark:bg-amber-950/80 text-[#a14700] dark:text-amber-400 flex items-center justify-center shrink-0 shadow-xs">
+                  <svg
+                    className="w-6.5 h-6.5 sm:w-7 sm:h-7 text-[#a14700] dark:text-amber-400"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.4"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                    <path d="M6 12v5c3 3 9 3 12 0v-5" />
+                  </svg>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <span className="block font-bold text-[9px] tracking-wider uppercase text-slate-400">Level of Study</span>
+                <div className="flex-1 min-w-0 flex flex-col justify-center">
+                  <span
+                    className={`text-[11px] font-bold tracking-[0.05em] uppercase leading-none block truncate transition-all duration-300 ${
+                      selectedLevel !== "all"
+                        ? "text-[#d97706] dark:text-amber-400"
+                        : "text-[#86868b] dark:text-slate-400"
+                    }`}
+                  >
+                    LEVEL
+                  </span>
                   <select
                     value={selectedLevel}
                     onChange={(e) => setSelectedLevel(e.target.value)}
-                    className="w-full bg-transparent text-xs font-bold text-slate-900 dark:text-white focus:outline-none cursor-pointer border-0 p-0"
+                    className="w-full bg-transparent text-sm font-semibold text-[#1d1d1f] dark:text-white tracking-tight border-0 p-0 mt-0.5 focus:ring-0 focus:outline-none cursor-pointer leading-tight h-[22px]"
                   >
                     <option value="all">All Levels</option>
-                    <option value="undergraduate">Undergraduate (Bachelor's)</option>
-                    <option value="postgraduate">Postgraduate (Master's / MBA)</option>
+                    <option value="undergraduate">
+                      Undergraduate (Bachelor's)
+                    </option>
+                    <option value="postgraduate">
+                      Postgraduate (Master's)
+                    </option>
                     <option value="doctorate">Doctorate (PhD)</option>
-                    <option value="certificate">Certificate</option>
-                    <option value="foundation">Foundation / A-Level</option>
-                    <option value="diploma">Diploma</option>
-                    <option value="advanced-diploma">Advanced Diploma</option>
+                    <option value="foundation">Foundation / Pathway</option>
                   </select>
                 </div>
-              </div>
+              </label>
 
-              {/* Field of Study */}
-              <div className="lg:col-span-3 flex items-center gap-2 px-3 py-2 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-transparent hover:border-slate-200 dark:hover:border-slate-700">
-                <div className="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
-                  <span className="material-symbols-outlined text-[16px]">auto_stories</span>
+              {/* Column 3: FIELD */}
+              <label className="col-span-12 lg:col-span-3 relative px-4 py-3 min-h-[56px] flex items-center gap-3 hover:bg-[#f5f5f7] dark:hover:bg-slate-800/50 transition-colors cursor-pointer select-none">
+                <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-[#d1fae5] dark:bg-emerald-950/80 text-[#026a4b] dark:text-emerald-400 flex items-center justify-center shrink-0 shadow-xs">
+                  <svg
+                    className="w-6.5 h-6.5 sm:w-7 sm:h-7 text-[#026a4b] dark:text-emerald-400"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.4"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                    <path d="M8 7h8" />
+                    <path d="M8 11h6" />
+                  </svg>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <span className="block font-bold text-[9px] tracking-wider uppercase text-slate-400">Field of Study</span>
+                <div className="flex-1 min-w-0 flex flex-col justify-center">
+                  <span
+                    className={`text-[11px] font-bold tracking-[0.05em] uppercase leading-none block truncate transition-all duration-300 ${
+                      fieldOfStudy !== "all"
+                        ? "text-[#059669] dark:text-[#34d399]"
+                        : "text-[#86868b] dark:text-slate-400"
+                    }`}
+                  >
+                    FIELD
+                  </span>
                   <select
                     value={fieldOfStudy}
                     onChange={(e) => setFieldOfStudy(e.target.value)}
-                    className="w-full bg-transparent text-xs font-bold text-slate-900 dark:text-white focus:outline-none cursor-pointer border-0 p-0"
+                    className="w-full bg-transparent text-sm font-semibold text-[#1d1d1f] dark:text-white tracking-tight border-0 p-0 mt-0.5 focus:ring-0 focus:outline-none cursor-pointer leading-tight h-[22px]"
                   >
-                    <option value="all">All Programs</option>
-                    <option value="cs">Computer Science & IT</option>
-                    <option value="business">Business & Management</option>
-                    <option value="engineering">Engineering & Applied Sciences</option>
+                    <option value="all">All Fields</option>
+                    <option value="cs">CompSci & IT</option>
+                    <option value="business">Business & Mgmt</option>
+                    <option value="engineering">Engineering</option>
                     <option value="health">Health & Medicine</option>
                     <option value="arts">Arts & Design</option>
-                    <option value="social">Social Sciences</option>
-                    <option value="natural">Natural Sciences</option>
-                    <option value="education">Education & Teaching</option>
-                    <option value="hospitality">Hospitality & Tourism</option>
                     <option value="law">Law</option>
-                    <option value="architecture">Architecture & Built Environment</option>
                   </select>
                 </div>
-              </div>
+              </label>
 
-              {/* Find Programs CTA Button */}
-              <div className="lg:col-span-3 sm:col-span-2 flex items-center justify-end">
-                <InteractiveHoverButton
-                  type="button"
-                  text="Find Programs"
+              {/* Column 4: Find Programs Button */}
+              <div className="col-span-12 lg:col-span-3 p-3 flex items-center justify-center">
+                <button
+                  id="find-programs-button"
                   onClick={handleFindPrograms}
-                  className="w-full h-10 px-4 rounded-xl bg-white dark:bg-slate-900 text-slate-950 dark:text-white border-slate-300 dark:border-slate-700 font-bold text-xs"
-                />
+                  type="button"
+                  className="group relative w-full h-12 sm:h-13 px-6 rounded-2xl sm:rounded-full bg-[#0a0f1d] hover:bg-[#151c30] active:bg-[#050810] text-white font-extrabold text-[15px] sm:text-base tracking-tight flex items-center justify-center gap-2.5 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] shadow-md hover:shadow-xl active:scale-[0.97] cursor-pointer select-none overflow-hidden"
+                >
+                  <span className="transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-x-0.5">Find Programs</span>
+                  <svg
+                    className="w-4 h-4 stroke-[2.4] text-white group-hover:text-[#fbb034] transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] transform group-hover:translate-x-1.5 group-hover:scale-115 group-active:translate-x-2.5 group-active:scale-95 will-change-transform"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      className="transition-all duration-300 ease-out"
+                      d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
               </div>
             </div>
-          </div>
+          </section>
 
-          {/* Quick Nav 4 Gold Action Blocks */}
-          <div className="w-full grid grid-cols-2 sm:grid-cols-4 gap-3.5 mt-5">
+          {/* Quick Nav Action Buttons - Compact & Swipeable */}
+          <div className="w-full flex items-center gap-2 overflow-x-auto scrollbar-none [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden mt-3 pb-1 -mx-1 px-1 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-4 sm:overflow-visible">
             {[
-              { label: 'Universities', view: 'universities' },
-              { label: 'Courses', view: 'courses' },
-              { label: 'IELTS Prep', view: 'services', payload: 'ielts-preparation' },
-              { label: 'Blogs & News', view: 'blog' }
+              { label: "Universities", mobileLabel: "Unis", view: "universities" },
+              { label: "Courses", mobileLabel: "Courses", view: "courses" },
+              {
+                label: "IELTS Prep",
+                mobileLabel: "IELTS",
+                view: "services",
+                payload: "ielts-preparation",
+              },
+              { label: "Blogs & News", mobileLabel: "Blogs", view: "blog" },
             ].map((btn, idx) => (
               <InteractiveHoverButton
                 key={idx}
                 type="button"
-                text={btn.label}
                 onClick={() => onNavigate(btn.view, btn.payload)}
-                className="w-full py-3.5 px-4 bg-white dark:bg-slate-800/80 hover:bg-[#fbb034] text-slate-950 dark:text-white font-bold text-sm sm:text-base rounded-2xl border border-amber-300 dark:border-slate-700 shadow-xs"
+                text={btn.label}
+                mobileText={btn.mobileLabel}
+                className="shrink-0 sm:w-full h-8.5 sm:h-10 px-3 sm:px-4 rounded-full border border-[#e5e5ea] dark:border-slate-800 bg-white dark:bg-slate-800 text-[#1d1d1f] dark:text-white font-medium sm:font-semibold text-[11px] xs:text-xs sm:text-sm tracking-tight text-center transition-all shadow-none flex items-center justify-center whitespace-nowrap active:scale-[0.97] cursor-pointer"
               />
             ))}
           </div>
 
           {/* 4 Animated Counting Number Tickers */}
-          <div className="w-full grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4 mt-8 sm:mt-10">
-            <StatCounter value={100} suffix="+" label="Students Placed" duration={1800} />
-            <StatCounter value={167} suffix="+" label="Partner Universities" duration={1500} />
-            <StatCounter value={95} suffix="%" label="Visa Success" duration={1700} />
-            <StatCounter value={2} suffix="+" label="Global Offices" duration={1200} />
+          <div className="w-full grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4 mt-6">
+            <StatCounter
+              value={100}
+              suffix="+"
+              label="Students Placed"
+              duration={1800}
+            />
+            <StatCounter
+              value={167}
+              suffix="+"
+              label="Partner Universities"
+              duration={1500}
+            />
+            <StatCounter
+              value={95}
+              suffix="%"
+              label="Visa Success"
+              duration={1700}
+            />
+            <StatCounter
+              value={2}
+              suffix="+"
+              label="Global Offices"
+              duration={1200}
+            />
           </div>
         </div>
       </div>
