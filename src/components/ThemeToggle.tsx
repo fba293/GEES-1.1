@@ -13,6 +13,7 @@ export interface ThemeToggleProps {
   onToggle: () => void;
   className?: string;
   size?: 'sm' | 'md' | 'lg';
+  variant?: 'circular' | 'minimal';
 }
 
 export const ThemeToggle: React.FC<ThemeToggleProps> = ({
@@ -20,6 +21,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
   onToggle,
   className = '',
   size = 'md',
+  variant = 'circular',
 }) => {
   const [isTransitioning, setIsTransitioning] = useState(false);
 
@@ -38,6 +40,14 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
       ? 'w-10 h-10 sm:w-11 sm:h-11 lg:w-12 lg:h-12'
       : 'w-10 h-10 sm:w-10 sm:h-10 lg:w-11 lg:h-11';
 
+  const buttonStyleClass = variant === 'minimal'
+    ? `gees-action--theme group relative w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-xl transition-colors cursor-pointer hover:bg-slate-100/60 dark:hover:bg-slate-800/60 text-slate-800 dark:text-[#fbb034] shrink-0 ${className}`
+    : `gees-action--theme group relative rounded-full border flex items-center justify-center transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95 cursor-pointer shadow-xs shrink-0 ${
+        isDark
+          ? 'bg-[#070b19] border-slate-700/60 text-[#fbb034]'
+          : 'bg-white border-slate-200/90 text-slate-900'
+      } ${isTransitioning ? 'is-theme-transitioning' : ''} ${sizeClasses} ${className}`;
+
   return (
     <button
       type="button"
@@ -47,13 +57,9 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
       aria-pressed={isDark}
       title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
       onClick={handleClick}
-      className={`gees-action--theme group relative rounded-full border flex items-center justify-center transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95 cursor-pointer shadow-xs shrink-0 ${
-        isDark
-          ? 'bg-[#070b19] border-slate-700/60 text-[#fbb034]'
-          : 'bg-white border-slate-200/90 text-slate-900'
-      } ${isTransitioning ? 'is-theme-transitioning' : ''} ${sizeClasses} ${className}`}
+      className={buttonStyleClass}
     >
-      <span className="relative w-[18px] h-[18px] sm:w-[20px] sm:h-[20px] flex items-center justify-center pointer-events-none" aria-hidden="true">
+      <span className="relative w-[18px] h-[18px] flex items-center justify-center pointer-events-none" aria-hidden="true">
         {/* Sun Icon (Screenshot 1 - Dark Navy Sun with Solid Center & 8 Radial Dashes) */}
         <svg
           viewBox="0 0 24 24"

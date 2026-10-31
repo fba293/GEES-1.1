@@ -56,50 +56,7 @@ export const CounselorsSection: React.FC<CounselorsSectionProps> = ({ onOpenBook
 
         {/* 2-Column Showcase */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-14 items-start">
-          {/* Mobile High-Density 2-Column Grid (< sm) */}
-          <div className="grid grid-cols-2 sm:hidden gap-2.5 w-full">
-            {filteredCounselors.map((c) => {
-              return (
-                <div
-                  key={`mobile-${c.id}`}
-                  onClick={() => onOpenBooking(c.name, c.role)}
-                  className="relative rounded-2xl overflow-hidden aspect-[3/4] bg-slate-900 shadow-sm border border-slate-200/40 dark:border-slate-800/80 active:scale-[0.98] transition-all cursor-pointer group"
-                >
-                  <img
-                    src={c.photoUrl}
-                    alt={c.name}
-                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                  {/* Top-Right Quick WhatsApp with 44px effective touch target */}
-                  <div className="absolute top-1 right-1 z-20 flex items-center">
-                    <a
-                      href={`https://wa.me/${c.phone.replace(/[^0-9]/g, '')}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center active:scale-90 transition-transform"
-                      title="Quick WhatsApp"
-                      aria-label={`WhatsApp ${c.name}`}
-                    >
-                      <span className="w-8 h-8 rounded-full bg-slate-900/80 backdrop-blur-xs text-emerald-400 flex items-center justify-center border border-white/20 shadow-xs">
-                        <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"></path></svg>
-                      </span>
-                    </a>
-                  </div>
-                  {/* Scrim and bottom info */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent"></div>
-                  <div className="absolute bottom-0 inset-x-0 p-2.5 text-white">
-                    <span className="text-[10px] min-[390px]:text-[10.5px] uppercase font-black tracking-wider text-[#fbb034] block mb-0.5 truncate">
-                      {c.role}
-                    </span>
-                    <h4 className="text-[13px] min-[390px]:text-[14px] font-bold leading-tight truncate text-white">{c.name}</h4>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+
 
           {/* Left: Staggered 3-Column Photo Grid (Tablet & Desktop only: sm+) */}
           <div className="hidden sm:grid lg:col-span-7 sm:grid-cols-3 gap-3.5 sm:gap-4 pt-2">
@@ -228,18 +185,25 @@ export const CounselorsSection: React.FC<CounselorsSectionProps> = ({ onOpenBook
                     }`}
                   >
                     <div className="flex items-center justify-between gap-3">
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
                         {/* Active Indicator Bar */}
                         <span
-                          className={`w-1.5 h-9 rounded-full transition-all duration-300 ${
+                          className={`w-1.5 h-9 rounded-full transition-all duration-300 shrink-0 ${
                             isHovered ? 'bg-[#fbb034] scale-y-100' : 'bg-slate-200 dark:bg-slate-700 scale-y-75'
                           }`}
                         />
-                        <div>
-                          <span className="text-[10px] font-black uppercase tracking-wider text-blue-600 block">
+                        {/* Mobile-only avatar to bring warm human face & trust to mobile member list */}
+                        <img
+                          src={counselor.photoUrl}
+                          alt={counselor.name}
+                          className="w-10 h-10 min-w-[40px] rounded-full object-cover ring-2 ring-amber-400/30 sm:hidden shrink-0"
+                          loading="lazy"
+                        />
+                        <div className="min-w-0">
+                          <span className="text-[10px] font-black uppercase tracking-wider text-blue-600 block truncate">
                             {counselor.role}
                           </span>
-                          <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tracking-tight">
+                          <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tracking-tight truncate">
                             {counselor.name}
                           </h3>
                         </div>

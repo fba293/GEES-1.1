@@ -1,266 +1,387 @@
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
- * GEES "6 Steps to Your Goal" Interactive Roadmap Section
- * Enhanced with Framer Motion scroll-triggered reveal and staggered fade-ins for cards & icons.
+ * GEES "Your Journey to Studying Abroad" - Interactive Student Journey Timeline Section
+ * Synchronized airplane marker using getTotalLength() and getPointAtLength() for smooth continuous movement along SVG path.
+ * Features a clean white plane silhouette matching reference specifications and high-contrast milestone node numbers.
  */
 
-import React, { useState } from 'react';
-import { motion, Variants } from 'framer-motion';
+import React, { useState, useRef, useLayoutEffect, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { InteractiveHoverButton } from '../ui/interactive-hover-button.tsx';
+import { GEESAircraft } from '../common/GEESAircraft.tsx';
 
 interface StepsRoadmapSectionProps {
   onOpenBooking: () => void;
 }
 
+/**
+ * Fallback Bezier math helper for initial calculation or SSR rendering
+ * Curve: M 90 95 Q 500 20 910 95 (viewBox 0 0 1000 140)
+ */
+function getBezierPointAndAngle(t: number) {
+  const clampedT = Math.max(0, Math.min(1, t));
+  const oneMinusT = 1 - clampedT;
+
+  const x = oneMinusT * oneMinusT * 90 + 2 * oneMinusT * clampedT * 500 + clampedT * clampedT * 910;
+  const y = oneMinusT * oneMinusT * 95 + 2 * oneMinusT * clampedT * 20 + clampedT * clampedT * 95;
+
+  const dx = 2 * oneMinusT * 410 + 2 * clampedT * 410; // 820
+  const dy = 2 * oneMinusT * (-75) + 2 * clampedT * 75; // 150 * (2t - 1)
+  const angle = (Math.atan2(dy, dx) * 180) / Math.PI;
+
+  return { x, y, angle };
+}
+
 export const StepsRoadmapSection: React.FC<StepsRoadmapSectionProps> = ({ onOpenBooking }) => {
-  const [activeStep, setActiveStep] = useState<number | null>(null); // None open by default until student clicks
+  // Step 1 active by default
+  const [activeStep, setActiveStep] = useState<number>(1);
   const [deepDiveStep, setDeepDiveStep] = useState<number | null>(null);
+
+  // SVG Path Reference for DOM measurement via getTotalLength() & getPointAtLength()
+  const pathRef = useRef<SVGPathElement | null>(null);
+
+  // Measured Plane Position & Tangent Flight Angle State
+  const [planePos, setPlanePos] = useState<{ x: number; y: number; angle: number }>(() =>
+    getBezierPointAndAngle(0)
+  );
 
   const stepsData = [
     {
+      stepIndex: 1,
       num: '01',
-      icon: 'support_agent',
+      shortLabel: 'Consultation',
       title: 'Free Consultation',
-      summary: 'Review your academic profile, destination goals, study plans, and budget with a dedicated senior GEES counsellor.',
+      icon: 'support_agent',
+      summary: 'Discuss your academic goals, destination preferences, study plans, and budget 1-on-1 with a dedicated senior GEES counsellor.',
       docs: ['Academic marksheets & transcripts', 'English proficiency test scores (or test targets)', 'Budget & preferred intake term'],
       advisorDelivers: ['Eligibility assessment across 500+ universities', 'Cost comparison (tuition + living + part-time work)', 'Personalized master timeline']
     },
     {
+      stepIndex: 2,
       num: '02',
-      icon: 'school',
+      shortLabel: 'Shortlist',
       title: 'University Shortlisting',
-      summary: 'Receive tailored university and course recommendations curated across Ambitious, Target, and Safe tiers.',
+      icon: 'school',
+      summary: 'Receive tailored university and course recommendations curated across Ambitious, Target, and Safe tiers with fee breakdowns.',
       docs: ['Detailed course module preferences', 'Regional location & post-study visa priorities', 'Financial funding capacity'],
       advisorDelivers: ['Curated 5-8 university match list', 'Scholarship odds assessment', 'Direct liaison with university recruitment officers']
     },
     {
+      stepIndex: 3,
       num: '03',
-      icon: 'edit_document',
+      shortLabel: 'Application',
       title: 'Application Preparation',
+      icon: 'edit_document',
       summary: 'Prepare documents, academic records, Statement of Purpose (SOP), and submission packets with expert GEES editorial assistance.',
       docs: ['Statement of Purpose (SOP) draft notes', 'Letters of Recommendation (LORs)', 'Updated academic CV & passport copies'],
       advisorDelivers: ['Structural SOP polishing and plagiarism checking', 'Document notarization and credential attestation support', 'Direct portal submission without agency fees']
     },
     {
+      stepIndex: 4,
       num: '04',
-      icon: 'mail',
+      shortLabel: 'Offer',
       title: 'Offer Letter Support',
+      icon: 'mail',
       summary: 'Evaluate received offers, negotiate university funding and scholarships, and ensure swift CAS or I-20 issuance.',
       docs: ['Conditional & unconditional offer letters', 'Deposit payment confirmation receipts', 'Meeting academic condition certificates'],
       advisorDelivers: ['Offer evaluation & scholarship grant maximization', 'Expedited CAS (UK) or I-20 (USA) document issuance', 'Tuition deposit wire guidance']
     },
     {
+      stepIndex: 5,
       num: '05',
-      icon: 'verified_user',
+      shortLabel: 'Visa',
       title: 'Visa Processing',
+      icon: 'verified_user',
       summary: 'Complete documents, submission preparation, financial auditing, and simulated visa mock interviews with our 98% success track record.',
       docs: ['Confirmed CAS / I-20 / CoE document', 'Bank solvency certificates & fund source records', 'Medical assessment slips and police clearance'],
       advisorDelivers: ['100% compliant visa dossier checking', '1-on-1 mock interview training sessions', 'Embassy biometric appointment booking']
     },
     {
+      stepIndex: 6,
       num: '06',
-      icon: 'flight_takeoff',
+      shortLabel: 'Departure',
       title: 'Pre-Departure Support',
-      summary: 'Prepare for travel, accommodation, flight booking, forex cards, and your new student journey with confidence.',
+      icon: 'flight_takeoff',
+      summary: 'Prepare for travel, accommodation, flight booking, forex cards, and your new student journey with total confidence.',
       docs: ['Approved student visa sticker', 'Flight itinerary & baggage allowance details', 'Accommodation lease agreement'],
       advisorDelivers: ['Verified on-campus & off-campus student accommodation', 'Zero-markup student Forex multi-currency travel cards', 'Pre-departure briefing with alumni network']
     }
   ];
 
-  // Motion variants for scroll-triggered staggered reveal
-  const containerVariants: Variants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.12,
-        delayChildren: 0.1
+  // Exact milestone node coordinates mapped from Bezier math formula
+  const timelineNodes = stepsData.map((step) => {
+    const t = (step.stepIndex - 1) / 5;
+    const { x, y } = getBezierPointAndAngle(t);
+    return {
+      stepIndex: step.stepIndex,
+      x,
+      y,
+      xPercent: (x / 1000) * 100,
+      yPercent: (y / 140) * 100
+    };
+  });
+
+  // Calculate precise plane position & tangent angle along DOM path using getTotalLength() and getPointAtLength()
+  const updatePlanePosition = () => {
+    const targetT = (activeStep - 1) / 5;
+    if (pathRef.current && typeof pathRef.current.getTotalLength === 'function') {
+      try {
+        const totalLength = pathRef.current.getTotalLength();
+        const targetDistance = totalLength * targetT;
+
+        // Current point on path
+        const p = pathRef.current.getPointAtLength(targetDistance);
+
+        // Small delta for calculating exact tangent flight slope
+        const delta = 1.5;
+        const p1 = pathRef.current.getPointAtLength(Math.max(0, targetDistance - delta));
+        const p2 = pathRef.current.getPointAtLength(Math.min(totalLength, targetDistance + delta));
+        const angle = (Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180) / Math.PI;
+
+        setPlanePos({ x: p.x, y: p.y, angle });
+        return;
+      } catch (e) {
+        // Fall back to bezier math helper if SVG DOM method is unavailable
       }
     }
+    setPlanePos(getBezierPointAndAngle(targetT));
   };
 
-  const cardVariants: Variants = {
-    hidden: { opacity: 0, y: 28 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.5,
-        ease: 'easeOut'
-      }
-    }
-  };
+  const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 
-  const iconVariants: Variants = {
-    hidden: { scale: 0.6, opacity: 0 },
-    visible: {
-      scale: 1,
-      opacity: 1,
-      transition: {
-        type: 'spring',
-        stiffness: 260,
-        damping: 20
-      }
-    }
-  };
+  useIsomorphicLayoutEffect(() => {
+    updatePlanePosition();
+  }, [activeStep]);
+
+  const [isMobile, setIsMobile] = useState<boolean>(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640);
+      updatePlanePosition();
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile, { passive: true });
+    return () => window.removeEventListener('resize', checkMobile);
+  }, [activeStep]);
+
+  const activeData = stepsData.find((s) => s.stepIndex === activeStep) || stepsData[0];
+  const activeT = (activeStep - 1) / 5;
 
   return (
-    <section id="steps-roadmap-section" className="w-full py-6 sm:py-20 px-4 sm:px-6 lg:px-8 bg-slate-50/60 dark:bg-[#0B1329] border-t border-slate-100 dark:border-slate-800">
-      <div className="w-full max-w-full sm:max-w-[95%] mx-auto">
-        {/* Header */}
-        <header className="text-center max-w-3xl mx-auto mb-6 sm:mb-16 px-2">
-          <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold font-display tracking-tight text-slate-900 dark:text-white flex items-center justify-center flex-wrap gap-2 sm:gap-3 md:gap-3.5 leading-tight text-center">
-            <span>6 Steps to</span>
-            <span className="bg-[#fbb034] text-slate-950 px-3.5 sm:px-5 md:px-6 py-0.5 sm:py-1 md:py-1.5 rounded-xl sm:rounded-2xl font-black tracking-tight leading-none shadow-sm shrink-0">
-              Your Goal
-            </span>
+    <section
+      id="steps-roadmap-section"
+      className="relative w-full py-8 min-[390px]:py-10 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 bg-slate-50 dark:bg-[#070b19] text-slate-900 dark:text-white transition-colors duration-300 border-t border-slate-200/80 dark:border-slate-800/80 overflow-hidden"
+    >
+      <div className="relative z-10 max-w-6xl mx-auto">
+        {/* Section Heading */}
+        <header className="text-center max-w-3xl mx-auto mb-8 sm:mb-16 px-2">
+          <h2 className="text-2xl xs:text-3xl sm:text-5xl md:text-6xl font-extrabold font-display tracking-tight text-slate-900 dark:text-white flex items-center justify-center flex-wrap gap-2 text-center leading-tight">
+            <span>Your Journey to</span>
+            <span className="text-[#fbb034]">Studying Abroad</span>
           </h2>
-          <p className="mt-2 sm:mt-3 text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-400 font-normal leading-relaxed max-w-2xl mx-auto px-2 text-center">
-            From your first conversation to confident departure.
+          <p className="mt-2.5 sm:mt-3 text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-400 font-normal leading-relaxed max-w-2xl mx-auto text-center px-2">
+            Six clear steps. Expert guidance from your first consultation to departure.
           </p>
         </header>
 
-        {/* Process Grid: Left Visual Card & Right Accordion */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 items-stretch mb-8 sm:mb-12">
-          {/* Left Column: Counselor session photo with trust pill */}
-          <div className="lg:col-span-5 flex flex-col items-center justify-between h-full">
-            <div className="relative w-full h-full min-h-[190px] xs:min-h-[220px] sm:min-h-[380px] lg:min-h-[500px] max-w-md lg:max-w-full rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl bg-slate-200 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 group">
-              <img
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmxWeNh7tryz5Ui6SbdMmMasVp5_mcakVeZkNW8gNg_1gZe6pLxsfqJ-cVa6DhoMo8dyDswM0Bvk51sqpt2_dcePWC8WkmRxGM5ZWvkNM7IV8x0PJ9tG2E7DOIwirLxoErAea2uVmX_N0pFBSj31KKXgVwt499uf26nRiNZ1jC400Vj9ndQVmAJRbyCDHQWWqyxAnb0Mh7atoeoHJSHyN0jFPwKJ2pZJUpg_fP79mwsGDDS0HDlBR_dLXXCz5y-sELihI"
-                alt="GEES Counselor advising family"
-                className="absolute inset-0 w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700 ease-out"
-                loading="lazy"
-                decoding="async"
+        {/* --- CURVED TIMELINE PATH & REAL AIRCRAFT (Prominent Mobile & Desktop Layout) --- */}
+        <div className="relative w-full max-w-5xl mx-auto mb-6 sm:mb-12 pt-1 sm:pt-6">
+          <div className="relative w-full h-24 xs:h-28 sm:h-36">
+            <svg
+              className="w-full h-full overflow-visible"
+              viewBox="0 0 1000 140"
+              preserveAspectRatio="xMidYMid meet"
+            >
+              <defs>
+                {/* Metallic 3D Fuselage Gradient */}
+                <linearGradient id="planeBodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#ffffff" />
+                  <stop offset="50%" stopColor="#f1f5f9" />
+                  <stop offset="100%" stopColor="#cbd5e1" />
+                </linearGradient>
+
+                {/* GEES Gold Wing Shading Gradient */}
+                <linearGradient id="planeWingShade" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#fbb034" />
+                  <stop offset="100%" stopColor="#d97706" />
+                </linearGradient>
+
+                {/* Cockpit Glass Reflection Gradient */}
+                <linearGradient id="planeGlass" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#38bdf8" />
+                  <stop offset="100%" stopColor="#0284c7" />
+                </linearGradient>
+              </defs>
+
+              {/* 1. Inactive Base Dotted Curve */}
+              <path
+                ref={pathRef}
+                d="M 90 95 Q 500 20 910 95"
+                fill="none"
+                className="stroke-slate-300 dark:stroke-slate-700/80"
+                strokeWidth="2.5"
+                strokeDasharray="5 7"
               />
-              {/* Floating Trust Pill */}
-              <div className="absolute bottom-2.5 xs:bottom-4 inset-x-2 xs:inset-x-4 flex justify-center z-10">
-                <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md px-2.5 min-[390px]:px-3 xs:px-4 py-1.5 sm:py-2.5 rounded-full shadow-lg border border-white/60 dark:border-slate-800 flex items-center justify-center gap-1 min-[390px]:gap-1.5 xs:gap-2 text-[11px] min-[390px]:text-[12px] sm:text-xs font-bold text-slate-900 dark:text-slate-100 max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
-                  <span>No service charge</span>
-                  <span className="text-slate-300 dark:text-slate-600 font-light select-none">|</span>
-                  <span>No hidden fees</span>
-                  <span className="text-slate-300 dark:text-slate-600 font-light select-none">|</span>
-                  <span>No surprises</span>
-                </div>
-              </div>
-            </div>
-            <div className="mt-2.5 flex items-center justify-center gap-2 text-xs font-semibold text-slate-500 text-center shrink-0">
-              <span className="w-5 h-[2px] bg-[#fbbf24] rounded-full inline-block"></span>
-              <span>Guidance for students and families, at every step.</span>
-              <span className="w-5 h-[2px] bg-[#fbbf24] rounded-full inline-block"></span>
-            </div>
+
+              {/* 2. Active Golden Highlight Path (Draws smoothly up to active step) */}
+              <motion.path
+                d="M 90 95 Q 500 20 910 95"
+                fill="none"
+                stroke="#fbb034"
+                strokeWidth="3.5"
+                strokeLinecap="round"
+                initial={{ pathLength: 0 }}
+                animate={{ pathLength: activeT }}
+                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                style={{ filter: 'drop-shadow(0 0 6px rgba(251, 176, 52, 0.4))' }}
+              />
+
+              {/* 3. Milestone Nodes Layer */}
+              {timelineNodes.map((node) => {
+                const step = stepsData[node.stepIndex - 1];
+                const isActive = activeStep === node.stepIndex;
+
+                return (
+                  <g
+                    key={node.stepIndex}
+                    transform={`translate(${node.x}, ${node.y})`}
+                    className="cursor-pointer group"
+                    onClick={() => setActiveStep(node.stepIndex)}
+                  >
+                    {/* Invisible expanded touch hit target for mobile */}
+                    <circle r="28" fill="transparent" pointerEvents="all" />
+                    {/* Circle Node Button: GEES Gold Outline & Neutral Navy Fill */}
+                    <circle
+                      r={isMobile ? 18 : 20}
+                      fill="#070b19"
+                      stroke="#fbb034"
+                      strokeWidth={isMobile ? 2.2 : 2.5}
+                      className="transition-transform duration-300 group-hover:scale-110"
+                      style={{ filter: 'drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5))' }}
+                    />
+
+                    {/* Number Label inside Node: Centered, legible */}
+                    <text
+                      textAnchor="middle"
+                      dominantBaseline="central"
+                      fill="#fbb034"
+                      fontSize={isMobile ? '13' : '14'}
+                      fontWeight="900"
+                      fontFamily="sans-serif"
+                    >
+                      {node.stepIndex}
+                    </text>
+
+                    {/* Step Label Underneath - Hidden on mobile screens to match image_dd169a77.png */}
+                    <text
+                      y="38"
+                      textAnchor="middle"
+                      fill={isActive ? '#fbb034' : '#94a3b8'}
+                      fontSize="12"
+                      fontWeight={isActive ? '800' : '600'}
+                      fontFamily="sans-serif"
+                      className="hidden sm:block transition-colors duration-300"
+                    >
+                      {step.shortLabel}
+                    </text>
+                  </g>
+                );
+              })}
+
+              {/* 4. Top Layer Real Aircraft Marker (GEESAircraft Component with Light/Dark Theme Support) */}
+              <motion.g
+                initial={false}
+                animate={{
+                  transform: `translate(${planePos.x}px, ${planePos.y - (isMobile ? 26 : 30)}px) rotate(${planePos.angle}deg)`
+                }}
+                transition={{
+                  type: 'spring',
+                  stiffness: 110,
+                  damping: 16,
+                  mass: 0.75
+                }}
+                style={{
+                  filter: 'drop-shadow(0 4px 12px rgba(0, 0, 0, 0.65)) drop-shadow(0 0 10px rgba(251, 176, 52, 0.35))'
+                }}
+              >
+                <g transform={`translate(${isMobile ? -34 : -40}, ${isMobile ? -17 : -20})`}>
+                  <GEESAircraft width={isMobile ? 68 : 80} height={isMobile ? 34 : 40} />
+                </g>
+              </motion.g>
+            </svg>
           </div>
+        </div>
 
-          {/* Right Column: 6 Steps Accordion with Scroll-Triggered Reveal Animation */}
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-60px' }}
-            className="lg:col-span-7 flex flex-col justify-center space-y-2"
-          >
-            {stepsData.map((step, idx) => {
-              const stepNumber = idx + 1;
-              const isActive = activeStep === stepNumber;
-              return (
-                <motion.div
-                  key={step.num}
-                  variants={cardVariants}
-                  onClick={() => setActiveStep(isActive ? null : stepNumber)}
-                  className={`rounded-xl sm:rounded-2xl border transition-all duration-300 overflow-hidden cursor-pointer ${
-                    isActive
-                      ? 'border-[#f59e0b] bg-amber-50/50 dark:bg-slate-800 shadow-md ring-1 ring-amber-400/40'
-                      : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300 hover:shadow-sm'
-                  }`}
-                >
-                  <div className="w-full flex items-center justify-between py-2.5 px-3 sm:px-5 min-h-[44px] sm:min-h-[50px]">
-                    <div className="flex items-center gap-2 sm:gap-3.5 min-w-0 flex-1 pr-2">
-                      {/* Step Number Badge */}
-                      <div
-                        className={`w-7 h-7 sm:w-10 sm:h-10 font-black text-[11px] sm:text-sm flex items-center justify-center rounded-full transition-all shrink-0 ${
-                          isActive
-                            ? 'bg-[#f59e0b] text-white shadow-sm'
-                            : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
-                        }`}
-                      >
-                        {step.num}
-                      </div>
-
-                      {/* Staggered Fade-In Step Icon */}
-                      <motion.div
-                        variants={iconVariants}
-                        className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-colors shrink-0 ${
-                          isActive
-                            ? 'bg-amber-400/20 text-amber-600 dark:text-amber-400'
-                            : 'bg-slate-50 dark:bg-slate-800/60 text-slate-400'
-                        }`}
-                      >
-                        <span className="material-symbols-outlined text-[16px] sm:text-[19px]">{step.icon}</span>
-                      </motion.div>
-
-                      <span className="text-sm sm:text-lg font-bold text-slate-900 dark:text-white tracking-tight truncate sm:whitespace-normal">
-                        {step.title}
-                      </span>
-                    </div>
-                    <span className={`material-symbols-outlined text-lg sm:text-xl text-slate-400 transition-transform duration-300 shrink-0 ${isActive ? 'rotate-180 text-amber-600' : ''}`}>
-                      keyboard_arrow_down
+        {/* --- INTERACTIVE ACTIVE STEP DETAIL CARD (Proportional mobile & desktop layout) --- */}
+        <div className="relative w-full max-w-4xl mx-auto">
+          <div className="relative w-full min-h-[135px] sm:min-h-[176px] flex items-center bg-white dark:bg-[#0f172a]/95 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-4 xs:p-5 sm:p-8 border border-slate-200/90 dark:border-slate-800/90 shadow-xl dark:shadow-2xl overflow-hidden text-slate-900 dark:text-white">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeStep}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                className="relative z-10 w-full flex items-center justify-between gap-3 sm:gap-6"
+              >
+                <div className="flex items-start gap-3 sm:gap-6 max-w-2xl">
+                  {/* Step Icon Badge */}
+                  <div className="w-11 h-11 min-w-[44px] min-h-[44px] sm:w-16 sm:h-16 rounded-full bg-[#070b19] dark:bg-white text-[#fbb034] dark:text-slate-950 flex items-center justify-center shadow-md shrink-0 mt-0.5 sm:mt-0">
+                    <span className="material-symbols-outlined text-xl sm:text-3xl">
+                      {activeData.icon}
                     </span>
                   </div>
 
-                  {/* Expandable Content */}
-                  {isActive && (
-                    <div className="px-4 pb-4 sm:px-5 sm:pb-5 pt-1 border-t border-amber-200/50 dark:border-slate-700/60 space-y-3">
-                      <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
-                        {step.summary}
-                      </p>
-                      <div className="pt-1 flex items-center justify-between">
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setDeepDiveStep(stepNumber);
-                          }}
-                          className="min-h-[44px] py-2 text-xs sm:text-sm font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1.5 cursor-pointer"
-                        >
-                          <span>Explore Step Checklist & Deliverables</span>
-                          <span className="material-symbols-outlined text-xs">arrow_forward</span>
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </motion.div>
-              );
-            })}
-          </motion.div>
+                  <div>
+                    <h3 className="text-lg sm:text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                      {activeData.title}
+                    </h3>
+
+                    <p className="mt-1.5 sm:mt-2.5 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
+                      {activeData.summary}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Big Step Number Watermark (01, 02, 03, 04, 05, 06) */}
+                <div className="pointer-events-none select-none text-5xl sm:text-7xl md:text-8xl font-black text-slate-900/10 dark:text-white/10 font-mono tracking-tighter shrink-0 ml-1">
+                  {activeData.num}
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
         </div>
 
-        {/* Bottom CTA */}
-        <div className="flex justify-center pt-4">
+        {/* Bottom Pre-Footer CTA */}
+        <div className="flex justify-center pt-8 sm:pt-12">
           <InteractiveHoverButton
             type="button"
-            text="Start with a Free Consultation"
+            text="Start Your Free Journey"
             onClick={onOpenBooking}
-            className="min-h-[44px] px-8 py-3.5 rounded-full border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-950 dark:text-white font-semibold text-sm sm:text-base shadow-sm cursor-pointer"
+            className="min-h-[48px] px-8 py-3.5 rounded-full border-amber-400/50 bg-[#fbb034] hover:bg-[#f59e0b] text-slate-950 font-black text-sm sm:text-base shadow-md cursor-pointer"
           />
         </div>
       </div>
 
-      {/* Deep Dive Step Modal */}
+      {/* --- DEEP DIVE STEP CHECKLIST & ADVISOR DELIVERABLES MODAL --- */}
       {deepDiveStep !== null && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md">
-          <div className="relative w-full max-w-xl bg-white dark:bg-[#0f172a] rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-100 dark:border-slate-800 animate-fadeIn">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+          <div className="relative w-full max-w-xl bg-white dark:bg-[#0f172a] rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-200 dark:border-slate-800 animate-fadeIn text-slate-900 dark:text-white">
             <button
               onClick={() => setDeepDiveStep(null)}
-              className="absolute top-4 right-4 w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-slate-900 cursor-pointer"
+              className="absolute top-4 right-4 w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white flex items-center justify-center cursor-pointer transition-colors"
             >
-              <span className="material-symbols-outlined text-sm">close</span>
+              <span className="material-symbols-outlined text-base">close</span>
             </button>
-            <div className="flex items-center gap-3 mb-4">
-              <span className="w-10 h-10 rounded-full bg-amber-400 text-slate-950 font-black text-sm flex items-center justify-center shadow-sm">
+
+            <div className="flex items-center gap-3.5 mb-4">
+              <span className="w-10 h-10 rounded-full bg-[#fbb034] text-slate-950 font-black text-sm flex items-center justify-center shadow-md shrink-0">
                 {stepsData[deepDiveStep - 1].num}
               </span>
               <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-amber-500">
+                <span className="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-[#fbb034]">
                   Step Breakdown
                 </span>
                 <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
@@ -268,6 +389,7 @@ export const StepsRoadmapSection: React.FC<StepsRoadmapSectionProps> = ({ onOpen
                 </h3>
               </div>
             </div>
+
             <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mb-6 leading-relaxed">
               {stepsData[deepDiveStep - 1].summary}
             </p>
@@ -280,7 +402,7 @@ export const StepsRoadmapSection: React.FC<StepsRoadmapSectionProps> = ({ onOpen
                 <ul className="space-y-1.5 pl-2">
                   {stepsData[deepDiveStep - 1].docs.map((d, i) => (
                     <li key={i} className="text-xs text-slate-700 dark:text-slate-300 flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#f59e0b]"></span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#fbb034]" />
                       <span>{d}</span>
                     </li>
                   ))}
@@ -294,7 +416,9 @@ export const StepsRoadmapSection: React.FC<StepsRoadmapSectionProps> = ({ onOpen
                 <ul className="space-y-1.5 pl-2">
                   {stepsData[deepDiveStep - 1].advisorDelivers.map((d, i) => (
                     <li key={i} className="text-xs text-emerald-700 dark:text-emerald-400 flex items-center gap-2">
-                      <span className="material-symbols-outlined text-sm text-emerald-500">check_circle</span>
+                      <span className="material-symbols-outlined text-sm text-emerald-500">
+                        check_circle
+                      </span>
                       <span>{d}</span>
                     </li>
                   ))}
@@ -309,9 +433,10 @@ export const StepsRoadmapSection: React.FC<StepsRoadmapSectionProps> = ({ onOpen
                   setDeepDiveStep(null);
                   onOpenBooking();
                 }}
-                className="min-h-[44px] flex-1 py-3 px-4 rounded-full bg-[#f59e0b] hover:bg-amber-400 text-slate-950 font-bold text-xs uppercase tracking-wider cursor-pointer shadow-md active:scale-98 flex items-center justify-center"
+                className="min-h-[44px] flex-1 py-3 px-4 rounded-full bg-[#fbb034] hover:bg-[#f59e0b] text-slate-950 font-black text-xs uppercase tracking-wider cursor-pointer shadow-md active:scale-98 flex items-center justify-center gap-2"
               >
-                Book Step Consultation
+                <span>Book Step Consultation</span>
+                <span className="material-symbols-outlined text-sm">arrow_forward</span>
               </button>
             </div>
           </div>
@@ -320,3 +445,5 @@ export const StepsRoadmapSection: React.FC<StepsRoadmapSectionProps> = ({ onOpen
     </section>
   );
 };
+
+export default StepsRoadmapSection;

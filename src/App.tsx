@@ -416,7 +416,8 @@ function AppContent() {
         onNavigate={handleNavigate}
         activeRole={activeRole}
         onRoleChange={setActiveRole}
-        onOpenMobileMenu={() => setIsMobileMenuOpen(true)}
+        isMobileMenuOpen={isMobileMenuOpen}
+        onOpenMobileMenu={() => setIsMobileMenuOpen((prev) => !prev)}
         onOpenSearch={() => setIsSearchModalOpen(true)}
         isDark={isDark}
         onToggleTheme={toggleTheme}
@@ -892,6 +893,18 @@ function AppContent() {
               >
                 Book Free Consultation for This Service
               </button>
+              {['school-admission', 'admission-support', 'dependent-visa', 'student-visa-assistance', 'flight-ticketing', 'health-insurance', 'mm2h', 'tourist-visa', 'student-referral', 'track-visa'].includes(selectedServiceDetail.slug) && (
+                <button
+                  onClick={() => {
+                    const slug = selectedServiceDetail.slug;
+                    setSelectedServiceDetail(null);
+                    handleNavigate(slug);
+                  }}
+                  className="px-5 py-3 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-sm tracking-wide text-center cursor-pointer"
+                >
+                  View Full Service Page →
+                </button>
+              )}
               <button
                 onClick={() => setSelectedServiceDetail(null)}
                 className="px-6 py-3 rounded-full border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"

@@ -38,7 +38,8 @@ export const BackToTopButton: React.FC = () => {
       type="button"
       onClick={scrollToTop}
       aria-label="Back to top"
-      className="sm:hidden fixed bottom-22 right-4 z-40 w-11 h-11 rounded-full bg-[#FBB034] text-slate-950 shadow-2xl border-2 border-amber-300 dark:border-amber-400 flex items-center justify-center transition-all duration-300 transform active:scale-90 hover:scale-105 animate-fadeIn"
+      title="Back to top"
+      className="fixed bottom-20 xs:bottom-22 sm:bottom-24 xl:bottom-8 right-4 sm:right-6 xl:right-8 z-40 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#FBB034] hover:bg-[#f59e0b] text-slate-950 shadow-2xl border-2 border-amber-300 dark:border-amber-400 flex items-center justify-center transition-all duration-300 transform active:scale-90 hover:scale-110 cursor-pointer animate-fadeIn focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 select-none"
     >
       <span className="material-symbols-outlined text-[24px] font-black">
         arrow_upward

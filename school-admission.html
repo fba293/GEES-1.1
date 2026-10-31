@@ -66,30 +66,101 @@
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "EducationalOccupationalProgram",
-        "name": "GEES K-12 International & Boarding School Placement",
-        "description": "Specialized school placement service for primary, secondary, and high school students seeking admission to top international schools and boarding facilities.",
-        "provider": {
-          "@type": "EducationalOrganization",
-          "name": "Global Education Expert Services (GEES)",
-          "url": "https://gees-edu.com",
-          "logo": "https://gees-edu.com/favicon.svg"
-        },
-        "hasCourse": [
+        "@graph": [
           {
-            "@type": "Course",
-            "name": "International Primary & Middle School Placement",
-            "description": "Early year and primary school admissions with guardian visa support."
+            "@type": "EducationalOrganization",
+            "@id": "https://gees-edu.com/#organization",
+            "name": "Global Education Expert Services (GEES)",
+            "url": "https://gees-edu.com",
+            "logo": "https://gees-edu.com/favicon.svg",
+            "sameAs": [
+              "https://www.facebook.com/geesedu",
+              "https://www.linkedin.com/company/gees-edu"
+            ],
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "telephone": "+601121855680",
+              "contactType": "parent admissions support",
+              "areaServed": ["BD", "MY", "GB", "AU"],
+              "availableLanguage": ["English", "Bengali"]
+            }
           },
           {
-            "@type": "Course",
-            "name": "IGCSE, GCSE & IB Secondary School Admissions",
-            "description": "Placement for Years 7-11 following British and International Baccalaureate curricula."
+            "@type": "Service",
+            "@id": "https://gees-edu.com/school-admission.html#service",
+            "name": "K-12 International & Boarding School Admissions Assistance",
+            "provider": { "@id": "https://gees-edu.com/#organization" },
+            "description": "Comprehensive admission placement, CAT4 assessment guidance, campus tour coordination, and parent guardian visa processing for international primary, secondary, and boarding schools.",
+            "serviceType": "School Admissions Consulting",
+            "areaServed": ["Malaysia", "United Kingdom", "Australia", "Singapore"],
+            "audience": {
+              "@type": "PeopleAudience",
+              "suggestedMinAge": "3",
+              "suggestedMaxAge": "18",
+              "audienceType": "Parents of international students"
+            }
           },
           {
-            "@type": "Course",
-            "name": "Elite Boarding School & Guardian Placement",
-            "description": "Full-boarding school applications with pastoral care and local guardian arrangement."
+            "@type": "BreadcrumbList",
+            "@id": "https://gees-edu.com/school-admission.html#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://gees-edu.com/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Services",
+                "item": "https://gees-edu.com/services.html"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "School Admissions",
+                "item": "https://gees-edu.com/school-admission.html"
+              }
+            ]
+          },
+          {
+            "@type": "FAQPage",
+            "@id": "https://gees-edu.com/school-admission.html#faq",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "Can a parent accompany their child on a Guardian Visa while studying in an international school?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. In Malaysia, one parent (mother or father) is eligible to apply for an official Long-Term Social Visit Pass (Guardian Visa) tied to the minor child's Student Pass, valid for 12 months and renewable annually. Similar provisions exist in the UK (Parent of a Child Student Visa for children aged 4-11) and Australia (Student Guardian Visa Subclass 590)."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "What is the CAT4 test and is it required for international school admission?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "The Cognitive Abilities Test (CAT4) is an assessment used widely by British and international schools to evaluate verbal, non-verbal, quantitative, and spatial reasoning. It measures underlying academic potential rather than learned syllabus facts. GEES provides diagnostic guidance and test familiarity resources."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Can my child transition from a Bangladeshi national curriculum school to an international curriculum?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. Many students successfully transition from National Curriculum English or Bangla medium schools into British (Cambridge IGCSE) or IB programs. Schools evaluate previous school reports and provide English as an Additional Language (EAL) support where necessary."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How does GEES protect minor students' personal data during the application process?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "GEES adheres strictly to international child data protection principles. We never ask parents to upload sensitive passports, birth certificates, or medical documents through unsecured public forms, and we never publish minor students' identities online. All documents are reviewed confidentially in 1-on-1 counselor sessions."
+                }
+              }
+            ]
           }
         ]
       }

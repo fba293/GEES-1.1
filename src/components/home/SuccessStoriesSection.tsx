@@ -23,11 +23,11 @@ export const SuccessStoriesSection: React.FC<SuccessStoriesSectionProps> = ({ on
   const touchEndX = useRef<number | null>(null);
 
   const tabs = [
-    { label: 'All Stories', id: 'all' },
+    { label: 'All', id: 'all' },
     { label: 'Malaysia 🇲🇾', id: 'malaysia' },
     { label: 'Australia 🇦🇺', id: 'australia' },
-    { label: 'New Zealand 🇳🇿', id: 'new zealand' },
-    { label: 'United Kingdom 🇬🇧', id: 'uk' }
+    { label: 'NZ 🇳🇿', id: 'new zealand' },
+    { label: 'UK 🇬🇧', id: 'uk' }
   ];
 
   const filteredStories = selectedFilter === 'all'

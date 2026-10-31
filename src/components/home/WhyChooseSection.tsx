@@ -75,7 +75,7 @@ export const WhyChooseSection: React.FC<WhyChooseSectionProps> = ({ onSelectCoun
   };
 
   return (
-    <section className="relative z-10 w-full max-w-full sm:max-w-[95%] mx-auto px-4 sm:px-6 lg:px-8 py-8 min-[390px]:py-10 sm:py-20 bg-white dark:bg-[#070b19]">
+    <section id="why-choose-section" className="relative z-10 w-full max-w-full sm:max-w-[95%] mx-auto px-4 sm:px-6 lg:px-8 py-8 min-[390px]:py-10 sm:py-20 bg-white dark:bg-[#070b19]">
       {/* Header with High-Impact Typography */}
       <div className="text-center mb-8 sm:mb-14 px-2 max-w-3xl mx-auto">
         <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold font-display tracking-tight text-slate-900 dark:text-white leading-tight flex items-center justify-center flex-wrap gap-2 sm:gap-3 md:gap-3.5 select-none text-center">
@@ -244,10 +244,10 @@ export const WhyChooseSection: React.FC<WhyChooseSectionProps> = ({ onSelectCoun
                     </div>
                   </div>
                   <div className="px-0.5 sm:px-2">
-                    <div className="text-sm xs:text-base sm:text-2xl font-black text-slate-900 dark:text-white">2+</div>
+                    <div className="text-sm xs:text-base sm:text-2xl font-black text-slate-900 dark:text-white">6+</div>
                     <div className="text-[9.5px] min-[390px]:text-[10.5px] sm:text-xs font-bold text-slate-600 dark:text-slate-400 mt-0.5 leading-tight truncate">
-                      <span className="sm:hidden">Offices</span>
-                      <span className="hidden sm:inline">Global Offices</span>
+                      <span className="sm:hidden">Countries</span>
+                      <span className="hidden sm:inline">Countries We Send Students</span>
                     </div>
                   </div>
                 </div>

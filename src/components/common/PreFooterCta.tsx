@@ -27,7 +27,7 @@ export const PreFooterCta: React.FC<PreFooterCtaProps> = ({
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-28 md:w-36 h-1.5 bg-[#fbb034] rounded-b-full shadow-sm" />
 
             {/* Eyebrow Pill: Free Consultation */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#fbb034]/15 border border-[#fbb034]/40 text-slate-800 dark:text-slate-200 mb-8 md:mb-10 shadow-sm">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#fbb034]/15 border border-[#fbb034]/40 text-slate-800 dark:text-slate-200 mb-6 sm:mb-8 md:mb-10 shadow-sm">
               <span className="material-symbols-outlined text-sm md:text-base text-[#c58211] dark:text-[#fbb034]">headset_mic</span>
               <span className="text-xs md:text-sm font-semibold tracking-tight text-slate-800 dark:text-slate-200">
                 Free Consultation • <span className="font-bold text-slate-900 dark:text-white">100% Free</span>
@@ -35,7 +35,7 @@ export const PreFooterCta: React.FC<PreFooterCtaProps> = ({
             </div>
 
             {/* Main Headline */}
-            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-x-3 md:gap-x-4 mb-4 sm:mb-6 max-w-full">
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-x-3 md:gap-x-4 mb-3 sm:mb-6 max-w-full">
               <h2 className="font-sans font-black text-2xl xs:text-3xl sm:text-5xl md:text-6xl lg:text-7xl text-slate-900 dark:text-white tracking-tight leading-tight">
                 Still wondering
               </h2>
@@ -45,12 +45,12 @@ export const PreFooterCta: React.FC<PreFooterCtaProps> = ({
             </div>
 
             {/* Subtitle description */}
-            <p className="text-sm sm:text-lg md:text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto mb-6 md:mb-12 leading-relaxed font-normal px-2">
+            <p className="text-sm sm:text-lg md:text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto mb-6 sm:mb-8 md:mb-12 leading-relaxed font-normal px-2">
               Message our experts to start your study abroad journey today
             </p>
 
             {/* Call to Action Buttons with Consistent InteractiveHoverButton Animation */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-10 md:mb-12 w-full sm:w-auto">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-8 sm:mb-10 md:mb-12 w-full sm:w-auto">
               <InteractiveHoverButton
                 type="button"
                 text="Book A Free Consultation"
@@ -61,7 +61,7 @@ export const PreFooterCta: React.FC<PreFooterCtaProps> = ({
                     onNavigate('apply');
                   }
                 }}
-                className="min-h-[44px] w-full sm:w-auto px-7 py-3.5 rounded-full bg-white dark:bg-slate-900 text-slate-950 dark:text-white border-slate-300 dark:border-slate-700 font-semibold text-sm md:text-base shadow-md cursor-pointer"
+                className="min-h-[48px] w-full sm:w-auto px-7 py-3.5 rounded-full bg-white dark:bg-slate-900 text-slate-950 dark:text-white border-slate-300 dark:border-slate-700 font-semibold text-sm md:text-base shadow-md cursor-pointer"
               />
               <a
                 href="tel:+8801805529578"
@@ -70,13 +70,13 @@ export const PreFooterCta: React.FC<PreFooterCtaProps> = ({
                 <InteractiveHoverButton
                   type="button"
                   text="Call Our Office"
-                  className="min-h-[44px] w-full sm:w-auto px-7 py-3.5 rounded-full bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 font-semibold text-sm md:text-base shadow-xs cursor-pointer"
+                  className="min-h-[48px] w-full sm:w-auto px-7 py-3.5 rounded-full bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 font-semibold text-sm md:text-base shadow-xs cursor-pointer"
                 />
               </a>
             </div>
 
             {/* Bottom Trust Row */}
-            <div className="w-full pt-8 border-t border-slate-100 dark:border-slate-800/80 flex flex-col md:flex-row items-center justify-between gap-5 md:gap-6">
+            <div className="w-full pt-6 sm:pt-8 border-t border-slate-100 dark:border-slate-800/80 flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-5 md:gap-6">
               {/* Student Avatars & Count */}
               <div className="flex items-center gap-3">
                 <div className="flex -space-x-2.5 overflow-hidden p-0.5">

@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { UserRole } from '../../types/index.ts';
 import { InteractiveHoverButton } from '../ui/interactive-hover-button.tsx';
 import { HeaderCurrencyExchangeIcon } from '../CurrencySwitcher.tsx';
 import { ThemeToggle } from '../ThemeToggle.tsx';
 import { useWishlist } from '../../context/WishlistContext.tsx';
+
+import { MorphingHamburgerIcon } from './MorphingHamburgerIcon.tsx';
 
 interface NavbarProps {
   currentView: string;
@@ -14,6 +17,7 @@ interface NavbarProps {
   onOpenSearch: () => void;
   isDark: boolean;
   onToggleTheme: () => void;
+  isMobileMenuOpen?: boolean;
 }
 
 function useScrollHeader(compactThreshold = 50, expandThreshold = 30) {
@@ -68,13 +72,52 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenMobileMenu,
   onOpenSearch,
   isDark,
-  onToggleTheme
+  onToggleTheme,
+  isMobileMenuOpen = false
 }) => {
   const isScrolled = useScrollHeader(50, 30);
   const { wishlistCount } = useWishlist();
   const [portalTab, setPortalTab] = useState<'signin' | 'signup'>('signin');
   const [portalOpen, setPortalOpen] = useState(false);
   const portalTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // 21st.dev inspired shared hover indicator and smooth mega dropdown navigation states
+  const [hoveredNav, setHoveredNav] = useState<string | null>(null);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const navCloseTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleNavItemEnter = (itemKey: string, hasDropdown = false) => {
+    if (navCloseTimeoutRef.current) {
+      clearTimeout(navCloseTimeoutRef.current);
+      navCloseTimeoutRef.current = null;
+    }
+    setHoveredNav(itemKey);
+    if (hasDropdown) {
+      setActiveDropdown(itemKey);
+    } else {
+      setActiveDropdown(null);
+    }
+  };
+
+  const handleNavMenuLeave = () => {
+    navCloseTimeoutRef.current = setTimeout(() => {
+      setHoveredNav(null);
+      setActiveDropdown(null);
+    }, 180);
+  };
+
+  const handleDropdownPanelEnter = () => {
+    if (navCloseTimeoutRef.current) {
+      clearTimeout(navCloseTimeoutRef.current);
+      navCloseTimeoutRef.current = null;
+    }
+  };
+
+  const handleMenuNavigate = (view: string, payload?: any) => {
+    setHoveredNav(null);
+    setActiveDropdown(null);
+    onNavigate(view, payload);
+  };
 
   const handlePortalEnter = () => {
     if (portalTimeoutRef.current) clearTimeout(portalTimeoutRef.current);
@@ -94,7 +137,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/80 text-slate-900 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600';
 
   return (
-    <header className={`gees-header-wrapper ${isScrolled ? 'scrolled' : ''}`}>
+    <header className={`gees-header-wrapper ${isScrolled ? 'scrolled' : ''} ${isMobileMenuOpen ? 'menu-open !z-[85]' : ''}`}>
       {/* 1. Top Information Bar (Dreambuzz-Architecture Reference) */}
       <div className="gees-topbar-wrapper select-none">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-full flex items-center justify-between text-xs font-medium text-white/90">
@@ -195,468 +238,605 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Brand Logo */}
         <div
           onClick={() => onNavigate('home')}
-          className="flex items-center gap-1.5 sm:gap-2 group shrink-0 focus:outline-none cursor-pointer select-none"
+          className="flex items-center gap-1.5 sm:gap-2 h-9 sm:h-auto group shrink-0 focus:outline-none cursor-pointer select-none"
         >
           <span
-            className={`gees-brand-text text-xl xs:text-2xl sm:text-[28px] lg:text-[32px] font-extrabold tracking-tight transition-colors duration-300 ${
+            className={`gees-brand-text text-[28px] xs:text-[30px] sm:text-[28px] lg:text-[32px] font-extrabold tracking-tight leading-none transition-colors duration-300 ${
               isScrolled ? (isDark ? 'text-white' : 'text-slate-900') : 'text-slate-900 dark:text-white'
             }`}
             style={{ fontFamily: '"ITC Benguiat", "Benguiat", serif', fontWeight: 700 }}
           >
             GEES
           </span>
-          <span className="w-1.5 xs:w-2 sm:w-2.5 h-1.5 xs:h-2 sm:h-2.5 rounded-full bg-[#fbb034] shadow-xs"></span>
+          <span className="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full bg-[#fbb034] shadow-xs"></span>
         </div>
 
-        {/* Universal Desktop Navigation Bar */}
-        <nav className="hidden xl:flex items-center gap-6 sm:gap-8 text-sm font-semibold">
+        {/* Universal Desktop Navigation Bar with 21st.dev Shared Hover-Follow Indicator */}
+        <nav
+          className="hidden xl:flex items-center gap-1.5 lg:gap-2 text-sm font-semibold select-none"
+          onMouseLeave={handleNavMenuLeave}
+        >
           {/* 1. Countries Mega-Menu */}
-          <div className="relative group cursor-pointer py-5">
+          <div
+            className="relative py-2"
+            onMouseEnter={() => handleNavItemEnter('countries', true)}
+          >
             <button
               type="button"
-              className={`gees-nav-link flex items-center gap-1 transition-colors font-semibold cursor-pointer ${
-                isScrolled
-                  ? (isDark
-                      ? (currentView === 'destinations' ? 'gees-nav-link-active text-[#fbb034] font-bold' : 'text-white/90 hover:text-[#fbb034]')
-                      : (currentView === 'destinations' ? 'gees-nav-link-active text-blue-600 font-bold' : 'text-slate-800 hover:text-blue-600'))
-                  : (currentView === 'destinations' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-slate-900 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400')
+              className={`relative px-3.5 py-2 rounded-full flex items-center gap-1 transition-colors font-semibold cursor-pointer z-10 ${
+                currentView === 'destinations'
+                  ? (isScrolled
+                      ? (isDark ? 'text-[#fbb034] font-bold' : 'text-blue-600 font-bold')
+                      : 'text-blue-600 dark:text-blue-400 font-bold')
+                  : (isScrolled
+                      ? (isDark ? 'text-white/90 hover:text-white' : 'text-slate-800 hover:text-slate-950')
+                      : 'text-slate-900 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400')
               }`}
             >
+              <AnimatePresence>
+                {hoveredNav === 'countries' && (
+                  <motion.div
+                    layoutId="navbar-hover-indicator"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className={`absolute inset-0 rounded-full -z-10 ${
+                      isScrolled
+                        ? (isDark ? 'bg-white/12 border border-white/20' : 'bg-slate-200/80 border border-slate-300/60 shadow-xs')
+                        : (isDark ? 'bg-white/10 border border-white/15' : 'bg-slate-100/90 border border-slate-200/80 shadow-xs')
+                    }`}
+                    transition={{ type: 'spring', stiffness: 440, damping: 30 }}
+                  />
+                )}
+              </AnimatePresence>
               <span>Countries</span>
-              <span className="material-symbols-outlined text-[18px] transition-transform duration-200 group-hover:rotate-180">
-                expand_more
-              </span>
             </button>
 
-            {/* Countries Mega Dropdown Panel */}
-            <div className="absolute top-[calc(100%-6px)] -left-20 w-[680px] bg-white dark:bg-[#0f172a] rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl p-6 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none group-hover:pointer-events-auto z-50">
-              <div className="grid grid-cols-3 gap-6">
-                {/* Popular */}
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2 pb-2 border-b border-slate-100 dark:border-slate-800">
-                    <span className="material-symbols-outlined text-[18px] text-blue-600">star</span>
-                    <span className="text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-400 font-bold">
-                      Popular
-                    </span>
-                  </div>
-                  <ul className="space-y-1">
-                    {[
-                      { flag: '🇲🇾', name: 'Malaysia' },
-                      { flag: '🇬🇧', name: 'United Kingdom' },
-                      { flag: '🇦🇺', name: 'Australia' },
-                      { flag: '🇳🇿', name: 'New Zealand' }
-                    ].map((c) => (
-                      <li key={c.name}>
-                        <button
-                          onClick={() => onNavigate('destinations', c.name)}
-                          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-blue-600 transition-colors font-medium text-xs text-left cursor-pointer"
-                        >
-                          <span className="text-lg leading-none">{c.flag}</span>
-                          <span>{c.name}</span>
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Europe */}
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2 pb-2 border-b border-slate-100 dark:border-slate-800">
-                    <span className="material-symbols-outlined text-[18px] text-blue-600">euro_symbol</span>
-                    <span className="text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-400 font-bold">
-                      Europe
-                    </span>
-                  </div>
-                  <ul className="space-y-1">
-                    {[
-                      { flag: '🇧🇪', name: 'Belgium' },
-                      { flag: '🇫🇮', name: 'Finland' },
-                      { flag: '🇬🇷', name: 'Greece' },
-                      { flag: '🇳🇱', name: 'Netherlands' }
-                    ].map((c) => (
-                      <li key={c.name}>
-                        <button
-                          onClick={() => onNavigate('destinations', c.name)}
-                          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-blue-600 transition-colors font-medium text-xs text-left cursor-pointer"
-                        >
-                          <span className="text-lg leading-none">{c.flag}</span>
-                          <span>{c.name}</span>
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Asia & More */}
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2 pb-2 border-b border-slate-100 dark:border-slate-800">
-                    <span className="material-symbols-outlined text-[18px] text-blue-600">travel_explore</span>
-                    <span className="text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-400 font-bold">
-                      Mediterranean & Asia
-                    </span>
-                  </div>
-                  <ul className="space-y-1">
-                    {[
-                      { flag: '🇨🇾', name: 'Cyprus' },
-                      { flag: '🇲🇺', name: 'Mauritius' },
-                      { flag: '🇮🇳', name: 'India' }
-                    ].map((c) => (
-                      <li key={c.name}>
-                        <button
-                          onClick={() => onNavigate('destinations', c.name)}
-                          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-blue-600 transition-colors font-medium text-xs text-left cursor-pointer"
-                        >
-                          <span className="text-lg leading-none">{c.flag}</span>
-                          <span>{c.name}</span>
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-
-              {/* Bottom footer link */}
-              <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between px-2">
-                <span className="text-xs text-slate-500 dark:text-slate-400 font-normal">
-                  Explore 50+ study destinations worldwide.
-                </span>
-                <button
-                  onClick={() => onNavigate('destinations', 'all')}
-                  className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 text-[13px] font-bold hover:underline cursor-pointer"
+            {/* Countries Mega Dropdown Panel with Smooth Animated Reveal */}
+            <AnimatePresence>
+              {activeDropdown === 'countries' && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 6, scale: 0.98 }}
+                  transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+                  onMouseEnter={handleDropdownPanelEnter}
+                  onMouseLeave={handleNavMenuLeave}
+                  className="absolute top-[calc(100%+2px)] -left-20 w-[680px] bg-white dark:bg-[#0f172a] rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl p-6 z-50 pt-5 before:absolute before:-top-3 before:left-0 before:right-0 before:h-3 before:content-['']"
                 >
-                  <span>View All Countries</span>
-                  <span className="material-symbols-outlined text-[15px]">arrow_forward</span>
-                </button>
-              </div>
-            </div>
+                  <div className="grid grid-cols-3 gap-6">
+                    {/* Popular */}
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2 pb-2 border-b border-slate-100 dark:border-slate-800">
+                        <span className="material-symbols-outlined text-[18px] text-blue-600">star</span>
+                        <span className="text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-400 font-bold">
+                          Popular
+                        </span>
+                      </div>
+                      <ul className="space-y-1">
+                        {[
+                          { flag: '🇲🇾', name: 'Malaysia' },
+                          { flag: '🇬🇧', name: 'United Kingdom' },
+                          { flag: '🇦🇺', name: 'Australia' },
+                          { flag: '🇳🇿', name: 'New Zealand' }
+                        ].map((c) => (
+                          <li key={c.name}>
+                            <button
+                              onClick={() => handleMenuNavigate('destinations', c.name)}
+                              className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-blue-600 transition-colors font-medium text-xs text-left cursor-pointer"
+                            >
+                              <span className="text-lg leading-none">{c.flag}</span>
+                              <span>{c.name}</span>
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* Europe */}
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2 pb-2 border-b border-slate-100 dark:border-slate-800">
+                        <span className="material-symbols-outlined text-[18px] text-blue-600">euro_symbol</span>
+                        <span className="text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-400 font-bold">
+                          Europe
+                        </span>
+                      </div>
+                      <ul className="space-y-1">
+                        {[
+                          { flag: '🇧🇪', name: 'Belgium' },
+                          { flag: '🇫🇮', name: 'Finland' },
+                          { flag: '🇬🇷', name: 'Greece' },
+                          { flag: '🇳🇱', name: 'Netherlands' }
+                        ].map((c) => (
+                          <li key={c.name}>
+                            <button
+                              onClick={() => handleMenuNavigate('destinations', c.name)}
+                              className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-blue-600 transition-colors font-medium text-xs text-left cursor-pointer"
+                            >
+                              <span className="text-lg leading-none">{c.flag}</span>
+                              <span>{c.name}</span>
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* Asia & More */}
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2 pb-2 border-b border-slate-100 dark:border-slate-800">
+                        <span className="material-symbols-outlined text-[18px] text-blue-600">travel_explore</span>
+                        <span className="text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-400 font-bold">
+                          Mediterranean & Asia
+                        </span>
+                      </div>
+                      <ul className="space-y-1">
+                        {[
+                          { flag: '🇨🇾', name: 'Cyprus' },
+                          { flag: '🇲🇺', name: 'Mauritius' },
+                          { flag: '🇮🇳', name: 'India' }
+                        ].map((c) => (
+                          <li key={c.name}>
+                            <button
+                              onClick={() => handleMenuNavigate('destinations', c.name)}
+                              className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-blue-600 transition-colors font-medium text-xs text-left cursor-pointer"
+                            >
+                              <span className="text-lg leading-none">{c.flag}</span>
+                              <span>{c.name}</span>
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+
+                  {/* Bottom footer link */}
+                  <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between px-2">
+                    <span className="text-xs text-slate-500 dark:text-slate-400 font-normal">
+                      Explore 50+ study destinations worldwide.
+                    </span>
+                    <button
+                      onClick={() => handleMenuNavigate('destinations', 'all')}
+                      className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 text-[13px] font-bold hover:underline cursor-pointer"
+                    >
+                      <span>View All Countries</span>
+                      <span className="material-symbols-outlined text-[15px]">arrow_forward</span>
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           {/* 2. Universities */}
-          <button
-            onClick={() => onNavigate('universities')}
-            className={`gees-nav-link transition-colors cursor-pointer ${
-              isScrolled
-                ? (isDark
-                    ? (currentView === 'universities' ? 'gees-nav-link-active text-[#fbb034] font-bold' : 'text-white/90 hover:text-[#fbb034]')
-                    : (currentView === 'universities' ? 'gees-nav-link-active text-blue-600 font-bold' : 'text-slate-800 hover:text-blue-600'))
-                : (currentView === 'universities' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-slate-900 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400')
-            }`}
+          <div
+            className="relative py-2"
+            onMouseEnter={() => handleNavItemEnter('universities', false)}
           >
-            Universities
-          </button>
-
-          {/* 3. Courses */}
-          <button
-            onClick={() => onNavigate('courses')}
-            className={`gees-nav-link transition-colors cursor-pointer ${
-              isScrolled
-                ? (isDark
-                    ? (currentView === 'courses' ? 'gees-nav-link-active text-[#fbb034] font-bold' : 'text-white/90 hover:text-[#fbb034]')
-                    : (currentView === 'courses' ? 'gees-nav-link-active text-blue-600 font-bold' : 'text-slate-800 hover:text-blue-600'))
-                : (currentView === 'courses' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-slate-900 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400')
-            }`}
-          >
-            Courses
-          </button>
-
-          {/* 4. Services Mega-Menu */}
-          <div className="relative group cursor-pointer py-5">
             <button
               type="button"
-              className={`gees-nav-link flex items-center gap-1 transition-colors font-semibold cursor-pointer ${
-                isScrolled
-                  ? (isDark
-                      ? (currentView === 'services' ? 'gees-nav-link-active text-[#fbb034] font-bold' : 'text-white/90 hover:text-[#fbb034]')
-                      : (currentView === 'services' ? 'gees-nav-link-active text-blue-600 font-bold' : 'text-slate-800 hover:text-blue-600'))
-                  : (currentView === 'services' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-slate-900 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400')
+              onClick={() => handleMenuNavigate('universities')}
+              className={`relative px-3.5 py-2 rounded-full transition-colors cursor-pointer z-10 font-semibold ${
+                currentView === 'universities'
+                  ? (isScrolled
+                      ? (isDark ? 'text-[#fbb034] font-bold' : 'text-blue-600 font-bold')
+                      : 'text-blue-600 dark:text-blue-400 font-bold')
+                  : (isScrolled
+                      ? (isDark ? 'text-white/90 hover:text-white' : 'text-slate-800 hover:text-slate-950')
+                      : 'text-slate-900 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400')
               }`}
             >
+              <AnimatePresence>
+                {hoveredNav === 'universities' && (
+                  <motion.div
+                    layoutId="navbar-hover-indicator"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className={`absolute inset-0 rounded-full -z-10 ${
+                      isScrolled
+                        ? (isDark ? 'bg-white/12 border border-white/20' : 'bg-slate-200/80 border border-slate-300/60 shadow-xs')
+                        : (isDark ? 'bg-white/10 border border-white/15' : 'bg-slate-100/90 border border-slate-200/80 shadow-xs')
+                    }`}
+                    transition={{ type: 'spring', stiffness: 440, damping: 30 }}
+                  />
+                )}
+              </AnimatePresence>
+              <span>Universities</span>
+            </button>
+          </div>
+
+          {/* 3. Courses */}
+          <div
+            className="relative py-2"
+            onMouseEnter={() => handleNavItemEnter('courses', false)}
+          >
+            <button
+              type="button"
+              onClick={() => handleMenuNavigate('courses')}
+              className={`relative px-3.5 py-2 rounded-full transition-colors cursor-pointer z-10 font-semibold ${
+                currentView === 'courses'
+                  ? (isScrolled
+                      ? (isDark ? 'text-[#fbb034] font-bold' : 'text-blue-600 font-bold')
+                      : 'text-blue-600 dark:text-blue-400 font-bold')
+                  : (isScrolled
+                      ? (isDark ? 'text-white/90 hover:text-white' : 'text-slate-800 hover:text-slate-950')
+                      : 'text-slate-900 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400')
+              }`}
+            >
+              <AnimatePresence>
+                {hoveredNav === 'courses' && (
+                  <motion.div
+                    layoutId="navbar-hover-indicator"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className={`absolute inset-0 rounded-full -z-10 ${
+                      isScrolled
+                        ? (isDark ? 'bg-white/12 border border-white/20' : 'bg-slate-200/80 border border-slate-300/60 shadow-xs')
+                        : (isDark ? 'bg-white/10 border border-white/15' : 'bg-slate-100/90 border border-slate-200/80 shadow-xs')
+                    }`}
+                    transition={{ type: 'spring', stiffness: 440, damping: 30 }}
+                  />
+                )}
+              </AnimatePresence>
+              <span>Courses</span>
+            </button>
+          </div>
+
+          {/* 4. Services Mega-Menu */}
+          <div
+            className="relative py-2"
+            onMouseEnter={() => handleNavItemEnter('services', true)}
+          >
+            <button
+              type="button"
+              className={`relative px-3.5 py-2 rounded-full flex items-center gap-1 transition-colors font-semibold cursor-pointer z-10 ${
+                currentView === 'services'
+                  ? (isScrolled
+                      ? (isDark ? 'text-[#fbb034] font-bold' : 'text-blue-600 font-bold')
+                      : 'text-blue-600 dark:text-blue-400 font-bold')
+                  : (isScrolled
+                      ? (isDark ? 'text-white/90 hover:text-white' : 'text-slate-800 hover:text-slate-950')
+                      : 'text-slate-900 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400')
+              }`}
+            >
+              <AnimatePresence>
+                {hoveredNav === 'services' && (
+                  <motion.div
+                    layoutId="navbar-hover-indicator"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className={`absolute inset-0 rounded-full -z-10 ${
+                      isScrolled
+                        ? (isDark ? 'bg-white/12 border border-white/20' : 'bg-slate-200/80 border border-slate-300/60 shadow-xs')
+                        : (isDark ? 'bg-white/10 border border-white/15' : 'bg-slate-100/90 border border-slate-200/80 shadow-xs')
+                    }`}
+                    transition={{ type: 'spring', stiffness: 440, damping: 30 }}
+                  />
+                )}
+              </AnimatePresence>
               <span>Services</span>
-              <span className="material-symbols-outlined text-[18px] transition-transform duration-200 group-hover:rotate-180">
-                expand_more
-              </span>
             </button>
 
-            {/* Services 5-Column Mega Dropdown Panel */}
-            <div className="absolute top-[calc(100%-6px)] -left-60 w-[840px] bg-white dark:bg-[#0f172a] rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl p-6 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none group-hover:pointer-events-auto z-50">
-              <div className="grid grid-cols-5 gap-5">
-                {/* Admissions */}
-                <div className="space-y-3">
-                  <div className="flex items-center gap-1.5 pb-2 border-b border-slate-100 dark:border-slate-800">
-                    <span className="material-symbols-outlined text-[18px] text-blue-600">school</span>
-                    <span className="text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-400 font-bold">
-                      Admissions
-                    </span>
-                  </div>
-                  <ul className="space-y-1">
-                    {[
-                      { icon: '🎓', label: 'Admission', slug: 'admission-support' },
-                      { icon: '🏫', label: 'School Adm.', slug: 'school-admission' },
-                      { icon: '🤝', label: 'Referral', slug: 'b2b-partnership' }
-                    ].map((s) => (
-                      <li key={s.label}>
-                        <button
-                          onClick={() => onNavigate(s.slug === 'admission-support' || s.slug === 'school-admission' || s.slug === 'b2b-partnership' ? (s.slug === 'b2b-partnership' ? 'student-referral' : s.slug) : 'services', s.slug)}
-                          className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-blue-600 transition-colors font-medium text-xs text-left cursor-pointer"
-                        >
-                          <span className="text-base leading-none">{s.icon}</span>
-                          <span>{s.label}</span>
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Immigration */}
-                <div className="space-y-3">
-                  <div className="flex items-center gap-1.5 pb-2 border-b border-slate-100 dark:border-slate-800">
-                    <span className="material-symbols-outlined text-[18px] text-blue-600">badge</span>
-                    <span className="text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-400 font-bold">
-                      Immigration
-                    </span>
-                  </div>
-                  <ul className="space-y-1">
-                    {[
-                      { icon: '🛂', label: 'Student Visa', slug: 'student-visa-assistance' },
-                      { icon: '🔍', label: 'Track Visa', slug: 'track-visa' },
-                      { icon: '👨‍👩‍👧', label: 'Dependent', slug: 'dependent-visa' },
-                      { icon: '✈️', label: 'Tourist Visa', slug: 'tourist-visa' },
-                      { icon: '🏡', label: 'MM2H', slug: 'mm2h' }
-                    ].map((s) => (
-                      <li key={s.label}>
-                        <button
-                          onClick={() => onNavigate(s.slug === 'track-visa' ? 'track-visa' : (s.slug === 'dependent-visa' ? 'dependent-visa' : (s.slug === 'tourist-visa' ? 'tourist-visa' : (s.slug === 'mm2h' ? 'mm2h' : 'student-visa-assistance'))), s.slug)}
-                          className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-blue-600 transition-colors font-medium text-xs text-left cursor-pointer"
-                        >
-                          <span className="text-base leading-none">{s.icon}</span>
-                          <span>{s.label}</span>
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Arrival */}
-                <div className="space-y-3">
-                  <div className="flex items-center gap-1.5 pb-2 border-b border-slate-100 dark:border-slate-800">
-                    <span className="material-symbols-outlined text-[18px] text-blue-600">flight_takeoff</span>
-                    <span className="text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-400 font-bold">
-                      Arrival
-                    </span>
-                  </div>
-                  <ul className="space-y-1">
-                    {[
-                      { icon: '🏢', label: 'Accommodation', slug: 'student-accommodation' },
-                      { icon: '🏥', label: 'Insurance', slug: 'health-insurance' },
-                      { icon: '🎫', label: 'Flights', slug: 'flight-ticketing' },
-                      { icon: '🚕', label: 'Airport Pickup', slug: 'flight-ticketing' },
-                      { icon: '🧳', label: 'Tours', slug: 'flight-ticketing' },
-                      { icon: '🚗', label: 'Car Rental', slug: 'flight-ticketing' }
-                    ].map((s) => (
-                      <li key={s.label}>
-                        <button
-                          onClick={() => onNavigate(s.slug === 'health-insurance' ? 'health-insurance' : (s.slug === 'flight-ticketing' ? 'flight-ticketing' : 'services'), s.slug)}
-                          className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-blue-600 transition-colors font-medium text-xs text-left cursor-pointer"
-                        >
-                          <span className="text-base leading-none">{s.icon}</span>
-                          <span>{s.label}</span>
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Living */}
-                <div className="space-y-3">
-                  <div className="flex items-center gap-1.5 pb-2 border-b border-slate-100 dark:border-slate-800">
-                    <span className="material-symbols-outlined text-[18px] text-blue-600">home_pin</span>
-                    <span className="text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-400 font-bold">
-                      Living
-                    </span>
-                  </div>
-                  <ul className="space-y-1">
-                    {[
-                      { icon: '📦', label: 'Courier', slug: 'student-accommodation' },
-                      { icon: '🏠', label: 'Airbnb', slug: 'student-accommodation' },
-                      { icon: '💳', label: 'MoneyTransfer', slug: 'student-accommodation' }
-                    ].map((s) => (
-                      <li key={s.label}>
-                        <button
-                          onClick={() => onNavigate('services', s.slug)}
-                          className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-blue-600 transition-colors font-medium text-xs text-left cursor-pointer"
-                        >
-                          <span className="text-base leading-none">{s.icon}</span>
-                          <span>{s.label}</span>
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Prep & B2B */}
-                <div className="space-y-3">
-                  <div className="flex items-center gap-1.5 pb-2 border-b border-slate-100 dark:border-slate-800">
-                    <span className="material-symbols-outlined text-[18px] text-blue-600">history_edu</span>
-                    <span className="text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-400 font-bold">
-                      Prep & B2B
-                    </span>
-                  </div>
-                  <ul className="space-y-1">
-                    {[
-                      { icon: '🎙️', label: 'IELTS', slug: 'ielts-preparation' },
-                      { icon: '💻', label: 'PTE', slug: 'ielts-preparation' },
-                      { icon: '📖', label: 'Linguaskill', slug: 'ielts-preparation' },
-                      { icon: '🤝', label: 'B2B Partners', slug: 'b2b-partnership' }
-                    ].map((s) => (
-                      <li key={s.label}>
-                        <button
-                          onClick={() => onNavigate('services', s.slug)}
-                          className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-blue-600 transition-colors font-medium text-xs text-left cursor-pointer"
-                        >
-                          <span className="text-base leading-none">{s.icon}</span>
-                          <span>{s.label}</span>
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-
-              {/* Bottom footer link */}
-              <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between px-2">
-                <span className="text-xs text-slate-500 dark:text-slate-400 font-normal">
-                  From admission to arrival, all services in one place.
-                </span>
-                <button
-                  onClick={() => onNavigate('services')}
-                  className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 text-[13px] font-bold hover:underline cursor-pointer"
+            {/* Services 5-Column Mega Dropdown Panel with Smooth Reveal */}
+            <AnimatePresence>
+              {activeDropdown === 'services' && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 6, scale: 0.98 }}
+                  transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+                  onMouseEnter={handleDropdownPanelEnter}
+                  onMouseLeave={handleNavMenuLeave}
+                  className="absolute top-[calc(100%+2px)] -left-60 w-[840px] bg-white dark:bg-[#0f172a] rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl p-6 z-50 pt-5 before:absolute before:-top-3 before:left-0 before:right-0 before:h-3 before:content-['']"
                 >
-                  <span>View All Services</span>
-                  <span className="material-symbols-outlined text-[15px]">arrow_forward</span>
-                </button>
-              </div>
-            </div>
+                  <div className="grid grid-cols-5 gap-5">
+                    {/* Admissions */}
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-1.5 pb-2 border-b border-slate-100 dark:border-slate-800">
+                        <span className="material-symbols-outlined text-[18px] text-blue-600">school</span>
+                        <span className="text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-400 font-bold">
+                          Admissions
+                        </span>
+                      </div>
+                      <ul className="space-y-1">
+                        {[
+                          { icon: '🎓', label: 'Admission', slug: 'admission-support' },
+                          { icon: '🏫', label: 'School Adm.', slug: 'school-admission' },
+                          { icon: '🤝', label: 'Referral', slug: 'b2b-partnership' }
+                        ].map((s) => (
+                          <li key={s.label}>
+                            <button
+                              onClick={() => handleMenuNavigate(s.slug === 'admission-support' || s.slug === 'school-admission' || s.slug === 'b2b-partnership' ? (s.slug === 'b2b-partnership' ? 'student-referral' : s.slug) : 'services', s.slug)}
+                              className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-blue-600 transition-colors font-medium text-xs text-left cursor-pointer"
+                            >
+                              <span className="text-base leading-none">{s.icon}</span>
+                              <span>{s.label}</span>
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* Immigration */}
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-1.5 pb-2 border-b border-slate-100 dark:border-slate-800">
+                        <span className="material-symbols-outlined text-[18px] text-blue-600">badge</span>
+                        <span className="text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-400 font-bold">
+                          Immigration
+                        </span>
+                      </div>
+                      <ul className="space-y-1">
+                        {[
+                          { icon: '🛂', label: 'Student Visa', slug: 'student-visa-assistance' },
+                          { icon: '🔍', label: 'Track Visa', slug: 'track-visa' },
+                          { icon: '👨‍👩‍👧', label: 'Dependent', slug: 'dependent-visa' },
+                          { icon: '✈️', label: 'Tourist Visa', slug: 'tourist-visa' },
+                          { icon: '🏡', label: 'MM2H', slug: 'mm2h' }
+                        ].map((s) => (
+                          <li key={s.label}>
+                            <button
+                              onClick={() => handleMenuNavigate(s.slug === 'track-visa' ? 'track-visa' : (s.slug === 'dependent-visa' ? 'dependent-visa' : (s.slug === 'tourist-visa' ? 'tourist-visa' : (s.slug === 'mm2h' ? 'mm2h' : 'student-visa-assistance'))), s.slug)}
+                              className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-blue-600 transition-colors font-medium text-xs text-left cursor-pointer"
+                            >
+                              <span className="text-base leading-none">{s.icon}</span>
+                              <span>{s.label}</span>
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* Arrival */}
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-1.5 pb-2 border-b border-slate-100 dark:border-slate-800">
+                        <span className="material-symbols-outlined text-[18px] text-blue-600">flight_takeoff</span>
+                        <span className="text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-400 font-bold">
+                          Arrival
+                        </span>
+                      </div>
+                      <ul className="space-y-1">
+                        {[
+                          { icon: '🏢', label: 'Accommodation', slug: 'student-accommodation' },
+                          { icon: '🏥', label: 'Insurance', slug: 'health-insurance' },
+                          { icon: '🎫', label: 'Flights', slug: 'flight-ticketing' },
+                          { icon: '🚕', label: 'Airport Pickup', slug: 'flight-ticketing' },
+                          { icon: '🧳', label: 'Tours', slug: 'flight-ticketing' },
+                          { icon: '🚗', label: 'Car Rental', slug: 'flight-ticketing' }
+                        ].map((s) => (
+                          <li key={s.label}>
+                            <button
+                              onClick={() => handleMenuNavigate(s.slug === 'health-insurance' ? 'health-insurance' : (s.slug === 'flight-ticketing' ? 'flight-ticketing' : 'services'), s.slug)}
+                              className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-blue-600 transition-colors font-medium text-xs text-left cursor-pointer"
+                            >
+                              <span className="text-base leading-none">{s.icon}</span>
+                              <span>{s.label}</span>
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* Living */}
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-1.5 pb-2 border-b border-slate-100 dark:border-slate-800">
+                        <span className="material-symbols-outlined text-[18px] text-blue-600">home_pin</span>
+                        <span className="text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-400 font-bold">
+                          Living
+                        </span>
+                      </div>
+                      <ul className="space-y-1">
+                        {[
+                          { icon: '📦', label: 'Courier', slug: 'student-accommodation' },
+                          { icon: '🏠', label: 'Airbnb', slug: 'student-accommodation' },
+                          { icon: '💳', label: 'MoneyTransfer', slug: 'student-accommodation' }
+                        ].map((s) => (
+                          <li key={s.label}>
+                            <button
+                              onClick={() => handleMenuNavigate('services', s.slug)}
+                              className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-blue-600 transition-colors font-medium text-xs text-left cursor-pointer"
+                            >
+                              <span className="text-base leading-none">{s.icon}</span>
+                              <span>{s.label}</span>
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* Prep & B2B */}
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-1.5 pb-2 border-b border-slate-100 dark:border-slate-800">
+                        <span className="material-symbols-outlined text-[18px] text-blue-600">history_edu</span>
+                        <span className="text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-400 font-bold">
+                          Prep & B2B
+                        </span>
+                      </div>
+                      <ul className="space-y-1">
+                        {[
+                          { icon: '🎙️', label: 'IELTS', slug: 'ielts-preparation' },
+                          { icon: '💻', label: 'PTE', slug: 'ielts-preparation' },
+                          { icon: '📖', label: 'Linguaskill', slug: 'ielts-preparation' },
+                          { icon: '🤝', label: 'B2B Partners', slug: 'b2b-partnership' }
+                        ].map((s) => (
+                          <li key={s.label}>
+                            <button
+                              onClick={() => handleMenuNavigate('services', s.slug)}
+                              className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-blue-600 transition-colors font-medium text-xs text-left cursor-pointer"
+                            >
+                              <span className="text-base leading-none">{s.icon}</span>
+                              <span>{s.label}</span>
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+
+                  {/* Bottom footer link */}
+                  <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between px-2">
+                    <span className="text-xs text-slate-500 dark:text-slate-400 font-normal">
+                      From admission to arrival, all services in one place.
+                    </span>
+                    <button
+                      onClick={() => handleMenuNavigate('services')}
+                      className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 text-[13px] font-bold hover:underline cursor-pointer"
+                    >
+                      <span>View All Services</span>
+                      <span className="material-symbols-outlined text-[15px]">arrow_forward</span>
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           {/* 5. Contact Mega-Menu */}
-          <div className="relative group cursor-pointer py-5">
+          <div
+            className="relative py-2"
+            onMouseEnter={() => handleNavItemEnter('contact', true)}
+          >
             <button
               type="button"
-              onClick={() => onNavigate('contact')}
-              className={`gees-nav-link flex items-center gap-1 transition-colors font-semibold cursor-pointer ${
-                isScrolled
-                  ? (isDark
-                      ? (currentView === 'contact' ? 'gees-nav-link-active text-[#fbb034] font-bold' : 'text-white/90 hover:text-[#fbb034]')
-                      : (currentView === 'contact' ? 'gees-nav-link-active text-blue-600 font-bold' : 'text-slate-800 hover:text-blue-600'))
-                  : (currentView === 'contact' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-slate-900 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400')
+              onClick={() => handleMenuNavigate('contact')}
+              className={`relative px-3.5 py-2 rounded-full flex items-center gap-1 transition-colors font-semibold cursor-pointer z-10 ${
+                currentView === 'contact' || currentView === 'about'
+                  ? (isScrolled
+                      ? (isDark ? 'text-[#fbb034] font-bold' : 'text-blue-600 font-bold')
+                      : 'text-blue-600 dark:text-blue-400 font-bold')
+                  : (isScrolled
+                      ? (isDark ? 'text-white/90 hover:text-white' : 'text-slate-800 hover:text-slate-950')
+                      : 'text-slate-900 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400')
               }`}
             >
+              <AnimatePresence>
+                {hoveredNav === 'contact' && (
+                  <motion.div
+                    layoutId="navbar-hover-indicator"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className={`absolute inset-0 rounded-full -z-10 ${
+                      isScrolled
+                        ? (isDark ? 'bg-white/12 border border-white/20' : 'bg-slate-200/80 border border-slate-300/60 shadow-xs')
+                        : (isDark ? 'bg-white/10 border border-white/15' : 'bg-slate-100/90 border border-slate-200/80 shadow-xs')
+                    }`}
+                    transition={{ type: 'spring', stiffness: 440, damping: 30 }}
+                  />
+                )}
+              </AnimatePresence>
               <span>Contact</span>
-              <span className="material-symbols-outlined text-[18px] transition-transform duration-200 group-hover:rotate-180">
-                expand_more
-              </span>
             </button>
 
-            {/* Contact Dropdown Panel */}
-            <div className="absolute top-[calc(100%-6px)] right-0 w-[620px] bg-white dark:bg-[#0f172a] rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6 grid grid-cols-3 gap-6 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none group-hover:pointer-events-auto">
-              {/* Column 1: Contact */}
-              <div className="space-y-3">
-                <div className="flex items-center gap-1.5 pb-2 border-b border-slate-100 dark:border-slate-800">
-                  <span className="material-symbols-outlined text-[18px] text-blue-600">contact_support</span>
-                  <span className="text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-400 font-bold">
-                    Contact
-                  </span>
-                </div>
-                <ul className="space-y-1">
-                  {[
-                    { icon: '🏢', label: 'About Us', action: () => onNavigate('about') },
-                    { icon: '📞', label: 'Contact Us', action: () => onNavigate('contact') },
-                    { icon: '🏫', label: 'Language Centers', action: () => onNavigate('language-centers') },
-                    { icon: '🎓', label: 'Application Tracker', action: () => { onRoleChange('student'); onNavigate('student-portal'); } },
-                    { icon: '🇲🇾', label: 'EMGS Visa Tracker', action: () => onNavigate('track-visa') },
-                    { icon: '📘', label: 'Students Guide', action: () => onNavigate('students-guide') },
-                    { icon: '📚', label: 'Resources', action: () => onNavigate('resources') },
-                    { 
-                      icon: '❓', 
-                      label: 'FAQs', 
-                      action: () => onNavigate('faq')
-                    }
-                  ].map((item) => (
-                    <li key={item.label}>
-                      <button
-                        onClick={item.action}
-                        className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-blue-600 transition-colors font-medium text-xs text-left cursor-pointer"
-                      >
-                        <span className="text-base leading-none">{item.icon}</span>
-                        <span>{item.label}</span>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+            {/* Contact Dropdown Panel with Smooth Reveal */}
+            <AnimatePresence>
+              {activeDropdown === 'contact' && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 6, scale: 0.98 }}
+                  transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+                  onMouseEnter={handleDropdownPanelEnter}
+                  onMouseLeave={handleNavMenuLeave}
+                  className="absolute top-[calc(100%+2px)] right-0 w-[620px] bg-white dark:bg-[#0f172a] rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6 grid grid-cols-3 gap-6 z-50 pt-5 before:absolute before:-top-3 before:left-0 before:right-0 before:h-3 before:content-['']"
+                >
+                  {/* Column 1: Contact */}
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-1.5 pb-2 border-b border-slate-100 dark:border-slate-800">
+                      <span className="material-symbols-outlined text-[18px] text-blue-600">contact_support</span>
+                      <span className="text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-400 font-bold">
+                        Contact
+                      </span>
+                    </div>
+                    <ul className="space-y-1">
+                      {[
+                        { icon: '🏢', label: 'About Us', action: () => handleMenuNavigate('about') },
+                        { icon: '📞', label: 'Contact Us', action: () => handleMenuNavigate('contact') },
+                        { icon: '🏫', label: 'Language Centers', action: () => handleMenuNavigate('language-centers') },
+                        { icon: '🎓', label: 'Application Tracker', action: () => { onRoleChange('student'); handleMenuNavigate('student-portal'); } },
+                        { icon: '🇲🇾', label: 'EMGS Visa Tracker', action: () => handleMenuNavigate('track-visa') },
+                        { icon: '📘', label: 'Students Guide', action: () => handleMenuNavigate('students-guide') },
+                        { icon: '📚', label: 'Resources', action: () => handleMenuNavigate('resources') },
+                        { icon: '❓', label: 'FAQs', action: () => handleMenuNavigate('faq') }
+                      ].map((item) => (
+                        <li key={item.label}>
+                          <button
+                            onClick={item.action}
+                            className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-blue-600 transition-colors font-medium text-xs text-left cursor-pointer"
+                          >
+                            <span className="text-base leading-none">{item.icon}</span>
+                            <span>{item.label}</span>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
 
-              {/* Column 2: About Us */}
-              <div className="space-y-3">
-                <div className="flex items-center gap-1.5 pb-2 border-b border-slate-100 dark:border-slate-800">
-                  <span className="material-symbols-outlined text-[18px] text-blue-600">info</span>
-                  <span className="text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-400 font-bold">
-                    About Us
-                  </span>
-                </div>
-                <ul className="space-y-1">
-                  {[
-                    { icon: '🏛️', label: 'About Us Overview', action: () => onNavigate('about') },
-                    { icon: '👔', label: 'Leadership & Director', action: () => onNavigate('leadership-director') },
-                    { icon: '⭐', label: 'Success Stories', action: () => onNavigate('success-stories') }
-                  ].map((item) => (
-                    <li key={item.label}>
-                      <button
-                        onClick={item.action}
-                        className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-blue-600 transition-colors font-medium text-xs text-left cursor-pointer"
-                      >
-                        <span className="text-base leading-none">{item.icon}</span>
-                        <span>{item.label}</span>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+                  {/* Column 2: About Us */}
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-1.5 pb-2 border-b border-slate-100 dark:border-slate-800">
+                      <span className="material-symbols-outlined text-[18px] text-blue-600">info</span>
+                      <span className="text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-400 font-bold">
+                        About Us
+                      </span>
+                    </div>
+                    <ul className="space-y-1">
+                      {[
+                        { icon: '🏛️', label: 'About Us Overview', action: () => handleMenuNavigate('about') },
+                        { icon: '👔', label: 'Leadership & Director', action: () => handleMenuNavigate('leadership-director') },
+                        { icon: '⭐', label: 'Success Stories', action: () => handleMenuNavigate('success-stories') }
+                      ].map((item) => (
+                        <li key={item.label}>
+                          <button
+                            onClick={item.action}
+                            className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-blue-600 transition-colors font-medium text-xs text-left cursor-pointer"
+                          >
+                            <span className="text-base leading-none">{item.icon}</span>
+                            <span>{item.label}</span>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
 
-              {/* Column 3: News & Updates */}
-              <div className="space-y-3">
-                <div className="flex items-center gap-1.5 pb-2 border-b border-slate-100 dark:border-slate-800">
-                  <span className="material-symbols-outlined text-[18px] text-blue-600">newspaper</span>
-                  <span className="text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-400 font-bold">
-                    News & Updates
-                  </span>
-                </div>
-                <ul className="space-y-1">
-                  {[
-                    { icon: '📅', label: 'Events & Fairs', action: () => onNavigate('events') },
-                    { icon: '📰', label: 'News & Visa Bulletins', action: () => onNavigate('news') },
-                    { icon: '✍️', label: 'Blog & Articles', action: () => onNavigate('blog') }
-                  ].map((item) => (
-                    <li key={item.label}>
-                      <button
-                        onClick={item.action}
-                        className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-blue-600 transition-colors font-medium text-xs text-left cursor-pointer"
-                      >
-                        <span className="text-base leading-none">{item.icon}</span>
-                        <span>{item.label}</span>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
+                  {/* Column 3: News & Updates */}
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-1.5 pb-2 border-b border-slate-100 dark:border-slate-800">
+                      <span className="material-symbols-outlined text-[18px] text-blue-600">newspaper</span>
+                      <span className="text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-400 font-bold">
+                        News & Updates
+                      </span>
+                    </div>
+                    <ul className="space-y-1">
+                      {[
+                        { icon: '📅', label: 'Events & Fairs', action: () => handleMenuNavigate('events') },
+                        { icon: '📰', label: 'News & Visa Bulletins', action: () => handleMenuNavigate('news') },
+                        { icon: '✍️', label: 'Blog & Articles', action: () => handleMenuNavigate('blog') }
+                      ].map((item) => (
+                        <li key={item.label}>
+                          <button
+                            onClick={item.action}
+                            className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-blue-600 transition-colors font-medium text-xs text-left cursor-pointer"
+                          >
+                            <span className="text-base leading-none">{item.icon}</span>
+                            <span>{item.label}</span>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </nav>
 
         {/* Right Action Controls */}
-        <div className="flex items-center gap-2 xs:gap-2.5 sm:gap-3 lg:gap-3.5 shrink-0">
+        <div id="nav-utility-container" className="flex items-center gap-0.5 xs:gap-1 sm:gap-1.5 lg:gap-2.5 shrink-0">
           {/* Header Multi-Currency Switcher */}
-          <div className={`transition-all duration-300 ${isScrolled ? 'gees-header-icon-btn rounded-full' : ''}`}>
-            <HeaderCurrencyExchangeIcon />
+          <div className="flex items-center">
+            <HeaderCurrencyExchangeIcon variant="minimal" />
           </div>
 
           {/* Saved Courses Wishlist Trigger with Dynamic Counter Badge */}
@@ -664,16 +844,16 @@ export const Navbar: React.FC<NavbarProps> = ({
             aria-label="Saved Courses Wishlist"
             onClick={() => onNavigate('wishlist')}
             title="Saved Courses Wishlist"
-            className={`gees-header-icon-btn relative w-10 h-10 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-full border flex items-center justify-center transition-all duration-200 ease-in-out transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer shadow-xs ${
+            className={`relative w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center transition-colors duration-200 cursor-pointer ${
               currentView === 'wishlist'
-                ? 'bg-amber-50 dark:bg-amber-950/60 border-[#fbb034] text-[#fbb034] font-bold'
-                : scrolledBtnClass
+                ? 'text-[#fbb034] bg-amber-500/10'
+                : 'text-slate-800 dark:text-slate-200 hover:text-blue-600 dark:hover:text-[#fbb034] hover:bg-slate-100/60 dark:hover:bg-slate-800/60'
             }`}
             type="button"
           >
-            <span className="material-symbols-outlined text-[17px] xs:text-[18px] sm:text-[20px]">bookmark</span>
+            <span className="material-symbols-outlined text-[18px]">bookmark</span>
             {wishlistCount > 0 && (
-              <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-[#fbb034] text-slate-950 font-black text-[10px] leading-none flex items-center justify-center shadow-md border border-white dark:border-slate-900 animate-scaleUp">
+              <span className="absolute top-0 right-0 min-w-[15px] h-[15px] px-0.5 rounded-full bg-[#fbb034] text-slate-950 font-black text-[9px] leading-none flex items-center justify-center shadow-xs border border-white dark:border-slate-900">
                 {wishlistCount}
               </span>
             )}
@@ -683,17 +863,17 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             aria-label="Search Catalog"
             onClick={onOpenSearch}
-            className={`gees-header-icon-btn hidden sm:flex w-10 h-10 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-full border items-center justify-center transition-all duration-200 ease-in-out transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer shadow-xs ${scrolledBtnClass}`}
+            className="hidden sm:flex w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 rounded-xl items-center justify-center text-slate-800 dark:text-slate-200 hover:text-blue-600 dark:hover:text-[#fbb034] hover:bg-slate-100/60 dark:hover:bg-slate-800/60 transition-colors cursor-pointer"
             type="button"
           >
-            <span className="material-symbols-outlined text-[17px] xs:text-[18px] sm:text-[20px]">search</span>
+            <span className="material-symbols-outlined text-[18px]">search</span>
           </button>
 
           {/* Theme Toggle Button (Visible on all viewports) */}
           <ThemeToggle
             isDark={isDark}
             onToggle={onToggleTheme}
-            className={`flex transition-all duration-200 ${scrolledBtnClass}`}
+            variant="minimal"
           />
 
           {/* Portal Popover with Sliding Pill Tab Switcher */}
@@ -705,10 +885,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               aria-label="Portal"
               onClick={() => setPortalOpen(!portalOpen)}
-              className={`gees-header-icon-btn w-9 h-9 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-full border flex items-center justify-center transition-colors cursor-pointer ${scrolledBtnClass}`}
+              className="w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-slate-800 dark:text-slate-200 hover:text-blue-600 dark:hover:text-[#fbb034] hover:bg-slate-100/60 dark:hover:bg-slate-800/60 transition-colors cursor-pointer"
               type="button"
             >
-              <span className="material-symbols-outlined text-[18px] sm:text-[20px]">account_circle</span>
+              <span className="material-symbols-outlined text-[18px]">account_circle</span>
             </button>
 
             {/* Portal Dropdown Menu */}
@@ -854,26 +1034,19 @@ export const Navbar: React.FC<NavbarProps> = ({
             />
           </div>
 
-          {/* Mobile Hamburger Navigation Button */}
+          {/* Responsive Morphing Hamburger Navigation Button */}
           <button
-            aria-label="Navigation Menu"
+            aria-label={isMobileMenuOpen ? 'Close Navigation Menu' : 'Open Navigation Menu'}
+            aria-expanded={isMobileMenuOpen}
             onClick={onOpenMobileMenu}
-            className={`gees-header-icon-btn xl:hidden group w-10 h-10 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-full border flex items-center justify-center transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] transform hover:scale-110 active:scale-90 shadow-xs cursor-pointer shrink-0 ${scrolledBtnClass}`}
+            title={isMobileMenuOpen ? 'Close Navigation Menu' : 'Open Navigation Menu'}
+            className="w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-slate-800 dark:text-slate-200 hover:text-blue-600 dark:hover:text-[#fbb034] hover:bg-slate-100/60 dark:hover:bg-slate-800/60 transition-colors cursor-pointer shrink-0 z-50"
             type="button"
           >
-            <svg
-              className="w-4 h-4 sm:w-5 sm:h-5 text-current transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] transform group-hover:scale-110 group-hover:rotate-90 group-active:scale-90 group-active:rotate-180 group-hover:text-[#fbb034] will-change-transform"
-              fill="none"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2.3"
-              viewBox="0 0 24 24"
-            >
-              <line className="transition-all duration-300 ease-out group-hover:translate-x-[-1px]" x1="11" x2="20.5" y1="6.5" y2="6.5"></line>
-              <line className="transition-all duration-300 ease-out group-hover:translate-x-[1px]" x1="3.5" x2="20.5" y1="12" y2="12"></line>
-              <line className="transition-all duration-300 ease-out group-hover:translate-x-[-1px]" x1="14.5" x2="20.5" y1="17.5" y2="17.5"></line>
-            </svg>
+            <MorphingHamburgerIcon
+              isOpen={isMobileMenuOpen}
+              className="w-4.5 h-4.5 text-current"
+            />
           </button>
         </div>
       </div>

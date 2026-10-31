@@ -8,6 +8,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { mockDestinations, mockServices } from "../../data/mockDatabase.ts";
 import { InteractiveHoverButton } from "../ui/interactive-hover-button.tsx";
 import AnimatedTextCycle from "@/components/ui/animated-text-cycle";
+import { HeroWorldMapBackground } from "./HeroWorldMapBackground.tsx";
 
 interface HeroSectionProps {
   onNavigate: (view: string, payload?: any) => void;
@@ -91,7 +92,10 @@ const StatCounter: React.FC<StatCounterProps> = ({
         </span>
       </div>
 
-      <p className="text-slate-600 dark:text-slate-300 font-bold text-[11px] xs:text-xs sm:text-sm mt-2 tracking-tight group-hover:text-slate-950 dark:group-hover:text-white transition-colors truncate w-full block leading-none">
+      <p
+        title={label}
+        className="text-slate-600 dark:text-slate-300 font-bold text-[11px] xs:text-xs sm:text-sm mt-2 tracking-tight group-hover:text-slate-950 dark:group-hover:text-white transition-colors truncate w-full block leading-none"
+      >
         {label}
       </p>
     </div>
@@ -148,6 +152,52 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     return () => clearTimeout(timeout);
   }, [displayedText, isDeleting, countryIndex]);
 
+  // Touch-swipe gestures for Featured Study Destinations Banner
+  const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
+  const touchDeltaX = useRef<number>(0);
+
+  const handleNextDestination = () => {
+    const nextIdx = (countryIndex + 1) % countries.length;
+    setCountryIndex(nextIdx);
+    setDisplayedText(countries[nextIdx]);
+    setIsDeleting(false);
+  };
+
+  const handlePrevDestination = () => {
+    const prevIdx = (countryIndex - 1 + countries.length) % countries.length;
+    setCountryIndex(prevIdx);
+    setDisplayedText(countries[prevIdx]);
+    setIsDeleting(false);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+    touchDeltaX.current = 0;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    touchDeltaX.current = e.touches[0].clientX - touchStartX.current;
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStartX.current === null) return;
+    const deltaX = touchDeltaX.current;
+    if (Math.abs(deltaX) > 35) {
+      if (deltaX < 0) {
+        handleNextDestination();
+      } else {
+        handlePrevDestination();
+      }
+    }
+    touchStartX.current = null;
+    touchStartY.current = null;
+    touchDeltaX.current = 0;
+  };
+
+
   // 2. Search & Filter State
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedDestination, setSelectedDestination] = useState("all");
@@ -168,7 +218,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   const typewriterServices = [
     "Health Insurance",
     "Universities",
-    "Courses",
+    "Course Finder",
     "Admission Support",
     "Student Visa",
     "Accommodations",
@@ -221,37 +271,50 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   };
 
   return (
-    <section className="relative w-full bg-white dark:bg-[#070b19] pt-1 min-[390px]:pt-2 sm:pt-12 pb-10 sm:pb-16 lg:pb-24 transition-colors duration-300">
+    <section className="relative w-full overflow-hidden bg-white dark:bg-[#070b19] pt-1 min-[390px]:pt-2 sm:pt-12 pb-10 sm:pb-16 lg:pb-24 transition-colors duration-300">
+      {/* Decorative Dotted World Map & Continuous Animated Flight Paths (Compact between header and search bar) */}
+      <div className="absolute top-0 left-0 right-0 h-[185px] min-[390px]:h-[205px] xs:h-[250px] sm:h-[400px] lg:h-[430px] pointer-events-none select-none z-0 overflow-hidden [mask-image:linear-gradient(to_bottom,black_65%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_65%,transparent_100%)]">
+        <HeroWorldMapBackground />
+      </div>
+
       <div className="w-full max-w-full sm:max-w-[95%] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-start relative z-10">
         {/* Title + Graduate Graphic Header */}
-        <div className="w-full flex flex-col lg:flex-row items-start lg:items-end justify-between gap-3 sm:gap-10 relative">
+        <div className="w-full flex flex-col lg:flex-row items-start lg:items-end justify-between gap-2.5 sm:gap-10 relative">
           <div className="flex flex-col items-start flex-1 relative z-20">
-            <h1 className="hero-study-in text-[32px] min-[390px]:text-[38px] xs:text-[46px] sm:text-[76px] lg:text-[96px] font-black tracking-[-0.03em] text-slate-900 dark:text-white leading-[1.02] select-none text-balance">
+            <h1 className="hero-study-in text-[30px] min-[390px]:text-[36px] xs:text-[44px] sm:text-[76px] lg:text-[96px] font-black tracking-[-0.03em] text-slate-900 dark:text-white leading-[1.02] select-none text-balance">
               Study in
             </h1>
 
-            {/* Typewriter Highlight Box */}
-            <div className="hero-typewriter-box mt-1.5 sm:mt-3 inline-block px-3.5 sm:px-8 py-1.5 sm:py-3 rounded-2xl sm:rounded-3xl shadow-sm bg-[#fbb034] transition-all duration-300 max-w-full">
+            {/* Typewriter Highlight Box with Horizontal Touch-Swipe Gestures */}
+            <div
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+              role="region"
+              aria-label="Swipeable Study Destinations Banner"
+              title="Swipe horizontally on mobile to switch destinations"
+              className="hero-typewriter-box mt-1 sm:mt-2.5 inline-flex items-center px-3.5 min-[390px]:px-4 sm:px-8 py-1.5 sm:py-3 rounded-2xl sm:rounded-3xl shadow-sm bg-[#fbb034] transition-all duration-300 max-w-full touch-pan-y select-none active:scale-[0.98] cursor-grab active:cursor-grabbing group/swipe"
+            >
               <span className="hero-typewriter text-[24px] min-[390px]:text-[28px] xs:text-[36px] sm:text-[68px] lg:text-[88px] font-black tracking-[-0.025em] text-slate-950 leading-none inline-flex items-center min-h-[1.05em] max-w-full overflow-hidden text-ellipsis">
                 <span>{displayedText}</span>
                 <span className="ml-1 inline-block w-[3px] sm:w-[5px] h-[0.75em] bg-slate-950 rounded-sm animate-pulse align-baseline shrink-0"></span>
               </span>
             </div>
 
-            <p className="hero-connecting-text mt-1.5 sm:mt-3 mb-1 font-bold text-[11px] min-[390px]:text-[12px] sm:text-[13px] tracking-[0.08em] min-[390px]:tracking-[0.14em] sm:tracking-[0.22em] uppercase text-slate-600 dark:text-slate-300 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xs px-2 py-1 rounded-md inline-block max-w-full truncate sm:whitespace-normal">
+            <p className="hero-connecting-text mt-1.5 sm:mt-2.5 mb-1 sm:mb-1.5 font-bold text-[11px] min-[390px]:text-[12px] sm:text-[13px] tracking-[0.08em] min-[390px]:tracking-[0.12em] sm:tracking-[0.22em] uppercase text-slate-600 dark:text-slate-300 bg-white/75 dark:bg-slate-900/70 backdrop-blur-xs px-2 py-1 rounded-md inline-block max-w-full truncate sm:whitespace-normal">
               CONNECTING YOU TO WORLD CLASS EDUCATION
             </p>
           </div>
 
           {/* Graduate Photo Card Visual */}
-          <div className="hero-girl-container absolute right-0 bottom-0 w-28 xs:w-36 sm:w-auto flex flex-col items-center justify-end shrink-0 pointer-events-none z-10">
+          <div className="hero-girl-container absolute right-0 bottom-0 w-26 xs:w-36 sm:w-auto flex flex-col items-center justify-end shrink-0 pointer-events-none z-10">
             <div className="relative flex items-end justify-center w-full max-w-sm sm:max-w-md">
               <div className="absolute top-10 sm:top-20 w-36 xs:w-48 sm:w-80 h-36 xs:h-48 sm:h-80 bg-blue-500/15 dark:bg-blue-500/20 rounded-full blur-3xl pointer-events-none -z-10"></div>
               <div className="absolute top-12 sm:top-24 w-32 xs:w-40 sm:w-72 h-32 xs:h-40 sm:h-72 bg-[#fbb034]/20 rounded-full blur-2xl pointer-events-none -z-10"></div>
               <img
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3i8ovasBhMoQ1TCIM8b_loTMgx6vCkSvEsw2fJQwFSZyCoNLkXZxKA9EN1sJJ-A3Cwq0yfftq-b7M3savldQvGKkRNTurDSnUnFbValuSkkSZ9I02u8NfOa5w9lnDxukT6Y6TF9d-5czHZTgV_3JN8j9PWYwKKPDtBBm1BDdxTOk3_2wI_1Vk3NYvjoT_o4k9rsKNw4Qh3yZ7iBvQCZmx0L7d8WF5SIdgK6q16NhNSnClDMxmM_jUHniHU-ibe0ndZ6U"
                 alt="GEES Successful Graduate Student"
-                className="hero-girl-img h-40 xs:h-52 sm:h-72 lg:h-84 object-contain pointer-events-none transition-transform duration-500 drop-shadow-2xl opacity-40 xs:opacity-50 sm:opacity-95 lg:opacity-100"
+                className="hero-girl-img h-38 xs:h-52 sm:h-72 lg:h-84 object-contain pointer-events-none transition-transform duration-500 drop-shadow-2xl opacity-35 min-[390px]:opacity-45 sm:opacity-95 lg:opacity-100"
               />
             </div>
           </div>
@@ -552,15 +615,15 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               </div>
             )}
 
-            {/* Unified Inset Grouped Filter Matrix - 1-Row Scrollable Strip on Mobile */}
+            {/* Unified Inset Grouped Filter Matrix - 3-Column Grid on Mobile */}
             <div
-              className="flex items-center overflow-x-auto scrollbar-none [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden shrink-0 snap-x divide-x divide-[#e5e5ea] dark:divide-slate-800 bg-[#fafafc] dark:bg-slate-900/60 border-b border-[#e5e5ea] dark:border-slate-800 sm:grid sm:grid-cols-3 sm:overflow-visible"
+              className="grid grid-cols-3 divide-x divide-[#e5e5ea] dark:divide-slate-800 bg-[#fafafc] dark:bg-slate-900/60 border-b border-[#e5e5ea] dark:border-slate-800 w-full"
               data-purpose="inset-filter-matrix"
             >
               {/* Column 1: DESTINATION */}
-              <label className="relative px-2.5 py-2.5 min-[390px]:py-3 min-h-[48px] min-[390px]:min-h-[50px] flex items-center gap-2 shrink-0 min-w-[155px] sm:min-w-0 sm:flex-1 hover:bg-[#f5f5f7] dark:hover:bg-slate-800/50 active:bg-[#ebebed] dark:active:bg-slate-800 transition-colors cursor-pointer select-none snap-start">
+              <label className="relative px-1.5 min-[390px]:px-2.5 py-2 min-[390px]:py-2.5 min-h-[48px] flex items-center gap-1.5 min-[390px]:gap-2 w-full min-w-0 hover:bg-[#f5f5f7] dark:hover:bg-slate-800/50 active:bg-[#ebebed] dark:active:bg-slate-800 transition-colors cursor-pointer select-none">
                 <svg
-                  className="w-5 h-5 text-[#2563eb] dark:text-blue-400 shrink-0"
+                  className="w-4 h-4 min-[390px]:w-5 min-[390px]:h-5 text-[#2563eb] dark:text-blue-400 shrink-0"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2"
@@ -572,9 +635,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     strokeLinecap="round"
                   />
                 </svg>
-                <div className="flex-1 min-w-0 flex flex-col justify-center">
+                <div className="flex-1 min-w-0 flex flex-col justify-center overflow-hidden">
                   <span
-                    className={`text-[10px] min-[390px]:text-[11px] font-bold tracking-[0.05em] uppercase leading-none block truncate transition-all duration-300 ease-out transform ${
+                    className={`text-[9.5px] min-[390px]:text-[10.5px] font-bold tracking-[0.04em] uppercase leading-none block truncate transition-all duration-300 ease-out transform ${
                       selectedDestination !== "all"
                         ? "text-[#f59e0b] dark:text-[#fbbf24] scale-[1.04] translate-x-0.5"
                         : "text-[#86868b] dark:text-slate-400"
@@ -585,7 +648,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   <select
                     value={selectedDestination}
                     onChange={(e) => setSelectedDestination(e.target.value)}
-                    className="appearance-none -webkit-appearance-none w-full bg-transparent text-[12px] min-[390px]:text-[12.5px] font-semibold text-[#1d1d1f] dark:text-white tracking-tight truncate border-0 p-0 m-0 mt-0.5 focus:ring-0 focus:outline-none cursor-pointer leading-tight h-[20px]"
+                    className="appearance-none -webkit-appearance-none w-full bg-transparent text-[11px] min-[390px]:text-[12px] font-semibold text-[#1d1d1f] dark:text-white tracking-tight truncate border-0 p-0 m-0 mt-0.5 focus:ring-0 focus:outline-none cursor-pointer leading-tight h-[20px]"
                   >
                     <option value="all">All</option>
                     <option value="Malaysia">Malaysia</option>
@@ -604,9 +667,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               </label>
 
               {/* Column 2: LEVEL */}
-              <label className="relative px-2.5 py-2.5 min-[390px]:py-3 min-h-[48px] min-[390px]:min-h-[50px] flex items-center gap-2 shrink-0 min-w-[155px] sm:min-w-0 sm:flex-1 hover:bg-[#f5f5f7] dark:hover:bg-slate-800/50 active:bg-[#ebebed] dark:active:bg-slate-800 transition-colors cursor-pointer select-none snap-start">
+              <label className="relative px-1.5 min-[390px]:px-2.5 py-2 min-[390px]:py-2.5 min-h-[48px] flex items-center gap-1.5 min-[390px]:gap-2 w-full min-w-0 hover:bg-[#f5f5f7] dark:hover:bg-slate-800/50 active:bg-[#ebebed] dark:active:bg-slate-800 transition-colors cursor-pointer select-none">
                 <svg
-                  className="w-5 h-5 text-[#d97706] dark:text-amber-400 shrink-0"
+                  className="w-4 h-4 min-[390px]:w-5 min-[390px]:h-5 text-[#d97706] dark:text-amber-400 shrink-0"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -617,9 +680,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
                   <path d="M6 12v5c3 3 9 3 12 0v-5" />
                 </svg>
-                <div className="flex-1 min-w-0 flex flex-col justify-center">
+                <div className="flex-1 min-w-0 flex flex-col justify-center overflow-hidden">
                   <span
-                    className={`text-[10px] min-[390px]:text-[11px] font-bold tracking-[0.05em] uppercase leading-none block truncate transition-all duration-300 ease-out transform ${
+                    className={`text-[9.5px] min-[390px]:text-[10.5px] font-bold tracking-[0.04em] uppercase leading-none block truncate transition-all duration-300 ease-out transform ${
                       selectedLevel !== "all"
                         ? "text-[#d97706] dark:text-amber-400 scale-[1.04] translate-x-0.5"
                         : "text-[#86868b] dark:text-slate-400"
@@ -630,7 +693,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   <select
                     value={selectedLevel}
                     onChange={(e) => setSelectedLevel(e.target.value)}
-                    className="appearance-none -webkit-appearance-none w-full bg-transparent text-[12px] min-[390px]:text-[12.5px] font-semibold text-[#1d1d1f] dark:text-white tracking-tight truncate border-0 p-0 m-0 mt-0.5 focus:ring-0 focus:outline-none cursor-pointer leading-tight h-[20px]"
+                    className="appearance-none -webkit-appearance-none w-full bg-transparent text-[11px] min-[390px]:text-[12px] font-semibold text-[#1d1d1f] dark:text-white tracking-tight truncate border-0 p-0 m-0 mt-0.5 focus:ring-0 focus:outline-none cursor-pointer leading-tight h-[20px]"
                   >
                     <option value="all">All</option>
                     <option value="undergraduate">Undergrad</option>
@@ -642,9 +705,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               </label>
 
               {/* Column 3: FIELD */}
-              <label className="relative px-2.5 py-2.5 min-[390px]:py-3 min-h-[48px] min-[390px]:min-h-[50px] flex items-center gap-2 shrink-0 min-w-[155px] sm:min-w-0 sm:flex-1 hover:bg-[#f5f5f7] dark:hover:bg-slate-800/50 active:bg-[#ebebed] dark:active:bg-slate-800 transition-colors cursor-pointer select-none snap-start">
+              <label className="relative px-1.5 min-[390px]:px-2.5 py-2 min-[390px]:py-2.5 min-h-[48px] flex items-center gap-1.5 min-[390px]:gap-2 w-full min-w-0 hover:bg-[#f5f5f7] dark:hover:bg-slate-800/50 active:bg-[#ebebed] dark:active:bg-slate-800 transition-colors cursor-pointer select-none">
                 <svg
-                  className="w-5 h-5 text-[#059669] dark:text-emerald-400 shrink-0"
+                  className="w-4 h-4 min-[390px]:w-5 min-[390px]:h-5 text-[#059669] dark:text-emerald-400 shrink-0"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -657,9 +720,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   <path d="M8 7h8" />
                   <path d="M8 11h6" />
                 </svg>
-                <div className="flex-1 min-w-0 flex flex-col justify-center">
+                <div className="flex-1 min-w-0 flex flex-col justify-center overflow-hidden">
                   <span
-                    className={`text-[10px] min-[390px]:text-[11px] font-bold tracking-[0.05em] uppercase leading-none block truncate transition-all duration-300 ease-out transform ${
+                    className={`text-[9.5px] min-[390px]:text-[10.5px] font-bold tracking-[0.04em] uppercase leading-none block truncate transition-all duration-300 ease-out transform ${
                       fieldOfStudy !== "all"
                         ? "text-[#059669] dark:text-[#34d399] scale-[1.04] translate-x-0.5"
                         : "text-[#86868b] dark:text-slate-400"
@@ -670,16 +733,16 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   <select
                     value={fieldOfStudy}
                     onChange={(e) => setFieldOfStudy(e.target.value)}
-                    className="appearance-none -webkit-appearance-none w-full bg-transparent text-[12px] min-[390px]:text-[12.5px] font-semibold text-[#1d1d1f] dark:text-white tracking-tight truncate border-0 p-0 m-0 mt-0.5 focus:ring-0 focus:outline-none cursor-pointer leading-tight h-[20px]"
+                    className="appearance-none -webkit-appearance-none w-full bg-transparent text-[11px] min-[390px]:text-[12px] font-semibold text-[#1d1d1f] dark:text-white tracking-tight truncate border-0 p-0 m-0 mt-0.5 focus:ring-0 focus:outline-none cursor-pointer leading-tight h-[20px]"
                   >
                     <option value="all">All</option>
                     <option value="cs">CompSci & IT</option>
-                    <option value="business">Business & Mgmt</option>
+                    <option value="business">Business</option>
                     <option value="engineering">Engineering</option>
-                    <option value="health">Health & Medicine</option>
-                    <option value="arts">Arts & Design</option>
-                    <option value="social">Social Sciences</option>
-                    <option value="natural">Natural Sciences</option>
+                    <option value="health">Medicine</option>
+                    <option value="arts">Design</option>
+                    <option value="social">Social Sci</option>
+                    <option value="natural">Science</option>
                     <option value="education">Education</option>
                     <option value="hospitality">Hospitality</option>
                     <option value="law">Law</option>
@@ -714,16 +777,16 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 </svg>
               </button>
 
-              {/* Quick Navigation Buttons - 1 Row Scrollable with Hand/Mouse Drag */}
+              {/* Quick Navigation Buttons - 4-Column Balanced Grid */}
               <div
-                className="flex items-center gap-1.5 overflow-x-auto scrollbar-none [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden mt-2.5 pb-1 -mx-1 px-1 cursor-grab active:cursor-grabbing select-none sm:grid sm:grid-cols-4 sm:overflow-visible sm:cursor-default"
+                className="grid grid-cols-4 gap-1 min-[390px]:gap-1.5 mt-2.5 pb-1 select-none"
                 data-purpose="quick-navigation-grid"
               >
                 <button
                   onClick={() => onNavigate("universities")}
                   type="button"
                   data-purpose="compact-btn"
-                  className="shrink-0 min-w-[92px] sm:w-full h-11 min-h-[44px] px-2.5 rounded-full border border-[#e5e5ea] dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-[#f5f5f7] dark:hover:bg-slate-750 active:bg-[#ebebed] text-[#1d1d1f] dark:text-white font-semibold text-[11px] min-[380px]:text-[11.5px] tracking-tight text-center transition-all shadow-none flex items-center justify-center gap-1.5 active:scale-[0.96] cursor-pointer truncate"
+                  className="w-full h-11 min-h-[44px] px-1 min-[390px]:px-2 rounded-full border border-[#e5e5ea] dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-[#f5f5f7] dark:hover:bg-slate-750 active:bg-[#ebebed] text-[#1d1d1f] dark:text-white font-semibold text-[10.5px] min-[390px]:text-[11.5px] tracking-tight text-center transition-all shadow-none flex items-center justify-center gap-1 min-[390px]:gap-1.5 active:scale-[0.96] cursor-pointer truncate"
                 >
                   <svg className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11"/></svg>
                   <span className="truncate">Unis</span>
@@ -732,16 +795,17 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   onClick={() => onNavigate("courses")}
                   type="button"
                   data-purpose="compact-btn"
-                  className="shrink-0 min-w-[102px] sm:w-full h-11 min-h-[44px] px-2.5 rounded-full border border-[#e5e5ea] dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-[#f5f5f7] dark:hover:bg-slate-750 active:bg-[#ebebed] text-[#1d1d1f] dark:text-white font-semibold text-[11px] min-[380px]:text-[11.5px] tracking-tight text-center transition-all shadow-none flex items-center justify-center gap-1.5 active:scale-[0.96] cursor-pointer truncate"
+                  className="w-full h-11 min-h-[44px] px-0.5 min-[390px]:px-1.5 rounded-full border border-[#e5e5ea] dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-[#f5f5f7] dark:hover:bg-slate-750 active:bg-[#ebebed] text-[#1d1d1f] dark:text-white font-semibold text-[9.5px] min-[390px]:text-[11px] tracking-tight text-center transition-all shadow-none flex items-center justify-center gap-0.5 min-[390px]:gap-1 active:scale-[0.96] cursor-pointer"
                 >
                   <svg className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-                  <span className="truncate">Courses</span>
+                  <span className="truncate whitespace-nowrap min-[390px]:hidden">Courses</span>
+                  <span className="truncate whitespace-nowrap hidden min-[390px]:inline">Course finder</span>
                 </button>
                 <button
                   onClick={() => onNavigate("services", "ielts-preparation")}
                   type="button"
                   data-purpose="compact-btn"
-                  className="shrink-0 min-w-[92px] sm:w-full h-11 min-h-[44px] px-2.5 rounded-full border border-[#e5e5ea] dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-[#f5f5f7] dark:hover:bg-slate-750 active:bg-[#ebebed] text-[#1d1d1f] dark:text-white font-semibold text-[11px] min-[380px]:text-[11.5px] tracking-tight text-center transition-all shadow-none flex items-center justify-center gap-1.5 active:scale-[0.96] cursor-pointer truncate"
+                  className="w-full h-11 min-h-[44px] px-1 min-[390px]:px-2 rounded-full border border-[#e5e5ea] dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-[#f5f5f7] dark:hover:bg-slate-750 active:bg-[#ebebed] text-[#1d1d1f] dark:text-white font-semibold text-[10.5px] min-[390px]:text-[11.5px] tracking-tight text-center transition-all shadow-none flex items-center justify-center gap-1 min-[390px]:gap-1.5 active:scale-[0.96] cursor-pointer truncate"
                 >
                   <svg className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
                   <span className="truncate">IELTS</span>
@@ -750,7 +814,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   onClick={() => onNavigate("blog")}
                   type="button"
                   data-purpose="compact-btn"
-                  className="shrink-0 min-w-[92px] sm:w-full h-11 min-h-[44px] px-2.5 rounded-full border border-[#e5e5ea] dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-[#f5f5f7] dark:hover:bg-slate-750 active:bg-[#ebebed] text-[#1d1d1f] dark:text-white font-semibold text-[11px] min-[380px]:text-[11.5px] tracking-tight text-center transition-all shadow-none flex items-center justify-center gap-1.5 active:scale-[0.96] cursor-pointer truncate"
+                  className="w-full h-11 min-h-[44px] px-1 min-[390px]:px-2 rounded-full border border-[#e5e5ea] dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-[#f5f5f7] dark:hover:bg-slate-750 active:bg-[#ebebed] text-[#1d1d1f] dark:text-white font-semibold text-[10.5px] min-[390px]:text-[11.5px] tracking-tight text-center transition-all shadow-none flex items-center justify-center gap-1 min-[390px]:gap-1.5 active:scale-[0.96] cursor-pointer truncate"
                 >
                   <svg className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg>
                   <span className="truncate">Blogs</span>
@@ -795,12 +859,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
                 <div className="w-[1px] h-3 bg-[#e5e5ea] dark:bg-slate-800 shrink-0" />
 
-                <div className="flex-1 flex items-center justify-center gap-0.5 min-w-0 text-center leading-none">
+                <div className="flex-1 flex items-center justify-center gap-0.5 min-w-0 text-center leading-none" title="Countries we send students">
                   <span className="text-[11px] min-[390px]:text-[12px] font-extrabold tracking-tight text-[#1d1d1f] dark:text-white shrink-0">
-                    2+
+                    6+
                   </span>
                   <span className="text-[10px] min-[390px]:text-[11px] font-semibold text-[#86868b] dark:text-slate-400 tracking-tight truncate">
-                    Offices
+                    Countries
                   </span>
                 </div>
               </div>
@@ -1246,7 +1310,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           <div className="w-full flex items-center gap-2 overflow-x-auto scrollbar-none [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden mt-3 pb-1 -mx-1 px-1 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-4 sm:overflow-visible">
             {[
               { label: "Universities", mobileLabel: "Unis", view: "universities" },
-              { label: "Courses", mobileLabel: "Courses", view: "courses" },
+              { label: "Course finder", mobileLabel: "Course finder", view: "courses" },
               {
                 label: "IELTS Prep",
                 mobileLabel: "IELTS",
@@ -1287,9 +1351,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               duration={1700}
             />
             <StatCounter
-              value={2}
+              value={6}
               suffix="+"
-              label="Global Offices"
+              label="Countries We Send Students"
               duration={1200}
             />
           </div>

@@ -82,10 +82,12 @@ export const CircularExchangeIcon: React.FC<{ className?: string }> = ({
  */
 export interface HeaderCurrencyExchangeIconProps {
   className?: string;
+  variant?: 'circular' | 'minimal';
 }
 
 export const HeaderCurrencyExchangeIcon: React.FC<HeaderCurrencyExchangeIconProps> = ({
-  className = ''
+  className = '',
+  variant = 'circular'
 }) => {
   const { currency, setCurrency, rates, isLive } = useCurrency();
   const [isOpen, setIsOpen] = useState(false);
@@ -122,12 +124,16 @@ export const HeaderCurrencyExchangeIcon: React.FC<HeaderCurrencyExchangeIconProp
     setIsOpen(false);
   };
 
+  const buttonStyleClass = variant === 'minimal'
+    ? "relative w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-slate-800 dark:text-slate-200 hover:text-blue-600 dark:hover:text-[#fbb034] hover:bg-slate-100/60 dark:hover:bg-slate-800/60 transition-colors duration-200 cursor-pointer group"
+    : "relative w-10 h-10 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/80 flex items-center justify-center text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600 dark:hover:text-amber-400 transition-all duration-300 ease-out transform hover:scale-110 active:scale-95 cursor-pointer shadow-xs group";
+
   return (
     <div
       ref={containerRef}
       className={`relative inline-flex items-center ${className}`}
     >
-      {/* Header Circular Icon Button with Premium Butter-Smooth Animation */}
+      {/* Header Icon Button */}
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
@@ -135,9 +141,9 @@ export const HeaderCurrencyExchangeIcon: React.FC<HeaderCurrencyExchangeIconProp
         aria-expanded={isOpen}
         aria-haspopup="listbox"
         title={`Current Currency: ${currency}. Click to switch currency.`}
-        className="relative w-10 h-10 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/80 flex items-center justify-center text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600 dark:hover:text-amber-400 transition-all duration-300 ease-out transform hover:scale-110 active:scale-95 cursor-pointer shadow-xs group"
+        className={buttonStyleClass}
       >
-        <CircularExchangeIcon className="w-4 h-4 xs:w-4.5 xs:h-4.5 sm:w-5 sm:h-5 text-slate-700 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-amber-400 transition-transform duration-500 ease-out group-hover:rotate-180" />
+        <CircularExchangeIcon className="w-4.5 h-4.5 text-slate-700 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-amber-400 transition-transform duration-500 ease-out group-hover:rotate-180" />
 
         {/* Active Currency Badge Pill */}
         <span

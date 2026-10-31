@@ -1,7 +1,9 @@
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
- * GEES Standalone Student Visa Assistance & Immigration Guidance Page
+ * GEES Student Visa Assistance & Immigration Guidance View
+ * Authentic GEES Visual Identity: #070b19 Deep Navy, #fbb034 Gold, Royal Blue
+ * Compliant, honest, source-grounded visa guidance for Bangladeshi students
  */
 
 import React, { useState } from 'react';
@@ -9,134 +11,165 @@ import { InteractiveHoverButton } from '../ui/interactive-hover-button.tsx';
 
 interface StudentVisaAssistanceViewProps {
   onBackToHome?: () => void;
-  onOpenConsultation?: () => void;
-  onNavigate?: (view: string, payload?: string) => void;
+  onOpenConsultation?: (serviceName?: string) => void;
+  onNavigate?: (view: string, payload?: any) => void;
 }
 
-interface VisaCountryDetail {
+interface DestinationVisaProfile {
   id: string;
   country: string;
   flag: string;
-  visaName: string;
-  processingTime: string;
-  financialRequirement: string;
-  keyHighlights: string[];
-  documents: string[];
-  expertTip: string;
-  color: string;
+  visaSubclass: string;
+  governingAuthority: string;
+  authorityUrl: string;
+  estimatedProcessing: string;
+  indicativeGovFee: string;
+  financialRuleSummary: string;
+  keyDocumentRequirements: string[];
+  bangladeshSpecificNotes: string;
+  dependentEligibility: string;
+  workRightsSummary: string;
+  officialReviewDate: string;
 }
 
-const VISA_COUNTRIES: VisaCountryDetail[] = [
+const DESTINATION_PROFILES: DestinationVisaProfile[] = [
+  {
+    id: 'malaysia',
+    country: 'Malaysia',
+    flag: '🇲🇾',
+    visaSubclass: 'Student Pass & Single Entry Visa (eVAL / SEV)',
+    governingAuthority: 'Education Malaysia Global Services (EMGS) & Immigration Department of Malaysia (JIM)',
+    authorityUrl: 'https://visa.educationmalaysia.gov.my/',
+    estimatedProcessing: '14 - 30 working days for eVAL issuance',
+    indicativeGovFee: 'MYR 1,060 - MYR 2,500 (EMGS processing + health screening + student pass vary by institution)',
+    financialRuleSummary: 'Financial capability demonstrated during university application; sponsor solvency evidence requested by selected institutions.',
+    keyDocumentRequirements: [
+      'Valid passport (minimum 18 months validity remaining)',
+      'Academic certificates & marksheets verified and notarized',
+      'Passport-size white background photos (EMGS spec 35mm x 45mm)',
+      'Pre-arrival Health Declaration Form & medical screening',
+      'Electronic Visa Approval Letter (eVAL) upon approval',
+      'Single Entry Visa (SEV) via Malaysian eVISA portal or High Commission Dhaka'
+    ],
+    bangladeshSpecificNotes: 'Bangladeshi students must obtain eVAL online first, then apply for Single Entry Visa (SEV) before traveling to Kuala Lumpur. Post-arrival medical screening must be completed within 7 days in Malaysia.',
+    dependentEligibility: 'Allowed for Master’s (by research) and PhD students; not generally permitted for undergraduate degree levels.',
+    workRightsSummary: 'Permitted to work up to 20 hours/week during semester breaks and holidays over 7 days in approved hospitality/retail sectors.',
+    officialReviewDate: 'October 2026'
+  },
   {
     id: 'uk',
     country: 'United Kingdom',
     flag: '🇬🇧',
-    visaName: 'Student Visa (formerly Tier 4)',
-    processingTime: '3 - 4 Weeks (Priority: 5 Days)',
-    financialRequirement: 'Course fees + £1,334/mo (London) or £1,023/mo (Outer London) for 9 months',
-    keyHighlights: [
-      'CAS (Confirmation of Acceptance for Studies) required',
-      'IHS (Immigration Health Surcharge) £776/year access to NHS',
-      '2-Year Post-Study Work Visa (Graduate Route)',
-      'Allowed 20 hours/week part-time work during term time'
+    visaSubclass: 'Student Visa (Points-Based Immigration System)',
+    governingAuthority: 'UK Visas and Immigration (UKVI) & Home Office',
+    authorityUrl: 'https://www.gov.uk/student-visa',
+    estimatedProcessing: 'Standard: 3 - 4 weeks from biometrics (Priority: ~5 working days where available)',
+    indicativeGovFee: '£490 visa fee + £776/year Immigration Health Surcharge (IHS)',
+    financialRuleSummary: 'Strict 28-day holding rule: 1st-year tuition balance + £1,334/month (inside London) or £1,023/month (outside London) for 9 months.',
+    keyDocumentRequirements: [
+      'Confirmation of Acceptance for Studies (CAS) from a UK licensed sponsor',
+      'Bank statement held consecutively for at least 28 days (closing balance within 31 days of application)',
+      'Tuberculosis (TB) test certificate from IOM-approved migration health center in Dhaka/Sylhet',
+      'Academic transcripts, degree certificates, and English test scores listed on CAS',
+      'ATAS certificate (if studying sensitive postgraduate science/engineering disciplines)',
+      'Affidavit of financial sponsorship and relationship proof if using parental funds'
     ],
-    documents: [
-      'Unconditional Offer & Valid CAS Statement',
-      'Passports with 6+ months validity',
-      '28-Day Bank Statement / Education Loan Letter',
-      'TB Health Certificate (Approved Clinic)',
-      'ATAS Clearance (for specific STEM subjects)'
-    ],
-    expertTip: 'Ensure bank funds are held strictly for 28 consecutive days before applying. The final balance date must be within 31 days of submission.',
-    color: 'from-blue-600 to-indigo-700'
-  },
-  {
-    id: 'usa',
-    country: 'United States',
-    flag: '🇺🇸',
-    visaName: 'F-1 Academic Student Visa',
-    processingTime: '2 - 6 Weeks (Interview Appointment Dependent)',
-    financialRequirement: 'Official Form I-20 amount covering 1 full year tuition + living expenses',
-    keyHighlights: [
-      'Form I-20 issued by SEVP-certified University',
-      'SEVIS I-901 Fee payment receipt required',
-      'Strict In-Person Embassy Interview mandatory',
-      '3-Year OPT extension for STEM graduates'
-    ],
-    documents: [
-      'Signed Form I-20 from US University',
-      'DS-160 Online Nonimmigrant Visa Confirmation',
-      'SEVIS Fee Receipt ($350 USD)',
-      'Affidavit of Support & Bank Solvency Records',
-      'Academic Transcripts, Standardized Tests (SAT/GRE/TOEFL)'
-    ],
-    expertTip: 'Focus heavily on demonstrating strong social and economic ties to your home country during the 2-minute consular officer interview.',
-    color: 'from-rose-600 to-red-700'
+    bangladeshSpecificNotes: 'UKVI conducts random credibility interviews via video link. Students must be prepared to articulate reasons for choosing the university, course syllabus details, career plans in Bangladesh, and financial origins.',
+    dependentEligibility: 'Restricted: Dependents only permitted for postgraduate research programmes (PhD or research master’s) or government-sponsored courses.',
+    workRightsSummary: 'Up to 20 hours/week during term time for degree-level studies; full-time during official vacation periods.',
+    officialReviewDate: 'October 2026'
   },
   {
     id: 'australia',
     country: 'Australia',
     flag: '🇦🇺',
-    visaName: 'Student Visa (Subclass 500)',
-    processingTime: '4 - 8 Weeks',
-    financialRequirement: 'Annual tuition + AUD $29,710 living cost + travel allowance',
-    keyHighlights: [
-      'Genuine Student (GS) criteria replacing GTE',
-      'Electronic Confirmation of Enrolment (eCoE)',
-      'OSHC (Overseas Student Health Cover) compulsory',
-      '48-Hour fortnightly work rights during study terms'
+    visaSubclass: 'Student Visa (Subclass 500)',
+    governingAuthority: 'Department of Home Affairs (DHA), Commonwealth of Australia',
+    authorityUrl: 'https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-500',
+    estimatedProcessing: 'Higher Education Sector: typically 4 - 8 weeks',
+    indicativeGovFee: 'AUD $1,600 main applicant fee (subject to official annual review)',
+    financialRuleSummary: 'Evidence of AUD $29,710/year living costs + 1st year tuition fee + AUD $2,000 return travel allowance.',
+    keyDocumentRequirements: [
+      'Confirmation of Enrolment (eCoE) from CRICOS-registered Australian institution',
+      'Genuine Student (GS) assessment responses detailing career strategy and course relevance',
+      'Overseas Student Health Cover (OSHC) policy active for the full visa duration',
+      'Sufficient liquid funds in bank or sanctioned education bank loan letter',
+      'English proficiency result (IELTS Academic, PTE Academic, or approved equivalent)',
+      'Police Clearance Certificate from Bangladesh Police and biometric enrolment at VFS Global'
     ],
-    documents: [
-      'Official eCoE from Australian University/College',
-      'GS Statement demonstrating genuine study intent',
-      'OSHC Health Insurance Policy Confirmation',
-      'Proof of Annual Income (AUD $87,856+) or Liquid Funds',
-      'English Test Results (IELTS / PTE Academic)'
-    ],
-    expertTip: 'Align your chosen course directly with your past academic record and immediate career progression in your home country.',
-    color: 'from-amber-600 to-orange-700'
+    bangladeshSpecificNotes: 'DHA places heavy emphasis on the Genuine Student (GS) criteria. Applications must demonstrate realistic career ROI in Bangladesh and cohesive progression from past academic background.',
+    dependentEligibility: 'Spouses and dependent children can accompany as secondary visa holders subject to verified family ties and maintenance funds.',
+    workRightsSummary: 'Capped at 48 hours per fortnight during study terms; unrestricted work hours during scheduled course vacations.',
+    officialReviewDate: 'October 2026'
   },
   {
-    id: 'canada',
-    country: 'Canada',
-    flag: '🇨🇦',
-    visaName: 'Canada Study Permit (SDS / Regular)',
-    processingTime: '6 - 12 Weeks (SDS: 20 Days)',
-    financialRequirement: '1 Year Tuition + CAD $20,635 GIC (Guaranteed Investment Certificate)',
-    keyHighlights: [
-      'Provincial Attestation Letter (PAL) where applicable',
-      'Student Direct Stream (SDS) for expedited processing',
-      'Scotiabank / CIBC GIC of CAD $20,635',
-      'Up to 3-Year PGWP (Post-Graduation Work Permit)'
+    id: 'new-zealand',
+    country: 'New Zealand',
+    flag: '🇳🇿',
+    visaSubclass: 'Fee Paying Student Visa',
+    governingAuthority: 'Immigration New Zealand (INZ)',
+    authorityUrl: 'https://www.immigration.govt.nz/new-zealand-visas/visas/visa/fee-paying-student-visa',
+    estimatedProcessing: '6 - 10 weeks from submission',
+    indicativeGovFee: 'NZD $750 (varies based on application location & levy adjustments)',
+    financialRuleSummary: 'NZD $20,000/year living maintenance + 1st-year paid tuition or Approval in Principle (AIP) route.',
+    keyDocumentRequirements: [
+      'Unconditional offer of place from NZQA-accredited education provider',
+      'Evidence of tuition payment or AIP (Approval in Principle) document',
+      'Maintenance funds of NZD $20,000 per year (bank balance & source tracing)',
+      'General Medical Certificate & Chest X-ray from panel clinic in Bangladesh',
+      'Police clearance certificate for applicants aged 17 and above',
+      'Comprehensive travel and medical insurance policy compliant with NZ code'
     ],
-    documents: [
-      'DLI Official Letter of Acceptance & PAL',
-      'CAD $20,635 GIC Certificate Receipt',
-      'Proof of 1st Year Tuition Payment Receipt',
-      'IELTS Academic overall 6.0+ (no band under 6.0)',
-      'Medical Exam Confirmation & Police Clearance'
+    bangladeshSpecificNotes: 'Bangladeshi applicants often utilize the AIP (Approval in Principle) procedure where tuition fees are transferred only after INZ officer approves the visa file in principle.',
+    dependentEligibility: 'Permitted for students pursuing eligible Level 9 (Master’s) or Level 10 (PhD) qualifications on Green List pathways.',
+    workRightsSummary: 'Up to 20 hours/week during term time for degree courses; full-time during scheduled vacation periods.',
+    officialReviewDate: 'October 2026'
+  },
+  {
+    id: 'europe',
+    country: 'Europe (Finland, Belgium, Greece, Cyprus, Netherlands)',
+    flag: '🇪🇺',
+    visaSubclass: 'National D Visa & Student Residence Permit',
+    governingAuthority: 'Respective National Consular Missions & EU Migration Directorates',
+    authorityUrl: 'https://home-affairs.ec.europa.eu/policies/schengen-borders-visa/visa-policy_en',
+    estimatedProcessing: '6 - 12 weeks (depends on national embassy & biometrics appointments)',
+    indicativeGovFee: '€80 - €350 depending on country (residence permit vs entry D-visa)',
+    financialRuleSummary: 'Country-specific: Finland requires €6,720/year; Germany/Netherlands require €11,000+; Cyprus requires bank solvency letters.',
+    keyDocumentRequirements: [
+      'Official letter of acceptance from accredited European university',
+      'Proof of tuition fee payment receipt / scholarship grant letter',
+      'Bank solvency certificate or blocked account confirmation where mandated',
+      'Apostilled / Ministry-attested educational certificates and transcripts from Dhaka',
+      'International Schengen-compliant medical and health insurance coverage',
+      'VFS / Embassy biometric appointment confirmation and interview submission'
     ],
-    expertTip: 'Provide a compelling Statement of Purpose (SOP) explaining why Canada and your specific institution offer unique training not available locally.',
-    color: 'from-emerald-600 to-teal-700'
-  }
-];
-
-const MOCK_INTERVIEW_QUESTIONS = [
-  {
-    q: 'Why did you choose this university and this specific course?',
-    a: 'Emphasize specific professors, research centers, curriculum modules, and unique industry links. Avoid generic answers like "It is a good school."'
+    bangladeshSpecificNotes: 'Certain European embassies (e.g. Finland, Belgium) handle biometrics via regional hubs or VFS Global Dhaka/New Delhi. Book consular interview slots well ahead of semester start.',
+    dependentEligibility: 'Generally permitted for postgraduate and doctorate level students; requires evidence of adequate family housing and income.',
+    workRightsSummary: 'Varies by destination: Finland allows 30 hours/week; Netherlands allows 16 hours/week; Belgium allows up to 20 hours/week.',
+    officialReviewDate: 'October 2026'
   },
   {
-    q: 'How will you fund your education and living expenses abroad?',
-    a: 'State your precise funding source (Self-funded, Education Loan, Parental Savings, Corporate Sponsorship). Mention the exact bank figures clearly.'
-  },
-  {
-    q: 'What are your plans after completing your degree?',
-    a: 'Clearly state your intent to return home to join specific target industries, family businesses, or MNCs in your home country.'
-  },
-  {
-    q: 'Why not study a similar program in your home country?',
-    a: 'Highlight international faculty, specialized practical labs, exposure to global standards, and lack of similar accredited modules locally.'
+    id: 'india',
+    country: 'India',
+    flag: '🇮🇳',
+    visaSubclass: 'Student Visa (Regular & S-Visa)',
+    governingAuthority: 'High Commission of India, Dhaka / Indian Visa Application Centre (IVAC)',
+    authorityUrl: 'https://www.ivacbd.com/',
+    estimatedProcessing: '7 - 14 working days',
+    indicativeGovFee: 'BDT 800 - BDT 2,500 IVAC processing and service charge',
+    financialRuleSummary: 'Bonafide admission letter with fee structure; bank solvency letter showing sufficient family funds to cover course costs.',
+    keyDocumentRequirements: [
+      'Confirmed Bonafide Admission Letter from AICTE/UGC recognized Indian university',
+      'Online visa application printout signed by applicant',
+      'Passports with minimum 6 months validity & Bangladeshi NID/Birth Certificate',
+      'Bank statement of student or parent with minimum solvency balance',
+      'Utility bill copy (electricity/gas) as proof of residential address in Bangladesh',
+      'No Objection Certificate (NOC) / Bonafide from previous institution if applicable'
+    ],
+    bangladeshSpecificNotes: 'Application submitted directly through IVAC centers across Bangladesh (Dhaka, Chattogram, Sylhet, Rajshahi, Khulna). Direct cross-border road and flight connectivity available.',
+    dependentEligibility: 'Restricted; primary visa holder only unless special category applies.',
+    workRightsSummary: 'International students in India on student visas are not legally permitted to engage in off-campus employment.',
+    officialReviewDate: 'October 2026'
   }
 ];
 
@@ -145,162 +178,169 @@ export const StudentVisaAssistanceView: React.FC<StudentVisaAssistanceViewProps>
   onOpenConsultation,
   onNavigate
 }) => {
-  // Calculator state
-  const [selectedCountry, setSelectedCountry] = useState<string>('uk');
-  const [studyLevel, setStudyLevel] = useState<string>('undergraduate');
-  const [financialSource, setFinancialSource] = useState<string>('loan_savings');
-  const [activeFaq, setActiveFaq] = useState<number | null>(0);
+  const [activeCountryId, setActiveCountryId] = useState<string>('malaysia');
+  const [activeFaqIndex, setActiveFaqIndex] = useState<number | null>(0);
 
-  const countryInfo = VISA_COUNTRIES.find((c) => c.id === selectedCountry) || VISA_COUNTRIES[0];
+  const selectedProfile = DESTINATION_PROFILES.find((p) => p.id === activeCountryId) || DESTINATION_PROFILES[0];
+
+  const handleLaunchConsultation = (topic?: string) => {
+    if (onOpenConsultation) {
+      onOpenConsultation(topic || `Student Visa Assistance - ${selectedProfile.country}`);
+    }
+  };
+
+  const openWhatsAppEnquiry = () => {
+    const text = encodeURIComponent(
+      `Hello GEES Education Advisors! I am inquiring about student visa guidance for ${selectedProfile.country}.\n\n` +
+      `Target Country: ${selectedProfile.country}\n` +
+      `Visa Category: ${selectedProfile.visaSubclass}\n` +
+      `I would like to understand document preparation and financial requirements for my profile.`
+    );
+    window.open(`https://wa.me/8801805529578?text=${text}`, '_blank');
+  };
 
   return (
-    <div className="w-full bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen">
-      {/* HEADER BREADCRUMB BAR */}
-      <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-16 z-20">
+    <div className="w-full bg-white dark:bg-[#070b19] text-slate-900 dark:text-slate-100 min-h-screen transition-colors duration-200">
+      {/* 1. TOP BREADCRUMB STRIP */}
+      <div className="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between text-xs sm:text-sm">
           <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
             <button
               onClick={onBackToHome}
-              className="hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors cursor-pointer"
+              className="hover:text-blue-600 dark:hover:text-[#fbb034] transition-colors cursor-pointer"
             >
               Home
             </button>
             <span>/</span>
             <button
               onClick={() => onNavigate?.('services')}
-              className="hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors cursor-pointer"
+              className="hover:text-blue-600 dark:hover:text-[#fbb034] transition-colors cursor-pointer"
             >
               Services
             </button>
             <span>/</span>
-            <span className="text-slate-900 dark:text-slate-100 font-semibold truncate">
+            <span className="text-slate-900 dark:text-white font-semibold truncate">
               Student Visa Assistance
             </span>
           </div>
-          <button
-            onClick={onOpenConsultation}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-full font-semibold text-xs transition-colors cursor-pointer"
-          >
-            <span className="material-symbols-outlined text-[16px]">verified</span>
-            <span>Free Visa Audit</span>
-          </button>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => onNavigate?.('track-visa')}
+              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-200 transition-colors cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-[15px] text-blue-600">travel_explore</span>
+              <span>Track Visa Status</span>
+            </button>
+            <button
+              onClick={() => handleLaunchConsultation()}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-[#fbb034] hover:bg-amber-400 text-slate-950 rounded-full font-bold text-xs transition-colors cursor-pointer shadow-xs active:scale-95"
+            >
+              <span className="material-symbols-outlined text-[15px]">headset_mic</span>
+              <span>Visa Consultation</span>
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* HERO SECTION */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-slate-900 via-slate-900 to-blue-950 text-white py-12 sm:py-20 px-4 sm:px-6 lg:px-8">
-        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#3b82f6_1px,transparent_1px)] [background-size:16px_16px]"></div>
-        
+      {/* 2. HERO SECTION */}
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#070b19] via-[#0b132b] to-[#070b19] text-white py-12 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 border-b border-slate-800">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(251,176,52,0.12),transparent_50%)] pointer-events-none" />
+
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-300 text-xs sm:text-sm font-semibold tracking-wide backdrop-blur-md">
-                <span className="material-symbols-outlined text-[18px]">verified_user</span>
-                <span>99.8% Visa Approval Rate Across 15,000+ Applicants</span>
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/15 border border-amber-400/30 text-amber-300 text-xs sm:text-sm font-semibold tracking-wide">
+                <span className="material-symbols-outlined text-[18px] text-[#fbb034]">verified_user</span>
+                <span>Certified Education Counseling &amp; Visa File Compliance</span>
               </div>
 
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight">
-                Hassle-Free <span className="bg-gradient-to-r from-blue-400 via-sky-300 to-cyan-300 bg-clip-text text-transparent">Student Visa & Immigration</span> Support
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-tight">
+                Student Visa Assistance &amp; <span className="text-[#fbb034]">Immigration Guidance</span>
               </h1>
 
-              <p className="text-base sm:text-lg text-slate-300 max-w-2xl leading-relaxed mx-auto lg:mx-0">
-                Turn complex embassy regulations into a smooth, step-by-step pathway. From CAS &amp; I-20 issuance to financial document auditing and 1-on-1 mock embassy interview coaching.
+              <p className="text-sm sm:text-base lg:text-lg text-slate-300 max-w-2xl leading-relaxed mx-auto lg:mx-0">
+                Navigating international immigration requirements demands precision, verifiable documentation, and transparent legal awareness. GEES assists prospective Bangladeshi students through comprehensive document auditing, financial solvency structuring, and embassy interview coaching.
               </p>
 
-              {/* STATS STRIP */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 border-t border-slate-800">
-                <div>
-                  <div className="text-2xl sm:text-3xl font-black text-blue-400">99.8%</div>
-                  <div className="text-xs text-slate-400 font-medium">Visa Approval Rate</div>
+              {/* Verified Value Proposition Highlights */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3 border-t border-white/10 text-left">
+                <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+                  <div className="text-xl sm:text-2xl font-black text-[#fbb034]">100% Free</div>
+                  <div className="text-[11px] text-slate-300 font-medium">No Consultancy Fees</div>
                 </div>
-                <div>
-                  <div className="text-2xl sm:text-3xl font-black text-white">15,000+</div>
-                  <div className="text-xs text-slate-400 font-medium">Visas Issued</div>
+                <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+                  <div className="text-xl sm:text-2xl font-black text-white">6+ Countries</div>
+                  <div className="text-[11px] text-slate-300 font-medium">Direct Partner Campuses</div>
                 </div>
-                <div>
-                  <div className="text-2xl sm:text-3xl font-black text-sky-400">7 Days</div>
-                  <div className="text-xs text-slate-400 font-medium">Avg CAS/I-20 Turnaround</div>
+                <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+                  <div className="text-xl sm:text-2xl font-black text-blue-400">1-on-1</div>
+                  <div className="text-[11px] text-slate-300 font-medium">Mock Interview Prep</div>
                 </div>
-                <div>
-                  <div className="text-2xl sm:text-3xl font-black text-cyan-400">100%</div>
-                  <div className="text-xs text-slate-400 font-medium">Document Audit Guarantee</div>
+                <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+                  <div className="text-xl sm:text-2xl font-black text-emerald-400">Official</div>
+                  <div className="text-[11px] text-slate-300 font-medium">Government Sources</div>
                 </div>
               </div>
 
+              {/* CTAs */}
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 pt-2">
-                <InteractiveHoverButton
-                  text="Book Free Visa Consultation"
-                  onClick={onOpenConsultation}
-                  className="w-full sm:w-auto text-sm"
-                />
                 <button
-                  onClick={() => {
-                    const el = document.getElementById('visa-checker');
-                    el?.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                  className="w-full sm:w-auto px-6 py-3 rounded-full border border-slate-700 bg-slate-800/80 hover:bg-slate-800 text-slate-200 hover:text-white font-medium text-sm transition-all text-center cursor-pointer"
+                  onClick={() => handleLaunchConsultation()}
+                  className="min-h-[48px] w-full sm:w-auto px-7 py-3 rounded-full bg-[#fbb034] hover:bg-amber-400 text-slate-950 font-black text-xs sm:text-sm shadow-md transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-2"
                 >
-                  Check Eligibility &amp; Documents
+                  <span className="material-symbols-outlined text-[18px]">calendar_month</span>
+                  <span>Book Free Visa Guidance Session</span>
+                </button>
+                <button
+                  onClick={openWhatsAppEnquiry}
+                  className="min-h-[48px] w-full sm:w-auto px-6 py-3 rounded-full bg-white/10 hover:bg-white/15 border border-white/20 text-white font-semibold text-xs sm:text-sm transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <span className="material-symbols-outlined text-[18px] text-emerald-400">chat</span>
+                  <span>Enquire via WhatsApp</span>
                 </button>
               </div>
             </div>
 
-            {/* HERO VISUAL CARD */}
+            {/* Right Card: Critical Legal Distinction Box */}
             <div className="lg:col-span-5">
-              <div className="bg-slate-800/90 border border-slate-700/80 rounded-2xl p-5 sm:p-6 shadow-2xl backdrop-blur-xl relative">
-                <div className="flex items-center justify-between pb-4 mb-4 border-b border-slate-700">
-                  <div className="flex items-center gap-2">
-                    <span className="w-3 h-3 rounded-full bg-red-500"></span>
-                    <span className="w-3 h-3 rounded-full bg-amber-500"></span>
-                    <span className="w-3 h-3 rounded-full bg-green-500"></span>
+              <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl relative space-y-4">
+                <div className="flex items-center gap-3 border-b border-slate-800 pb-3">
+                  <div className="w-10 h-10 rounded-xl bg-amber-400/20 text-[#fbb034] flex items-center justify-center font-bold">
+                    <span className="material-symbols-outlined">gavel</span>
                   </div>
-                  <span className="text-xs font-mono text-slate-400">GEES-VISA-PORTAL v4.2</span>
+                  <div>
+                    <h2 className="text-white font-bold text-sm">Essential Legal Distinction</h2>
+                    <p className="text-xs text-slate-400">Education Admission vs Immigration Permission</p>
+                  </div>
                 </div>
 
-                <div className="space-y-4">
-                  <div className="bg-slate-900/80 rounded-xl p-4 border border-slate-700/60 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl font-bold">
-                        ✓
-                      </div>
-                      <div>
-                        <div className="text-sm font-bold text-white">UK CAS Verification</div>
-                        <div className="text-xs text-slate-400">London Metropolitan University</div>
-                      </div>
-                    </div>
-                    <span className="px-2.5 py-1 bg-emerald-500/20 text-emerald-300 text-xs font-semibold rounded-full">APPROVED</span>
+                <div className="space-y-3 text-xs leading-relaxed text-slate-300">
+                  <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 space-y-1">
+                    <span className="text-[#fbb034] font-bold block uppercase tracking-wider text-[10px]">
+                      1. University Offer Letter
+                    </span>
+                    <p>
+                      Issued by the academic institution confirming admission eligibility based on your past scholastic records, grades, and language proficiency.
+                    </p>
                   </div>
 
-                  <div className="bg-slate-900/80 rounded-xl p-4 border border-slate-700/60 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center text-xl font-bold">
-                        🇺🇸
-                      </div>
-                      <div>
-                        <div className="text-sm font-bold text-white">US F-1 Form I-20</div>
-                        <div className="text-xs text-slate-400">University of Illinois Chicago</div>
-                      </div>
-                    </div>
-                    <span className="px-2.5 py-1 bg-blue-500/20 text-blue-300 text-xs font-semibold rounded-full">ISSUED</span>
+                  <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 space-y-1">
+                    <span className="text-blue-400 font-bold block uppercase tracking-wider text-[10px]">
+                      2. Sovereign Immigration Permission
+                    </span>
+                    <p>
+                      Issued solely by sovereign governments (e.g. UKVI, Australian DHA, Malaysian Immigration JIM/EMGS). Sovereign officers evaluate genuine intent, financial solvency, and security clearances.
+                    </p>
                   </div>
+                </div>
 
-                  <div className="bg-slate-900/80 rounded-xl p-4 border border-slate-700/60 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center text-xl font-bold">
-                        🇨🇦
-                      </div>
-                      <div>
-                        <div className="text-sm font-bold text-white">Canada SDS PAL Permit</div>
-                        <div className="text-xs text-slate-400">University of Alberta</div>
-                      </div>
-                    </div>
-                    <span className="px-2.5 py-1 bg-purple-500/20 text-purple-300 text-xs font-semibold rounded-full">VERIFIED</span>
-                  </div>
-
-                  <div className="p-3 bg-blue-950/60 border border-blue-800/60 rounded-xl flex items-center gap-3 text-xs text-blue-200">
-                    <span className="material-symbols-outlined text-[20px] text-blue-400">security</span>
-                    <span>All financial audits backed by GEES Senior Immigration Compliance Officers.</span>
-                  </div>
+                {/* Statutory Disclaimer */}
+                <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-[11px] text-amber-200/90 flex items-start gap-2">
+                  <span className="material-symbols-outlined text-sm text-[#fbb034] shrink-0 mt-0.5">info</span>
+                  <span>
+                    <strong>Disclaimer:</strong> University admission does not guarantee visa issuance. GEES does not issue visas, guarantee approvals, or influence consular decisions.
+                  </span>
                 </div>
               </div>
             </div>
@@ -308,143 +348,206 @@ export const StudentVisaAssistanceView: React.FC<StudentVisaAssistanceViewProps>
         </div>
       </section>
 
-      {/* INTERACTIVE CHECKER SECTION */}
-      <section id="visa-checker" className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      {/* 3. TRACK VISA DIRECT SHORTCUT BANNER */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-20">
+        <div className="bg-gradient-to-r from-blue-900 to-slate-900 border border-blue-700/50 rounded-2xl p-4 sm:p-5 text-white flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-300 flex items-center justify-center shrink-0">
+              <span className="material-symbols-outlined">travel_explore</span>
+            </div>
+            <div>
+              <h3 className="font-bold text-sm sm:text-base">Applying for Malaysia Higher Education?</h3>
+              <p className="text-xs text-blue-200">
+                Track your real-time EMGS eVAL approval progress through our integrated Malaysian visa tracker.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => onNavigate?.('track-visa')}
+            className="min-h-[44px] px-5 py-2.5 rounded-full bg-white hover:bg-blue-50 text-slate-950 font-bold text-xs uppercase tracking-wider shrink-0 shadow-sm transition-all active:scale-95 cursor-pointer flex items-center gap-1.5"
+          >
+            <span>Open EMGS Visa Tracker</span>
+            <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+          </button>
+        </div>
+      </section>
+
+      {/* 4. DESTINATION-SPECIFIC VISA PATHWAYS MATCHER */}
+      <section id="pathways" className="py-12 sm:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-10 space-y-2">
-          <span className="text-xs font-extrabold uppercase tracking-widest text-blue-600 dark:text-blue-400">
-            Interactive Calculator
+          <span className="text-xs font-bold uppercase tracking-wider text-[#fbb034] bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">
+            Verified Country Pathways
           </span>
           <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">
-            Country Visa &amp; Document Requirement Matcher
+            Country-Specific Student Visa Guidelines
           </h2>
-          <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base">
-            Select your target study destination to view essential financial thresholds, key documents, processing timeline, and expert tips.
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+            Select your target study destination to view official governing bodies, financial proof rules, indicative government charges, and Bangladesh-specific considerations.
           </p>
         </div>
 
-        {/* COUNTRY SELECTOR TABS */}
+        {/* Destination Selector Tabs */}
         <div className="flex items-center justify-center gap-2 sm:gap-3 flex-wrap mb-8">
-          {VISA_COUNTRIES.map((c) => (
-            <button
-              key={c.id}
-              onClick={() => setSelectedCountry(c.id)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-full font-bold text-xs sm:text-sm transition-all cursor-pointer ${
-                selectedCountry === c.id
-                  ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20 scale-105'
-                  : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700'
-              }`}
-            >
-              <span className="text-base">{c.flag}</span>
-              <span>{c.country}</span>
-            </button>
-          ))}
+          {DESTINATION_PROFILES.map((dest) => {
+            const isActive = activeCountryId === dest.id;
+            return (
+              <button
+                key={dest.id}
+                onClick={() => setActiveCountryId(dest.id)}
+                className={`min-h-[44px] flex items-center gap-2 px-4 py-2 rounded-full font-bold text-xs sm:text-sm transition-all cursor-pointer active:scale-95 ${
+                  isActive
+                    ? 'bg-[#070b19] dark:bg-white text-white dark:text-slate-950 shadow-md ring-2 ring-[#fbb034]'
+                    : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                }`}
+              >
+                <span className="text-base">{dest.flag}</span>
+                <span>{dest.country}</span>
+              </button>
+            );
+          })}
         </div>
 
-        {/* SELECTED COUNTRY DETAIL CARD */}
-        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-3xl p-6 sm:p-8 shadow-xl">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <div className="lg:col-span-7 space-y-6">
-              <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-700">
-                <div>
-                  <span className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">
-                    {countryInfo.flag} {countryInfo.country}
-                  </span>
-                  <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white mt-0.5">
-                    {countryInfo.visaName}
-                  </h3>
-                </div>
-                <div className="px-3.5 py-1.5 bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-full text-xs font-bold flex items-center gap-1.5">
-                  <span className="material-symbols-outlined text-[16px] text-blue-600">schedule</span>
-                  <span>{countryInfo.processingTime}</span>
-                </div>
+        {/* Selected Destination Card */}
+        <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 lg:p-10 shadow-lg space-y-8">
+          {/* Header Row */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200 dark:border-slate-800">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-2xl">{selectedProfile.flag}</span>
+                <span className="text-xs font-bold uppercase tracking-wider text-[#fbb034]">
+                  {selectedProfile.country}
+                </span>
               </div>
+              <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
+                {selectedProfile.visaSubclass}
+              </h3>
+            </div>
 
-              {/* FINANCIAL REQUIREMENT HIGHLIGHT */}
-              <div className="p-4 rounded-2xl bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-slate-700/60 dark:to-slate-700/40 border border-blue-100 dark:border-slate-600">
-                <div className="text-xs font-extrabold uppercase text-blue-700 dark:text-blue-300 mb-1 flex items-center gap-1.5">
-                  <span className="material-symbols-outlined text-[16px]">payments</span>
-                  <span>Financial Proof Requirement</span>
-                </div>
-                <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">
-                  {countryInfo.financialRequirement}
-                </p>
-              </div>
+            <div className="flex flex-wrap items-center gap-2 text-xs">
+              <a
+                href={selectedProfile.authorityUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="min-h-[44px] inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-semibold text-slate-700 dark:text-slate-200 hover:text-blue-600 dark:hover:text-[#fbb034] transition-colors"
+                title="Open Official Immigration Portal"
+              >
+                <span className="material-symbols-outlined text-[16px]">open_in_new</span>
+                <span>Official Government Portal</span>
+              </a>
+              <span className="px-3 py-1 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-[11px]">
+                Reviewed: {selectedProfile.officialReviewDate}
+              </span>
+            </div>
+          </div>
 
-              {/* KEY HIGHLIGHTS */}
-              <div>
-                <h4 className="text-xs font-extrabold uppercase text-slate-500 dark:text-slate-400 tracking-wider mb-3">
-                  Key Visa Regulations
-                </h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                  {countryInfo.keyHighlights.map((hl, idx) => (
-                    <div key={idx} className="flex items-start gap-2.5 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-700/50 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
-                      <span className="material-symbols-outlined text-blue-600 text-[18px] shrink-0 mt-0.5">check_circle</span>
-                      <span>{hl}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
+          {/* Quick Metrics Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+                Governing Authority
+              </span>
+              <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">
+                {selectedProfile.governingAuthority}
+              </p>
+            </div>
 
-              {/* EXPERT TIP */}
-              <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 flex items-start gap-3">
-                <span className="material-symbols-outlined text-amber-600 text-[22px] shrink-0">lightbulb</span>
-                <div className="text-xs sm:text-sm text-amber-900 dark:text-amber-200">
-                  <span className="font-bold">GEES Advisor Pro-Tip:</span> {countryInfo.expertTip}
-                </div>
+            <div className="p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+                Typical Processing Timeline
+              </span>
+              <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">
+                {selectedProfile.estimatedProcessing}
+              </p>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+                Indicative Official Fee
+              </span>
+              <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">
+                {selectedProfile.indicativeGovFee}
+              </p>
+            </div>
+          </div>
+
+          {/* Financial Requirement Highlight */}
+          <div className="p-5 rounded-2xl bg-amber-500/10 border border-amber-400/30 text-slate-900 dark:text-white space-y-1.5">
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-[#fbb034]">
+              <span className="material-symbols-outlined text-[18px]">account_balance</span>
+              <span>Financial Proof &amp; Maintenance Requirement</span>
+            </div>
+            <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-200 leading-relaxed">
+              {selectedProfile.financialRuleSummary}
+            </p>
+          </div>
+
+          {/* Document Checklist & Bangladesh Notes */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div className="lg:col-span-7 space-y-3">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                Mandatory Documentation Checklist
+              </h4>
+              <div className="space-y-2">
+                {selectedProfile.keyDocumentRequirements.map((doc, idx) => (
+                  <div
+                    key={idx}
+                    className="p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-start gap-2.5 text-xs text-slate-700 dark:text-slate-200"
+                  >
+                    <span className="material-symbols-outlined text-[#fbb034] text-[18px] shrink-0 mt-0.5">
+                      check_circle
+                    </span>
+                    <span>{doc}</span>
+                  </div>
+                ))}
               </div>
             </div>
 
-            {/* MANDATORY CHECKLIST */}
-            <div className="lg:col-span-5 bg-slate-50 dark:bg-slate-900/80 rounded-2xl p-5 border border-slate-200 dark:border-slate-700 space-y-4">
-              <h4 className="text-sm font-extrabold text-slate-900 dark:text-white flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-700">
-                <span>Mandatory Documents Audit</span>
-                <span className="text-xs font-normal text-slate-500 dark:text-slate-400">5 Items</span>
-              </h4>
-
-              <div className="space-y-2.5">
-                {countryInfo.documents.map((doc, idx) => (
-                  <label
-                    key={idx}
-                    className="flex items-start gap-3 p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 cursor-pointer hover:border-blue-400 transition-colors"
-                  >
-                    <input
-                      type="checkbox"
-                      defaultChecked
-                      className="mt-1 w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500 cursor-pointer"
-                    />
-                    <span className="text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 leading-snug">
-                      {doc}
-                    </span>
-                  </label>
-                ))}
+            <div className="lg:col-span-5 space-y-4">
+              <div className="p-5 rounded-2xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/40 space-y-2 text-xs text-blue-900 dark:text-blue-200">
+                <div className="flex items-center gap-2 font-bold uppercase tracking-wider text-[11px] text-blue-700 dark:text-blue-300">
+                  <span className="material-symbols-outlined text-base">flag</span>
+                  <span>Bangladesh Applicant Notes</span>
+                </div>
+                <p className="leading-relaxed">
+                  {selectedProfile.bangladeshSpecificNotes}
+                </p>
               </div>
 
-              <div className="pt-2">
-                <button
-                  onClick={onOpenConsultation}
-                  className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-sm shadow-md transition-all text-center cursor-pointer flex items-center justify-center gap-2"
-                >
-                  <span className="material-symbols-outlined text-[18px]">verified</span>
-                  <span>Request Full Document Audit for {countryInfo.country}</span>
-                </button>
+              <div className="p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 space-y-2 text-xs">
+                <div>
+                  <strong className="text-slate-900 dark:text-white block">Family Dependents:</strong>
+                  <span className="text-slate-600 dark:text-slate-400">{selectedProfile.dependentEligibility}</span>
+                </div>
+                <div className="pt-2 border-t border-slate-200 dark:border-slate-700">
+                  <strong className="text-slate-900 dark:text-white block">Part-Time Work Rights:</strong>
+                  <span className="text-slate-600 dark:text-slate-400">{selectedProfile.workRightsSummary}</span>
+                </div>
               </div>
+
+              <button
+                onClick={() => handleLaunchConsultation(`Checklist Audit for ${selectedProfile.country}`)}
+                className="w-full min-h-[44px] py-3 rounded-xl bg-[#070b19] dark:bg-white text-white dark:text-slate-950 font-bold text-xs uppercase tracking-wider hover:opacity-90 transition-opacity cursor-pointer shadow-md active:scale-95 flex items-center justify-center gap-2"
+              >
+                <span className="material-symbols-outlined text-[16px]">checklist</span>
+                <span>Get Detailed Checklist for {selectedProfile.country}</span>
+              </button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 6-STEP LIFECYCLE ROADMAP */}
-      <section className="py-12 sm:py-16 bg-white dark:bg-slate-800/60 border-y border-slate-200 dark:border-slate-700 px-4 sm:px-6 lg:px-8">
+      {/* 5. 6-STEP STRUCTURED VISA PROCESS */}
+      <section className="py-12 sm:py-20 bg-slate-50 dark:bg-[#070d1e] border-y border-slate-200 dark:border-slate-800 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-12 space-y-2">
-            <span className="text-xs font-extrabold uppercase tracking-widest text-blue-600 dark:text-blue-400">
-              End-to-End Execution
+            <span className="text-xs font-bold uppercase tracking-wider text-[#fbb034] bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">
+              Transparent Methodology
             </span>
             <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">
-              The GEES 6-Step Visa Approval Process
+              The 6-Step Visa Assistance Process
             </h2>
-            <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base">
-              A structured, risk-free methodology engineered to minimize rejection risks and guarantee 100% compliance.
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+              From university acceptance through to biometric lodgement and pre-departure briefings.
             </p>
           </div>
 
@@ -452,212 +555,230 @@ export const StudentVisaAssistanceView: React.FC<StudentVisaAssistanceViewProps>
             {[
               {
                 step: '01',
-                title: 'Profile & Solvency Audit',
-                desc: 'Thorough evaluation of your academic history, study gaps, personal background, and financial sponsor credentials.',
-                icon: 'find_in_page'
+                title: 'University Offer & Admission Clearance',
+                desc: 'Confirming your unconditional offer letter, paying mandatory tuition deposits, and satisfying institutional academic conditions.',
+                icon: 'school'
               },
               {
                 step: '02',
-                title: 'Financial Proof Verification',
-                desc: 'Guidance on required holding periods (e.g. 28-day rule), bank balance certificates, loan sanctions, and affidavit structuring.',
+                title: 'Financial Solvency Dossier Audit',
+                desc: 'Structuring bank solvency certificates, confirming mandatory holding durations (e.g. UKVI 28-day rule), and auditing sponsorship affidavits.',
                 icon: 'account_balance'
               },
               {
                 step: '03',
-                title: 'CAS / I-20 / LOA Fast-Tracking',
-                desc: 'Direct liaison with university international admissions teams to secure your official visa eligibility certificate without delay.',
-                icon: 'description'
+                title: 'Official Visa Document Issuance',
+                desc: 'Procuring CAS (UK), eCoE (Australia), eVAL (Malaysia), or AIP documents directly through official university liaisons.',
+                icon: 'verified'
               },
               {
                 step: '04',
-                title: 'Online Application & Fees',
-                desc: 'Meticulous lodging of DS-160 / UKVI / VFS forms, IHS health surcharge payments, and biometrics appointment scheduling.',
-                icon: 'task_alt'
+                title: 'Medical Clearance & Police Certificate',
+                desc: 'Guiding approved clinic TB screenings (IOM Dhaka/Sylhet), pre-departure medical certificates, and official Bangladesh police clearances.',
+                icon: 'health_and_safety'
               },
               {
                 step: '05',
-                title: 'Mock Embassy Interview Prep',
-                desc: '1-on-1 simulated interviews with former visa officers, covering tricky questions regarding career intent and finances.',
+                title: 'Online Lodgement & Consular Mock Interview',
+                desc: 'Accurately completing government portal applications (DS-160/UKVI/ImmiAccount/IVAC) and conducting simulated 1-on-1 consular interviews.',
                 icon: 'record_voice_over'
               },
               {
                 step: '06',
-                title: 'Visa Stamping & Pre-Departure',
-                desc: 'Passport collection verification, international student insurance setup, flight booking, and pre-departure orientation.',
+                title: 'Decision Notification & Departure Orientation',
+                desc: 'Verifying visa vignette stamps, reviewing work conditions, arranging flight tickets, forex cards, and pre-departure accommodation.',
                 icon: 'flight_takeoff'
               }
             ].map((item) => (
               <div
                 key={item.step}
-                className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700/80 rounded-2xl p-6 relative group hover:shadow-lg transition-all"
+                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 relative space-y-3 shadow-xs"
               >
-                <div className="flex items-center justify-between mb-4">
-                  <span className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center font-extrabold text-sm">
-                    {item.step}
-                  </span>
-                  <span className="material-symbols-outlined text-slate-400 group-hover:text-blue-600 transition-colors text-[24px]">
-                    {item.icon}
-                  </span>
+                <div className="flex items-center justify-between">
+                  <span className="text-3xl font-black text-slate-200 dark:text-slate-800">{item.step}</span>
+                  <span className="material-symbols-outlined text-[#fbb034] text-[26px]">{item.icon}</span>
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
-                  {item.title}
-                </h3>
-                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                  {item.desc}
-                </p>
+                <h3 className="font-bold text-base text-slate-900 dark:text-white">{item.title}</h3>
+                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">{item.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* MOCK INTERVIEW SIMULATOR */}
-      <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      {/* 6. WHAT GEES ADVISORS HELP PREPARE */}
+      <section className="py-12 sm:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           <div className="lg:col-span-5 space-y-4">
-            <span className="text-xs font-extrabold uppercase tracking-widest text-blue-600 dark:text-blue-400">
-              Embassy Interview Mastery
+            <span className="text-xs font-bold uppercase tracking-wider text-[#fbb034] bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">
+              Our Professional Support
             </span>
             <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white leading-tight">
-              Master Your US &amp; European Embassy Interview
+              What GEES Advisors Help You Prepare
             </h2>
-            <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base leading-relaxed">
-              Consular officers make their decision in under 3 minutes. GEES conducts live 1-on-1 mock interviews to build flawless confidence and eliminate red flags.
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              Visa applications succeed on truthful, meticulously structured documentation. Our counselors review each dossier with rigorous attention to government guidelines.
             </p>
 
             <div className="space-y-3 pt-2">
-              <div className="flex items-center gap-3 text-xs sm:text-sm text-slate-700 dark:text-slate-300 font-medium">
-                <span className="w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">✓</span>
-                <span>Real consular interview question bank (2025/2026 update)</span>
+              <div className="flex items-center gap-3 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+                <span className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-xs shrink-0">✓</span>
+                <span>Genuine Temporary Entrant (GTE) / Genuine Student (GS) drafting advice</span>
               </div>
-              <div className="flex items-center gap-3 text-xs sm:text-sm text-slate-700 dark:text-slate-300 font-medium">
-                <span className="w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">✓</span>
-                <span>Body language, posture, and vocal delivery coaching</span>
+              <div className="flex items-center gap-3 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+                <span className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-xs shrink-0">✓</span>
+                <span>Bank solvency auditing &amp; tax returns (ITR) correlation</span>
               </div>
-              <div className="flex items-center gap-3 text-xs sm:text-sm text-slate-700 dark:text-slate-300 font-medium">
-                <span className="w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">✓</span>
-                <span>Specific guidance on handling prior visa refusal history</span>
+              <div className="flex items-center gap-3 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+                <span className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-xs shrink-0">✓</span>
+                <span>Study gap justification letters with employment corroboration</span>
+              </div>
+              <div className="flex items-center gap-3 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+                <span className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-xs shrink-0">✓</span>
+                <span>Embassy credibility mock interviews with sample questions</span>
               </div>
             </div>
 
             <div className="pt-4">
-              <InteractiveHoverButton
-                text="Schedule Mock Interview Session"
-                onClick={onOpenConsultation}
-                className="w-full sm:w-auto text-sm"
-              />
+              <button
+                onClick={() => handleLaunchConsultation('Document Review')}
+                className="min-h-[44px] px-6 py-3 rounded-full bg-[#fbb034] hover:bg-amber-400 text-slate-950 font-black text-xs sm:text-sm transition-all shadow-md active:scale-95 cursor-pointer flex items-center gap-2"
+              >
+                <span className="material-symbols-outlined text-[18px]">fact_check</span>
+                <span>Request Document Review</span>
+              </button>
             </div>
           </div>
 
-          <div className="lg:col-span-7 space-y-3">
-            <h3 className="text-sm font-extrabold uppercase text-slate-500 dark:text-slate-400 tracking-wider mb-2">
-              Sample High-Probability Questions &amp; Winning Strategies
+          <div className="lg:col-span-7 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 space-y-4">
+            <h3 className="font-bold text-base text-slate-900 dark:text-white flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
+              <span>Standard Visa Document Package</span>
+              <span className="text-xs text-slate-400 font-normal">Checklist Guide</span>
             </h3>
-            {MOCK_INTERVIEW_QUESTIONS.map((item, idx) => (
-              <div
-                key={idx}
-                className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 sm:p-5 shadow-sm space-y-2"
-              >
-                <div className="flex items-start gap-2.5">
-                  <span className="px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-bold text-xs shrink-0 mt-0.5">
-                    Q{idx + 1}
-                  </span>
-                  <p className="font-bold text-slate-900 dark:text-white text-sm sm:text-base">
-                    "{item.q}"
-                  </p>
-                </div>
-                <div className="pl-8 text-xs sm:text-sm text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/60 p-3 rounded-xl border border-slate-100 dark:border-slate-700">
-                  <span className="font-bold text-blue-600 dark:text-blue-400">Winning Strategy: </span>
-                  {item.a}
-                </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              <div className="p-3.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 space-y-1">
+                <strong className="text-slate-900 dark:text-white block font-semibold">1. Academic Dossier</strong>
+                <p className="text-slate-600 dark:text-slate-400">SSC/HSC/Bachelor marksheets, certificates, board verifications, and English language scores.</p>
               </div>
-            ))}
+
+              <div className="p-3.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 space-y-1">
+                <strong className="text-slate-900 dark:text-white block font-semibold">2. Financial Solvency</strong>
+                <p className="text-slate-600 dark:text-slate-400">Bank statements, solvency certificate, sponsor deeds, source of funds, and income tax documents.</p>
+              </div>
+
+              <div className="p-3.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 space-y-1">
+                <strong className="text-slate-900 dark:text-white block font-semibold">3. University Acceptance</strong>
+                <p className="text-slate-600 dark:text-slate-400">Official Unconditional Offer Letter, CAS Statement, eCoE document, or eVAL certificate.</p>
+              </div>
+
+              <div className="p-3.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 space-y-1">
+                <strong className="text-slate-900 dark:text-white block font-semibold">4. Identity &amp; Clearance</strong>
+                <p className="text-slate-600 dark:text-slate-400">Passport, national ID/birth certificate, Bangladesh Police clearance, and IOM TB medical report.</p>
+              </div>
+            </div>
+
+            <div className="p-3 rounded-xl bg-slate-100 dark:bg-slate-800/60 text-[11px] text-slate-500 dark:text-slate-400">
+              Note: Never submit forged or unverified financial certificates. Consulates run direct audits with issuing financial institutions in Bangladesh, and fraudulent documentation leads to multi-year entry bans.
+            </div>
           </div>
         </div>
       </section>
 
-      {/* FAQ SECTION */}
-      <section className="py-12 sm:py-16 bg-slate-100 dark:bg-slate-800/40 border-t border-slate-200 dark:border-slate-700 px-4 sm:px-6 lg:px-8">
+      {/* 7. FREQUENTLY ASKED QUESTIONS */}
+      <section className="py-12 sm:py-20 bg-slate-50 dark:bg-[#070d1e] border-t border-slate-200 dark:border-slate-800 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10 space-y-2">
-            <span className="text-xs font-extrabold uppercase tracking-widest text-blue-600 dark:text-blue-400">
-              Frequently Asked Questions
+            <span className="text-xs font-bold uppercase tracking-wider text-[#fbb034] bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">
+              Student Inquiries
             </span>
             <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">
-              Student Visa Queries Answered
+              Frequently Asked Questions on Student Visas
             </h2>
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+              Common questions answered by GEES certified education counselors.
+            </p>
           </div>
 
           <div className="space-y-3">
             {[
               {
-                q: 'What happens if I have a gap year in my study history?',
-                a: 'A study gap is completely acceptable provided you demonstrate meaningful activity during that period — such as relevant work experience, internships, certifications, or language study. GEES helps draft official gap explanations and experience letters.'
+                q: 'Does getting an offer letter from a university mean my visa is guaranteed?',
+                a: 'No. Academic admission by a university and visa approval by sovereign immigration authorities are two completely separate decisions. Universities assess your academic eligibility, while immigration departments evaluate genuine intent, financial capability, and security clearance. GEES helps ensure your visa file is 100% compliant with immigration rules, but final approval rests solely with the sovereign government.'
               },
               {
-                q: 'Can I bring my spouse or children on my student visa?',
-                a: 'Dependent rules vary by country and degree level. For the UK, dependents are allowed for postgraduate research or PhD students. In Australia, Canada, and the US, spouses can apply for dependent visas (F-2, Subclass 500 dependent, or Spousal Open Work Permit).'
+                q: 'What should I do if I have an academic study gap?',
+                a: 'Study gaps are acceptable if you provide legitimate, verifiable documentation of what you did during that period. Acceptable evidence includes professional work experience certificates, appointment letters, pay slips, internships, freelance portfolios, or English language test preparation records. GEES counselors assist in drafting professional gap explanation letters.'
               },
               {
-                q: 'How long must my bank balance be maintained before submitting?',
-                a: 'For the UK, funds must be held for 28 consecutive days. For Australia and Canada, funds should demonstrate source and stability over 3 to 6 months. GEES conducts a full bank statement audit prior to visa filing.'
+                q: 'Can I reapply if I experienced a previous visa refusal through another agency?',
+                a: 'Yes, provided the previous refusal did not involve fraudulent documentation. We review your official refusal letter, identify the specific grounds under immigration rules, address the deficiencies with fresh verifiable evidence, and draft a structured submission letter.'
               },
               {
-                q: 'Can GEES assist if I had a previous visa rejection?',
-                a: 'Yes! Over 20% of our successful applicants previously experienced a visa refusal through other agencies. We obtain your embassy GCMS / SAR notes, identify the exact reason for refusal, re-structure your documents, and submit a strong fresh application.'
+                q: 'How long must my financial funds be held in the bank?',
+                a: 'This depends strictly on your target country. The UK requires funds held consecutively for at least 28 days prior to application submission. Australia and New Zealand require evidence of fund origin, savings history, or sanctioned bank education loans. Malaysia evaluates university-endorsed financial capacity through EMGS.'
+              },
+              {
+                q: 'Can my spouse or children join me on my student visa?',
+                a: 'Dependent regulations depend heavily on the country and study level. For the UK, dependents are restricted to postgraduate research degrees (PhD/research master’s). For Australia and New Zealand, dependent spouses may apply under specific qualification levels. For Malaysia, master’s research and PhD students can apply for dependent passes.'
               }
-            ].map((faq, idx) => (
-              <div
-                key={idx}
-                className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden transition-all"
-              >
-                <button
-                  onClick={() => setActiveFaq(activeFaq === idx ? null : idx)}
-                  className="w-full p-4 sm:p-5 text-left flex items-center justify-between gap-4 font-bold text-slate-900 dark:text-white text-sm sm:text-base cursor-pointer"
+            ].map((faq, idx) => {
+              const isOpen = activeFaqIndex === idx;
+              return (
+                <div
+                  key={idx}
+                  className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden transition-all"
                 >
-                  <span>{faq.q}</span>
-                  <span className="material-symbols-outlined text-blue-600 text-[20px] shrink-0">
-                    {activeFaq === idx ? 'remove' : 'add'}
-                  </span>
-                </button>
-                {activeFaq === idx && (
-                  <div className="px-4 sm:px-5 pb-5 text-xs sm:text-sm text-slate-600 dark:text-slate-300 border-t border-slate-100 dark:border-slate-700 pt-3 leading-relaxed">
-                    {faq.a}
-                  </div>
-                )}
-              </div>
-            ))}
+                  <button
+                    onClick={() => setActiveFaqIndex(isOpen ? null : idx)}
+                    className="w-full p-4 sm:p-5 text-left flex items-center justify-between gap-4 font-bold text-slate-900 dark:text-white text-sm sm:text-base cursor-pointer"
+                  >
+                    <span>{faq.q}</span>
+                    <span className="material-symbols-outlined text-[#fbb034] text-[20px] shrink-0">
+                      {isOpen ? 'remove' : 'add'}
+                    </span>
+                  </button>
+                  {isOpen && (
+                    <div className="px-4 sm:px-5 pb-5 text-xs sm:text-sm text-slate-600 dark:text-slate-300 border-t border-slate-100 dark:border-slate-800 pt-3 leading-relaxed">
+                      {faq.a}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* FINAL CTA BANNER */}
-      <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="bg-gradient-to-r from-blue-700 via-blue-800 to-indigo-900 rounded-3xl p-8 sm:p-12 text-white text-center space-y-6 shadow-2xl relative overflow-hidden">
-          <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
-          
+      {/* 8. FINAL CONSULTATION CTA BANNER */}
+      <section className="py-12 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div className="bg-gradient-to-r from-[#070b19] via-[#0b132b] to-[#070b19] rounded-3xl p-8 sm:p-12 text-white text-center space-y-6 shadow-2xl relative overflow-hidden border border-slate-800">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(251,176,52,0.15),transparent_60%)] pointer-events-none" />
+
           <div className="relative z-10 max-w-3xl mx-auto space-y-4">
-            <span className="px-3 py-1 bg-white/10 text-blue-200 rounded-full text-xs font-extrabold uppercase tracking-widest border border-white/20">
-              Zero Risk • 99.8% Success Rate
+            <span className="px-3.5 py-1 bg-amber-500/15 text-amber-300 rounded-full text-xs font-bold uppercase tracking-wider border border-amber-400/30">
+              100% Free Advice • Transparent Guidance
             </span>
-            <h2 className="text-2xl sm:text-4xl font-extrabold leading-tight">
-              Ready to Secure Your Student Visa for 2026?
+            <h2 className="text-2xl sm:text-4xl font-black leading-tight">
+              Speak With a Senior GEES Visa Counselor Today
             </h2>
-            <p className="text-blue-100 text-sm sm:text-base leading-relaxed">
-              Don't leave your international future to chance. Get a complimentary document assessment from our certified immigration counselors today.
+            <p className="text-slate-300 text-xs sm:text-base leading-relaxed">
+              Have questions regarding financial solvency proof, course eligibility, or country-specific visa procedures? Schedule a free 1-on-1 consultation at our Dhaka office or connect via WhatsApp.
             </p>
+
             <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
               <button
-                onClick={onOpenConsultation}
-                className="w-full sm:w-auto px-8 py-3.5 bg-white text-blue-900 hover:bg-blue-50 rounded-full font-extrabold text-sm shadow-xl transition-all cursor-pointer"
+                onClick={() => handleLaunchConsultation()}
+                className="min-h-[48px] w-full sm:w-auto px-8 py-3.5 bg-[#fbb034] hover:bg-amber-400 text-slate-950 font-black text-xs sm:text-sm rounded-full shadow-xl transition-all cursor-pointer active:scale-95"
               >
-                Book Free Visa Audit Now
+                Book 1-on-1 Visa Consultation
               </button>
               <button
-                onClick={onBackToHome}
-                className="w-full sm:w-auto px-6 py-3.5 bg-blue-900/60 hover:bg-blue-900 border border-blue-400/30 text-white rounded-full font-bold text-sm transition-all cursor-pointer"
+                onClick={openWhatsAppEnquiry}
+                className="min-h-[48px] w-full sm:w-auto px-7 py-3.5 bg-white/10 hover:bg-white/20 border border-white/20 text-white rounded-full font-bold text-xs sm:text-sm transition-all cursor-pointer flex items-center justify-center gap-2 active:scale-95"
               >
-                Back to Homepage
+                <span className="material-symbols-outlined text-[18px] text-emerald-400">chat</span>
+                <span>WhatsApp: +880 1805 529578</span>
               </button>
             </div>
           </div>

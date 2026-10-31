@@ -42,11 +42,11 @@ export const BlogsUpdatesSection: React.FC<BlogsUpdatesSectionProps> = ({
 
   // Tabs Definition
   const tabs: AnimatedTabItem[] = [
-    { id: 'all', label: 'All Updates' },
+    { id: 'all', label: 'All' },
     { id: 'malaysia', label: 'Malaysia 🇲🇾' },
-    { id: 'uk', label: 'UK Guide 🇬🇧' },
+    { id: 'uk', label: 'UK 🇬🇧' },
     { id: 'australia', label: 'Australia 🇦🇺' },
-    { id: 'visa', label: 'Visa & Immigration ✈️' }
+    { id: 'visa', label: 'Visa ✈️' }
   ];
 
   // Keyboard navigation for escape key to close modal

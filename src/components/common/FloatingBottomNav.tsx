@@ -1,22 +1,21 @@
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
- * GEES Custom Floating Island Mobile Bottom Navigation Bar (GEES-1.1)
+ * GEES Custom Floating Island Mobile Bottom Navigation Bar (GEES-2.1)
  *
- * Designed with Apple-level mobile design discipline:
- * - Liquid glass capsule glider indicator with spring physics
- * - 5 balanced interactive items:
- *   0: Home (Solid clean home)
- *   1: Universities & Programs (Media / Explore icon)
- *   2: Center Fast-Track / Quick Actions (Filter funnel with live count badge '13')
- *   3: Consultation & Search (Search & Advisor consultation trigger)
- *   4: Menu / Portal Profile Drawer (Avatar with status indicator badge)
- * - Safe-area inset bottom padding (`pb-[max(1rem,env(safe-area-inset-bottom))]`)
- * - Strictly restricted to mobile viewports (`md:hidden`)
- * - Non-overlapping layout with backdrop blur and fluid micro-interactions
+ * Compact, cohesive floating pill with Apple-grade mobile design discipline:
+ * - Perfectly aligned flex structure across all 5 tabs
+ * - Consistent 4-6px gap between icons and labels
+ * - Restrained active circular indicator with fluid Framer Motion spring physics
+ * - Preserved baselines for all icons and labels (no drifting or awkward disconnects)
+ * - 5 functional tabs: Home, Explore, Actions (Fast-Track), Search, Profile
+ * - Safe-area aware (`pb-[max(0.2rem,env(safe-area-inset-bottom))]`)
+ * - Guaranteed 44x44px minimum touch targets
+ * - Responsive for 320px–430px phones and tablets
  */
 
 import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export interface FloatingBottomNavProps {
   currentView: string;
@@ -36,20 +35,27 @@ export const FloatingBottomNav: React.FC<FloatingBottomNavProps> = ({
   const [isQuickActionsOpen, setIsQuickActionsOpen] = useState(false);
   const quickActionsRef = useRef<HTMLDivElement>(null);
 
-  // Map currentView to dock index:
+  // Map currentView to tab index:
   // 0: home
   // 1: universities or courses or destinations
   // 2: quick action filter / Fast-track trigger
-  // 3: search / consultation
+  // 3: search
   // 4: profile / portal or drawer
-  const getActiveIndex = (): number => {
-    if (currentView === 'home') return 0;
-    if (currentView === 'universities' || currentView === 'courses' || currentView === 'destinations') return 1;
-    if (currentView === 'student-portal' || currentView === 'agent-portal' || currentView === 'crm') return 4;
+  const getActiveIndexFromView = (view: string): number => {
+    if (view === 'home') return 0;
+    if (view === 'universities' || view === 'courses' || view === 'destinations') return 1;
+    if (view === 'student-portal' || view === 'agent-portal' || view === 'crm') return 4;
     return 0;
   };
 
-  const activeIndex = getActiveIndex();
+  const [activeIndex, setActiveIndex] = useState<number>(() => getActiveIndexFromView(currentView));
+
+  // Sync activeIndex with currentView prop changes
+  useEffect(() => {
+    if (!isQuickActionsOpen) {
+      setActiveIndex(getActiveIndexFromView(currentView));
+    }
+  }, [currentView, isQuickActionsOpen]);
 
   // Close quick actions modal if user clicks outside
   useEffect(() => {
@@ -60,14 +66,17 @@ export const FloatingBottomNav: React.FC<FloatingBottomNavProps> = ({
         !quickActionsRef.current.contains(e.target as Node)
       ) {
         setIsQuickActionsOpen(false);
+        setActiveIndex(getActiveIndexFromView(currentView));
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isQuickActionsOpen]);
+  }, [isQuickActionsOpen, currentView]);
 
-  // Tab click handler
+  // Tab click handler with fluid spring animation
   const handleTabClick = (index: number) => {
+    setActiveIndex(index);
+
     if (index === 0) {
       setIsQuickActionsOpen(false);
       onNavigate('home');
@@ -88,470 +97,419 @@ export const FloatingBottomNav: React.FC<FloatingBottomNavProps> = ({
     }
   };
 
-  // Capsule indicator horizontal positioning calculation
-  // Each tab takes 20% (1/5) of the bar. We calculate the left percentage.
-  // Using 5 tabs: tab 0 is centered at 10%, tab 1 at 30%, etc.
-  const indicatorLeftPercent = activeIndex * 20;
+  // Render SVG icons with matching stroke and dimensions
+  const renderTabIcon = (index: number, isActive: boolean) => {
+    const strokeWidth = isActive ? "2.3" : "2";
+    switch (index) {
+      case 0:
+        return (
+          <svg
+            className="w-[18px] h-[18px] stroke-current fill-none"
+            viewBox="0 0 24 24"
+            strokeWidth={strokeWidth}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M3 9.5L12 3l9 6.5V20a1.5 1.5 0 01-1.5 1.5h-15A1.5 1.5 0 013 20V9.5z" />
+            <polyline points="9 21 9 12 15 12 15 21" />
+          </svg>
+        );
+      case 1:
+        return (
+          <svg
+            className="w-[18px] h-[18px] stroke-current fill-none"
+            viewBox="0 0 24 24"
+            strokeWidth={strokeWidth}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+          </svg>
+        );
+      case 2:
+        return (
+          <svg
+            className={`w-[19px] h-[19px] stroke-current fill-none transition-transform duration-200 ${
+              isQuickActionsOpen ? 'rotate-45' : ''
+            }`}
+            viewBox="0 0 24 24"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+        );
+      case 3:
+        return (
+          <svg
+            className="w-[18px] h-[18px] stroke-current fill-none"
+            viewBox="0 0 24 24"
+            strokeWidth={strokeWidth}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+        );
+      case 4:
+        return (
+          <svg
+            className="w-[18px] h-[18px] stroke-current fill-none"
+            viewBox="0 0 24 24"
+            strokeWidth={strokeWidth}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
+        );
+      default:
+        return null;
+    }
+  };
+
+  const tabs = [
+    { label: 'Home', ariaLabel: 'Home' },
+    { label: 'Explore', ariaLabel: 'Explore Universities & Destinations' },
+    { label: 'Actions', ariaLabel: 'Fast-Track Quick Actions' },
+    { label: 'Search', ariaLabel: 'Search Programs & Universities' },
+    { label: 'Profile', ariaLabel: 'Profile & Menu' }
+  ];
 
   return (
     <>
       {/* Quick Actions Fast-Track Popup Modal (Triggered by Tab 2) */}
-      {isQuickActionsOpen && (
-        <div
-          ref={quickActionsRef}
-          role="dialog"
-          aria-label="Quick Filters & Fast-Track Actions"
-          className="md:hidden fixed bottom-20 xs:bottom-22 inset-x-3 max-w-[340px] mx-auto p-2.5 sm:p-3 rounded-2xl bg-white/95 dark:bg-[#151924]/95 backdrop-blur-2xl border border-slate-200/90 dark:border-white/15 shadow-[0_16px_40px_rgba(0,0,0,0.35)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.7)] z-50 animate-in fade-in slide-in-from-bottom-3 duration-200 ease-out select-none max-h-[70vh] overflow-y-auto no-scrollbar"
-        >
-          {/* Header */}
-          <div className="flex items-center justify-between pb-1.5 border-b border-slate-100 dark:border-white/10 mb-1.5 px-1">
-            <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-blue-600 dark:bg-blue-500 animate-pulse"></span>
-              <span className="text-[11px] font-bold tracking-wider uppercase text-slate-800 dark:text-slate-200">
-                Quick Actions
-              </span>
+      <AnimatePresence>
+        {isQuickActionsOpen && (
+          <motion.div
+            ref={quickActionsRef}
+            role="dialog"
+            aria-label="Quick Filters & Fast-Track Actions"
+            initial={{ opacity: 0, y: 14, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 14, scale: 0.97 }}
+            transition={{ type: 'spring', stiffness: 420, damping: 28 }}
+            className="xl:hidden fixed bottom-18 xs:bottom-20 inset-x-3 max-w-[340px] sm:max-w-[380px] mx-auto p-3 rounded-3xl bg-white/95 dark:bg-[#0c1427]/95 backdrop-blur-2xl border border-slate-200/90 dark:border-amber-400/20 shadow-[0_16px_40px_rgba(0,0,0,0.35)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.7)] z-50 select-none max-h-[70vh] overflow-y-auto no-scrollbar"
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-white/10 mb-2 px-1">
+              <div className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-[#fbb034] shadow-[0_0_8px_#fbb034] animate-pulse"></span>
+                <span className="text-[11px] font-bold tracking-wider uppercase text-slate-900 dark:text-slate-100">
+                  GEES Fast-Track Actions
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsQuickActionsOpen(false);
+                  setActiveIndex(getActiveIndexFromView(currentView));
+                }}
+                className="w-7 h-7 rounded-full bg-slate-100 dark:bg-white/10 flex items-center justify-center text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
+                aria-label="Close menu"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
             </div>
-            <button
-              type="button"
-              onClick={() => setIsQuickActionsOpen(false)}
-              className="w-6 h-6 rounded-full bg-slate-100 dark:bg-white/10 flex items-center justify-center text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
-              aria-label="Close menu"
-            >
-              <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
 
-          {/* Action List - Compact Screenshot Styled Menu Items */}
-          <div className="space-y-0.5">
-            {/* 1. Explore Universities */}
-            <button
-              type="button"
-              onClick={() => {
-                setIsQuickActionsOpen(false);
-                onNavigate('universities');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
-              className="w-full py-1.5 px-2 rounded-xl flex items-center justify-between hover:bg-slate-100/80 dark:hover:bg-white/10 active:scale-[0.98] transition-all text-left cursor-pointer group"
-            >
-              <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-7 h-7 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
-                  <span className="material-symbols-outlined text-[17px]">school</span>
+            {/* Action List */}
+            <div className="space-y-1">
+              {/* 1. Explore Universities */}
+              <button
+                type="button"
+                onClick={() => {
+                  setIsQuickActionsOpen(false);
+                  setActiveIndex(1);
+                  onNavigate('universities');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                className="w-full min-h-[44px] py-1.5 px-2.5 rounded-2xl flex items-center justify-between hover:bg-slate-100/90 dark:hover:bg-white/10 active:scale-[0.98] transition-all text-left cursor-pointer group"
+              >
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-7 h-7 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+                    <span className="material-symbols-outlined text-[17px]">school</span>
+                  </div>
+                  <span className="text-[13px] font-semibold text-slate-900 dark:text-slate-100 tracking-tight truncate">
+                    Universities
+                  </span>
                 </div>
-                <span className="text-[13px] font-semibold text-slate-900 dark:text-slate-100 tracking-tight truncate">
-                  Universities
-                </span>
-              </div>
-              <div className="flex items-center gap-1 shrink-0 ml-2">
-                <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300">
-                  167+
-                </span>
-                <span className="material-symbols-outlined text-[16px] text-slate-400 dark:text-slate-500 group-hover:translate-x-0.5 transition-transform">
-                  chevron_right
-                </span>
-              </div>
-            </button>
-
-            {/* 2. Courses & Degree Search */}
-            <button
-              type="button"
-              onClick={() => {
-                setIsQuickActionsOpen(false);
-                onNavigate('courses');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
-              className="w-full py-1.5 px-2 rounded-xl flex items-center justify-between hover:bg-slate-100/80 dark:hover:bg-white/10 active:scale-[0.98] transition-all text-left cursor-pointer group"
-            >
-              <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
-                  <span className="material-symbols-outlined text-[17px]">auto_stories</span>
+                <div className="flex items-center gap-1 shrink-0 ml-2">
+                  <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300">
+                    167+
+                  </span>
+                  <span className="material-symbols-outlined text-[16px] text-slate-400 dark:text-slate-500 group-hover:translate-x-0.5 transition-transform">
+                    chevron_right
+                  </span>
                 </div>
-                <span className="text-[13px] font-semibold text-slate-900 dark:text-slate-100 tracking-tight truncate">
-                  Courses
-                </span>
-              </div>
-              <div className="flex items-center gap-1 shrink-0 ml-2">
-                <span className="material-symbols-outlined text-[16px] text-slate-400 dark:text-slate-500 group-hover:translate-x-0.5 transition-transform">
-                  chevron_right
-                </span>
-              </div>
-            </button>
+              </button>
 
-            {/* 3. Saved Courses Wishlist */}
-            <button
-              type="button"
-              onClick={() => {
-                setIsQuickActionsOpen(false);
-                onNavigate('wishlist');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
-              className="w-full py-1.5 px-2 rounded-xl flex items-center justify-between hover:bg-slate-100/80 dark:hover:bg-white/10 active:scale-[0.98] transition-all text-left cursor-pointer group"
-            >
-              <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-7 h-7 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
-                  <span className="material-symbols-outlined text-[17px]">bookmark</span>
+              {/* 2. Courses & Degree Search */}
+              <button
+                type="button"
+                onClick={() => {
+                  setIsQuickActionsOpen(false);
+                  setActiveIndex(1);
+                  onNavigate('courses');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                className="w-full min-h-[44px] py-1.5 px-2.5 rounded-2xl flex items-center justify-between hover:bg-slate-100/90 dark:hover:bg-white/10 active:scale-[0.98] transition-all text-left cursor-pointer group"
+              >
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-7 h-7 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                    <span className="material-symbols-outlined text-[17px]">auto_stories</span>
+                  </div>
+                  <span className="text-[13px] font-semibold text-slate-900 dark:text-slate-100 tracking-tight truncate">
+                    Courses
+                  </span>
                 </div>
-                <span className="text-[13px] font-semibold text-slate-900 dark:text-slate-100 tracking-tight truncate">
-                  Saved Wishlist
-                </span>
-              </div>
-              <div className="flex items-center gap-1 shrink-0 ml-2">
-                <span className="material-symbols-outlined text-[16px] text-slate-400 dark:text-slate-500 group-hover:translate-x-0.5 transition-transform">
-                  chevron_right
-                </span>
-              </div>
-            </button>
-
-            {/* 4. Study Destinations */}
-            <button
-              type="button"
-              onClick={() => {
-                setIsQuickActionsOpen(false);
-                onNavigate('destinations');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
-              className="w-full py-1.5 px-2 rounded-xl flex items-center justify-between hover:bg-slate-100/80 dark:hover:bg-white/10 active:scale-[0.98] transition-all text-left cursor-pointer group"
-            >
-              <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-7 h-7 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
-                  <span className="material-symbols-outlined text-[17px]">public</span>
+                <div className="flex items-center gap-1 shrink-0 ml-2">
+                  <span className="material-symbols-outlined text-[16px] text-slate-400 dark:text-slate-500 group-hover:translate-x-0.5 transition-transform">
+                    chevron_right
+                  </span>
                 </div>
-                <span className="text-[13px] font-semibold text-slate-900 dark:text-slate-100 tracking-tight truncate">
-                  Destinations
-                </span>
-              </div>
-              <div className="flex items-center gap-1 shrink-0 ml-2">
-                <span className="material-symbols-outlined text-[16px] text-slate-400 dark:text-slate-500 group-hover:translate-x-0.5 transition-transform">
-                  chevron_right
-                </span>
-              </div>
-            </button>
+              </button>
 
-            {/* 5. Services & Admission Support */}
-            <button
-              type="button"
-              onClick={() => {
-                setIsQuickActionsOpen(false);
-                onNavigate('services');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
-              className="w-full py-1.5 px-2 rounded-xl flex items-center justify-between hover:bg-slate-100/80 dark:hover:bg-white/10 active:scale-[0.98] transition-all text-left cursor-pointer group"
-            >
-              <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-7 h-7 rounded-lg bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
-                  <span className="material-symbols-outlined text-[17px]">support_agent</span>
+              {/* 3. Saved Courses Wishlist */}
+              <button
+                type="button"
+                onClick={() => {
+                  setIsQuickActionsOpen(false);
+                  onNavigate('wishlist');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                className="w-full min-h-[44px] py-1.5 px-2.5 rounded-2xl flex items-center justify-between hover:bg-slate-100/90 dark:hover:bg-white/10 active:scale-[0.98] transition-all text-left cursor-pointer group"
+              >
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-7 h-7 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+                    <span className="material-symbols-outlined text-[17px]">bookmark</span>
+                  </div>
+                  <span className="text-[13px] font-semibold text-slate-900 dark:text-slate-100 tracking-tight truncate">
+                    Saved Wishlist
+                  </span>
                 </div>
-                <span className="text-[13px] font-semibold text-slate-900 dark:text-slate-100 tracking-tight truncate">
-                  Services
-                </span>
-              </div>
-              <div className="flex items-center gap-1 shrink-0 ml-2">
-                <span className="material-symbols-outlined text-[16px] text-slate-400 dark:text-slate-500 group-hover:translate-x-0.5 transition-transform">
-                  chevron_right
-                </span>
-              </div>
-            </button>
-
-            <div className="border-b border-slate-100 dark:border-white/10 my-0.5"></div>
-
-            {/* 6. Book 1-on-1 Consultation */}
-            <button
-              type="button"
-              onClick={() => {
-                setIsQuickActionsOpen(false);
-                if (onOpenConsultation) {
-                  onOpenConsultation('Mobile Floating Island Fast-Track');
-                } else {
-                  onNavigate('contact');
-                }
-              }}
-              className="w-full py-1.5 px-2 rounded-xl flex items-center justify-between hover:bg-slate-100/80 dark:hover:bg-white/10 active:scale-[0.98] transition-all text-left cursor-pointer group"
-            >
-              <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-7 h-7 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
-                  <span className="material-symbols-outlined text-[17px]">event_available</span>
+                <div className="flex items-center gap-1 shrink-0 ml-2">
+                  <span className="material-symbols-outlined text-[16px] text-slate-400 dark:text-slate-500 group-hover:translate-x-0.5 transition-transform">
+                    chevron_right
+                  </span>
                 </div>
-                <span className="text-[13px] font-semibold text-slate-900 dark:text-slate-100 tracking-tight truncate">
-                  Consultation
-                </span>
-              </div>
-              <div className="flex items-center gap-1 shrink-0 ml-2">
-                <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300">
-                  Free
-                </span>
-                <span className="material-symbols-outlined text-[16px] text-slate-400 dark:text-slate-500 group-hover:translate-x-0.5 transition-transform">
-                  chevron_right
-                </span>
-              </div>
-            </button>
+              </button>
 
-            {/* 7. EMGS Visa & Document Tracker */}
-            <button
-              type="button"
-              onClick={() => {
-                setIsQuickActionsOpen(false);
-                onNavigate('student-portal');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
-              className="w-full py-1.5 px-2 rounded-xl flex items-center justify-between hover:bg-slate-100/80 dark:hover:bg-white/10 active:scale-[0.98] transition-all text-left cursor-pointer group"
-            >
-              <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-7 h-7 rounded-lg bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center shrink-0">
-                  <span className="material-symbols-outlined text-[17px]">description</span>
+              {/* 4. Study Destinations */}
+              <button
+                type="button"
+                onClick={() => {
+                  setIsQuickActionsOpen(false);
+                  setActiveIndex(1);
+                  onNavigate('destinations');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                className="w-full min-h-[44px] py-1.5 px-2.5 rounded-2xl flex items-center justify-between hover:bg-slate-100/90 dark:hover:bg-white/10 active:scale-[0.98] transition-all text-left cursor-pointer group"
+              >
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-7 h-7 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
+                    <span className="material-symbols-outlined text-[17px]">public</span>
+                  </div>
+                  <span className="text-[13px] font-semibold text-slate-900 dark:text-slate-100 tracking-tight truncate">
+                    Destinations
+                  </span>
                 </div>
-                <span className="text-[13px] font-semibold text-slate-900 dark:text-slate-100 tracking-tight truncate">
-                  Visa Tracker
-                </span>
-              </div>
-              <div className="flex items-center gap-1 shrink-0 ml-2">
-                <span className="material-symbols-outlined text-[16px] text-slate-400 dark:text-slate-500 group-hover:translate-x-0.5 transition-transform">
-                  chevron_right
-                </span>
-              </div>
-            </button>
-
-            {/* 8. Student Video Stories */}
-            <button
-              type="button"
-              onClick={() => {
-                setIsQuickActionsOpen(false);
-                onNavigate('home');
-                const el = document.getElementById('student-stories-reels');
-                if (el) el.scrollIntoView({ behavior: 'smooth' });
-              }}
-              className="w-full py-1.5 px-2 rounded-xl flex items-center justify-between hover:bg-slate-100/80 dark:hover:bg-white/10 active:scale-[0.98] transition-all text-left cursor-pointer group"
-            >
-              <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-7 h-7 rounded-lg bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0">
-                  <span className="material-symbols-outlined text-[17px]">play_circle</span>
+                <div className="flex items-center gap-1 shrink-0 ml-2">
+                  <span className="material-symbols-outlined text-[16px] text-slate-400 dark:text-slate-500 group-hover:translate-x-0.5 transition-transform">
+                    chevron_right
+                  </span>
                 </div>
-                <span className="text-[13px] font-semibold text-slate-900 dark:text-slate-100 tracking-tight truncate">
-                  Student Stories
-                </span>
-              </div>
-              <div className="flex items-center gap-1 shrink-0 ml-2">
-                <span className="material-symbols-outlined text-[16px] text-slate-400 dark:text-slate-500 group-hover:translate-x-0.5 transition-transform">
-                  chevron_right
-                </span>
-              </div>
-            </button>
+              </button>
 
-            {/* 9. Blogs & Latest News */}
-            <button
-              type="button"
-              onClick={() => {
-                setIsQuickActionsOpen(false);
-                if (typeof window !== 'undefined') window.location.href = '/blog.html';
-              }}
-              className="w-full py-1.5 px-2 rounded-xl flex items-center justify-between hover:bg-slate-100/80 dark:hover:bg-white/10 active:scale-[0.98] transition-all text-left cursor-pointer group"
-            >
-              <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-7 h-7 rounded-lg bg-orange-500/10 text-orange-600 dark:text-orange-400 flex items-center justify-center shrink-0">
-                  <span className="material-symbols-outlined text-[17px]">newspaper</span>
+              {/* 5. Services & Admission Support */}
+              <button
+                type="button"
+                onClick={() => {
+                  setIsQuickActionsOpen(false);
+                  onNavigate('services');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                className="w-full min-h-[44px] py-1.5 px-2.5 rounded-2xl flex items-center justify-between hover:bg-slate-100/90 dark:hover:bg-white/10 active:scale-[0.98] transition-all text-left cursor-pointer group"
+              >
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-7 h-7 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
+                    <span className="material-symbols-outlined text-[17px]">support_agent</span>
+                  </div>
+                  <span className="text-[13px] font-semibold text-slate-900 dark:text-slate-100 tracking-tight truncate">
+                    Services
+                  </span>
                 </div>
-                <span className="text-[13px] font-semibold text-slate-900 dark:text-slate-100 tracking-tight truncate">
-                  Blogs & News
-                </span>
-              </div>
-              <div className="flex items-center gap-1 shrink-0 ml-2">
-                <span className="material-symbols-outlined text-[16px] text-slate-400 dark:text-slate-500 group-hover:translate-x-0.5 transition-transform">
-                  chevron_right
-                </span>
-              </div>
-            </button>
-
-            {/* 10. FAQ & Knowledge Center */}
-            <button
-              type="button"
-              onClick={() => {
-                setIsQuickActionsOpen(false);
-                if (typeof window !== 'undefined') window.location.href = '/faq.html';
-              }}
-              className="w-full py-1.5 px-2 rounded-xl flex items-center justify-between hover:bg-slate-100/80 dark:hover:bg-white/10 active:scale-[0.98] transition-all text-left cursor-pointer group"
-            >
-              <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-7 h-7 rounded-lg bg-sky-500/10 text-sky-600 dark:text-sky-400 flex items-center justify-center shrink-0">
-                  <span className="material-symbols-outlined text-[17px]">help_outline</span>
+                <div className="flex items-center gap-1 shrink-0 ml-2">
+                  <span className="material-symbols-outlined text-[16px] text-slate-400 dark:text-slate-500 group-hover:translate-x-0.5 transition-transform">
+                    chevron_right
+                  </span>
                 </div>
-                <span className="text-[13px] font-semibold text-slate-900 dark:text-slate-100 tracking-tight truncate">
-                  FAQs
-                </span>
-              </div>
-              <div className="flex items-center gap-1 shrink-0 ml-2">
-                <span className="material-symbols-outlined text-[16px] text-slate-400 dark:text-slate-500 group-hover:translate-x-0.5 transition-transform">
-                  chevron_right
-                </span>
-              </div>
-            </button>
+              </button>
 
-          </div>
-        </div>
-      )}
+              <div className="border-b border-slate-100 dark:border-white/10 my-1"></div>
 
-      {/* Floating Island Navigation Dock */}
+              {/* 6. Book 1-on-1 Consultation */}
+              <button
+                type="button"
+                onClick={() => {
+                  setIsQuickActionsOpen(false);
+                  if (onOpenConsultation) {
+                    onOpenConsultation('Mobile Floating Island Fast-Track');
+                  } else {
+                    onNavigate('contact');
+                  }
+                }}
+                className="w-full min-h-[44px] py-1.5 px-2.5 rounded-2xl flex items-center justify-between hover:bg-slate-100/90 dark:hover:bg-white/10 active:scale-[0.98] transition-all text-left cursor-pointer group"
+              >
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-7 h-7 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+                    <span className="material-symbols-outlined text-[17px]">event_available</span>
+                  </div>
+                  <span className="text-[13px] font-semibold text-slate-900 dark:text-slate-100 tracking-tight truncate">
+                    Free Consultation
+                  </span>
+                </div>
+                <div className="flex items-center gap-1 shrink-0 ml-2">
+                  <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300">
+                    Free
+                  </span>
+                  <span className="material-symbols-outlined text-[16px] text-slate-400 dark:text-slate-500 group-hover:translate-x-0.5 transition-transform">
+                    chevron_right
+                  </span>
+                </div>
+              </button>
+
+              {/* 7. EMGS Visa & Document Tracker */}
+              <button
+                type="button"
+                onClick={() => {
+                  setIsQuickActionsOpen(false);
+                  onNavigate('track-visa');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                className="w-full min-h-[44px] py-1.5 px-2.5 rounded-2xl flex items-center justify-between hover:bg-slate-100/90 dark:hover:bg-white/10 active:scale-[0.98] transition-all text-left cursor-pointer group"
+              >
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-7 h-7 rounded-xl bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center shrink-0">
+                    <span className="material-symbols-outlined text-[17px]">description</span>
+                  </div>
+                  <span className="text-[13px] font-semibold text-slate-900 dark:text-slate-100 tracking-tight truncate">
+                    Visa Tracker
+                  </span>
+                </div>
+                <div className="flex items-center gap-1 shrink-0 ml-2">
+                  <span className="material-symbols-outlined text-[16px] text-slate-400 dark:text-slate-500 group-hover:translate-x-0.5 transition-transform">
+                    chevron_right
+                  </span>
+                </div>
+              </button>
+
+              {/* 8. Student Video Stories */}
+              <button
+                type="button"
+                onClick={() => {
+                  setIsQuickActionsOpen(false);
+                  setActiveIndex(0);
+                  onNavigate('home');
+                  const el = document.getElementById('student-stories-reels');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="w-full min-h-[44px] py-1.5 px-2.5 rounded-2xl flex items-center justify-between hover:bg-slate-100/90 dark:hover:bg-white/10 active:scale-[0.98] transition-all text-left cursor-pointer group"
+              >
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-7 h-7 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0">
+                    <span className="material-symbols-outlined text-[17px]">play_circle</span>
+                  </div>
+                  <span className="text-[13px] font-semibold text-slate-900 dark:text-slate-100 tracking-tight truncate">
+                    Student Stories
+                  </span>
+                </div>
+                <div className="flex items-center gap-1 shrink-0 ml-2">
+                  <span className="material-symbols-outlined text-[16px] text-slate-400 dark:text-slate-500 group-hover:translate-x-0.5 transition-transform">
+                    chevron_right
+                  </span>
+                </div>
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Floating Island Navigation Dock with Perfect Icon-Label Alignment & Proportional Active Indicator */}
       <nav
-        aria-label="Mobile Bottom Navigation"
-        className="md:hidden fixed bottom-3 sm:bottom-4 inset-x-2 xs:inset-x-3.5 z-40 max-w-[440px] xs:max-w-[480px] mx-auto select-none pointer-events-auto"
+        aria-label="Mobile and Tablet Bottom Navigation"
+        className="xl:hidden fixed bottom-3 sm:bottom-4 inset-x-2.5 xs:inset-x-3.5 z-40 max-w-[380px] xs:max-w-[410px] sm:max-w-[430px] mx-auto select-none pointer-events-auto"
         data-purpose="floating-island-wrapper"
       >
         <div
-          className="relative w-full h-[62px] xs:h-[68px] bg-white/92 dark:bg-[#131722]/92 backdrop-blur-2xl border border-slate-300/80 dark:border-white/15 rounded-full shadow-[0_14px_38px_rgba(0,0,0,0.18)] dark:shadow-[0_18px_48px_rgba(0,0,0,0.65)] px-2 py-1 flex items-center justify-between overflow-visible"
+          className="relative w-full h-[58px] xs:h-[62px] bg-white/95 dark:bg-[#0c1427]/95 backdrop-blur-2xl border border-slate-200/90 dark:border-amber-400/20 rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.14)] dark:shadow-[0_14px_40px_rgba(0,0,0,0.6)] px-1.5 flex items-center justify-between overflow-hidden"
           id="dock-pill"
         >
-          {/* Liquid Glass Capsule Indicator Behind Active Item */}
-          <div
-            className="absolute top-1.5 bottom-1.5 rounded-full pointer-events-none bg-black/10 dark:bg-white/15 backdrop-blur-md border border-black/10 dark:border-white/20 shadow-inner dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.35)] transition-all duration-300 ease-[cubic-bezier(0.34,1.45,0.64,1)] will-change-transform"
-            style={{
-              width: 'calc(20% - 6px)',
-              left: `calc(${indicatorLeftPercent}% + 3px)`
-            }}
-            aria-hidden="true"
-          />
+          {/* 5 Balanced Interactive Tabs */}
+          {tabs.map((tab, idx) => {
+            const isActive = activeIndex === idx;
+            const isCenterAction = idx === 2;
 
-          {/* TAB 0: HOME */}
-          <button
-            type="button"
-            onClick={() => handleTabClick(0)}
-            aria-label="Home"
-            aria-current={activeIndex === 0 ? 'page' : undefined}
-            className={`dock-tab relative flex-1 h-full flex flex-col items-center justify-center active:scale-90 transition-transform duration-150 z-10 cursor-pointer ${
-              activeIndex === 0
-                ? 'text-[#fbb034] drop-shadow-[0_0_8px_rgba(251,176,52,0.45)]'
-                : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
-            }`}
-          >
-            <div className="flex flex-col items-center justify-center pointer-events-none">
-              <svg
-                className={`tab-icon w-4 h-4 xs:w-[18px] xs:h-[18px] stroke-current fill-none transition-transform duration-200 ${
-                  activeIndex === 0 ? 'scale-110' : ''
-                }`}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
+            return (
+              <button
+                key={tab.label}
+                type="button"
+                onClick={() => handleTabClick(idx)}
+                aria-label={tab.ariaLabel}
+                aria-current={isActive && !isCenterAction ? 'page' : undefined}
+                className="relative flex-1 h-full min-h-[44px] flex flex-col items-center justify-center py-1 px-0.5 cursor-pointer touch-manipulation z-10 group active:scale-95 transition-transform"
               >
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                <polyline points="9 22 9 12 15 12 15 22"></polyline>
-              </svg>
-              <span className="text-[10px] xs:text-[11px] font-semibold mt-0.5 tracking-tight">Home</span>
-            </div>
-          </button>
+                {/* Icon Container with Shared Gliding Active Indicator */}
+                <div className="relative w-8 h-8 xs:w-8.5 xs:h-8.5 flex items-center justify-center shrink-0">
+                  {/* Fluid Active Gliding Indicator */}
+                  {isActive && (
+                    <motion.div
+                      layoutId="bottom-nav-active-indicator"
+                      transition={{
+                        type: 'spring',
+                        stiffness: 450,
+                        damping: 30,
+                        mass: 0.8
+                      }}
+                      className={`absolute inset-0 rounded-full flex items-center justify-center z-0 shadow-[0_3px_12px_rgba(251,176,52,0.45)] dark:shadow-[0_3px_14px_rgba(251,176,52,0.55)] ${
+                        isCenterAction && isQuickActionsOpen
+                          ? 'bg-gradient-to-tr from-rose-500 to-red-600 text-white shadow-red-500/40'
+                          : 'bg-gradient-to-tr from-[#FBB034] via-[#F59E0B] to-[#FBB034] text-slate-950'
+                      }`}
+                    />
+                  )}
 
-          {/* TAB 1: EXPLORE */}
-          <button
-            type="button"
-            onClick={() => handleTabClick(1)}
-            aria-label="Explore"
-            aria-current={activeIndex === 1 ? 'page' : undefined}
-            className={`dock-tab relative flex-1 h-full flex flex-col items-center justify-center active:scale-90 transition-transform duration-150 z-10 cursor-pointer ${
-              activeIndex === 1
-                ? 'text-[#fbb034] drop-shadow-[0_0_8px_rgba(251,176,52,0.45)]'
-                : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
-            }`}
-          >
-            <div className="flex flex-col items-center justify-center pointer-events-none">
-              <svg
-                className={`tab-icon w-4 h-4 xs:w-[18px] xs:h-[18px] stroke-current fill-none transition-transform duration-200 ${
-                  activeIndex === 1 ? 'scale-110' : ''
-                }`}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-              >
-                <circle cx="12" cy="12" r="10"></circle>
-                <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
-              </svg>
-              <span className="text-[10px] xs:text-[11px] font-semibold mt-0.5 tracking-tight">Explore</span>
-            </div>
-          </button>
+                  {/* Icon */}
+                  <div
+                    className={`relative z-10 flex items-center justify-center transition-colors duration-200 ${
+                      isActive
+                        ? (isCenterAction && isQuickActionsOpen ? 'text-white' : 'text-slate-950')
+                        : 'text-slate-400 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-200'
+                    }`}
+                  >
+                    {renderTabIcon(idx, isActive)}
+                  </div>
+                </div>
 
-          {/* TAB 2: CENTER THEME PLUS BUTTON (Triggers Fast-Track Actions Modal) */}
-          <button
-            type="button"
-            onClick={() => handleTabClick(2)}
-            aria-label="Quick Fast-Track Actions"
-            aria-expanded={isQuickActionsOpen}
-            className="dock-tab relative flex-1 h-full flex flex-col items-center justify-center active:scale-95 transition-transform duration-200 z-20 cursor-pointer group -mt-3.5 xs:-mt-4"
-          >
-            <div className="relative flex flex-col items-center pointer-events-none">
-              {/* Theme-matching circular Plus button */}
-              <div
-                className={`w-11 h-11 xs:w-12 xs:h-12 rounded-full bg-gradient-to-tr from-amber-500 via-amber-400 to-yellow-300 dark:from-[#fbb034] dark:to-[#ff9300] text-slate-950 flex items-center justify-center shadow-[0_6px_20px_rgba(251,176,52,0.55)] dark:shadow-[0_8px_25px_rgba(251,176,52,0.65)] ring-4 ring-white/90 dark:ring-[#131722]/90 transition-all duration-300 ${
-                  isQuickActionsOpen
-                    ? 'rotate-45 scale-105 !bg-red-500 !from-red-500 !to-rose-600 text-white !shadow-red-500/50'
-                    : 'group-hover:scale-105'
-                }`}
-              >
-                <svg
-                  className="w-6 h-6 stroke-[2.8] stroke-current fill-none transition-transform duration-300"
-                  viewBox="0 0 24 24"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+                {/* Tab Label with Fixed 4px Gap and Consistent Baseline */}
+                <span
+                  className={`text-[10px] xs:text-[11px] leading-none font-semibold tracking-tight mt-1 select-none truncate transition-colors duration-200 ${
+                    isActive
+                      ? 'text-[#FBB034] font-bold'
+                      : 'text-slate-500 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-slate-200'
+                  }`}
                 >
-                  <line x1="12" y1="5" x2="12" y2="19" />
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                </svg>
-              </div>
-
-              <span
-                className={`text-[10px] xs:text-[11px] font-bold mt-1 tracking-tight transition-colors ${
-                  isQuickActionsOpen ? 'text-[#fbb034]' : 'text-slate-600 dark:text-slate-300'
-                }`}
-              >
-                Actions
-              </span>
-            </div>
-          </button>
-
-          {/* TAB 3: SEARCH */}
-          <button
-            type="button"
-            onClick={() => handleTabClick(3)}
-            aria-label="Search"
-            className="dock-tab relative flex-1 h-full flex flex-col items-center justify-center active:scale-90 transition-transform duration-150 z-10 cursor-pointer text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200"
-          >
-            <div className="flex flex-col items-center justify-center pointer-events-none">
-              <svg
-                className="tab-icon w-4 h-4 xs:w-[18px] xs:h-[18px] stroke-current fill-none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-              >
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-              </svg>
-              <span className="text-[10px] xs:text-[11px] font-semibold mt-0.5 tracking-tight">Search</span>
-            </div>
-          </button>
-
-          {/* TAB 4: PROFILE */}
-          <button
-            type="button"
-            onClick={() => handleTabClick(4)}
-            aria-label="Profile"
-            className={`dock-tab relative flex-1 h-full flex flex-col items-center justify-center active:scale-90 transition-transform duration-150 z-10 cursor-pointer ${
-              activeIndex === 4
-                ? 'text-[#fbb034] drop-shadow-[0_0_8px_rgba(251,176,52,0.45)]'
-                : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
-            }`}
-          >
-            <div className="flex flex-col items-center justify-center pointer-events-none">
-              <svg
-                className="tab-icon w-4 h-4 xs:w-[18px] xs:h-[18px] stroke-current fill-none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-              >
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                <circle cx="12" cy="7" r="4"></circle>
-              </svg>
-              <span className="text-[10px] xs:text-[11px] font-semibold mt-0.5 tracking-tight">Profile</span>
-            </div>
-          </button>
+                  {tab.label}
+                </span>
+              </button>
+            );
+          })}
         </div>
       </nav>
     </>

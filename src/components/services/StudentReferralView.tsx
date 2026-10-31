@@ -1,7 +1,9 @@
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
- * GEES Standalone Student Referral & B2B Partner Program Page
+ * GEES Standalone Student Referral Programme Page
+ * Authentic GEES Branding: Deep Navy (#070b19), Gold (#fbb034), Royal Blue
+ * Transparent Peer-to-Peer Referrals with Mandatory Consent Verification & Honest Handoff
  */
 
 import React, { useState } from 'react';
@@ -18,442 +20,537 @@ export const StudentReferralView: React.FC<StudentReferralViewProps> = ({
   onOpenConsultation,
   onNavigate
 }) => {
-  // Calculator State
-  const [studentCount, setStudentCount] = useState<number>(3);
-  const [targetRegion, setTargetRegion] = useState<string>('UK & Europe');
-  const [partnerType, setPartnerType] = useState<'ambassador' | 'b2b'>('ambassador');
+  // Referrer Info
+  const [referrerName, setReferrerName] = useState('');
+  const [referrerPhone, setReferrerPhone] = useState('');
+  const [referrerRelation, setReferrerRelation] = useState<'friend' | 'alumni' | 'parent' | 'other'>('friend');
 
-  // Referral Submission Form State
-  const [refStudentName, setRefStudentName] = useState('');
-  const [refStudentPhone, setRefStudentPhone] = useState('');
-  const [refStudentEmail, setRefStudentEmail] = useState('');
-  const [refCountry, setRefCountry] = useState('United Kingdom');
-  const [refSubmitted, setRefSubmitted] = useState(false);
+  // Student Info
+  const [studentName, setStudentName] = useState('');
+  const [studentPhone, setStudentPhone] = useState('');
+  const [studentEmail, setStudentEmail] = useState('');
+  const [targetDestination, setTargetDestination] = useState('Malaysia');
+  const [studyLevel, setStudyLevel] = useState('Undergraduate');
+  const [hasConsent, setHasConsent] = useState(false);
+  const [submittedChannel, setSubmittedChannel] = useState<'whatsapp' | 'email' | null>(null);
 
-  const calculateEarnings = () => {
-    let ratePerStudent = 350; // base ambassador rate in USD
-    if (targetRegion === 'UK & Europe') ratePerStudent = 500;
-    if (targetRegion === 'Australia & NZ') ratePerStudent = 600;
-    if (targetRegion === 'USA & Canada') ratePerStudent = 700;
-    if (targetRegion === 'Malaysia & Asia') ratePerStudent = 300;
-
-    if (partnerType === 'b2b') {
-      ratePerStudent = Math.round(ratePerStudent * 1.5);
-    }
-
-    return studentCount * ratePerStudent;
+  // Pre-compose WhatsApp text
+  const composeWhatsAppMessage = () => {
+    return encodeURIComponent(
+      `*GEES Student Referral Introduction*\n\n` +
+      `*Referrer Details:*\n` +
+      `• Name: ${referrerName || 'N/A'}\n` +
+      `• Contact: ${referrerPhone || 'N/A'}\n` +
+      `• Relation to Student: ${referrerRelation}\n\n` +
+      `*Referred Student Details:*\n` +
+      `• Student Name: ${studentName}\n` +
+      `• Phone/WhatsApp: ${studentPhone}\n` +
+      `• Email: ${studentEmail || 'Not provided'}\n` +
+      `• Preferred Destination: ${targetDestination}\n` +
+      `• Study Level: ${studyLevel}\n\n` +
+      `*Consent Confirmation:* Referrer confirmed they have permission from the student to share details with GEES.`
+    );
   };
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleWhatsAppHandoff = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!refStudentName || !refStudentPhone) return;
-    setRefSubmitted(true);
+    if (!studentName || !studentPhone || !hasConsent) return;
+    const msg = composeWhatsAppMessage();
+    setSubmittedChannel('whatsapp');
+    window.open(`https://wa.me/8801805529578?text=${msg}`, '_blank');
+  };
+
+  const handleEmailHandoff = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!studentName || !studentPhone || !hasConsent) return;
+    const subject = encodeURIComponent(`Student Referral: ${studentName} - GEES Admissions`);
+    const body = composeWhatsAppMessage();
+    setSubmittedChannel('email');
+    window.location.href = `mailto:info@gees-edu.com?subject=${subject}&body=${body}`;
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#080d1a] text-slate-900 dark:text-slate-100 pb-20 transition-colors duration-200">
+    <div className="min-h-screen bg-white dark:bg-[#070b19] text-slate-900 dark:text-slate-100 pb-20 transition-colors duration-200">
       {/* HERO SECTION */}
-      <section className="relative pt-28 pb-16 sm:pt-36 sm:pb-24 overflow-hidden bg-gradient-to-b from-emerald-950 via-slate-950 to-slate-950 text-white">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(16,185,129,0.25),transparent_50%)] pointer-events-none" />
+      <section className="relative pt-24 pb-14 sm:pt-32 sm:pb-20 overflow-hidden bg-gradient-to-b from-slate-950 via-[#070b19] to-[#070b19] text-white border-b border-slate-800">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(251,176,52,0.12),transparent_50%)] pointer-events-none" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="flex items-center gap-2 text-xs sm:text-sm text-emerald-300 font-medium mb-6">
-            <button onClick={onBackToHome} className="hover:underline flex items-center gap-1 cursor-pointer">
-              <span>Home</span>
+          {/* Breadcrumb */}
+          <div className="flex items-center gap-2 text-xs sm:text-sm text-slate-400 font-medium mb-6">
+            <button onClick={onBackToHome} className="hover:text-[#fbb034] transition-colors cursor-pointer">
+              Home
             </button>
             <span>/</span>
-            <button onClick={() => onNavigate('services')} className="hover:underline flex items-center gap-1 cursor-pointer">
-              <span>Services</span>
+            <button onClick={() => onNavigate('services')} className="hover:text-[#fbb034] transition-colors cursor-pointer">
+              Services
             </button>
             <span>/</span>
-            <span className="text-white font-semibold">Student Referral</span>
+            <span className="text-white font-semibold">Student Referral Programme</span>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-            <div className="lg:col-span-7 space-y-6">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-200 text-xs sm:text-sm font-semibold tracking-wide backdrop-blur-md">
-                <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span>Earn Cash Rewards for Every Successful Student Enrollment</span>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            <div className="lg:col-span-7 space-y-5">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/15 border border-amber-400/30 text-amber-300 text-xs sm:text-sm font-semibold tracking-wide">
+                <span className="flex h-2 w-2 rounded-full bg-[#fbb034] animate-pulse" />
+                <span>Peer-to-Peer Student Ambassador Network</span>
               </div>
 
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-none text-white">
-                Student Referral & <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-200 to-sky-300">Partner Program</span>
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight text-white">
+                Help a Friend Study Abroad With <span className="text-[#fbb034]">GEES</span>
               </h1>
 
-              <p className="text-base sm:text-xl text-slate-300 max-w-2xl font-normal leading-relaxed">
-                Empower friends and peers to study abroad while earning generous referral rewards. Whether you are a student ambassador or an education agency, GEES provides transparent tracking and guaranteed payouts.
+              <p className="text-sm sm:text-lg text-slate-300 max-w-2xl font-normal leading-relaxed">
+                Know a friend, classmate, or relative who dreams of studying at a top global university? Introduce them to GEES. Our certified counselors will provide 100% free personalized guidance, university applications, and visa support.
               </p>
 
-              <div className="flex flex-wrap items-center gap-4 pt-2">
-                <InteractiveHoverButton
-                  text="Submit a Student Referral Now"
-                  className="bg-emerald-600 text-white hover:bg-emerald-500 shadow-xl shadow-emerald-900/40 text-sm sm:text-base font-bold py-3.5 px-7 rounded-full"
+              <div className="flex flex-wrap items-center gap-3 pt-2">
+                <button
                   onClick={() => {
                     const el = document.getElementById('referral-form');
                     el?.scrollIntoView({ behavior: 'smooth' });
                   }}
-                />
+                  className="min-h-[44px] px-6 py-3 rounded-full bg-[#fbb034] hover:bg-amber-400 text-slate-950 font-black text-xs sm:text-sm shadow-md transition-all active:scale-95 cursor-pointer flex items-center gap-2"
+                >
+                  <span className="material-symbols-outlined text-[18px]">person_add</span>
+                  <span>Introduce a Student Now</span>
+                </button>
                 <button
                   onClick={() => {
-                    const el = document.getElementById('reward-calculator');
+                    const el = document.getElementById('how-it-works');
                     el?.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className="px-6 py-3.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold text-sm sm:text-base transition-colors flex items-center gap-2 cursor-pointer"
+                  className="min-h-[44px] px-6 py-3 rounded-full bg-white/10 hover:bg-white/15 border border-white/20 text-white font-semibold text-xs sm:text-sm transition-all active:scale-95 cursor-pointer flex items-center gap-2"
                 >
-                  <span className="material-symbols-outlined text-[20px]">payments</span>
-                  <span>Calculate Earnings</span>
+                  <span className="material-symbols-outlined text-[18px]">help_outline</span>
+                  <span>How Programme Works</span>
                 </button>
               </div>
 
-              {/* Stat Highlights */}
-              <div className="grid grid-cols-3 gap-4 pt-6 border-t border-white/10">
-                <div>
-                  <div className="text-2xl sm:text-3xl font-extrabold text-white">$1,000+</div>
-                  <div className="text-xs text-emerald-200">Max Payout per Student</div>
-                </div>
-                <div>
-                  <div className="text-2xl sm:text-3xl font-extrabold text-emerald-400">100%</div>
-                  <div className="text-xs text-emerald-200">Transparent Portal</div>
-                </div>
-                <div>
-                  <div className="text-2xl sm:text-3xl font-extrabold text-sky-300">14 Days</div>
-                  <div className="text-xs text-emerald-200">Post-Enrollment Payout</div>
-                </div>
+              {/* Verified Program Terms Notice */}
+              <div className="pt-4 border-t border-white/10 text-xs text-slate-400 flex items-start gap-2">
+                <span className="material-symbols-outlined text-amber-400 text-sm shrink-0 mt-0.5">verified_user</span>
+                <span>
+                  Transparent & compliant: Student referrals are peer introductions. Recognition awards or token grants are subject to formal confirmation upon the student's official university enrollment and intake fee clearance.
+                </span>
               </div>
             </div>
 
-            {/* Right Card */}
+            {/* Right Card: Quick Overview Box */}
             <div className="lg:col-span-5">
-              <div className="relative rounded-3xl overflow-hidden bg-white/10 backdrop-blur-xl border border-white/20 p-6 shadow-2xl space-y-5">
-                <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-emerald-500 text-slate-950 flex items-center justify-center font-bold text-lg">
-                      🤝
-                    </div>
+              <div className="relative rounded-3xl bg-slate-900/90 border border-slate-800 p-6 sm:p-8 shadow-2xl space-y-5">
+                <div className="flex items-center gap-3 border-b border-slate-800 pb-4">
+                  <div className="w-12 h-12 rounded-2xl bg-[#fbb034] text-slate-950 flex items-center justify-center font-black text-xl shadow-md">
+                    🎓
+                  </div>
+                  <div>
+                    <h2 className="font-bold text-white text-base">Student Referral Guidelines</h2>
+                    <p className="text-xs text-slate-400">Guaranteed ethical counseling for your friend</p>
+                  </div>
+                </div>
+
+                <div className="space-y-3 text-xs text-slate-300">
+                  <div className="p-3 rounded-xl bg-white/5 border border-white/10 flex items-center gap-3">
+                    <span className="text-amber-400 text-lg">✓</span>
                     <div>
-                      <h3 className="font-bold text-white text-sm">Two Flexible Partnership Tracks</h3>
-                      <p className="text-xs text-slate-300">For Students, Alumni & B2B Agencies</p>
+                      <strong className="text-white block font-semibold">100% Free Counseling for Students</strong>
+                      <span>Referred students never pay agency fees or service charges to GEES.</span>
+                    </div>
+                  </div>
+                  <div className="p-3 rounded-xl bg-white/5 border border-white/10 flex items-center gap-3">
+                    <span className="text-amber-400 text-lg">✓</span>
+                    <div>
+                      <strong className="text-white block font-semibold">Consent-First Introduction</strong>
+                      <span>Ensure your friend knows and agrees before submitting their details.</span>
+                    </div>
+                  </div>
+                  <div className="p-3 rounded-xl bg-white/5 border border-white/10 flex items-center gap-3">
+                    <span className="text-amber-400 text-lg">✓</span>
+                    <div>
+                      <strong className="text-white block font-semibold">Official University Verification</strong>
+                      <span>Counselors guide the student with accredited admissions and official offer letters.</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="space-y-3">
-                  <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <span className="text-2xl">🎓</span>
-                      <div>
-                        <div className="text-xs font-bold text-white">Student & Alumni Ambassadors</div>
-                        <div className="text-[11px] text-slate-300">Earn $300 - $700 cash per referred friend</div>
-                      </div>
-                    </div>
-                    <span className="text-xs text-emerald-300 font-semibold font-mono">No Fee</span>
-                  </div>
-
-                  <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <span className="text-2xl">🏢</span>
-                      <div>
-                        <div className="text-xs font-bold text-white">B2B Education Agencies & Schools</div>
-                        <div className="text-[11px] text-slate-300">Commission sharing & white-label support</div>
-                      </div>
-                    </div>
-                    <span className="text-xs text-sky-300 font-semibold font-mono">B2B Rate</span>
-                  </div>
+                <div className="p-3 rounded-xl bg-blue-950/40 border border-blue-800/40 text-[11px] text-blue-200">
+                  Are you an education agency, high school, or language center? Visit our{' '}
+                  <button
+                    onClick={() => onOpenConsultation('Institutional B2B Partnership')}
+                    className="text-[#fbb034] font-bold underline cursor-pointer"
+                  >
+                    B2B Agency Partnership Desk
+                  </button>
+                  .
                 </div>
-
-                <button
-                  onClick={() => onOpenConsultation('B2B Partner Registration')}
-                  className="w-full py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-bold text-xs sm:text-sm transition-all shadow-lg text-center cursor-pointer"
-                >
-                  Register as an Official GEES Partner →
-                </button>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* HOW IT WORKS */}
-      <section className="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <span className="text-emerald-600 dark:text-emerald-400 font-bold text-xs uppercase tracking-wider bg-emerald-50 dark:bg-emerald-950/60 px-3 py-1 rounded-full border border-emerald-200 dark:border-emerald-800">
-            3-Step Process
+      {/* WHO CAN REFER */}
+      <section className="py-12 sm:py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center max-w-2xl mx-auto mb-10">
+          <span className="text-[#fbb034] font-bold text-xs uppercase tracking-wider bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">
+            Eligibility
           </span>
           <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-3">
-            How the Referral Program Works
+            Who Can Refer a Student?
           </h2>
-          <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 mt-2">
-            Simple, stress-free, and completely transparent. We handle all counseling, visa documentation, and university communication.
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-2">
+            Anyone in the GEES global community who wants to help friends access honest, top-tier study abroad counseling.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {[
             {
-              step: '01',
-              title: 'Submit Student Lead',
-              desc: 'Enter your referred student details through our online portal or mobile drawer form. Your referral is instantly locked under your partner ID.',
-              icon: 'person_add',
-              color: 'text-emerald-600'
-            },
-            {
-              step: '02',
-              title: 'GEES Admission & Visa Processing',
-              desc: 'Our certified counselors guide the student through course selection, university applications, offer letter issuance, and student visa approval.',
               icon: 'school',
-              color: 'text-blue-600'
+              title: 'Current Students',
+              desc: 'Enrolled students currently studying in Malaysia, UK, Australia, or Europe through GEES.'
             },
             {
-              step: '03',
-              title: 'Get Paid Upon Enrollment',
-              desc: 'Once your referred student completes campus registration and tuition payment, your reward is transferred directly via bank transfer or digital payout.',
-              icon: 'paid',
-              color: 'text-amber-500'
+              icon: 'workspace_premium',
+              title: 'GEES Alumni',
+              desc: 'Graduates who successfully used GEES and want to guide the next generation of students.'
+            },
+            {
+              icon: 'family_restroom',
+              title: 'Parents & Relatives',
+              desc: 'Parents whose children are enrolled overseas and who want to assist other family friends.'
+            },
+            {
+              icon: 'diversity_3',
+              title: 'Community Members',
+              desc: 'Teachers, mentors, and community peers helping prospective Bangladeshi students.'
             }
-          ].map((s) => (
+          ].map((item, idx) => (
             <div
-              key={s.step}
-              className="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200/80 dark:border-slate-800 shadow-sm relative space-y-4"
+              key={idx}
+              className="bg-slate-50 dark:bg-slate-900 rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800 space-y-3"
             >
-              <div className="flex items-center justify-between">
-                <span className="text-4xl font-black text-slate-200 dark:text-slate-800">{s.step}</span>
-                <span className={`material-symbols-outlined text-[32px] ${s.color}`}>{s.icon}</span>
+              <div className="w-11 h-11 rounded-xl bg-amber-400/20 text-[#fbb034] flex items-center justify-center">
+                <span className="material-symbols-outlined text-[24px]">{item.icon}</span>
               </div>
-              <h3 className="text-xl font-bold text-slate-900 dark:text-white">{s.title}</h3>
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{s.desc}</p>
+              <h3 className="font-bold text-base text-slate-900 dark:text-white">{item.title}</h3>
+              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">{item.desc}</p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* REWARD CALCULATOR */}
-      <section id="reward-calculator" className="py-16 bg-white dark:bg-slate-900/60 border-y border-slate-200/80 dark:border-slate-800">
+      {/* HOW IT WORKS */}
+      <section id="how-it-works" className="py-12 sm:py-16 bg-slate-50 dark:bg-[#070d1e] border-y border-slate-200/80 dark:border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            <div className="lg:col-span-5 space-y-4">
-              <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">
-                Payout Estimator
-              </span>
-              <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white leading-tight">
-                Calculate Your Referral Payout Potential
-              </h2>
-              <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
-                Rewards increase based on student destination and partnership volume tier. No capping on maximum referral earnings!
-              </p>
+          <div className="text-center max-w-2xl mx-auto mb-12">
+            <span className="text-[#fbb034] font-bold text-xs uppercase tracking-wider bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">
+              4-Step Process
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-3">
+              How the Referral Journey Works
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-2">
+              Simple, transparent, and respectful of student privacy.
+            </p>
+          </div>
 
-              <div className="space-y-3 pt-2">
-                <div className="flex items-center gap-3 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
-                  <span className="material-symbols-outlined text-emerald-500">check_circle</span>
-                  <span>Paid directly via direct bank transfer, PayPal, or Wise</span>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            {[
+              {
+                step: '01',
+                title: 'Confirm Consent',
+                desc: 'Speak with your friend first and make sure they are interested in speaking with a GEES education counselor.',
+                icon: 'check_circle'
+              },
+              {
+                step: '02',
+                title: 'Send Introduction',
+                desc: 'Submit your friend’s details via WhatsApp or email using our pre-composed referral template below.',
+                icon: 'send'
+              },
+              {
+                step: '03',
+                title: 'Expert Counseling',
+                desc: 'GEES provides free course evaluation, university application processing, and full visa guidance.',
+                icon: 'support_agent'
+              },
+              {
+                step: '04',
+                title: 'Enrollment & Token',
+                desc: 'When your friend confirms enrollment and arrives on campus, reward token details are reviewed and finalized.',
+                icon: 'verified'
+              }
+            ].map((s) => (
+              <div
+                key={s.step}
+                className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-xs space-y-3 relative"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-3xl font-black text-slate-200 dark:text-slate-800">{s.step}</span>
+                  <span className="material-symbols-outlined text-amber-500 text-[26px]">{s.icon}</span>
                 </div>
-                <div className="flex items-center gap-3 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
-                  <span className="material-symbols-outlined text-emerald-500">check_circle</span>
-                  <span>Real-time tracking of student offer & visa status</span>
-                </div>
-                <div className="flex items-center gap-3 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
-                  <span className="material-symbols-outlined text-emerald-500">check_circle</span>
-                  <span>Dedicated referral manager assigned to high-volume B2B partners</span>
-                </div>
+                <h3 className="font-bold text-base text-slate-900 dark:text-white">{s.title}</h3>
+                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">{s.desc}</p>
               </div>
-            </div>
-
-            {/* Interactive Calculator */}
-            <div className="lg:col-span-7 bg-slate-50 dark:bg-slate-950 p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-lg space-y-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
-                    Partnership Type
-                  </label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setPartnerType('ambassador')}
-                      className={`py-2 rounded-xl text-xs font-bold border cursor-pointer ${
-                        partnerType === 'ambassador'
-                          ? 'bg-emerald-600 text-white border-emerald-600'
-                          : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700'
-                      }`}
-                    >
-                      Student / Alumni
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setPartnerType('b2b')}
-                      className={`py-2 rounded-xl text-xs font-bold border cursor-pointer ${
-                        partnerType === 'b2b'
-                          ? 'bg-emerald-600 text-white border-emerald-600'
-                          : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700'
-                      }`}
-                    >
-                      B2B Agency
-                    </button>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
-                    Target Study Region
-                  </label>
-                  <select
-                    value={targetRegion}
-                    onChange={(e) => setTargetRegion(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 outline-none"
-                  >
-                    <option value="UK & Europe">United Kingdom & Europe</option>
-                    <option value="Australia & NZ">Australia & New Zealand</option>
-                    <option value="USA & Canada">USA & Canada</option>
-                    <option value="Malaysia & Asia">Malaysia & Asian Campuses</option>
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <div className="flex justify-between text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">
-                  <span>Number of Referred Enrolled Students:</span>
-                  <span className="text-emerald-600 dark:text-emerald-400 font-extrabold text-sm">{studentCount} Students</span>
-                </div>
-                <input
-                  type="range"
-                  min="1"
-                  max="20"
-                  value={studentCount}
-                  onChange={(e) => setStudentCount(Number(e.target.value))}
-                  className="w-full accent-emerald-600 h-2 bg-slate-200 dark:bg-slate-800 rounded-lg cursor-pointer"
-                />
-              </div>
-
-              {/* Total Payout Result */}
-              <div className="p-6 rounded-2xl bg-gradient-to-r from-emerald-950 to-slate-900 border border-emerald-500/30 text-white text-center space-y-2">
-                <div className="text-xs uppercase tracking-wider text-emerald-300 font-bold">Estimated Total Referral Reward</div>
-                <div className="text-4xl sm:text-5xl font-black text-emerald-400">
-                  ${calculateEarnings().toLocaleString()} USD
-                </div>
-                <div className="text-[11px] text-slate-300">
-                  Based on {studentCount} student enrollment(s) to {targetRegion} under {partnerType === 'ambassador' ? 'Ambassador Rate' : 'B2B Commission Rate'}.
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* LIVE REFERRAL SUBMISSION FORM */}
-      <section id="referral-form" className="py-16 sm:py-24 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white dark:bg-slate-900 p-8 sm:p-10 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl space-y-6">
+      {/* REFERRAL FORM SECTION */}
+      <section id="referral-form" className="py-12 sm:py-20 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-white dark:bg-slate-900 p-6 sm:p-10 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl space-y-6">
           <div className="text-center max-w-xl mx-auto space-y-2">
-            <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">
-              Quick Lead Submission
+            <span className="text-xs font-bold text-[#fbb034] uppercase tracking-wider bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">
+              Direct Referral Handoff
             </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
-              Refer a Student Today
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
+              Introduce a Student to GEES
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-              Fill in the student's contact details below. Our team will contact them within 24 hours for a free study abroad profile evaluation.
+              Fill in the verified details below. You can send the introduction directly to GEES admissions via WhatsApp or Email.
             </p>
           </div>
 
-          {refSubmitted ? (
-            <div className="p-8 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-800 text-center space-y-3">
-              <span className="material-symbols-outlined text-[48px] text-emerald-600">check_circle</span>
-              <h3 className="text-xl font-bold text-slate-900 dark:text-white">Referral Submitted Successfully!</h3>
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
-                Thank you! We have logged your referral for <strong>{refStudentName}</strong>. Our counselor will contact them shortly, and you will receive status updates via email.
+          {submittedChannel ? (
+            <div className="p-6 rounded-2xl bg-amber-500/10 border border-amber-400/30 text-center space-y-3">
+              <span className="material-symbols-outlined text-[44px] text-[#fbb034]">check_circle</span>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">Referral Handoff Prepared!</h3>
+              <p className="text-xs text-slate-600 dark:text-slate-300 max-w-md mx-auto">
+                Thank you for introducing <strong>{studentName}</strong>! Your message was formatted and dispatched via {submittedChannel === 'whatsapp' ? 'WhatsApp' : 'Email'}. A GEES counselor will review the profile and reach out to the student.
               </p>
               <button
-                onClick={() => setRefSubmitted(false)}
-                className="mt-4 px-6 py-2.5 rounded-xl bg-emerald-600 text-white font-bold text-xs hover:bg-emerald-500 transition-colors cursor-pointer"
+                onClick={() => {
+                  setSubmittedChannel(null);
+                  setStudentName('');
+                  setStudentPhone('');
+                  setStudentEmail('');
+                  setHasConsent(false);
+                }}
+                className="mt-3 min-h-[44px] px-6 py-2.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-950 font-bold text-xs cursor-pointer active:scale-95"
               >
-                Submit Another Student Referral
+                Introduce Another Student
               </button>
             </div>
           ) : (
-            <form onSubmit={handleFormSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    Student Full Name *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={refStudentName}
-                    onChange={(e) => setRefStudentName(e.target.value)}
-                    placeholder="e.g. Rahul Sharma"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    Student Phone / WhatsApp *
-                  </label>
-                  <input
-                    type="tel"
-                    required
-                    value={refStudentPhone}
-                    onChange={(e) => setRefStudentPhone(e.target.value)}
-                    placeholder="e.g. +60 12 345 6789"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    Student Email Address
-                  </label>
-                  <input
-                    type="email"
-                    value={refStudentEmail}
-                    onChange={(e) => setRefStudentEmail(e.target.value)}
-                    placeholder="student@example.com"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    Preferred Study Destination
-                  </label>
-                  <select
-                    value={refCountry}
-                    onChange={(e) => setRefCountry(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 outline-none"
-                  >
-                    <option value="United Kingdom">United Kingdom</option>
-                    <option value="Australia">Australia</option>
-                    <option value="Malaysia">Malaysia</option>
-                    <option value="United States">United States</option>
-                    <option value="Canada">Canada</option>
-                  </select>
+            <form className="space-y-4">
+              {/* Referrer Details */}
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200/80 dark:border-slate-800 space-y-3">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  Your Details (The Referrer)
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                      Your Name *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={referrerName}
+                      onChange={(e) => setReferrerName(e.target.value)}
+                      placeholder="e.g. Tanvir Ahmed"
+                      className="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-xs text-slate-900 dark:text-white outline-none focus:border-[#fbb034]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                      Your Phone / WhatsApp *
+                    </label>
+                    <input
+                      type="tel"
+                      required
+                      value={referrerPhone}
+                      onChange={(e) => setReferrerPhone(e.target.value)}
+                      placeholder="e.g. +880 1711 000000"
+                      className="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-xs text-slate-900 dark:text-white outline-none focus:border-[#fbb034]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                      Relationship
+                    </label>
+                    <select
+                      value={referrerRelation}
+                      onChange={(e) => setReferrerRelation(e.target.value as any)}
+                      className="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-xs text-slate-900 dark:text-white outline-none focus:border-[#fbb034]"
+                    >
+                      <option value="friend">Friend / Classmate</option>
+                      <option value="alumni">GEES Alumni</option>
+                      <option value="parent">Parent / Relative</option>
+                      <option value="other">Community Member</option>
+                    </select>
+                  </div>
                 </div>
               </div>
 
-              <button
-                type="submit"
-                className="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm transition-all shadow-lg text-center cursor-pointer"
-              >
-                Submit Referral & Register Claim →
-              </button>
+              {/* Referred Student Details */}
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200/80 dark:border-slate-800 space-y-3">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  Prospective Student Details
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                      Student Full Name *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={studentName}
+                      onChange={(e) => setStudentName(e.target.value)}
+                      placeholder="e.g. Sayeeda Khanam"
+                      className="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-xs text-slate-900 dark:text-white outline-none focus:border-[#fbb034]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                      Student Phone / WhatsApp *
+                    </label>
+                    <input
+                      type="tel"
+                      required
+                      value={studentPhone}
+                      onChange={(e) => setStudentPhone(e.target.value)}
+                      placeholder="e.g. +880 1811 000000"
+                      className="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-xs text-slate-900 dark:text-white outline-none focus:border-[#fbb034]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                      Student Email Address (Optional)
+                    </label>
+                    <input
+                      type="email"
+                      value={studentEmail}
+                      onChange={(e) => setStudentEmail(e.target.value)}
+                      placeholder="student@example.com"
+                      className="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-xs text-slate-900 dark:text-white outline-none focus:border-[#fbb034]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                      Target Destination
+                    </label>
+                    <select
+                      value={targetDestination}
+                      onChange={(e) => setTargetDestination(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-xs text-slate-900 dark:text-white outline-none focus:border-[#fbb034]"
+                    >
+                      <option value="Malaysia">Malaysia</option>
+                      <option value="United Kingdom">United Kingdom</option>
+                      <option value="Australia">Australia</option>
+                      <option value="New Zealand">New Zealand</option>
+                      <option value="Cyprus">Cyprus</option>
+                      <option value="Europe">Europe (Finland, Belgium, Greece, Netherlands)</option>
+                      <option value="Undecided">Undecided / Exploring Options</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Mandatory Consent Checkbox */}
+              <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-400/30 flex items-start gap-2.5">
+                <input
+                  type="checkbox"
+                  id="consent-check"
+                  checked={hasConsent}
+                  onChange={(e) => setHasConsent(e.target.checked)}
+                  className="mt-0.5 accent-[#fbb034] cursor-pointer"
+                />
+                <label htmlFor="consent-check" className="text-xs text-slate-700 dark:text-slate-300 leading-snug cursor-pointer">
+                  <strong>Consent Confirmation:</strong> I confirm that I have informed this student about GEES and have obtained their explicit permission to share their contact details for higher education counseling.
+                </label>
+              </div>
+
+              {/* Honest Dual-Action Handoff Buttons */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                <button
+                  type="button"
+                  disabled={!studentName || !studentPhone || !hasConsent}
+                  onClick={handleWhatsAppHandoff}
+                  className="min-h-[44px] py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md active:scale-98"
+                >
+                  <span className="material-symbols-outlined text-[18px]">chat</span>
+                  <span>Send via WhatsApp (+8801805529578)</span>
+                </button>
+                <button
+                  type="button"
+                  disabled={!studentName || !studentPhone || !hasConsent}
+                  onClick={handleEmailHandoff}
+                  className="min-h-[44px] py-3 px-4 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md active:scale-98"
+                >
+                  <span className="material-symbols-outlined text-[18px]">mail</span>
+                  <span>Send via Email (info@gees-edu.com)</span>
+                </button>
+              </div>
+
+              <p className="text-[11px] text-center text-slate-400 pt-1">
+                Note: Submissions are not automatically written to an unverified database. This directly dispatches your referral to official GEES admissions advisors for immediate follow-up.
+              </p>
             </form>
           )}
         </div>
       </section>
 
-      {/* FINAL CONSULTATION CTA */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
-        <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 border border-emerald-500/30 text-white text-center space-y-6 shadow-2xl relative overflow-hidden">
-          <div className="max-w-2xl mx-auto space-y-3">
-            <h2 className="text-2xl sm:text-4xl font-extrabold">Become an Official GEES B2B Partner Agent</h2>
-            <p className="text-sm sm:text-base text-emerald-200">
-              For high school counselors, language centers, and education consultancies. Access our global portal with over 1,200 direct university agreements.
+      {/* FREQUENTLY ASKED QUESTIONS */}
+      <section className="py-12 sm:py-16 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-slate-200/80 dark:border-slate-800">
+        <div className="text-center mb-10">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
+            Referral Programme FAQs
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-2">
+            Clear, honest answers regarding eligibility, consent, and enrollment terms.
+          </p>
+        </div>
+
+        <div className="space-y-3">
+          {[
+            {
+              q: 'Will my referred friend have to pay GEES any consultancy fees?',
+              a: 'No. GEES provides 100% free guidance, course shortlisting, application filing, and visa counseling to prospective students. We never charge consultancy fees or surprise deposits.'
+            },
+            {
+              q: 'Why is student consent required before submitting a referral?',
+              a: 'We respect personal data privacy. We only contact prospective students who are genuinely interested and have consented to be contacted by our senior counseling team.'
+            },
+            {
+              q: 'How are referral recognition tokens or rewards handled?',
+              a: 'Referral tokens or ambassador recognition grants are determined based on participating partner university policies, formal enrollment confirmation, and tuition settlement for the intake term. Terms vary by institution and country.'
+            },
+            {
+              q: 'Can educational agencies or language schools use this form?',
+              a: 'This form is reserved for personal, peer-to-peer student introductions. Educational agencies, coaching centers, and schools should register directly through our official Institutional B2B Partnership Desk.'
+            }
+          ].map((item, idx) => (
+            <div
+              key={idx}
+              className="p-4 sm:p-5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-1.5"
+            >
+              <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">{item.q}</h3>
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{item.a}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* SEPARATE B2B AGENCY NOTICE BANNER */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
+        <div className="p-6 sm:p-10 rounded-3xl bg-slate-900 text-white border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl">
+          <div className="space-y-2 text-center sm:text-left">
+            <span className="text-xs font-bold text-[#fbb034] uppercase tracking-wider">
+              Institutional Channel
+            </span>
+            <h3 className="text-xl sm:text-2xl font-black">Are You an Education Agency or School?</h3>
+            <p className="text-xs sm:text-sm text-slate-300 max-w-xl">
+              Access formal institutional representation agreements, direct university portal submissions, and counselor training across 167+ global partner institutions.
             </p>
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            <InteractiveHoverButton
-              text="Register Agency Partnership"
-              className="bg-emerald-400 text-slate-950 hover:bg-emerald-300 font-bold py-3.5 px-8 rounded-full text-sm sm:text-base shadow-xl"
-              onClick={() => onOpenConsultation('B2B Partner Agent Registration')}
-            />
-          </div>
+          <InteractiveHoverButton
+            text="Institutional B2B Desk"
+            className="min-h-[44px] px-6 py-3 rounded-full bg-[#fbb034] text-slate-950 font-bold text-xs sm:text-sm shrink-0 shadow-md"
+            onClick={() => onOpenConsultation('Institutional B2B Partnership')}
+          />
         </div>
       </section>
     </div>

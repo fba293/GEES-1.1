@@ -8,4 +8,10 @@
 
   # Route /track-visa to /track-visa.html
   RewriteRule ^track-visa/?$ track-visa.html [L]
+
+  # Route clean service and destination URLs (e.g. /school-admission to school-admission.html)
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME}.html -f
+  RewriteRule ^(.*)$ $1.html [L]
 </IfModule>

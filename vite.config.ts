@@ -1,7 +1,11 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
-import {defineConfig} from 'vite';
+import { fileURLToPath } from 'url';
+import { defineConfig } from 'vite';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 function apiTrackVisaPlugin() {
   return {
@@ -50,6 +54,7 @@ export default defineConfig(() => {
       alias: {
         '@': path.resolve(__dirname, '.'),
       },
+      dedupe: ['react', 'react-dom'],
     },
     server: {
       // HMR is disabled in AI Studio via DISABLE_HMR env var.
@@ -72,6 +77,9 @@ export default defineConfig(() => {
           events: path.resolve(__dirname, 'events.html'),
           news: path.resolve(__dirname, 'news.html'),
           'about-us': path.resolve(__dirname, 'about-us.html'),
+          'admission-support': path.resolve(__dirname, 'admission-support.html'),
+          'school-admission': path.resolve(__dirname, 'school-admission.html'),
+          'dependent-visa': path.resolve(__dirname, 'dependent-visa.html'),
           'flight-ticketing': path.resolve(__dirname, 'flight-ticketing.html'),
           'study-in-malaysia': path.resolve(__dirname, 'study-in-malaysia.html'),
           'study-in-united-kingdom': path.resolve(__dirname, 'study-in-united-kingdom.html'),
@@ -85,6 +93,9 @@ export default defineConfig(() => {
           'study-in-netherlands': path.resolve(__dirname, 'study-in-netherlands.html'),
           'study-in-india': path.resolve(__dirname, 'study-in-india.html'),
           'track-visa': path.resolve(__dirname, 'track-visa.html'),
+          'student-referral': path.resolve(__dirname, 'student-referral.html'),
+          'student-visa-assistance': path.resolve(__dirname, 'student-visa-assistance.html'),
+          'tourist-visa': path.resolve(__dirname, 'tourist-visa.html'),
         },
       },
     },
