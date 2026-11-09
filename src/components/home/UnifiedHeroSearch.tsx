@@ -53,6 +53,14 @@ const STUDY_LEVELS = [
   "Vocational (VET)"
 ];
 
+const FUNDING_OPTIONS = [
+  "Fully funded",
+  "Partial",
+  "Tuition waiver",
+  "Stipend",
+  "Fee discount"
+];
+
 // Complete 125-subject dataset (including Vocational Education and Training, Womens Health, Zoology)
 const ALL_SUBJECTS = [
   "Accounting & Finance",
@@ -238,9 +246,16 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
   const [selectedDestinations, setSelectedDestinations] = useState<string[]>([]);
   const [selectedFields, setSelectedFields] = useState<string[]>([]);
   const [selectedUniversities, setSelectedUniversities] = useState<string[]>([]);
+  const [selectedFunding, setSelectedFunding] = useState<string[]>([]);
 
-  // Popover Dropdown Open State: 'level' | 'destination' | 'field' | 'university' | null
-  const [openDropdown, setOpenDropdown] = useState<'level' | 'destination' | 'field' | 'university' | null>(null);
+  // Popover Dropdown Open State: 'level' | 'destination' | 'field' | 'university' | 'funding' | null
+  const [openDropdown, setOpenDropdown] = useState<'level' | 'destination' | 'field' | 'university' | 'funding' | null>(null);
+
+  const toggleFunding = (fund: string) => {
+    setSelectedFunding(prev =>
+      prev.includes(fund) ? prev.filter(item => item !== fund) : [...prev, fund]
+    );
+  };
 
   // Chevron Service Directory State
   const [isDirectoryOpen, setIsDirectoryOpen] = useState(false);
@@ -403,6 +418,7 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
         query: searchQuery,
         destination: selectedDestinations.length > 0 ? selectedDestinations.join(', ') : 'all',
         level: selectedLevels.length > 0 ? selectedLevels.join(', ') : 'all',
+        funding: selectedFunding.length > 0 ? selectedFunding.join(', ') : 'all',
         scholarshipOnly: true,
       });
     } else if (activeTab === 'universities') {
@@ -809,7 +825,7 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
 
         {/* SCHOLARSHIPS TAB */}
         {activeTab === 'scholarships' && (
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 items-center">
+          <div className="grid grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3 items-center">
             
             {/* Study Level */}
             <div className="relative">
@@ -922,8 +938,63 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
               )}
             </div>
 
+            {/* Funding */}
+            <div className="relative">
+              <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Funding</label>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setOpenDropdown(prev => prev === 'funding' ? null : 'funding');
+                  setIsDirectoryOpen(false);
+                }}
+                className="w-full h-13 sm:h-16 px-3.5 rounded-xl border border-[#e2e4ea] dark:border-slate-700 bg-[#fafafc] dark:bg-slate-800 text-sm sm:text-base font-semibold text-slate-900 dark:text-white flex items-center justify-between cursor-pointer text-left transition-all hover:border-amber-500"
+              >
+                <span className="truncate">
+                  {selectedFunding.length === 0 ? <><span className="sm:hidden">Any</span><span className="hidden sm:inline">Any funding</span></> : selectedFunding.join(', ')}
+                </span>
+                <svg className={`w-4 h-4 ml-2 shrink-0 text-slate-400 transition-transform ${openDropdown === 'funding' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+
+              {openDropdown === 'funding' && (
+                <div
+                  onClick={(e) => e.stopPropagation()}
+                  className="absolute top-[calc(100%+6px)] left-0 right-0 z-50 bg-white dark:bg-slate-800 border border-[#e2e4ea] dark:border-slate-700 rounded-xl shadow-xl p-2 max-h-[260px] overflow-y-auto custom-scrollbar animate-in fade-in duration-150"
+                >
+                  {FUNDING_OPTIONS.map((fund) => {
+                    const isChecked = selectedFunding.includes(fund);
+                    return (
+                      <div
+                        key={fund}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleFunding(fund);
+                        }}
+                        className="min-h-[44px] px-3 flex items-center gap-3 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700/70 rounded-lg transition-colors select-none"
+                      >
+                        <div className={`w-5 h-5 rounded border flex items-center justify-center shrink-0 transition-colors ${
+                          isChecked ? 'bg-[#fbb034] border-[#fbb034] text-slate-950' : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800'
+                        }`}>
+                          {isChecked && (
+                            <svg className="w-3.5 h-3.5 stroke-[3]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                          )}
+                        </div>
+                        <span className="text-sm sm:text-base font-medium text-slate-900 dark:text-white flex-1 truncate">
+                          {fund}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
             {/* Search Action */}
-            <div className="col-span-2 md:col-span-1 flex items-end h-full pt-2 md:pt-0">
+            <div className="col-span-3 md:col-span-1 flex items-end h-full pt-2 md:pt-0">
               <button
                 type="button"
                 onClick={() => handleSearchAction()}
