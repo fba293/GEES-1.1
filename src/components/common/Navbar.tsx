@@ -142,24 +142,45 @@ export const Navbar: React.FC<NavbarProps> = ({
       <div className="gees-topbar-wrapper select-none">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-full flex items-center justify-between text-xs font-medium text-white/90">
           {/* Left Block: Help Line & Office Hours */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <a
-              href="https://wa.me/8801805529578"
+              href="https://wa.me/8801805529577"
               target="_blank"
               rel="noopener noreferrer"
-              title="Direct WhatsApp Helpline"
-              className="flex items-center gap-1.5 text-white/90 hover:text-[#fbb034] transition-colors cursor-pointer group"
+              title="Direct WhatsApp Helpline BD"
+              className="flex items-center gap-1 text-white/90 hover:text-[#fbb034] transition-colors cursor-pointer group"
             >
               <span className="material-symbols-outlined text-[15px] text-[#fbb034] group-hover:scale-110 transition-transform">
                 call
               </span>
-              <span className="text-white/70 hidden min-[400px]:inline">Help Line:</span>
-              <strong className="text-white font-semibold tracking-wide font-mono">+880 1805-529578</strong>
+              <span className="text-white/70 hidden min-[380px]:inline">BD:</span>
+              <strong className="text-white font-semibold tracking-wide font-mono text-[11px] sm:text-xs">+880 1805-529577</strong>
             </a>
-            <span className="text-white/20 hidden md:inline">|</span>
-            <div className="hidden md:flex items-center gap-1.5 text-white/70">
+            <span className="text-white/30">|</span>
+            <a
+              href="https://wa.me/8801805529578"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Direct WhatsApp Helpline BD 2"
+              className="hidden md:flex items-center gap-1 text-white/90 hover:text-[#fbb034] transition-colors cursor-pointer font-mono text-[11px] sm:text-xs"
+            >
+              <span>+880 1805-529578</span>
+            </a>
+            <span className="text-white/30 hidden lg:inline">|</span>
+            <a
+              href="https://wa.me/601112376224"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Malaysia Regional Hub"
+              className="hidden lg:flex items-center gap-1 text-white/90 hover:text-[#fbb034] transition-colors cursor-pointer font-mono text-[11px] sm:text-xs"
+            >
+              <span className="text-amber-400 font-sans">MY:</span>
+              <span>+60 111 237 6224</span>
+            </a>
+            <span className="text-white/20 hidden xl:inline">|</span>
+            <div className="hidden xl:flex items-center gap-1.5 text-white/70">
               <span className="material-symbols-outlined text-[14px] text-amber-400">schedule</span>
-              <span>Sun – Thu: 10:00 AM – 5:00 PM</span>
+              <span>Sun – Thu: 11AM – 5PM</span>
             </div>
           </div>
 

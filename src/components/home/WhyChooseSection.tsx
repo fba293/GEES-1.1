@@ -31,17 +31,21 @@ export const WhyChooseSection: React.FC<WhyChooseSectionProps> = ({ onSelectCoun
   const [ripples, setRipples] = useState<Ripple[]>([]);
 
   const destinations = [
-    { name: 'Malaysia', flag: '🇲🇾', code: 'MY' },
-    { name: 'United Kingdom', flag: '🇬🇧', code: 'UK' },
     { name: 'Australia', flag: '🇦🇺', code: 'AU' },
-    { name: 'New Zealand', flag: '🇳🇿', code: 'NZ' },
+    { name: 'Canada', flag: '🇨🇦', code: 'CA' },
     { name: 'Cyprus', flag: '🇨🇾', code: 'CY' },
-    { name: 'Belgium', flag: '🇧🇪', code: 'BE' },
     { name: 'Finland', flag: '🇫🇮', code: 'FI' },
+    { name: 'France', flag: '🇫🇷', code: 'FR' },
     { name: 'Greece', flag: '🇬🇷', code: 'GR' },
-    { name: 'Mauritius', flag: '🇲🇺', code: 'MU' },
-    { name: 'Netherlands', flag: '🇳🇱', code: 'NL' },
-    { name: 'India', flag: '🇮🇳', code: 'IN' }
+    { name: 'Hungary', flag: '🇭🇺', code: 'HU' },
+    { name: 'India', flag: '🇮🇳', code: 'IN' },
+    { name: 'Malaysia', flag: '🇲🇾', code: 'MY' },
+    { name: 'Malta', flag: '🇲🇹', code: 'MT' },
+    { name: 'New Zealand', flag: '🇳🇿', code: 'NZ' },
+    { name: 'South Korea', flag: '🇰🇷', code: 'KR' },
+    { name: 'Sweden', flag: '🇸🇪', code: 'SE' },
+    { name: 'United Kingdom', flag: '🇬🇧', code: 'UK' },
+    { name: 'USA', flag: '🇺🇸', code: 'US' }
   ];
 
   // Mouse Move Parallax Handler
@@ -230,7 +234,7 @@ export const WhyChooseSection: React.FC<WhyChooseSectionProps> = ({ onSelectCoun
                     </div>
                   </div>
                   <div className="px-0.5 sm:px-2">
-                    <div className="text-sm xs:text-base sm:text-2xl font-black text-slate-900 dark:text-white">167+</div>
+                    <div className="text-sm xs:text-base sm:text-2xl font-black text-slate-900 dark:text-white">200+</div>
                     <div className="text-[9.5px] min-[390px]:text-[10.5px] sm:text-xs font-bold text-slate-600 dark:text-slate-400 mt-0.5 leading-tight truncate">
                       <span className="sm:hidden">Unis</span>
                       <span className="hidden sm:inline">Partner Universities</span>

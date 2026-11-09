@@ -526,24 +526,32 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               <div className="flex items-center gap-2">
                 <span className="text-red-500 text-sm shrink-0 select-none">🕒</span>
                 <span className="text-slate-800 dark:text-slate-200 font-medium">
-                  Sunday – Thursday | 10:00 AM – 5:00 PM
+                  Sunday – Thursday | 11:00 AM – 5:00 PM
                 </span>
               </div>
 
-              {/* Phone Numbers in 1 Single Line -> Direct WhatsApp Links */}
-              <div className="flex items-center gap-2 whitespace-nowrap">
-                <span className="text-red-500 text-sm shrink-0 select-none">📞</span>
-                <div className="flex items-center gap-2 font-mono font-semibold text-xs text-emerald-600 dark:text-emerald-400">
+              {/* Phone Numbers -> Direct WhatsApp Links (Vertical) */}
+              <div className="flex items-start gap-2">
+                <span className="text-red-500 text-sm shrink-0 select-none mt-0.5">📞</span>
+                <div className="flex flex-col gap-1 font-mono font-semibold text-xs text-emerald-600 dark:text-emerald-400">
+                  <a
+                    href="https://wa.me/8801805529577"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Chat on WhatsApp (BD 1)"
+                    className="hover:underline hover:text-emerald-700 dark:hover:text-emerald-300"
+                  >
+                    +880 1805-529577
+                  </a>
                   <a
                     href="https://wa.me/8801805529578"
                     target="_blank"
                     rel="noopener noreferrer"
-                    title="Chat on WhatsApp (Dhaka)"
+                    title="Chat on WhatsApp (BD 2)"
                     className="hover:underline hover:text-emerald-700 dark:hover:text-emerald-300"
                   >
                     +880 1805-529578
                   </a>
-                  <span className="text-slate-400 dark:text-slate-600">/</span>
                   <a
                     href="https://wa.me/601112376224"
                     target="_blank"

@@ -392,7 +392,7 @@ function AppContent() {
   };
 
   // Search selection handler
-  const handleSelectSearchResult = (type: string, id: string) => {
+  const handleSelectSearchResult = (type: string, id: string, name?: string) => {
     setIsSearchModalOpen(false);
     if (type === 'university') {
       setCurrentView('universities');
@@ -400,13 +400,29 @@ function AppContent() {
     } else if (type === 'destination') {
       setCurrentView('universities');
       setNavPayload(id);
+    } else if (type === 'course') {
+      setCurrentView('courses');
+      setNavPayload({ query: name || id });
     } else if (type === 'service') {
       setCurrentView('services');
+      setNavPayload(id);
     } else {
       setCurrentView('universities');
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  // Global Cmd/Ctrl + K shortcut to toggle universal search
+  useEffect(() => {
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsSearchModalOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleGlobalKeyDown);
+    return () => window.removeEventListener('keydown', handleGlobalKeyDown);
+  }, []);
 
   return (
     <div className="min-h-screen bg-white dark:bg-[#070D1E] text-slate-900 dark:text-slate-100 font-sans selection:bg-[#fbb034]/30 transition-colors duration-200">

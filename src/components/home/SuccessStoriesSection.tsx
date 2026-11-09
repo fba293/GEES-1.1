@@ -110,7 +110,7 @@ export const SuccessStoriesSection: React.FC<SuccessStoriesSectionProps> = ({ on
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-center">
             {/* Left 3D Perspective Photo Stack */}
             <div className="md:col-span-5 lg:col-span-6 flex justify-center items-center py-2">
-              <div className="relative w-full max-w-[280px] sm:max-w-[340px] aspect-[4/5] mx-auto preserve-3d">
+              <div className="relative w-full max-w-[220px] min-[390px]:max-w-[260px] sm:max-w-[340px] aspect-[4/5] mx-auto preserve-3d">
                 {filteredStories.map((story, idx) => {
                   let offset = idx - (currentIndex % filteredStories.length);
                   if (offset > filteredStories.length / 2) offset -= filteredStories.length;
@@ -217,7 +217,7 @@ export const SuccessStoriesSection: React.FC<SuccessStoriesSectionProps> = ({ on
                       type="button"
                       aria-label={`Go to story ${i + 1}`}
                       onClick={() => setCurrentIndex(i)}
-                      className="p-2.5 flex items-center justify-center cursor-pointer tap-target-44"
+                      className="min-h-[44px] min-w-[34px] p-2 flex items-center justify-center cursor-pointer tap-target-44 active:scale-90"
                     >
                       <span
                         className={`h-2 rounded-full transition-all block ${

@@ -477,7 +477,7 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
           Top <span className="bg-[#fbb034] text-slate-950 px-1.5 py-0.5 sm:px-3 sm:py-1 rounded-md sm:rounded-lg">Universities</span> Worldwide
         </h1>
         <p className="text-[10px] xs:text-[11px] sm:text-lg text-slate-300 font-medium max-w-full sm:max-w-xl leading-tight sm:leading-relaxed whitespace-nowrap truncate">
-          Browse 167+ partner universities across 6+ countries
+          Browse {mockUniversities.length}+ partner universities across 15 global destinations
         </p>
       </div>
 
@@ -1709,7 +1709,7 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                      173 Universities Found
+                      {filteredUnis.length} {filteredUnis.length === 1 ? 'University' : 'Universities'} Found
                     </span>
                   </div>
                   <div className="text-xs text-slate-400 font-medium flex items-center gap-3 justify-between sm:justify-end">

@@ -506,7 +506,7 @@ export const ContactUsView: React.FC<ContactUsViewProps> = ({
               <div className="space-y-2 text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-5">
                 <p><strong>Address:</strong> Green City Regency, Road 27/1, Level 10, Kakrail, Dhaka 1000.</p>
                 <p><strong>Landmark:</strong> Opposite to Kakrail Mosque / Near Shantinagar Intersection.</p>
-                <p><strong>Timing:</strong> Sunday – Thursday | 10:00 AM – 5:00 PM</p>
+                <p><strong>Timing:</strong> Sunday – Thursday | 11:00 AM – 5:00 PM</p>
                 <p><strong>Phone / WhatsApp:</strong> <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">+880 1805-529578</span></p>
               </div>
               <div className="flex gap-2.5">

@@ -42,10 +42,10 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
 
   const buttonStyleClass = variant === 'minimal'
     ? `gees-action--theme group relative w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-xl transition-colors cursor-pointer hover:bg-slate-100/60 dark:hover:bg-slate-800/60 text-slate-800 dark:text-[#fbb034] shrink-0 ${className}`
-    : `gees-action--theme group relative rounded-full border flex items-center justify-center transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95 cursor-pointer shadow-xs shrink-0 ${
+    : `gees-action--theme group relative rounded-full flex items-center justify-center transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95 cursor-pointer shrink-0 ${
         isDark
-          ? 'bg-[#070b19] border-slate-700/60 text-[#fbb034]'
-          : 'bg-white border-slate-200/90 text-slate-900'
+          ? 'bg-transparent text-[#fbb034]'
+          : 'bg-white border border-slate-200/90 text-slate-900 shadow-xs'
       } ${isTransitioning ? 'is-theme-transitioning' : ''} ${sizeClasses} ${className}`;
 
   return (

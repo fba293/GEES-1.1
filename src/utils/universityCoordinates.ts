@@ -31,12 +31,35 @@ export const COUNTRY_COORDINATES: Record<string, LatLng> = {
   'Greece': { lat: 39.0742, lng: 21.8243 },
   'Mauritius': { lat: -20.3484, lng: 57.5522 },
   'Netherlands': { lat: 52.1326, lng: 5.2913 },
+  'USA': { lat: 37.0902, lng: -95.7129 },
+  'Canada': { lat: 56.1304, lng: -106.3468 },
+  'France': { lat: 46.2276, lng: 2.2137 },
+  'Hungary': { lat: 47.1625, lng: 19.5033 },
+  'Malta': { lat: 35.9375, lng: 14.3754 },
+  'Sweden': { lat: 60.1282, lng: 18.6435 },
+  'South Korea': { lat: 35.9078, lng: 127.7669 },
 };
 
 /**
  * Fallback City Center Coordinates
  */
 export const CITY_COORDINATES: Record<string, LatLng> = {
+  // USA Cities
+  'Wilkes-Barre': { lat: 41.2459, lng: -75.8813 },
+  'Washington': { lat: 38.9072, lng: -77.0369 },
+  'Angola': { lat: 41.6348, lng: -84.9994 },
+  'Bothell': { lat: 47.7601, lng: -122.2054 },
+  'Hoboken': { lat: 40.7440, lng: -74.0324 },
+  'Baltimore': { lat: 39.2904, lng: -76.6122 },
+  'Jonesboro': { lat: 35.8423, lng: -90.7043 },
+  'Mankato': { lat: 44.1636, lng: -93.9994 },
+  'Glassboro': { lat: 39.7029, lng: -75.1118 },
+  'Pensacola': { lat: 30.4213, lng: -87.2169 },
+  'Pittsburgh': { lat: 40.4406, lng: -79.9959 },
+  'Waltham': { lat: 42.3765, lng: -71.2356 },
+  'Milwaukee': { lat: 43.0389, lng: -87.9065 },
+  'Mount Pleasant': { lat: 43.5978, lng: -84.7675 },
+
   // UK Cities
   'London': { lat: 51.5074, lng: -0.1278 },
   'Birmingham': { lat: 52.4862, lng: -1.8904 },
@@ -130,6 +153,26 @@ export const CITY_COORDINATES: Record<string, LatLng> = {
   'Adelaide': { lat: -34.9285, lng: 138.6007 },
   'Gold Coast': { lat: -28.0167, lng: 153.4000 },
   'Hobart': { lat: -42.8821, lng: 147.3272 },
+  'Wollongong': { lat: -34.4278, lng: 150.8931 },
+  'Townsville': { lat: -19.2590, lng: 146.8169 },
+  'Cairns': { lat: -16.9186, lng: 145.7781 },
+  'Bathurst': { lat: -33.4193, lng: 149.5775 },
+  'Wagga Wagga': { lat: -35.1082, lng: 147.3598 },
+  'Rockhampton': { lat: -23.3750, lng: 150.5118 },
+  'Hawthorn': { lat: -37.8222, lng: 145.0344 },
+
+  // Canada Cities
+  'Toronto': { lat: 43.6532, lng: -79.3832 },
+  'Vancouver': { lat: 49.2827, lng: -123.1207 },
+  'Montreal': { lat: 45.5017, lng: -73.5673 },
+  'Ottawa': { lat: 45.4215, lng: -75.6972 },
+  'Halifax': { lat: 44.6488, lng: -63.5752 },
+  'Fredericton': { lat: 45.9636, lng: -66.6431 },
+  'Kelowna': { lat: 49.8880, lng: -119.4960 },
+  'Courtenay': { lat: 49.6866, lng: -124.9936 },
+  'Sudbury': { lat: 46.4917, lng: -80.9930 },
+  'Medicine Hat': { lat: 50.0421, lng: -110.6775 },
+  'Sarnia': { lat: 42.9745, lng: -82.4066 },
 
   // New Zealand Cities
   'Auckland': { lat: -36.8485, lng: 174.7633 },
@@ -190,12 +233,83 @@ export const CITY_COORDINATES: Record<string, LatLng> = {
 
   // India Cities
   'Guwahati': { lat: 26.1445, lng: 91.7362 },
+
+  // Hungary Cities
+  'Debrecen': { lat: 47.5316, lng: 21.6273 },
+  'Sopron': { lat: 47.6865, lng: 16.5847 },
+  'Budapest': { lat: 47.4979, lng: 19.0402 },
+
+  // France Cities
+  'Paris': { lat: 48.8566, lng: 2.3522 },
+  'Nancy': { lat: 48.6921, lng: 6.1844 },
+  'Rennes': { lat: 48.1173, lng: -1.6778 },
+
+  // Malta Cities
+  'St. Julian’s': { lat: 35.9186, lng: 14.4900 },
+  "St. Julian's": { lat: 35.9186, lng: 14.4900 },
+  'Valletta': { lat: 35.8989, lng: 14.5146 },
+  'Sliema': { lat: 35.9122, lng: 14.5042 },
+  'Msida': { lat: 35.8978, lng: 14.4842 },
+
+  // Sweden Cities
+  'Stockholm': { lat: 59.3293, lng: 18.0686 },
+  'Lund': { lat: 55.7047, lng: 13.1910 },
+  'Uppsala': { lat: 59.8586, lng: 17.6389 },
+  'Gothenburg': { lat: 57.7089, lng: 11.9746 },
+  'Linköping': { lat: 58.4108, lng: 15.6214 },
+  'Jönköping': { lat: 57.7826, lng: 14.1618 },
+  'Luleå': { lat: 65.5848, lng: 22.1567 },
+  'Umeå': { lat: 63.8258, lng: 20.2630 },
+  'Malmö': { lat: 55.6050, lng: 13.0038 },
 };
 
 /**
  * Verified Specific Partner University Coordinates
  */
 export const VERIFIED_UNIVERSITY_COORDINATES: Record<string, LatLng> = {
+  // Hungary Partner Universities
+  'University of Debrecen': { lat: 47.5529, lng: 21.6234 },
+  'University of Sopron': { lat: 47.6796, lng: 16.5786 },
+  'Corvinus University': { lat: 47.4862, lng: 19.0578 },
+
+  // France Partner Universities & Business Schools
+  'ICN Business School': { lat: 48.6833, lng: 6.1614 },
+  'ISTEC Business School': { lat: 48.8741, lng: 2.3683 },
+  'Rennes School of Business': { lat: 48.1308, lng: -1.6961 },
+  'Rennes Graduate School of Management': { lat: 48.1186, lng: -1.6739 },
+
+  // Malta Partner Universities & Colleges
+  'GBS Malta': { lat: 35.9186, lng: 14.4900 },
+  'Malita International College': { lat: 35.8989, lng: 14.5146 },
+
+  // Sweden Partner Universities & Institutes
+  'Lund University': { lat: 55.7118, lng: 13.1970 },
+  'Jönköping University': { lat: 57.7782, lng: 14.1610 },
+  'Uppsala University': { lat: 59.8575, lng: 17.6291 },
+  'Chalmers University of Technology': { lat: 57.6888, lng: 11.9782 },
+  'Stockholm University': { lat: 59.3639, lng: 18.0587 },
+  'University of Gothenburg': { lat: 57.6983, lng: 11.9714 },
+  'Linköping University (LiU)': { lat: 58.3986, lng: 15.5786 },
+  'Luleå University of Technology': { lat: 65.6180, lng: 22.1402 },
+  'Umeå University': { lat: 63.8206, lng: 20.3075 },
+  'Malmö University': { lat: 55.6108, lng: 12.9942 },
+
+  // USA Partner Universities
+  'Wilkes University': { lat: 41.2467, lng: -75.8872 },
+  'University of Potomac': { lat: 38.9056, lng: -77.0378 },
+  'Trine University': { lat: 41.6319, lng: -85.0177 },
+  'Cascadia College': { lat: 47.7597, lng: -122.1916 },
+  'Stevens Institute of Technology': { lat: 40.7448, lng: -74.0255 },
+  'University of Maryland Baltimore County (UMBC)': { lat: 39.2556, lng: -76.7110 },
+  'Arkansas State University': { lat: 35.8427, lng: -90.6782 },
+  'Minnesota State University': { lat: 44.1450, lng: -93.9990 },
+  'Rowan University': { lat: 39.7099, lng: -75.1197 },
+  'University of West Florida': { lat: 30.5484, lng: -87.2180 },
+  'Duquesne University': { lat: 40.4369, lng: -79.9904 },
+  'Brandeis University – School of Business and Economics': { lat: 42.3657, lng: -71.2586 },
+  'Marquette University': { lat: 43.0387, lng: -87.9304 },
+  'Central Michigan University': { lat: 43.5898, lng: -84.7770 },
+
   // India
   'Assam Down Town University': { lat: 26.1445, lng: 91.7362 },
 
@@ -205,6 +319,11 @@ export const VERIFIED_UNIVERSITY_COORDINATES: Record<string, LatLng> = {
   'Loughborough University': { lat: 52.7663, lng: -1.2294 },
   'Queens University of Belfast': { lat: 54.5847, lng: -5.9348 },
   'Aston University': { lat: 52.4868, lng: -1.8887 },
+  'Aston University London': { lat: 51.5165, lng: -0.0768 },
+  'Ulster University': { lat: 54.6042, lng: -5.9287 },
+  'Ravensbourne University': { lat: 51.5015, lng: 0.0075 },
+  'Roehampton University': { lat: 51.4578, lng: -0.2443 },
+  'Buckinghamshire New University': { lat: 51.6288, lng: -0.7512 },
   'Brunel University': { lat: 51.5323, lng: -0.4731 },
   'Coventry University': { lat: 52.4081, lng: -1.5065 },
   'Aberystwyth University': { lat: 52.4153, lng: -4.0642 },
@@ -245,15 +364,30 @@ export const VERIFIED_UNIVERSITY_COORDINATES: Record<string, LatLng> = {
   'Heriot-Watt University Malaysia': { lat: 2.9038, lng: 101.6708 },
   'Monash University Malaysia': { lat: 3.0648, lng: 101.6006 },
 
-  // Australia
-  'University of Melbourne': { lat: -37.7963, lng: 144.9614 },
-  'University of Sydney': { lat: -33.8886, lng: 151.1873 },
+  // Australia Partner Universities
+  'University of Wollongong': { lat: -34.4054, lng: 150.8784 },
+  'La Trobe University Sydney': { lat: -33.8732, lng: 151.2069 },
+  'University of Tasmania': { lat: -42.9038, lng: 147.3248 },
+  'James Cook University': { lat: -19.3283, lng: 146.7567 },
+  'Charles Sturt University': { lat: -33.4272, lng: 149.5606 },
+  'CQUniversity Australia': { lat: -23.3284, lng: 150.5186 },
+  'University of New South Wales': { lat: -33.9173, lng: 151.2313 },
   'UNSW Sydney': { lat: -33.9173, lng: 151.2313 },
-  'Australian National University (ANU)': { lat: -35.2777, lng: 149.1185 },
-  'Monash University': { lat: -37.9105, lng: 145.1362 },
-  'University of Queensland': { lat: -27.4975, lng: 153.0137 },
-  'University of Western Australia': { lat: -31.9802, lng: 115.8180 },
-  'University of Adelaide': { lat: -34.9206, lng: 138.6062 },
+  'University of Newcastle': { lat: -32.8936, lng: 151.7039 },
+  'RMIT University, Melbourne': { lat: -37.8078, lng: 144.9633 },
+  'Swinburne University of Technology': { lat: -37.8222, lng: 145.0389 },
+
+  // Canada Partner Universities & Colleges
+  'Dalhousie University': { lat: 44.6366, lng: -63.5917 },
+  'Toronto Metropolitan University': { lat: 43.6577, lng: -79.3788 },
+  'University of New Brunswick': { lat: 45.9454, lng: -66.6416 },
+  'Mount Saint Vincent University': { lat: 44.6931, lng: -63.6689 },
+  'St. Thomas University': { lat: 45.9490, lng: -66.6433 },
+  'University of British Columbia (Okanagan)': { lat: 49.9400, lng: -119.3958 },
+  'North Island College': { lat: 49.7042, lng: -124.9786 },
+  'Laurentian University': { lat: 46.4678, lng: -80.9739 },
+  'Medicine Hat College': { lat: 50.0165, lng: -110.7067 },
+  'Lambton College': { lat: 42.9772, lng: -82.3524 },
 
   // New Zealand
   'University of Auckland': { lat: -36.8522, lng: 174.7692 },

@@ -77,7 +77,7 @@ export const PartnersMarqueeSection: React.FC<PartnersMarqueeSectionProps> = ({ 
           </h2>
           {/* Supporting Subtext */}
           <p className="mt-2 sm:mt-3 text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-400 font-normal leading-relaxed max-w-2xl mx-auto px-2 text-center">
-            Connecting you to 167+ top partner universities across the globe.
+            Connecting you to 200+ top partner universities across the globe.
           </p>
         </div>
       </div>

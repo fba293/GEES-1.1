@@ -40,17 +40,20 @@ export const CourseExplorerView: React.FC<CourseExplorerViewProps> = ({
   const allCourses: Course[] = useMemo(() => getCollaboratedCourses(), []);
   const allUnis = useMemo(() => getCollaboratedUniversities(), []);
 
-  // Filter states (matching UniversityExplorerView conventions)
+  // Filter states (supporting single or multi-value initial props)
+  const parseInitialFilter = (val?: string | string[]): string[] => {
+    if (!val || val === 'all') return [];
+    if (Array.isArray(val)) return val;
+    if (typeof val === 'string') {
+      return val.includes(',') ? val.split(',').map(s => s.trim()).filter(Boolean) : [val];
+    }
+    return [];
+  };
+
   const [searchQuery, setSearchQuery] = useState(initialQuery);
-  const [selectedCountries, setSelectedCountries] = useState<string[]>(
-    initialCountry !== 'all' && initialCountry ? [initialCountry] : []
-  );
-  const [selectedLevels, setSelectedLevels] = useState<string[]>(
-    initialLevel !== 'all' && initialLevel ? [initialLevel] : []
-  );
-  const [selectedFields, setSelectedFields] = useState<string[]>(
-    initialField !== 'all' && initialField ? [initialField] : []
-  );
+  const [selectedCountries, setSelectedCountries] = useState<string[]>(() => parseInitialFilter(initialCountry));
+  const [selectedLevels, setSelectedLevels] = useState<string[]>(() => parseInitialFilter(initialLevel));
+  const [selectedFields, setSelectedFields] = useState<string[]>(() => parseInitialFilter(initialField));
   const [selectedModes, setSelectedModes] = useState<string[]>([]);
   const [selectedRankTiers, setSelectedRankTiers] = useState<string[]>([]);
   const [selectedTuitions, setSelectedTuitions] = useState<string[]>([]);
@@ -653,7 +656,7 @@ export const CourseExplorerView: React.FC<CourseExplorerViewProps> = ({
           Explore <span className="bg-[#fbb034] text-slate-950 px-1.5 py-0.5 sm:px-3 sm:py-1 rounded-md sm:rounded-lg">Degree Programs</span> & Courses
         </h1>
         <p className="text-[10px] xs:text-[11px] sm:text-lg text-slate-300 font-medium max-w-full sm:max-w-xl leading-tight sm:leading-relaxed whitespace-nowrap truncate">
-          Browse 500+ accredited degree programs across 167+ partner universities worldwide
+          Browse 1,000+ accredited degree programs across 200+ partner universities worldwide
         </p>
       </div>
 

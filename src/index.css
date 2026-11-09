@@ -94,7 +94,8 @@
   }
 
   /* 1. Typography Hierarchy & Apple Negative Letter-Tracking */
-  main h1 {
+  main h1,
+  .hero-study-in {
     font-size: clamp(1.85rem, 7.6vw, 2.25rem) !important;
     letter-spacing: -0.028em !important;
     line-height: 1.08 !important;
@@ -104,7 +105,7 @@
 
   main h2,
   .gees-section-title {
-    font-size: clamp(1.45rem, 6.2vw, 1.78rem) !important;
+    font-size: clamp(1.42rem, 6vw, 1.75rem) !important;
     letter-spacing: -0.024em !important;
     line-height: 1.15 !important;
     font-weight: 800 !important;
@@ -118,10 +119,10 @@
   h2 > span.bg-amber-500,
   main h2 > span:last-child,
   #cta-reveal span.bg-\[\#fbb034\] {
-    font-size: 0.92em !important;
-    padding: 0.22rem 0.72rem !important;
+    font-size: 0.9em !important;
+    padding: 0.22rem 0.68rem !important;
     border-radius: 0.75rem !important;
-    line-height: 1.12 !important;
+    line-height: 1.14 !important;
     display: inline-flex !important;
     align-items: center !important;
     vertical-align: middle !important;
@@ -131,10 +132,11 @@
   }
 
   main h3 {
-    font-size: clamp(1.05rem, 4.6vw, 1.25rem) !important;
+    font-size: clamp(1.05rem, 4.4vw, 1.25rem) !important;
     letter-spacing: -0.018em !important;
     line-height: 1.25 !important;
     font-weight: 700 !important;
+    text-wrap: balance !important;
   }
 
   /* Section Supporting Descriptions: clean, readable 14px with Apple leading */
@@ -147,10 +149,11 @@
     font-size: 14px !important;
     line-height: 1.48 !important;
     letter-spacing: -0.012em !important;
-    max-width: 27rem !important;
+    max-width: 25rem !important;
     margin-left: auto !important;
     margin-right: auto !important;
-    margin-top: 0.55rem !important;
+    margin-top: 0.5rem !important;
+    text-wrap: balance !important;
   }
 
   /* Controlled paragraph reading line-height without centering card copy */
@@ -165,39 +168,28 @@
     margin-right: auto !important;
   }
 
-  /* 2. Section Spacing & Vertical Rhythm (Consistent 48px / 3rem) */
+  /* 2. Section Spacing & Vertical Rhythm (Consistent 44px / 2.75rem to 48px / 3rem) */
   main > section {
-    padding-top: 3rem !important;
-    padding-bottom: 3rem !important;
+    padding-top: 2.75rem !important;
+    padding-bottom: 2.75rem !important;
   }
 
   /* Hero section sits directly beneath header without excessive dead air */
   main > section:first-of-type {
-    padding-top: 0.75rem !important;
-    padding-bottom: 2rem !important;
+    padding-top: 0.5rem !important;
+    padding-bottom: 1.75rem !important;
   }
 
-  /* Pre-Footer CTA: remove redundant double padding on mobile */
-  #cta-reveal > div {
-    padding-top: 0 !important;
-    padding-bottom: 0.5rem !important;
+  /* Horizontal container padding consistency (16px / 1rem edge margin) */
+  main > section > div:first-child,
+  main > section > .w-full,
+  main > section > .max-w-7xl,
+  main > section > .max-w-6xl {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
   }
 
-  #cta-reveal .rounded-3xl,
-  #cta-reveal [class*="rounded-3xl"],
-  #cta-reveal [class*="rounded-\[2.5rem\]"],
-  main > section .rounded-3xl,
-  main > section [class*="rounded-[36px]"] {
-    border-radius: 1.25rem !important;
-  }
-
-  #cta-reveal .rounded-3xl,
-  #cta-reveal [class*="rounded-3xl"],
-  #cta-reveal [class*="rounded-\[2.5rem\]"] {
-    padding: 1.5rem 1.25rem !important;
-  }
-
-  /* Consistent Header to Content Vertical Rhythm (24px) */
+  /* Consistent Header to Content Vertical Rhythm (20px to 24px) */
   main > section header,
   main > section .gees-services-coverflow__head,
   main > section [data-purpose="section-header"],
@@ -206,11 +198,29 @@
   #blogs-section > div > div:first-of-type,
   #home-services .gees-services-coverflow__head,
   section[aria-labelledby="geesServicesTitle"] .gees-services-coverflow__head,
-  #partners-section [data-purpose="section-header"] {
-    margin-bottom: 1.5rem !important;
+  #partners-section [data-purpose="section-header"],
+  #why-choose-section > div:first-of-type {
+    margin-bottom: 1.35rem !important;
   }
 
-  /* 3. Touch Targets & Interaction Rhythm */
+  /* 3. Border-Radius Scale & Proportions (Apple soft curve hierarchy) */
+  #cta-reveal .rounded-3xl,
+  #cta-reveal [class*="rounded-3xl"],
+  #cta-reveal [class*="rounded-\[2.5rem\]"],
+  main > section .rounded-3xl,
+  main > section [class*="rounded-3xl"],
+  main > section [class*="rounded-[36px]"],
+  main > section [class*="rounded-[2.5rem]"] {
+    border-radius: 1.25rem !important;
+  }
+
+  #cta-reveal .rounded-3xl,
+  #cta-reveal [class*="rounded-3xl"],
+  #cta-reveal [class*="rounded-\[2.5rem\]"] {
+    padding: 1.5rem 1.15rem !important;
+  }
+
+  /* 4. Touch Targets & Interaction Rhythm */
   /* Guarantee minimum ~44x44px effective touch targets on mobile interactive controls */
   .tap-target-44,
   main button:not(.no-min-touch):not([data-purpose="subtle-chip"]):not(.carousel-dot):not([role="tab"]),
@@ -223,16 +233,23 @@
     touch-action: manipulation;
   }
 
+  /* Circular control buttons guaranteed 44x44px minimum touch hitbox */
+  main button.rounded-full:not(.carousel-dot),
+  main a.rounded-full {
+    min-width: 44px !important;
+    min-height: 44px !important;
+  }
+
   /* Apple's signature active/pressed micro-interaction on interactive elements */
   main button:active:not(:disabled),
   main a:active:not(:disabled),
   .tap-scale:active,
   [role="button"]:active {
     transform: scale(0.97) !important;
-    transition: transform 0.08s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform 0.08s cubic-bezier(0.16, 1, 0.3, 1) !important;
   }
 
-  /* 4. Smooth Momentum Scrolling & Viewport Containment */
+  /* 5. Smooth Momentum Scrolling & Viewport Containment */
   .touch-pan-x,
   .no-scrollbar {
     -webkit-overflow-scrolling: touch;
@@ -240,64 +257,53 @@
     touch-action: pan-x pan-y;
   }
 
-  /* 5. Hero Section Typewriter & Search Proportions on Mobile */
+  /* 6. Hero Section Typewriter & Search Proportions on Mobile */
   .hero-typewriter-box {
     min-height: 44px;
     display: inline-flex;
     align-items: center;
     vertical-align: middle;
+    border-radius: 1rem !important;
+    padding: 0.35rem 0.85rem !important;
   }
 
   .hero-typewriter {
     line-height: 1;
     display: inline-flex;
     align-items: center;
+    font-size: clamp(1.4rem, 5.8vw, 1.75rem) !important;
   }
 
   [data-purpose="compact-search-widget"] {
-    border-radius: 1.25rem;
+    border-radius: 1.15rem;
   }
 
-  /* Inset Filter Matrix Alignment & Touch Hit Targets */
-  [data-purpose="inset-filter-matrix"] label {
-    min-height: 48px;
-    display: flex;
-    align-items: center;
-    touch-action: manipulation;
-  }
-
-  [data-purpose="inset-filter-matrix"] select,
-  [data-purpose="inset-filter-matrix"] input {
-    min-height: 22px !important;
-    height: 22px !important;
-  }
-
-  /* 6. Partner University Logo Proportions on Mobile */
+  /* 7. Partner University Logo Proportions on Mobile */
   .home-partners-section .partner-logo {
-    flex: 0 0 150px !important;
-    width: 150px !important;
-    height: 68px !important;
-    min-height: 68px !important;
-    border-radius: 16px !important;
-    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06) !important;
+    flex: 0 0 142px !important;
+    width: 142px !important;
+    height: 64px !important;
+    min-height: 64px !important;
+    border-radius: 14px !important;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06) !important;
   }
 
   .home-partners-section .partner-logo img {
-    max-height: 38px !important;
-    max-width: 118px !important;
-    width: 76% !important;
+    max-height: 36px !important;
+    max-width: 110px !important;
+    width: 74% !important;
   }
 
   .home-partners-section .marquee-mask {
-    gap: 0.75rem !important;
+    gap: 0.65rem !important;
   }
 
   .home-partners-section .partner-sequence {
-    gap: 12px !important;
-    padding-right: 12px !important;
+    gap: 10px !important;
+    padding-right: 10px !important;
   }
 
-  /* 7. Animated Tabs Horizontal Track & Momentum Scrolling */
+  /* 8. Animated Tabs Horizontal Track & Momentum Scrolling */
   .animated-tabs-track,
   [role="tablist"] {
     min-height: 44px !important;
@@ -314,22 +320,38 @@
     touch-action: manipulation !important;
   }
 
-  /* 8. Full-Width CTAs on Mobile with 44px+ Hitbox */
-  #cta-reveal button,
-  #cta-reveal a,
-  [data-purpose="compact-btn"] {
-    min-height: 44px !important;
-  }
-
-  /* 9. Why Choose Section Mobile Card Proportions */
+  /* 9. Why Choose Section Mobile Proportions */
   #why-choose-section .cursor-pointer {
     min-height: 48px;
     border-radius: 1rem !important;
   }
 
   /* 10. FAQ Accordions Mobile Proportions */
-  #faqs button[aria-expanded] {
+  #faqs button[aria-expanded],
+  #faq-accordion button {
     min-height: 52px !important;
+  }
+
+  /* 11. Modal dialogue proportions on mobile */
+  .fixed.inset-0 .bg-white.dark\:bg-\[\#0f172a\],
+  .fixed.inset-0 .rounded-3xl {
+    border-radius: 1.25rem !important;
+    padding: 1.25rem 1rem !important;
+    max-height: 90vh;
+  }
+
+  /* 12. Safe Tab Alignment for Overflowing Horizontal Bars */
+  .no-scrollbar.overflow-x-auto,
+  [role="tablist"] {
+    justify-content: safe center;
+  }
+
+  /* 13. Prevent iOS automatic zoom on text input focus by enforcing 16px font-size */
+  main input[type="text"],
+  main input[type="search"],
+  main input[type="email"],
+  main input[type="tel"] {
+    font-size: 16px !important;
   }
 }
 
@@ -686,7 +708,9 @@ body {
   gap: 2px !important;
 }
 
-.dark .goog-te-gadget-simple .goog-te-menu-value {
+.dark .goog-te-gadget-simple .goog-te-menu-value,
+.dark .goog-te-gadget-simple .goog-te-menu-value span,
+.dark .goog-te-gadget-simple span {
   color: #e2e8f0 !important;
 }
 

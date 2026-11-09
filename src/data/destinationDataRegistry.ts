@@ -122,6 +122,109 @@ export interface StudyDestinationData {
 // ----------------------------------------------------------------------------
 
 export const DESTINATION_REGISTRY: Record<string, StudyDestinationData> = {
+  'study-in-canada': {
+    slug: 'study-in-canada',
+    countryName: 'Canada',
+    flagEmoji: '🇨🇦',
+    code: 'CA',
+    currency: 'CAD',
+    hero: {
+      title: 'Study in Canada from Bangladesh',
+      subtitle: '10 Partner Universities & Colleges, Post-Graduation Work Permits (PGWP) & Top Quality of Life',
+      intro: 'Canada is one of the top global destinations for international students, offering world-renowned education, multicultural communities, and up to 3-year post-graduation work opportunities across Ontario, British Columbia, Nova Scotia, New Brunswick, and Alberta.',
+      imageUrl: 'https://images.unsplash.com/photo-1503614472348-731f8845d7c2?q=80&w=1200&auto=format&fit=crop'
+    },
+    quickFacts: [
+      { label: 'Annual Tuition Fees', value: 'CAD $14,000 – $32,000', subtext: '10 partner universities and colleges', icon: 'payments' },
+      { label: 'Monthly Living Expenses', value: 'CAD $1,100 – $1,800', subtext: 'Halifax, Toronto, Kelowna, Fredericton', icon: 'account_balance_wallet' },
+      { label: 'Primary Intakes', value: 'September, January & May', subtext: 'Fall, Winter & Summer terms', icon: 'calendar_month' },
+      { label: 'Post-Study Work Visa', value: 'Up to 3 Years PGWP', subtext: 'Direct pathway to Canadian PR', icon: 'card_travel' }
+    ],
+    whyStudy: {
+      intro: 'Globally respected qualifications, welcoming multicultural society, and clear immigration pathways.',
+      benefits: [
+        { title: '10 Partner Universities & Colleges in Canada', desc: 'Direct representation with Dalhousie University, Toronto Metropolitan University (TMU), University of New Brunswick (UNB), Mount Saint Vincent, St. Thomas, UBC Okanagan, North Island College, Laurentian, Medicine Hat College, and Lambton College.', icon: 'school' },
+        { title: 'Post-Graduation Work Permit (PGWP)', desc: 'Gain up to 3 years of unrestricted Canadian work experience after graduation.', icon: 'work_outline' },
+        { title: 'World-Class Education & Co-op Opportunities', desc: 'Degrees recognized internationally by employers with built-in cooperative education placements.', icon: 'military_tech' }
+      ]
+    },
+    admissionRequirements: {
+      undergraduate: ['HSC / A-Levels with strong grades', 'IELTS 6.0 - 6.5 overall (Duolingo / PTE also accepted)'],
+      postgraduate: ['Bachelor’s degree CGPA 2.75 - 3.00+', 'IELTS 6.5 or equivalent'],
+      englishProficiency: { ielts: 'Overall 6.0 – 6.5', alternatives: ['TOEFL 85-90', 'PTE 58-60', 'Duolingo 110+'], notes: 'Direct entry requirements vary by institution; college diplomas accept IELTS 6.0.' },
+      requiredDocuments: ['Valid Passport', 'Academic Transcripts & Certificates', 'IELTS / Language Scorecard', 'Statement of Purpose', 'Financial Solvency Proof']
+    },
+    costOfStudy: {
+      currency: 'CAD',
+      tuitionRangeAnnual: 'CAD $14,000 – $32,000 / year',
+      livingCostMonthly: 'CAD $1,100 – $1,800 / month',
+      breakdown: [{ category: 'Student Housing', monthlyCost: 'CAD $550 – $1,100', details: 'On-campus residence or apartment sharing in Atlantic or Ontario cities' }]
+    },
+    scholarships: [],
+    intakes: [
+      { name: 'Fall Intake', startMonth: 'September', deadline: '15 January - 1 March', status: 'Open', notes: 'Primary academic intake with full program offerings.' },
+      { name: 'Winter Intake', startMonth: 'January', deadline: '15 September', status: 'Open', notes: 'Major secondary intake across partner colleges and universities.' }
+    ],
+    visaProcess: [{ stepNumber: 1, title: 'IRCC Study Permit Application', description: 'Apply online through IRCC with acceptance letter, Provincial Attestation Letter (PAL) where required, biometrics, and medical clearance.' }],
+    faqs: [
+      { question: 'Which universities and colleges in Canada are represented by GEES?', answer: 'GEES officially represents 10 institutions: Dalhousie University, Toronto Metropolitan University, University of New Brunswick, Mount Saint Vincent University, St. Thomas University, University of British Columbia (Okanagan), North Island College, Laurentian University, Medicine Hat College, and Lambton College.' },
+      { question: 'Can international students work while studying in Canada?', answer: 'Yes, international students holding a valid study permit can work up to 24 hours per week off-campus during academic sessions and full-time during scheduled breaks.' }
+    ],
+    seo: {
+      title: 'Study in Canada from Bangladesh | 10 Partner Universities, Fees & PGWP | GEES',
+      description: 'Study in Canada from Bangladesh with GEES. Explore 10 partner institutions including Dalhousie, TMU, UNB, UBC Okanagan, and Lambton College with PGWP guidance.',
+      keywords: ['Study in Canada from Bangladesh', 'Canada partner universities GEES', 'Dalhousie University GEES', 'Toronto Metropolitan University GEES', 'Lambton College GEES']
+    },
+    lastVerifiedDate: 'October 2026'
+  },
+  'study-in-south-korea': {
+    slug: 'study-in-south-korea',
+    countryName: 'South Korea',
+    flagEmoji: '🇰🇷',
+    code: 'KR',
+    currency: 'KRW',
+    hero: {
+      title: 'Study in South Korea from Bangladesh',
+      subtitle: 'Cutting-Edge Tech Universities, Government Scholarships (GKS) & Dynamic K-Culture',
+      intro: 'South Korea is a global innovation leader offering world-class STEM education, generous government scholarships, English-taught degree tracks, and excellent career pathways.',
+      imageUrl: 'https://images.unsplash.com/photo-1538485399068-d0aa6e579f94?q=80&w=1200&auto=format&fit=crop'
+    },
+    quickFacts: [
+      { label: 'Annual Tuition Fees', value: '₩6,000,000 – ₩12,000,000', subtext: 'Top research universities in Seoul & Busan', icon: 'payments' },
+      { label: 'Monthly Living Expenses', value: '₩800,000 – ₩1,300,000', subtext: 'Accommodation, food & transport', icon: 'account_balance_wallet' },
+      { label: 'Primary Intakes', value: 'March & September', subtext: 'Spring & Fall semesters', icon: 'calendar_month' },
+      { label: 'Post-Study Work Visa', value: 'D-10 Job Seeker & E-7 Visa', subtext: 'Employment in tech & global corporations', icon: 'card_travel' }
+    ],
+    whyStudy: {
+      intro: 'World-leading technology ecosystems, generous scholarship support, and safe, vibrant metropolitan living.',
+      benefits: [
+        { title: 'Global Government Scholarships (GKS)', desc: 'Fully funded tuition and living stipends for outstanding international students.', icon: 'card_giftcard' },
+        { title: 'Advanced Tech & Research', desc: 'Study at world-class engineering and business institutions like KAIST, SNU, and Yonsei.', icon: 'bolt' }
+      ]
+    },
+    admissionRequirements: {
+      undergraduate: ['High School Diploma with excellent grades', 'TOPIK or IELTS 5.5+ / English track available'],
+      postgraduate: ['Bachelor’s degree', 'IELTS 6.5 or TOPIK Level 4+'],
+      englishProficiency: { ielts: 'Overall 5.5 - 6.5', alternatives: ['TOEFL 80', 'TOPIK Level 3+'], notes: 'English-taught tracks available.' },
+      requiredDocuments: ['Passport', 'Academic Transcripts', 'Language Test Score', 'Personal Statement', 'Recommendation Letters']
+    },
+    costOfStudy: {
+      currency: 'KRW',
+      tuitionRangeAnnual: '₩6,000,000 – ₩12,000,000 / year',
+      livingCostMonthly: '₩800,000 – ₩1,300,000 / month',
+      breakdown: [{ category: 'University Dormitory', monthlyCost: '₩300,000 – ₩600,000', details: 'On-campus housing options' }]
+    },
+    scholarships: [],
+    intakes: [{ name: 'March Spring Intake', startMonth: 'March', deadline: '30 November', status: 'Open', notes: 'Primary spring intake.' }],
+    visaProcess: [{ stepNumber: 1, title: 'D-2 Student Visa Issuance', description: 'Receive Certificate of Admission (CoA) and apply at Korean Embassy.' }],
+    faqs: [{ question: 'Can I study in South Korea without knowing Korean?', answer: 'Yes, many universities offer specialized English-track undergraduate and graduate programs.' }],
+    seo: {
+      title: 'Study in South Korea from Bangladesh | Universities, GKS Scholarship | GEES',
+      description: 'Study in South Korea from Bangladesh with GEES. Explore English-taught programs, GKS scholarships, D-2 visas, and tech universities.',
+      keywords: ['Study in South Korea from Bangladesh', 'GKS scholarship Korea', 'Korean student visa D2', 'GEES Korea']
+    },
+    lastVerifiedDate: 'October 2026'
+  },
   'study-in-malaysia': {
     slug: 'study-in-malaysia',
     countryName: 'Malaysia',
@@ -643,185 +746,7 @@ export const DESTINATION_REGISTRY: Record<string, StudyDestinationData> = {
     lastVerifiedDate: 'October 2026'
   },
 
-  // ----------------------------------------------------------------------------
-  // AUSTRALIA
-  // ----------------------------------------------------------------------------
-  'study-in-australia': {
-    slug: 'study-in-australia',
-    countryName: 'Australia',
-    flagEmoji: '🇦🇺',
-    code: 'AU',
-    currency: 'AUD',
-    hero: {
-      title: 'Study in Australia from Bangladesh',
-      subtitle: 'Group of Eight Research Excellence, High Wages & Post-Study Work Visas',
-      intro: 'Australia offers world-leading universities, protected minimum wages for student workers, and up to 4-year Subclass 485 Temporary Graduate visas.',
-      imageUrl: 'https://www.worldbank.org/ext/en/country/media_15f31f5babc696917cc95a74bc9e62ceca811efec.jpg?width=1200&format=pjpg&optimize=medium'
-    },
-    quickFacts: [
-      {
-        label: 'Annual Tuition Fees',
-        value: 'AUD $24,000 – $45,000',
-        subtext: 'World top 100 Group of Eight institutions',
-        icon: 'payments'
-      },
-      {
-        label: 'Monthly Living Expenses',
-        value: 'AUD $1,800 – $2,500',
-        subtext: 'Official CRICOS maintenance threshold AUD $29,710/yr',
-        icon: 'account_balance_wallet'
-      },
-      {
-        label: 'Primary Intakes',
-        value: 'February & July',
-        subtext: 'Semester 1 & Semester 2 entries',
-        icon: 'calendar_month'
-      },
-      {
-        label: 'Post-Study Work Visa',
-        value: '2 – 4 Years Subclass 485',
-        subtext: 'Extended stay for regional campus graduates',
-        icon: 'card_travel'
-      },
-      {
-        label: 'Part-Time Work Limit',
-        value: '48 Hours per Fortnight',
-        subtext: 'Protected statutory minimum hourly wage',
-        icon: 'alarm'
-      },
-      {
-        label: 'Scholarship Support',
-        value: '15% – 30% Tuition Reduction',
-        subtext: 'Destination Australia & Vice-Chancellor grants',
-        icon: 'card_membership'
-      }
-    ],
-    whyStudy: {
-      intro: 'Australia delivers top QS ranked universities, enviable quality of life, clear visa pathways, and exceptional global career recognition.',
-      benefits: [
-        {
-          title: 'Group of Eight (Go8) World Leadership',
-          desc: '7 Australian universities rank in the global top 50, delivering research power in IT, engineering, biotechnology, and healthcare.',
-          icon: 'military_tech'
-        },
-        {
-          title: 'Generous Post-Study Work Rights',
-          desc: 'Subclass 485 Temporary Graduate visa enables international graduates to live, work, and gain Australian industry experience.',
-          icon: 'work_outline'
-        },
-        {
-          title: 'Protected High Minimum Student Wages',
-          desc: 'Australia enforces statutory minimum wages (AUD $23.23+/hr) for student workers, ensuring fair workplace compensation.',
-          icon: 'monetization_on'
-        },
-        {
-          title: 'Vibrant Multicultural Lifestyle',
-          desc: 'Sydney, Melbourne, and Brisbane consistently feature among the world’s top 10 most liveable cities.',
-          icon: 'emoji_emotions'
-        }
-      ]
-    },
-    admissionRequirements: {
-      undergraduate: [
-        'HSC with GPA 4.00+ or Foundation / Diploma pathway entry',
-        'IELTS Overall 6.0 - 6.5 (Minimum 6.0 in each band)'
-      ],
-      postgraduate: [
-        '4-Year Bachelor’s Degree with Minimum CGPA 2.75 out of 4.00',
-        'IELTS Overall 6.5 (Minimum 6.0 in each band) or PTE 58'
-      ],
-      englishProficiency: {
-        ielts: 'Overall 6.0 - 6.5 required for Subclass 500 Student Visa',
-        alternatives: ['PTE Academic: 50 - 58', 'TOEFL iBT: 64 - 79'],
-        notes: 'English ELICOS pre-sessional packages available.'
-      },
-      requiredDocuments: [
-        'Valid Passport & National ID',
-        'Certified Academic Transcripts (SSC, HSC, Bachelor’s)',
-        'IELTS / PTE Official Test Report',
-        'Genuine Student (GS) Assessment Statement',
-        'Bank Solvency & Financial Source Proof'
-      ]
-    },
-    costOfStudy: {
-      currency: 'AUD',
-      tuitionRangeAnnual: 'AUD $24,000 – $45,000 / year',
-      livingCostMonthly: 'AUD $1,800 – $2,500 / month',
-      breakdown: [
-        {
-          category: 'Accommodation (Shared Apartment / Student Housing)',
-          monthlyCost: 'AUD $800 – $1,400',
-          details: 'Melbourne/Sydney vs. Adelaide/Perth'
-        },
-        {
-          category: 'Food & Daily Groceries',
-          monthlyCost: 'AUD $400 – $600',
-          details: 'Supermarkets and local Asian food markets'
-        }
-      ]
-    },
-    scholarships: [
-      {
-        name: 'Australian Government Destination Australia Award',
-        provider: 'Department of Education Australia',
-        eligibility: 'Students studying at regional Australian campuses',
-        coverageType: 'Partial',
-        coverageDetails: 'Up to AUD $15,000 per year towards tuition & living'
-      }
-    ],
-    intakes: [
-      {
-        name: 'Semester 1 Primary Intake',
-        startMonth: 'February / March',
-        deadline: '30 November',
-        status: 'Open',
-        notes: 'Main intake term across all universities.'
-      },
-      {
-        name: 'Semester 2 Mid-Year Intake',
-        startMonth: 'July / August',
-        deadline: '30 April',
-        status: 'Upcoming',
-        notes: 'Secondary intake term for major faculties.'
-      }
-    ],
-    visaProcess: [
-      {
-        stepNumber: 1,
-        title: 'Profile Evaluation & Genuine Student (GS) Check',
-        description: 'GEES counselors review your academic history, English score, and financial capacity.',
-        processingTime: '1 - 2 Days'
-      },
-      {
-        stepNumber: 2,
-        title: 'University Offer & CoE (Confirmation of Enrolment) Issuance',
-        description: 'Obtain Offer Letter, pay 1st semester deposit & OSHC insurance, receive official CoE.',
-        processingTime: '2 - 3 Weeks'
-      },
-      {
-        stepNumber: 3,
-        title: 'Subclass 500 Student Visa Lodgement',
-        description: 'Lodge visa online via ImmiAccount with GS statement, biometric appointment, and medical exam.',
-        processingTime: '3 - 6 Weeks'
-      }
-    ],
-    faqs: [
-      {
-        question: 'What is the Genuine Student (GS) requirement for Australia student visa?',
-        answer: 'The GS requirement assesses whether an applicant genuinely intends to obtain a quality education in Australia, considering academic background, career plan, and economic ties to Bangladesh.',
-        keyPoints: [
-          'GEES conducts thorough GS statement drafting assistance',
-          'Clear progression between previous education and chosen course required'
-        ]
-      }
-    ],
-    seo: {
-      title: 'Study in Australia from Bangladesh | Universities, Visa & CoE | GEES',
-      description: 'Study in Australia from Bangladesh. Compare Go8 universities, CRICOS courses, AUD tuition fees, Subclass 500 student visa, and 485 PSW visas with GEES.',
-      keywords: ['Study in Australia from Bangladesh', 'Australia student visa Subclass 500', 'Australia CoE processing', 'GEES Australia university']
-    },
-    lastVerifiedDate: 'October 2026'
-  },
+
 
   // ----------------------------------------------------------------------------
   // NEW ZEALAND
@@ -920,57 +845,7 @@ export const DESTINATION_REGISTRY: Record<string, StudyDestinationData> = {
     lastVerifiedDate: 'October 2026'
   },
 
-  // ----------------------------------------------------------------------------
-  // NETHERLANDS
-  // ----------------------------------------------------------------------------
-  'study-in-netherlands': {
-    slug: 'study-in-netherlands',
-    countryName: 'Netherlands',
-    flagEmoji: '🇳🇱',
-    code: 'NL',
-    currency: 'EUR',
-    hero: {
-      title: 'Study in the Netherlands from Bangladesh',
-      subtitle: 'Continental Europe’s #1 English-Taught Higher Education Leader',
-      intro: 'The Netherlands offers over 2,100 English-taught degree programs, 13 global top-200 universities, and the 1-year Zoekjaar Orientation Year job visa.',
-      imageUrl: 'https://images.unsplash.com/photo-1512470876302-972faa2aa9a4?q=80&w=1200&auto=format&fit=crop'
-    },
-    quickFacts: [
-      { label: 'Annual Tuition Fees', value: '€8,000 – €16,000', subtext: 'Top research & applied sciences unis', icon: 'payments' },
-      { label: 'Monthly Living Expenses', value: '€900 – €1,400', subtext: 'Amsterdam, Rotterdam, Utrecht', icon: 'account_balance_wallet' },
-      { label: 'Primary Intakes', value: 'September & February', subtext: 'Fall & Spring semesters', icon: 'calendar_month' },
-      { label: 'Post-Study Work Visa', value: '1 Year Zoekjaar (Orientation Year)', subtext: 'Search for high-skilled tech jobs', icon: 'card_travel' }
-    ],
-    whyStudy: {
-      intro: 'Innovative problem-based learning, highly international student environment, and direct gateway to European career markets.',
-      benefits: [
-        { title: '#1 English-Taught Programs in EU', desc: 'Over 2,100 accredited degree programs taught 100% in English.', icon: 'translate' },
-        { title: 'Zoekjaar 1-Year Job Search Visa', desc: 'Graduates can search for high-skilled jobs across the Dutch innovation economy.', icon: 'work_outline' }
-      ]
-    },
-    admissionRequirements: {
-      undergraduate: ['HSC + 1 Year University or A-Levels', 'IELTS 6.0'],
-      postgraduate: ['Bachelor’s degree CGPA 3.00+', 'IELTS 6.5'],
-      englishProficiency: { ielts: 'Overall 6.0 - 6.5', alternatives: ['TOEFL 80', 'PTE 58'], notes: 'Internal tests not accepted.' },
-      requiredDocuments: ['Passport', 'Transcripts', 'IELTS Score', 'Nuffic Certificate (if required)']
-    },
-    costOfStudy: {
-      currency: 'EUR',
-      tuitionRangeAnnual: '€8,000 – €16,000 / year',
-      livingCostMonthly: '€900 – €1,400 / month',
-      breakdown: [{ category: 'Student Housing', monthlyCost: '€450 – €850', details: 'Student housing corporation rooms' }]
-    },
-    scholarships: [],
-    intakes: [{ name: 'September Intake', startMonth: 'September', deadline: '1 May', status: 'Open', notes: 'Primary intake.' }],
-    visaProcess: [{ stepNumber: 1, title: 'MVV / VVR Visa Process', description: 'Dutch university lodges MVV visa on your behalf.' }],
-    faqs: [{ question: 'Do Dutch universities teach in English?', answer: 'Yes, over 2,100 programs are taught 100% in English.' }],
-    seo: {
-      title: 'Study in the Netherlands from Bangladesh | Universities & Visa | GEES',
-      description: 'Study in the Netherlands from Bangladesh. Compare Dutch research universities, English-taught programs, tuition fees, and Zoekjaar orientation visa with GEES.',
-      keywords: ['Study in Netherlands from Bangladesh', 'Dutch university tuition', 'Zoekjaar visa', 'GEES Netherlands']
-    },
-    lastVerifiedDate: 'October 2026'
-  },
+
 
   // ----------------------------------------------------------------------------
   // FINLAND
@@ -1024,57 +899,7 @@ export const DESTINATION_REGISTRY: Record<string, StudyDestinationData> = {
     lastVerifiedDate: 'October 2026'
   },
 
-  // ----------------------------------------------------------------------------
-  // BELGIUM
-  // ----------------------------------------------------------------------------
-  'study-in-belgium': {
-    slug: 'study-in-belgium',
-    countryName: 'Belgium',
-    flagEmoji: '🇧🇪',
-    code: 'BE',
-    currency: 'EUR',
-    hero: {
-      title: 'Study in Belgium from Bangladesh',
-      subtitle: 'Capital of the European Union & Home to Historic KU Leuven',
-      intro: 'Study at the heart of European diplomacy and business in Brussels, Leuven, or Ghent with low public university tuition and high global recognition.',
-      imageUrl: 'https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?q=80&w=1200&auto=format&fit=crop'
-    },
-    quickFacts: [
-      { label: 'Annual Tuition Fees', value: '€1,000 – €4,500', subtext: 'Affordable public European tuition', icon: 'payments' },
-      { label: 'Monthly Living Expenses', value: '€800 – €1,100', subtext: 'Brussels & Flanders region', icon: 'account_balance_wallet' },
-      { label: 'Primary Intakes', value: 'September & February', subtext: 'Fall & Spring terms', icon: 'calendar_month' },
-      { label: 'Post-Study Work', value: '1-Year EU Search Year', subtext: 'Work across EU headquarters', icon: 'card_travel' }
-    ],
-    whyStudy: {
-      intro: 'Unrivalled proximity to EU institutions, NATO, and global corporate headquarters with highly affordable tuition.',
-      benefits: [
-        { title: 'EU Headquarters Location', desc: 'Direct exposure to international law, diplomacy, tech, and multilateral business.', icon: 'apartment' },
-        { title: 'Very Low Tuition Fees', desc: 'Public university tuition starts as low as €1,000 to €4,500 per year.', icon: 'savings' }
-      ]
-    },
-    admissionRequirements: {
-      undergraduate: ['HSC / A-Levels + APS / Equivalency', 'IELTS 6.0'],
-      postgraduate: ['Bachelor’s degree CGPA 2.75+', 'IELTS 6.5'],
-      englishProficiency: { ielts: 'Overall 6.0 - 6.5', alternatives: ['TOEFL 79'], notes: 'Standard SELT requirements.' },
-      requiredDocuments: ['Passport', 'Transcripts', 'IELTS Score', 'Sponsorship proof']
-    },
-    costOfStudy: {
-      currency: 'EUR',
-      tuitionRangeAnnual: '€1,000 – €4,500 / year',
-      livingCostMonthly: '€800 – €1,100 / month',
-      breakdown: [{ category: 'Student Room (Kot)', monthlyCost: '€380 – €600', details: 'Standard Belgian student accommodation' }]
-    },
-    scholarships: [],
-    intakes: [{ name: 'Fall Intake', startMonth: 'September', deadline: '1 April', status: 'Open', notes: 'Main intake.' }],
-    visaProcess: [{ stepNumber: 1, title: 'Belgian Student Visa (Type D)', description: 'Lodge application via Embassy / VFS in Dhaka/Delhi.' }],
-    faqs: [{ question: 'How much does it cost to study in Belgium?', answer: 'Tuition is among Europe’s lowest, averaging €1,000 to €4,500 per year.' }],
-    seo: {
-      title: 'Study in Belgium from Bangladesh | Universities & Visa | GEES',
-      description: 'Study in Belgium from Bangladesh. Explore low-cost public European universities, KU Leuven programs, EU search year, and Type D visa with GEES.',
-      keywords: ['Study in Belgium from Bangladesh', 'Belgium university tuition', 'Belgian student visa', 'GEES Belgium']
-    },
-    lastVerifiedDate: 'October 2026'
-  },
+
 
   // ----------------------------------------------------------------------------
   // CYPRUS
@@ -1180,57 +1005,7 @@ export const DESTINATION_REGISTRY: Record<string, StudyDestinationData> = {
     lastVerifiedDate: 'October 2026'
   },
 
-  // ----------------------------------------------------------------------------
-  // MAURITIUS
-  // ----------------------------------------------------------------------------
-  'study-in-mauritius': {
-    slug: 'study-in-mauritius',
-    countryName: 'Mauritius',
-    flagEmoji: '🇲🇺',
-    code: 'MU',
-    currency: 'USD',
-    hero: {
-      title: 'Study in Mauritius from Bangladesh',
-      subtitle: 'Tropical Island Higher Education Capital & UK Branch Campuses',
-      intro: 'Earn prestigious British and French degrees at Middlesex University Mauritius or Curtin Mauritius on a safe, sun-drenched island in the Indian Ocean.',
-      imageUrl: 'https://images.unsplash.com/photo-1589394815804-964ed0be2eb5?q=80&w=1200&auto=format&fit=crop'
-    },
-    quickFacts: [
-      { label: 'Annual Tuition Fees', value: '$3,000 – $6,500', subtext: 'Affordable UK & Australian branch campuses', icon: 'payments' },
-      { label: 'Monthly Living Expenses', value: '$350 – $550', subtext: 'Low cost of island living', icon: 'account_balance_wallet' },
-      { label: 'Primary Intakes', value: 'September & March', subtext: 'Fall & Spring terms', icon: 'calendar_month' },
-      { label: 'Post-Study Work', value: 'YEP Work Permit Scheme', subtext: 'Post-study employment pathways', icon: 'card_travel' }
-    ],
-    whyStudy: {
-      intro: 'Direct branch campuses of Middlesex UK and Curtin Australia in a safe, tropical, bilingual environment.',
-      benefits: [
-        { title: 'UK Branch Campuses', desc: 'Study at Middlesex University Mauritius and receive the exact same UK degree parchment.', icon: 'school' },
-        { title: 'Safe Tropical Haven', desc: 'Ranked Africa’s safest nation with warm hospitality and familiar island climate.', icon: 'beach_access' }
-      ]
-    },
-    admissionRequirements: {
-      undergraduate: ['HSC GPA 3.00+ or O/A Levels', 'IELTS 5.5 or MOI'],
-      postgraduate: ['Bachelor’s degree CGPA 2.50+', 'IELTS 6.0 or MOI'],
-      englishProficiency: { ielts: 'Overall 5.5 - 6.0', alternatives: ['MOI Certificate', 'Internal English Test'], notes: 'Flexible criteria.' },
-      requiredDocuments: ['Passport', 'Transcripts', 'Medical Check', 'Bank Solvency']
-    },
-    costOfStudy: {
-      currency: 'USD',
-      tuitionRangeAnnual: '$3,000 – $6,500 / year',
-      livingCostMonthly: '$350 – $550 / month',
-      breakdown: [{ category: 'Student Residence / Flat', monthlyCost: '$200 – $350', details: 'Uniciti Student Residence in Moka' }]
-    },
-    scholarships: [],
-    intakes: [{ name: 'September Intake', startMonth: 'September', deadline: '31 July', status: 'Open', notes: 'Main intake.' }],
-    visaProcess: [{ stepNumber: 1, title: 'Mauritius Student Visa', description: 'Passport endorsement handled by university registrar upon arrival.' }],
-    faqs: [{ question: 'Is Mauritius good for Bangladeshi students?', answer: 'Yes, it offers UK branch campus degrees at very low tuition with smooth visa processing.' }],
-    seo: {
-      title: 'Study in Mauritius from Bangladesh | UK Branch Campuses & Visa | GEES',
-      description: 'Study in Mauritius from Bangladesh. Compare Middlesex University Mauritius tuition, Curtin Australia courses, and student visa process with GEES.',
-      keywords: ['Study in Mauritius from Bangladesh', 'Middlesex Mauritius tuition', 'Mauritius student visa', 'GEES Mauritius']
-    },
-    lastVerifiedDate: 'October 2026'
-  },
+
 
   // ----------------------------------------------------------------------------
   // INDIA
@@ -1282,6 +1057,337 @@ export const DESTINATION_REGISTRY: Record<string, StudyDestinationData> = {
       keywords: ['Study in India from Bangladesh', 'Indian university admission Bangladesh', 'Assam Down Town University GEES', 'GEES India']
     },
     lastVerifiedDate: 'October 2026'
+  },
+  'study-in-usa': {
+    slug: 'study-in-usa',
+    countryName: 'USA',
+    flagEmoji: '🇺🇸',
+    code: 'US',
+    currency: 'USD',
+    hero: {
+      title: 'Study in USA from Bangladesh',
+      subtitle: '14 Partner Universities, STEM OPT up to 3 Years & Unmatched Academic Prestige',
+      intro: 'The United States is the premier global destination for higher education, home to top research universities, Fortune 500 career networks, and up to 3-year STEM OPT work authorization.',
+      imageUrl: 'https://images.unsplash.com/photo-1485738422979-f5c462d49f74?q=80&w=1200&auto=format&fit=crop'
+    },
+    quickFacts: [
+      { label: 'Annual Tuition Fees', value: '$15,000 – $58,000', subtext: '14 partner universities & colleges', icon: 'payments' },
+      { label: 'Monthly Living Expenses', value: '$1,000 – $1,800', subtext: 'Depending on US state and city', icon: 'account_balance_wallet' },
+      { label: 'Primary Intakes', value: 'Fall (Aug/Sept) & Spring (Jan)', subtext: 'Summer intake also available', icon: 'calendar_month' },
+      { label: 'STEM OPT Work Rights', value: 'Up to 3 Years OPT', subtext: 'Full-time work authorization', icon: 'card_travel' }
+    ],
+    whyStudy: {
+      intro: 'GEES partners with 14 prestigious American institutions offering STEM degree programs, scholarship opportunities, and comprehensive F-1 visa preparation.',
+      benefits: [
+        { title: '14 Partner Universities in the USA', desc: 'Direct representation with Wilkes University, Stevens Institute, UMBC, Trine, Potomac, Cascadia College, Rowan, and more.', icon: 'school' },
+        { title: '3-Year STEM OPT Work Authorization', desc: 'Graduates of STEM-designated programs can work in the United States for up to 36 months after graduation.', icon: 'work_outline' },
+        { title: 'Generous Scholarships & Assistantships', desc: 'Merit-based international student scholarships, graduate assistantships, and tuition reductions.', icon: 'military_tech' },
+        { title: 'Global Tech & Corporate Ecosystem', desc: 'Direct corporate recruitment networks across Silicon Valley, Wall Street, Boston biotech, and Washington D.C.', icon: 'hub' }
+      ]
+    },
+    admissionRequirements: {
+      undergraduate: ['HSC / A-Levels with minimum GPA 3.0 / Grade C', 'SAT/ACT optional at most partner universities', 'IELTS 6.0 - 6.5 or Duolingo 105+'],
+      postgraduate: ['4-year Bachelor degree (or recognized 3-year degree) with minimum CGPA 2.75 - 3.0', 'GRE/GMAT waivers available at partner institutions', 'IELTS 6.5 or TOEFL 80+'],
+      englishProficiency: { ielts: 'Overall 6.0 – 6.5', alternatives: ['TOEFL iBT 79-90', 'Duolingo 105-120', 'PTE Academic 53-65'], notes: 'Direct English waivers available for students with English-medium medium-of-instruction certificates.' },
+      requiredDocuments: ['Valid Passport', 'Official Academic Transcripts & Certificates', 'Statement of Purpose (SOP)', '2-3 Letters of Recommendation (LOR)', 'Affidavit of Financial Support & Bank Statement', 'English Proficiency Score']
+    },
+    costOfStudy: {
+      currency: 'USD',
+      tuitionRangeAnnual: '$15,000 – $58,000 / year',
+      livingCostMonthly: '$1,000 – $1,800 / month',
+      breakdown: [
+        { category: 'Campus Residence / Apartment Sharing', monthlyCost: '$550 – $1,100', details: 'Furnished dorms or off-campus apartments' },
+        { category: 'Food & Groceries', monthlyCost: '$300 – $500', details: 'Meal plans or local grocery shopping' },
+        { category: 'Health Insurance & Local Transport', monthlyCost: '$150 – $250', details: 'Mandatory university medical insurance & transit pass' }
+      ]
+    },
+    scholarships: [
+      { name: 'GEES Partner Merit Scholarship', provider: 'US Partner Universities', eligibility: 'CGPA 3.2+ or outstanding academic track record', coverageType: 'Tuition Waiver', coverageDetails: '$3,000 to $18,000 annual tuition deduction' },
+      { name: 'Graduate Research & Teaching Assistantships', provider: 'US Academic Departments', eligibility: 'Master and PhD candidates in STEM & Business', coverageType: 'Full', coverageDetails: 'Full tuition waiver + monthly living stipend' }
+    ],
+    intakes: [
+      { name: 'Fall Intake', startMonth: 'August / September', deadline: '1 June', status: 'Open', notes: 'Primary intake with maximum course selections and scholarship options.' },
+      { name: 'Spring Intake', startMonth: 'January', deadline: '1 November', status: 'Open', notes: 'Major secondary intake across all 14 partner universities.' }
+    ],
+    visaProcess: [
+      { stepNumber: 1, title: 'Receive Form I-20', description: 'Secure unconditional admission and official I-20 certificate of eligibility from partner university.' },
+      { stepNumber: 2, title: 'Pay SEVIS I-901 Fee', description: 'Pay the $350 mandatory SEVIS fee to U.S. Immigration and Customs Enforcement.' },
+      { stepNumber: 3, title: 'Submit DS-160 & Schedule Interview', description: 'Complete DS-160 online visa application and schedule F-1 interview at U.S. Embassy Dhaka.' },
+      { stepNumber: 4, title: 'GEES Mock Visa Interview Coaching', description: 'Comprehensive mock interviews with senior counselors covering academic intent and financial verification.' }
+    ],
+    faqs: [
+      { question: 'What 14 universities in the USA are represented by GEES?', answer: 'GEES officially represents Wilkes University, University of Potomac, Trine University, Cascadia College, Stevens Institute of Technology, University of Maryland Baltimore County (UMBC), Arkansas State University, Minnesota State University, Rowan University, University of West Florida, Duquesne University, Brandeis University – School of Business and Economics, Marquette University, and Central Michigan University.' },
+      { question: 'Can international students work in the USA on an F-1 visa?', answer: 'Yes! International students can work up to 20 hours per week on-campus during academic terms, and engage in Curricular Practical Training (CPT) and up to 3 years of Optional Practical Training (OPT) for STEM majors.' }
+    ],
+    seo: {
+      title: 'Study in USA from Bangladesh | 14 Partner Universities, Fees & F-1 Visa | GEES',
+      description: 'Study in USA from Bangladesh with GEES. Explore 14 partner universities including Wilkes, Stevens, UMBC, Trine, Cascadia, Rowan, and Duquesne. Scholarships, fees, and F-1 visa guidance.',
+      keywords: ['Study in USA from Bangladesh', 'USA partner universities GEES', 'F1 visa Bangladesh', 'Wilkes University GEES', 'Stevens Institute GEES']
+    },
+    lastVerifiedDate: 'October 2026'
+  },
+  'study-in-australia': {
+    slug: 'study-in-australia',
+    countryName: 'Australia',
+    flagEmoji: '🇦🇺',
+    code: 'AU',
+    currency: 'AUD',
+    hero: {
+      title: 'Study in Australia from Bangladesh',
+      subtitle: '10 Partner Universities, Post-Study Work Visa up to 4 Years & Top Quality of Life',
+      intro: 'Australia offers globally ranked universities, pristine coastal cities, generous post-study work rights, and high student satisfaction across Sydney, Melbourne, Wollongong, Newcastle, Hobart, and Queensland.',
+      imageUrl: 'https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?q=80&w=1200&auto=format&fit=crop'
+    },
+    quickFacts: [
+      { label: 'Annual Tuition Fees', value: 'AUD $20,000 – $38,000', subtext: '10 partner universities & colleges', icon: 'payments' },
+      { label: 'Monthly Living Expenses', value: 'AUD $1,500 – $2,200', subtext: 'Sydney, Melbourne, Wollongong, Hobart', icon: 'account_balance_wallet' },
+      { label: 'Primary Intakes', value: 'February & July', subtext: 'Semester 1 & 2', icon: 'calendar_month' },
+      { label: 'Post-Study Work Visa', value: 'Subclass 485 up to 4 Yrs', subtext: 'Full unrestricted work rights', icon: 'card_travel' }
+    ],
+    whyStudy: {
+      intro: 'World-recognized qualifications, safe welcoming society, and high post-graduation career opportunities.',
+      benefits: [
+        { title: '10 Partner Universities & Colleges in Australia', desc: 'Direct representation with University of Wollongong, La Trobe University Sydney, University of Tasmania, James Cook University, Charles Sturt University, CQUniversity Australia, University of New South Wales, University of Newcastle, RMIT University, and Swinburne University of Technology.', icon: 'school' },
+        { title: 'Global Top Rankings & Industry Co-ops', desc: 'UNSW (Top 20 global), Wollongong, RMIT, Swinburne, and Newcastle deliver world-class research and employer connections.', icon: 'military_tech' },
+        { title: 'Extended Regional Work Rights', desc: 'Universities in Tasmania, Wollongong, Newcastle, Townsville, and regional campuses qualify for extra years of post-study graduate visas.', icon: 'work_outline' }
+      ]
+    },
+    admissionRequirements: {
+      undergraduate: ['HSC with 65%+ or A-Levels with 3 passes', 'IELTS 6.0 – 6.5 overall'],
+      postgraduate: ['Bachelor degree CGPA 2.75+ out of 4.0', 'IELTS 6.5 with no band less than 6.0'],
+      englishProficiency: { ielts: 'Overall 6.0 – 6.5', alternatives: ['PTE Academic 58-65', 'TOEFL iBT 79-90'], notes: 'PTE Academic is widely accepted across all Australian partner institutions.' },
+      requiredDocuments: ['Valid Passport', 'Academic Transcripts & Certificates', 'IELTS / PTE Certificate', 'Genuine Student (GS) Statement', 'Financial Evidence']
+    },
+    costOfStudy: {
+      currency: 'AUD',
+      tuitionRangeAnnual: 'AUD $20,000 – $38,000 / year',
+      livingCostMonthly: 'AUD $1,500 – $2,200 / month',
+      breakdown: [{ category: 'Student Accommodation', monthlyCost: 'AUD $750 – $1,350', details: 'University residence, managed student apartment or homestay' }]
+    },
+    scholarships: [],
+    intakes: [
+      { name: 'Semester 1 (Feb)', startMonth: 'February', deadline: '30 November', status: 'Open', notes: 'Main annual intake.' },
+      { name: 'Semester 2 (July)', startMonth: 'July', deadline: '30 April', status: 'Open', notes: 'Mid-year major intake across all partner institutions.' }
+    ],
+    visaProcess: [{ stepNumber: 1, title: 'Student Visa (Subclass 500)', description: 'Apply online with CoE, OSHC health cover, and Genuine Student (GS) assessment.' }],
+    faqs: [
+      { question: 'Which universities in Australia are represented by GEES?', answer: 'GEES officially represents all 10 partner institutions: University of Wollongong, La Trobe University Sydney, University of Tasmania, James Cook University, Charles Sturt University, CQUniversity Australia, University of New South Wales, University of Newcastle, RMIT University, and Swinburne University of Technology.' },
+      { question: 'Can international students work in Australia?', answer: 'Yes, international student visa holders can work up to 48 hours per fortnight during study terms and unlimited during scheduled breaks.' }
+    ],
+    seo: {
+      title: 'Study in Australia from Bangladesh | 10 Partner Universities, Fees & Visa | GEES',
+      description: 'Study in Australia with GEES Bangladesh. Explore 10 partner universities including Wollongong, UNSW, RMIT, Swinburne, UTAS, and Newcastle with Subclass 500 visa guidance.',
+      keywords: ['Study in Australia from Bangladesh', 'Australia partner universities GEES', 'University of Wollongong GEES', 'UNSW GEES', 'RMIT GEES']
+    },
+    lastVerifiedDate: 'October 2026'
+  },
+  'study-in-france': {
+    slug: 'study-in-france',
+    countryName: 'France',
+    flagEmoji: '🇫🇷',
+    code: 'FR',
+    currency: 'EUR',
+    hero: {
+      title: 'Study in France from Bangladesh',
+      subtitle: '4 Partner Business Schools & Grandes Écoles, Triple Crown Accreditations & Schengen Mobility',
+      intro: 'France offers prestigious higher education in the heart of Europe, combining cutting-edge research, business excellence, and accessible tuition across Paris, Nancy, and Rennes.',
+      imageUrl: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=1200&auto=format&fit=crop'
+    },
+    quickFacts: [
+      { label: 'Annual Tuition Fees', value: '€4,500 – €12,500', subtext: '4 partner business schools & institutes', icon: 'payments' },
+      { label: 'Monthly Living Expenses', value: '€650 – €1,200', subtext: 'Paris, Nancy & Rennes', icon: 'account_balance_wallet' },
+      { label: 'Primary Intakes', value: 'September & February', subtext: 'Fall & Spring intakes', icon: 'calendar_month' },
+      { label: 'Post-Study Work Visa', value: '1 to 2 Years APS Visa', subtext: 'Post-study job search authorization', icon: 'card_travel' }
+    ],
+    whyStudy: {
+      intro: 'English-taught degree programs, generous government housing subsidies (CAF), and European career mobility.',
+      benefits: [
+        { title: '4 Partner Business Schools & Institutes', desc: 'Direct representation with ICN Business School, ISTEC Business School, Rennes School of Business, and Rennes Graduate School of Management.', icon: 'school' },
+        { title: 'Triple Crown Accreditations', desc: 'ICN and Rennes School of Business hold prestigious EQUIS, AMBA, and AACSB accreditations in the global top 1%.', icon: 'military_tech' },
+        { title: 'French Government Housing Subsidy (CAF)', desc: 'International students receive up to 40% rebate on monthly rent from the French government.', icon: 'home' }
+      ]
+    },
+    admissionRequirements: {
+      undergraduate: ['HSC / A-Levels with good grades', 'IELTS 6.0 overall'],
+      postgraduate: ['Bachelor degree in relevant field', 'IELTS 6.0 – 6.5 or English MOI certificate'],
+      englishProficiency: { ielts: 'Overall 6.0', alternatives: ['TOEFL 80', 'Duolingo 105'], notes: 'Hundreds of degrees taught entirely in English without French requirement.' },
+      requiredDocuments: ['Passport', 'Academic Transcripts', 'CV & Motivation Letter', 'English Proficiency', 'Campus France Profile']
+    },
+    costOfStudy: {
+      currency: 'EUR',
+      tuitionRangeAnnual: '€4,500 – €12,500 / year',
+      livingCostMonthly: '€650 – €1,200 / month',
+      breakdown: [{ category: 'Student Housing (after CAF)', monthlyCost: '€300 – €600', details: 'CROUS student residences or private studios in Paris, Nancy, or Rennes' }]
+    },
+    scholarships: [],
+    intakes: [{ name: 'Fall Intake', startMonth: 'September', deadline: '31 May', status: 'Open', notes: 'Main academic session.' }],
+    visaProcess: [{ stepNumber: 1, title: 'Campus France & Long-Stay Visa (VLS-TS)', description: 'Complete Études en France interview and visa appointment at Embassy of France Dhaka.' }],
+    faqs: [
+      { question: 'Which universities and business schools in France are represented by GEES?', answer: 'GEES officially represents 4 partner institutions: ICN Business School, ISTEC Business School, Rennes School of Business, and Rennes Graduate School of Management.' },
+      { question: 'Do I need to speak French to study in France?', answer: 'No, degree programs at our partner institutions are conducted 100% in English.' }
+    ],
+    seo: {
+      title: 'Study in France from Bangladesh | 4 Partner Business Schools, Fees & Visa | GEES',
+      description: 'Study in France from Bangladesh with GEES. Explore ICN, ISTEC, Rennes SB, and Rennes Graduate School of Management with VLS-TS student visa guidance.',
+      keywords: ['Study in France from Bangladesh', 'France partner universities GEES', 'ICN Business School GEES', 'Rennes School of Business GEES']
+    },
+    lastVerifiedDate: 'October 2026'
+  },
+  'study-in-hungary': {
+    slug: 'study-in-hungary',
+    countryName: 'Hungary',
+    flagEmoji: '🇭🇺',
+    code: 'HU',
+    currency: 'HUF',
+    hero: {
+      title: 'Study in Hungary from Bangladesh',
+      subtitle: 'Premier Medical & STEM Universities, Affordable EU Living & Schengen Access',
+      intro: 'Hungary is Central Europe’s premier educational destination, celebrated for historic universities, world-renowned medical and engineering faculties, and low cost of living.',
+      imageUrl: 'https://images.unsplash.com/photo-1549877452-9c387954fbc2?q=80&w=1200&auto=format&fit=crop'
+    },
+    quickFacts: [
+      { label: 'Annual Tuition Fees', value: '€4,000 – €8,000', subtext: '3 partner universities & colleges', icon: 'payments' },
+      { label: 'Monthly Living Expenses', value: '€450 – €700', subtext: 'Debrecen, Sopron, Budapest', icon: 'account_balance_wallet' },
+      { label: 'Primary Intakes', value: 'September & February', subtext: 'Fall & Spring sessions', icon: 'calendar_month' },
+      { label: 'Post-Study Pathways', value: '9-Month Job Search Visa', subtext: 'EU career pathways', icon: 'card_travel' }
+    ],
+    whyStudy: {
+      intro: 'European Union accredited degrees, affordable tuition fees, and rich student life across Debrecen, Sopron, and Budapest.',
+      benefits: [
+        { title: '3 Official Partner Universities', desc: 'Direct representation with University of Debrecen, University of Sopron, and Corvinus University.', icon: 'school' },
+        { title: 'Premier Medical, Green Tech & Business', desc: 'Medicine and IT at Debrecen, environmental engineering at Sopron, and triple-accredited business at Corvinus.', icon: 'medical_services' },
+        { title: 'Affordable European Living', desc: 'Monthly living expenses starting at only €450 including accommodation and food.', icon: 'savings' }
+      ]
+    },
+    admissionRequirements: {
+      undergraduate: ['HSC / A-Levels with 60%+', 'IELTS 5.5 – 6.0 or university entrance test'],
+      postgraduate: ['Bachelor degree in related discipline', 'IELTS 6.0 – 6.5'],
+      englishProficiency: { ielts: 'Overall 5.5 – 6.0', alternatives: ['Internal University English Test', 'Duolingo 100+'], notes: 'Internal entrance exams frequently accepted.' },
+      requiredDocuments: ['Passport', 'Transcripts & Diplomas', 'Motivation Letter', 'Medical Report', 'Bank Statement']
+    },
+    costOfStudy: {
+      currency: 'EUR',
+      tuitionRangeAnnual: '€4,000 – €8,000 / year',
+      livingCostMonthly: '€450 – €700 / month',
+      breakdown: [{ category: 'Student Dormitory / Flatshare', monthlyCost: '€180 – €350', details: 'University dormitory or shared flat in Debrecen, Sopron, or Budapest' }]
+    },
+    scholarships: [],
+    intakes: [{ name: 'Fall Intake', startMonth: 'September', deadline: '30 June', status: 'Open', notes: 'Main intake.' }],
+    visaProcess: [{ stepNumber: 1, title: 'Hungarian D-Type Student Visa', description: 'Apply through Embassy of Hungary with letter of acceptance and accommodation proof.' }],
+    faqs: [
+      { question: 'Which universities in Hungary are represented by GEES?', answer: 'GEES officially represents all 3 premier Hungarian institutions: University of Debrecen, University of Sopron, and Corvinus University.' },
+      { question: 'Are Hungarian medical degrees recognized globally?', answer: 'Yes, Hungarian medical degrees from University of Debrecen are fully accredited and listed in the WHO World Directory of Medical Schools.' }
+    ],
+    seo: {
+      title: 'Study in Hungary from Bangladesh | Debrecen, Sopron & Corvinus | GEES',
+      description: 'Study in Hungary from Bangladesh with GEES. Explore University of Debrecen, University of Sopron, Corvinus University, affordable tuition fees, and D-type visa guidance.',
+      keywords: ['Study in Hungary from Bangladesh', 'Hungary student visa Bangladesh', 'University of Debrecen GEES', 'University of Sopron GEES', 'Corvinus University GEES']
+    },
+    lastVerifiedDate: 'October 2026'
+  },
+  'study-in-malta': {
+    slug: 'study-in-malta',
+    countryName: 'Malta',
+    flagEmoji: '🇲🇹',
+    code: 'MT',
+    currency: 'EUR',
+    hero: {
+      title: 'Study in Malta from Bangladesh',
+      subtitle: '2 Official Partner Institutions: GBS Malta & Malita International College',
+      intro: 'Malta is an English-speaking European Union destination in the Mediterranean, offering accredited degrees, year-round sunshine, and high student visa success in St. Julian’s and Valletta.',
+      imageUrl: 'https://images.unsplash.com/photo-1541427422271-1d5cf6cc675c?q=80&w=1200&auto=format&fit=crop'
+    },
+    quickFacts: [
+      { label: 'Annual Tuition Fees', value: '€5,200 – €6,500', subtext: '2 official partner institutions', icon: 'payments' },
+      { label: 'Monthly Living Expenses', value: '€550 – €850', subtext: 'St. Julian’s, Valletta & Sliema', icon: 'account_balance_wallet' },
+      { label: 'Primary Intakes', value: 'October & February', subtext: 'Autumn & Spring intakes', icon: 'calendar_month' },
+      { label: 'Part-Time Work', value: '20 Hours / Week', subtext: 'Legal work permit after 90 days', icon: 'card_travel' }
+    ],
+    whyStudy: {
+      intro: 'Official English language, British educational traditions, Schengen zone travel, and affordable European degrees.',
+      benefits: [
+        { title: '2 Official Partner Institutions', desc: 'Direct representation with GBS Malta in St. Julian’s and Malita International College in Valletta.', icon: 'school' },
+        { title: '100% English-Speaking Nation', desc: 'English is an official language spoken by 90%+ of the population with British-accredited diplomas and degrees.', icon: 'language' },
+        { title: 'High Student Visa Success Rate', desc: 'Straightforward visa criteria through Identità Malta with GEES documentation guidance.', icon: 'verified' }
+      ]
+    },
+    admissionRequirements: {
+      undergraduate: ['HSC / A-Levels with pass marks', 'IELTS 5.5 or English MOI'],
+      postgraduate: ['Bachelor degree CGPA 2.5+', 'IELTS 6.0 or alternative proficiency'],
+      englishProficiency: { ielts: 'Overall 5.5 – 6.0', alternatives: ['English MOI certificate from previous institution', 'Duolingo 95+'], notes: 'Flexible English assessment for international applicants.' },
+      requiredDocuments: ['Valid Passport', 'Academic Certificates', 'Curriculum Vitae', 'Bank Statement', 'Acceptance Letter']
+    },
+    costOfStudy: {
+      currency: 'EUR',
+      tuitionRangeAnnual: '€5,200 – €6,500 / year',
+      livingCostMonthly: '€550 – €850 / month',
+      breakdown: [{ category: 'Shared Apartment / Student Room', monthlyCost: '€250 – €450', details: 'Furnished apartment sharing in St. Julian’s, Sliema, or Valletta' }]
+    },
+    scholarships: [],
+    intakes: [{ name: 'Autumn Session', startMonth: 'October', deadline: '31 August', status: 'Open', notes: 'Main intake.' }],
+    visaProcess: [{ stepNumber: 1, title: 'National D Visa (Schengen)', description: 'Apply via VFS Global Dhaka for Malta National D Visa with approval in principle.' }],
+    faqs: [
+      { question: 'Which partner institutions in Malta are represented by GEES?', answer: 'GEES officially represents GBS Malta and Malita International College, offering recognized European undergraduate, master, and career diploma programs.' },
+      { question: 'Can international students work in Malta?', answer: 'Yes, international students are permitted to work up to 20 hours per week after the first 90 days of study.' }
+    ],
+    seo: {
+      title: 'Study in Malta from Bangladesh | GBS Malta & Malita College | GEES',
+      description: 'Study in Malta with GEES Bangladesh. Explore GBS Malta, Malita International College, tuition fees, and Schengen student visa processing.',
+      keywords: ['Study in Malta from Bangladesh', 'GBS Malta GEES', 'Malita International College GEES', 'Malta student visa Bangladesh']
+    },
+    lastVerifiedDate: 'October 2026'
+  },
+  'study-in-sweden': {
+    slug: 'study-in-sweden',
+    countryName: 'Sweden',
+    flagEmoji: '🇸🇪',
+    code: 'SE',
+    currency: 'SEK',
+    hero: {
+      title: 'Study in Sweden from Bangladesh',
+      subtitle: '10 Partner Universities, Top 100 QS Rankings & 1-Year Job Search Residence Permit',
+      intro: 'Sweden is the birthplace of global tech giants like Spotify, Ericsson, and Skype, offering world-class research universities and generous post-study residence permits.',
+      imageUrl: 'https://images.unsplash.com/photo-1509356843159-d6e2e8f99497?q=80&w=1200&auto=format&fit=crop'
+    },
+    quickFacts: [
+      { label: 'Annual Tuition Fees', value: 'SEK 90,000 – 160,000', subtext: '10 partner universities & technical institutes', icon: 'payments' },
+      { label: 'Monthly Living Expenses', value: 'SEK 8,500 – 12,000', subtext: 'Stockholm, Lund, Uppsala, Gothenburg', icon: 'account_balance_wallet' },
+      { label: 'Primary Intakes', value: 'August (Autumn) & January', subtext: 'Main annual session', icon: 'calendar_month' },
+      { label: 'Post-Study Residence', value: '1-Year Job Search Permit', subtext: 'Direct pathway to EU work permit', icon: 'card_travel' }
+    ],
+    whyStudy: {
+      intro: 'Pioneering research, English-taught master degrees, and an innovative society that values creativity and equality.',
+      benefits: [
+        { title: '10 Partner Universities & Institutes', desc: 'Direct representation with Lund University, Jönköping University, Uppsala University, Chalmers University of Technology, Stockholm University, University of Gothenburg, Linköping University (LiU), Luleå University of Technology, Umeå University, and Malmö University.', icon: 'school' },
+        { title: 'Top 100 Ranked Research Universities', desc: 'Lund University, Uppsala University, and Stockholm University rank among the world elite.', icon: 'military_tech' },
+        { title: 'Leader in Sustainability & Tech', desc: 'Access innovative industry partnerships with Volvo, Ericsson, AstraZeneca, and Spotify.', icon: 'bolt' }
+      ]
+    },
+    admissionRequirements: {
+      undergraduate: ['HSC / A-Levels with strong STEM background', 'IELTS 6.5 with min 5.5 in each section'],
+      postgraduate: ['4-year Bachelor degree (or Honours) in relevant field', 'IELTS 6.5 (Academic)'],
+      englishProficiency: { ielts: 'Overall 6.5 (English 6 equivalent)', alternatives: ['TOEFL iBT 90 (min 20 writing)', 'PTE Academic 62'], notes: 'Strict Swedish National Admissions English 6 requirement.' },
+      requiredDocuments: ['Valid Passport', 'Degree Certificates & Transcripts', 'English Certificate', 'Motivational Letter', 'Proof of Citizenship']
+    },
+    costOfStudy: {
+      currency: 'SEK',
+      tuitionRangeAnnual: 'SEK 90,000 – 160,000 / year',
+      livingCostMonthly: 'SEK 8,500 – 12,000 / month',
+      breakdown: [{ category: 'Student Housing (SSSB / LU Accommodation)', monthlyCost: 'SEK 4,000 – 6,500', details: 'Guaranteed or queuing corridor rooms' }]
+    },
+    scholarships: [],
+    intakes: [{ name: 'Autumn Semester', startMonth: 'August', deadline: '15 January (Round 1)', status: 'Open', notes: 'National centralized UniversityAdmissions.se round.' }],
+    visaProcess: [{ stepNumber: 1, title: 'Swedish Residence Permit for Higher Education', description: 'Apply online with the Swedish Migration Agency (Migrationsverket).' }],
+    faqs: [
+      { question: 'Which universities in Sweden are represented by GEES?', answer: 'GEES officially represents 10 leading Swedish universities and technical institutes: Lund University, Jönköping University, Uppsala University, Chalmers University of Technology, Stockholm University, University of Gothenburg, Linköping University (LiU), Luleå University of Technology, Umeå University, and Malmö University.' },
+      { question: 'Can students bring family or dependents to Sweden?', answer: 'Yes, international students admitted to master or PhD degrees can bring spouses and children with full work rights.' }
+    ],
+    seo: {
+      title: 'Study in Sweden from Bangladesh | 10 Partner Universities, Fees & Visa | GEES',
+      description: 'Study in Sweden from Bangladesh with GEES. Explore 10 partner universities including Lund, Jönköping, Uppsala, Chalmers, Stockholm, and Gothenburg.',
+      keywords: ['Study in Sweden from Bangladesh', 'Sweden partner universities GEES', 'Lund University GEES', 'Chalmers University GEES']
+    },
+    lastVerifiedDate: 'October 2026'
   }
 };
 
@@ -1307,18 +1413,26 @@ export function normalizeDestinationSlug(input: string): string {
 
   // Handle direct country names like "Malaysia" or "United Kingdom"
   const slugMap: Record<string, string> = {
-    'malaysia': 'study-in-malaysia',
-    'united kingdom': 'study-in-united-kingdom',
-    'uk': 'study-in-united-kingdom',
+    'usa': 'study-in-usa',
+    'united states': 'study-in-usa',
+    'us': 'study-in-usa',
+    'america': 'study-in-usa',
     'australia': 'study-in-australia',
-    'new zealand': 'study-in-new-zealand',
-    'netherlands': 'study-in-netherlands',
-    'finland': 'study-in-finland',
-    'belgium': 'study-in-belgium',
+    'canada': 'study-in-canada',
     'cyprus': 'study-in-cyprus',
+    'finland': 'study-in-finland',
+    'france': 'study-in-france',
     'greece': 'study-in-greece',
-    'mauritius': 'study-in-mauritius',
-    'india': 'study-in-india'
+    'hungary': 'study-in-hungary',
+    'india': 'study-in-india',
+    'malaysia': 'study-in-malaysia',
+    'malta': 'study-in-malta',
+    'new zealand': 'study-in-new-zealand',
+    'south korea': 'study-in-south-korea',
+    'korea': 'study-in-south-korea',
+    'sweden': 'study-in-sweden',
+    'united kingdom': 'study-in-united-kingdom',
+    'uk': 'study-in-united-kingdom'
   };
 
   return slugMap[cleaned] || 'study-in-malaysia';
