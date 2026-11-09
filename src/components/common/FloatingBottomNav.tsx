@@ -15,6 +15,7 @@
  */
 
 import React, { useState, useEffect, useRef, useCallback, useLayoutEffect } from 'react';
+import { useWishlist } from '../../context/WishlistContext.tsx';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export interface FloatingBottomNavProps {
@@ -199,6 +200,7 @@ export const FloatingBottomNav: React.FC<FloatingBottomNavProps> = ({
   onOpenConsultation,
   sound = false
 }) => {
+  const { wishlist } = useWishlist();
   const [isQuickActionsOpen, setIsQuickActionsOpen] = useState(false);
   const quickActionsRef = useRef<HTMLDivElement>(null);
 
@@ -235,6 +237,23 @@ export const FloatingBottomNav: React.FC<FloatingBottomNavProps> = ({
   const dark = isDark ? 1 : 0;
   const darkRef = useRef(dark);
   darkRef.current = dark;
+
+  // Listen for mobile search bottom sheet toggle event
+  const [isSearchSheetOpen, setIsSearchSheetOpen] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const handleSheetToggle = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      if (customEvent.detail && typeof customEvent.detail.isOpen === 'boolean') {
+        setIsSearchSheetOpen(customEvent.detail.isOpen);
+      }
+    };
+    window.addEventListener('gees-hero-search-sheet', handleSheetToggle);
+    return () => {
+      window.removeEventListener('gees-hero-search-sheet', handleSheetToggle);
+    };
+  }, []);
 
   // Sync dark mode tone on html class change
   useEffect(() => {
@@ -731,6 +750,34 @@ export const FloatingBottomNav: React.FC<FloatingBottomNavProps> = ({
                 </div>
               </button>
 
+              {/* Saved Wishlist */}
+              <button
+                type="button"
+                onClick={() => {
+                  setIsQuickActionsOpen(false);
+                  onNavigate('wishlist');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                className="w-full min-h-[52px] sm:min-h-[56px] px-4 py-2.5 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/60 active:bg-slate-100 dark:active:bg-slate-800 transition-colors cursor-pointer group"
+              >
+                <div className="flex items-center gap-3 min-w-0 pr-2">
+                  <span className="material-symbols-outlined text-[21px] text-slate-500 dark:text-slate-400 group-hover:text-blue-600 dark:group-hover:text-amber-400 transition-colors shrink-0">
+                    favorite
+                  </span>
+                  <span className="text-[14px] sm:text-[15px] font-semibold text-[#0B132B] dark:text-white tracking-tight truncate">
+                    Saved Wishlist
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-[12px] font-bold px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300">
+                    {wishlist.length}
+                  </span>
+                  <span className="material-symbols-outlined text-[18px] text-slate-300 dark:text-slate-600 group-hover:text-slate-500 transition-transform group-hover:translate-x-0.5">
+                    chevron_right
+                  </span>
+                </div>
+              </button>
+
               {/* 3. Scholarships */}
               <button
                 type="button"
@@ -823,6 +870,7 @@ export const FloatingBottomNav: React.FC<FloatingBottomNavProps> = ({
       </AnimatePresence>
 
       {/* Floating Island Navigation Dock with Real WebGL Liquid Glass Waterline */}
+      {!isSearchSheetOpen && (
       <div
         aria-label="Mobile Bottom Navigation Wrapper"
         className="xl:hidden fixed bottom-3 sm:bottom-4 inset-x-2.5 xs:inset-x-3.5 z-40 max-w-[390px] xs:max-w-[420px] sm:max-w-[440px] mx-auto select-none pointer-events-auto"
@@ -892,6 +940,7 @@ export const FloatingBottomNav: React.FC<FloatingBottomNavProps> = ({
           })}
         </nav>
       </div>
+      )}
     </>
   );
 };

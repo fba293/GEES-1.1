@@ -4,8 +4,6 @@ import { UserRole } from '../../types/index.ts';
 import { InteractiveHoverButton } from '../ui/interactive-hover-button.tsx';
 import { HeaderCurrencyExchangeIcon } from '../CurrencySwitcher.tsx';
 import { ThemeToggle } from '../ThemeToggle.tsx';
-import { useWishlist } from '../../context/WishlistContext.tsx';
-
 import { MorphingHamburgerIcon } from './MorphingHamburgerIcon.tsx';
 
 interface NavbarProps {
@@ -76,7 +74,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   isMobileMenuOpen = false
 }) => {
   const isScrolled = useScrollHeader(50, 30);
-  const { wishlistCount } = useWishlist();
   const [portalTab, setPortalTab] = useState<'signin' | 'signup'>('signin');
   const [portalOpen, setPortalOpen] = useState(false);
   const portalTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -859,26 +856,6 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div className="flex items-center">
             <HeaderCurrencyExchangeIcon variant="minimal" />
           </div>
-
-          {/* Saved Courses Wishlist Trigger with Dynamic Counter Badge */}
-          <button
-            aria-label="Saved Courses Wishlist"
-            onClick={() => onNavigate('wishlist')}
-            title="Saved Courses Wishlist"
-            className={`relative w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center transition-colors duration-200 cursor-pointer ${
-              currentView === 'wishlist'
-                ? 'text-[#fbb034] bg-amber-500/10'
-                : 'text-slate-800 dark:text-slate-200 hover:text-blue-600 dark:hover:text-[#fbb034] hover:bg-slate-100/60 dark:hover:bg-slate-800/60'
-            }`}
-            type="button"
-          >
-            <span className="material-symbols-outlined text-[18px]">bookmark</span>
-            {wishlistCount > 0 && (
-              <span className="absolute top-0 right-0 min-w-[15px] h-[15px] px-0.5 rounded-full bg-[#fbb034] text-slate-950 font-black text-[9px] leading-none flex items-center justify-center shadow-xs border border-white dark:border-slate-900">
-                {wishlistCount}
-              </span>
-            )}
-          </button>
 
           {/* Search Trigger Button (Hidden on phone viewports < sm) */}
           <button
