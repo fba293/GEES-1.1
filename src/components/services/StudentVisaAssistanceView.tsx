@@ -2,7 +2,7 @@
  * @license
  * SPDX-License-Identifier: Apache-2.0
  * GEES Student Visa Assistance & Immigration Guidance View
- * Authentic GEES Visual Identity: #070b19 Deep Navy, #fbb034 Gold, Royal Blue
+ * Authentic GEES Visual Identity: #0B1329 Deep Navy, #fbb034 Gold, Royal Blue
  * Compliant, honest, source-grounded visa guidance for Bangladeshi students
  */
 
@@ -200,7 +200,7 @@ export const StudentVisaAssistanceView: React.FC<StudentVisaAssistanceViewProps>
   };
 
   return (
-    <div className="w-full bg-white dark:bg-[#070b19] text-slate-900 dark:text-slate-100 min-h-screen transition-colors duration-200">
+    <div className="w-full bg-white dark:bg-[#0B1329] text-slate-900 dark:text-slate-100 min-h-screen transition-colors duration-200">
       {/* 1. TOP BREADCRUMB STRIP */}
       <div className="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between text-xs sm:text-sm">
@@ -244,7 +244,7 @@ export const StudentVisaAssistanceView: React.FC<StudentVisaAssistanceViewProps>
       </div>
 
       {/* 2. HERO SECTION */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#070b19] via-[#0b132b] to-[#070b19] text-white py-12 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 border-b border-slate-800">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#0B1329] via-[#0b132b] to-[#0B1329] text-white py-12 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 border-b border-slate-800">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(251,176,52,0.12),transparent_50%)] pointer-events-none" />
 
         <div className="max-w-7xl mx-auto relative z-10">
@@ -396,7 +396,7 @@ export const StudentVisaAssistanceView: React.FC<StudentVisaAssistanceViewProps>
                 onClick={() => setActiveCountryId(dest.id)}
                 className={`min-h-[44px] flex items-center gap-2 px-4 py-2 rounded-full font-bold text-xs sm:text-sm transition-all cursor-pointer active:scale-95 ${
                   isActive
-                    ? 'bg-[#070b19] dark:bg-white text-white dark:text-slate-950 shadow-md ring-2 ring-[#fbb034]'
+                    ? 'bg-[#0B1329] dark:bg-white text-white dark:text-slate-950 shadow-md ring-2 ring-[#fbb034]'
                     : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                 }`}
               >
@@ -526,7 +526,7 @@ export const StudentVisaAssistanceView: React.FC<StudentVisaAssistanceViewProps>
 
               <button
                 onClick={() => handleLaunchConsultation(`Checklist Audit for ${selectedProfile.country}`)}
-                className="w-full min-h-[44px] py-3 rounded-xl bg-[#070b19] dark:bg-white text-white dark:text-slate-950 font-bold text-xs uppercase tracking-wider hover:opacity-90 transition-opacity cursor-pointer shadow-md active:scale-95 flex items-center justify-center gap-2"
+                className="w-full min-h-[44px] py-3 rounded-xl bg-[#0B1329] dark:bg-white text-white dark:text-slate-950 font-bold text-xs uppercase tracking-wider hover:opacity-90 transition-opacity cursor-pointer shadow-md active:scale-95 flex items-center justify-center gap-2"
               >
                 <span className="material-symbols-outlined text-[16px]">checklist</span>
                 <span>Get Detailed Checklist for {selectedProfile.country}</span>
@@ -537,7 +537,7 @@ export const StudentVisaAssistanceView: React.FC<StudentVisaAssistanceViewProps>
       </section>
 
       {/* 5. 6-STEP STRUCTURED VISA PROCESS */}
-      <section className="py-12 sm:py-20 bg-slate-50 dark:bg-[#070d1e] border-y border-slate-200 dark:border-slate-800 px-4 sm:px-6 lg:px-8">
+      <section className="py-12 sm:py-20 bg-slate-50 dark:bg-[#0B1329] border-y border-slate-200 dark:border-slate-800 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-12 space-y-2">
             <span className="text-xs font-bold uppercase tracking-wider text-[#fbb034] bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">
@@ -686,7 +686,7 @@ export const StudentVisaAssistanceView: React.FC<StudentVisaAssistanceViewProps>
       </section>
 
       {/* 7. FREQUENTLY ASKED QUESTIONS */}
-      <section className="py-12 sm:py-20 bg-slate-50 dark:bg-[#070d1e] border-t border-slate-200 dark:border-slate-800 px-4 sm:px-6 lg:px-8">
+      <section className="py-12 sm:py-20 bg-slate-50 dark:bg-[#0B1329] border-t border-slate-200 dark:border-slate-800 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10 space-y-2">
             <span className="text-xs font-bold uppercase tracking-wider text-[#fbb034] bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">
@@ -752,7 +752,7 @@ export const StudentVisaAssistanceView: React.FC<StudentVisaAssistanceViewProps>
 
       {/* 8. FINAL CONSULTATION CTA BANNER */}
       <section className="py-12 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="bg-gradient-to-r from-[#070b19] via-[#0b132b] to-[#070b19] rounded-3xl p-8 sm:p-12 text-white text-center space-y-6 shadow-2xl relative overflow-hidden border border-slate-800">
+        <div className="bg-gradient-to-r from-[#0B1329] via-[#0b132b] to-[#0B1329] rounded-3xl p-8 sm:p-12 text-white text-center space-y-6 shadow-2xl relative overflow-hidden border border-slate-800">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(251,176,52,0.15),transparent_60%)] pointer-events-none" />
 
           <div className="relative z-10 max-w-3xl mx-auto space-y-4">

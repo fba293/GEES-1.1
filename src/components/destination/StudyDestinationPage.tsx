@@ -128,7 +128,7 @@ export const StudyDestinationPage: React.FC<StudyDestinationPageProps> = ({
   }, [data, canonicalUrl]);
 
   return (
-    <div className="w-full min-h-screen bg-white dark:bg-[#070D1E] text-slate-900 dark:text-white transition-colors">
+    <div className="w-full min-h-screen bg-white dark:bg-[#0B1329] text-slate-900 dark:text-white transition-colors">
       {/* Breadcrumb Header Bar */}
       <div className="w-full bg-slate-900 text-slate-300 py-2.5 px-4 sm:px-6 lg:px-8 text-xs border-b border-slate-800">
         <div className="max-w-7xl mx-auto flex items-center gap-2 overflow-x-auto no-scrollbar whitespace-nowrap">

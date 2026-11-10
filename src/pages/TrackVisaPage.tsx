@@ -204,7 +204,7 @@ export const TrackVisaPage: React.FC<TrackVisaPageProps> = ({
   };
 
   return (
-    <div className="w-full bg-white dark:bg-[#070D1E] min-h-screen py-4 sm:py-8 transition-colors">
+    <div className="w-full bg-white dark:bg-[#0B1329] min-h-screen py-4 sm:py-8 transition-colors">
       {/* Breadcrumb Navigation */}
       <div className="max-w-4xl mx-auto px-4 mb-4">
         <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">

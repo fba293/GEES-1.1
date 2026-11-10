@@ -22,7 +22,7 @@ export const PreFooterCta: React.FC<PreFooterCtaProps> = ({
         {/* MAIN CTA CARD STAGE WITH OVERLAPPING "GEES" STYLING */}
         <div className="relative w-full max-w-full sm:max-w-6xl mx-auto px-4 sm:px-6 md:px-8 z-10 my-auto">
           {/* Outer card with gentle ambient border & shadow */}
-          <div className="relative bg-white dark:bg-[#0f172a] rounded-3xl md:rounded-[2.5rem] p-5 sm:p-10 md:p-14 lg:p-16 shadow-[0_20px_60px_-15px_rgba(15,23,42,0.08)] border border-slate-200/80 dark:border-slate-800 overflow-hidden flex flex-col items-center text-center transition-all duration-300">
+          <div className="relative bg-white dark:bg-[#0B1329] rounded-3xl md:rounded-[2.5rem] p-5 sm:p-10 md:p-14 lg:p-16 shadow-[0_20px_60px_-15px_rgba(15,23,42,0.08)] border border-slate-200/80 dark:border-slate-800 overflow-hidden flex flex-col items-center text-center transition-all duration-300">
             {/* Amber accent bar on top center of the card */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-28 md:w-36 h-1.5 bg-[#fbb034] rounded-b-full shadow-sm" />
 
@@ -61,7 +61,7 @@ export const PreFooterCta: React.FC<PreFooterCtaProps> = ({
                     onNavigate('apply');
                   }
                 }}
-                className="min-h-[48px] w-full sm:w-auto px-7 py-3.5 rounded-full bg-white dark:bg-slate-900 text-slate-950 dark:text-white border-slate-300 dark:border-slate-700 font-semibold text-sm md:text-base shadow-md cursor-pointer"
+                className="min-h-[48px] w-full sm:w-auto px-7 py-3.5 rounded-full border-slate-300 dark:border-slate-700 text-sm md:text-base font-bold text-slate-900 dark:text-white bg-white dark:bg-slate-900 shadow-md cursor-pointer"
               />
               <a
                 href="tel:+8801805529578"
@@ -70,7 +70,7 @@ export const PreFooterCta: React.FC<PreFooterCtaProps> = ({
                 <InteractiveHoverButton
                   type="button"
                   text="Call Our Office"
-                  className="min-h-[48px] w-full sm:w-auto px-7 py-3.5 rounded-full bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 font-semibold text-sm md:text-base shadow-xs cursor-pointer"
+                  className="min-h-[48px] w-full sm:w-auto px-7 py-3.5 rounded-full border-slate-300 dark:border-slate-700 text-sm md:text-base font-bold text-slate-900 dark:text-white bg-white dark:bg-slate-900 shadow-xs cursor-pointer"
                 />
               </a>
             </div>
@@ -120,7 +120,7 @@ export const PreFooterCta: React.FC<PreFooterCtaProps> = ({
                   check_circle
                 </span>
                 <span className="text-xs md:text-sm text-slate-600 dark:text-slate-300 font-medium">
-                  Trusted by <span className="font-bold text-slate-900 dark:text-white">25,000+</span> students
+                  Trusted by <span className="font-bold text-slate-900 dark:text-white">100+</span> students
                 </span>
               </div>
 
@@ -130,7 +130,7 @@ export const PreFooterCta: React.FC<PreFooterCtaProps> = ({
                   star
                 </span>
                 <span className="text-xs md:text-sm text-slate-600 dark:text-slate-300 font-medium">
-                  <span className="font-bold text-slate-900 dark:text-white">98%</span> visa success rate
+                  <span className="font-bold text-slate-900 dark:text-white">95%</span> visa success rate
                 </span>
               </div>
             </div>

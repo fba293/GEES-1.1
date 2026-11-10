@@ -41,7 +41,7 @@ export const NewsView: React.FC<NewsViewProps> = ({
   const urgentAlerts = useMemo(() => mockNews.filter((a) => a.isUrgent), []);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#070D1E] text-slate-900 dark:text-slate-100 pt-20 pb-20 px-3 xs:px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-white dark:bg-[#0B1329] text-slate-900 dark:text-slate-100 pt-20 pb-20 px-3 xs:px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto space-y-8">
         
         {/* Top Back & Breadcrumb Navigation */}

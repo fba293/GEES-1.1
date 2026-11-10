@@ -85,7 +85,7 @@ export const StudentsGuideView: React.FC<StudentsGuideViewProps> = ({
   ];
 
   return (
-    <div className="w-full bg-slate-50 dark:bg-[#070b19] min-h-screen pb-20">
+    <div className="w-full bg-slate-50 dark:bg-[#0B1329] min-h-screen pb-20">
       {/* Hero Header */}
       <div className="bg-gradient-to-b from-blue-900 via-blue-950 to-slate-950 text-white pt-12 pb-16 sm:pb-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(251,176,52,0.15),transparent_50%)]"></div>

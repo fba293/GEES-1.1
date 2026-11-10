@@ -41,11 +41,11 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
       : 'w-10 h-10 sm:w-10 sm:h-10 lg:w-11 lg:h-11';
 
   const buttonStyleClass = variant === 'minimal'
-    ? `gees-action--theme group relative w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-xl transition-colors cursor-pointer hover:bg-slate-100/60 dark:hover:bg-slate-800/60 text-slate-800 dark:text-[#fbb034] shrink-0 ${className}`
-    : `gees-action--theme group relative rounded-full flex items-center justify-center transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95 cursor-pointer shrink-0 ${
+    ? `gees-action--theme group relative w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 transition-colors cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-900 dark:text-[#fbb034] shrink-0 ${className}`
+    : `gees-action--theme group relative rounded-full flex items-center justify-center border border-slate-300 dark:border-slate-700 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95 cursor-pointer shrink-0 ${
         isDark
-          ? 'bg-transparent text-[#fbb034]'
-          : 'bg-white border border-slate-200/90 text-slate-900 shadow-xs'
+          ? 'bg-slate-900 text-[#fbb034]'
+          : 'bg-white text-slate-900 shadow-xs'
       } ${isTransitioning ? 'is-theme-transitioning' : ''} ${sizeClasses} ${className}`;
 
   return (
@@ -70,10 +70,10 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
               : 'opacity-0 -rotate-90 scale-50 pointer-events-none'
           }`}
         >
-          <circle cx="12" cy="12" r="4.2" fill="#0f172a" />
+          <circle cx="12" cy="12" r="4.2" fill="#0B1329" />
           <path
             d="M12 2.5v2.2M12 19.3v2.2M4.2 12H2M22 12h-2.2M5.64 5.64l1.55 1.55M16.81 16.81l1.55 1.55M5.64 18.36l1.55-1.55M16.81 7.19l1.55-1.55"
-            stroke="#0f172a"
+            stroke="#0B1329"
             strokeWidth="2.4"
             strokeLinecap="round"
           />

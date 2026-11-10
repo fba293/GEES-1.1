@@ -2,7 +2,7 @@
  * @license
  * SPDX-License-Identifier: Apache-2.0
  * GEES Standalone Student Referral Programme Page
- * Authentic GEES Branding: Deep Navy (#070b19), Gold (#fbb034), Royal Blue
+ * Authentic GEES Branding: Deep Navy (#0B1329), Gold (#fbb034), Royal Blue
  * Transparent Peer-to-Peer Referrals with Mandatory Consent Verification & Honest Handoff
  */
 
@@ -70,9 +70,9 @@ export const StudentReferralView: React.FC<StudentReferralViewProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#070b19] text-slate-900 dark:text-slate-100 pb-20 transition-colors duration-200">
+    <div className="min-h-screen bg-white dark:bg-[#0B1329] text-slate-900 dark:text-slate-100 pb-20 transition-colors duration-200">
       {/* HERO SECTION */}
-      <section className="relative pt-24 pb-14 sm:pt-32 sm:pb-20 overflow-hidden bg-gradient-to-b from-slate-950 via-[#070b19] to-[#070b19] text-white border-b border-slate-800">
+      <section className="relative pt-24 pb-14 sm:pt-32 sm:pb-20 overflow-hidden bg-gradient-to-b from-slate-950 via-[#0B1329] to-[#0B1329] text-white border-b border-slate-800">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(251,176,52,0.12),transparent_50%)] pointer-events-none" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           {/* Breadcrumb */}
@@ -240,7 +240,7 @@ export const StudentReferralView: React.FC<StudentReferralViewProps> = ({
       </section>
 
       {/* HOW IT WORKS */}
-      <section id="how-it-works" className="py-12 sm:py-16 bg-slate-50 dark:bg-[#070d1e] border-y border-slate-200/80 dark:border-slate-800">
+      <section id="how-it-works" className="py-12 sm:py-16 bg-slate-50 dark:bg-[#0B1329] border-y border-slate-200/80 dark:border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-12">
             <span className="text-[#fbb034] font-bold text-xs uppercase tracking-wider bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">

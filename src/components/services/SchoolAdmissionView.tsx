@@ -327,9 +327,9 @@ export const SchoolAdmissionView: React.FC<SchoolAdmissionViewProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#070b19] text-slate-900 dark:text-slate-100 pb-20 transition-colors duration-200">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0B1329] text-slate-900 dark:text-slate-100 pb-20 transition-colors duration-200">
       {/* 1. HERO SECTION */}
-      <section className="relative pt-24 pb-14 sm:pt-32 sm:pb-20 lg:pt-36 lg:pb-24 overflow-hidden bg-gradient-to-b from-[#070b19] via-[#0d152c] to-[#070b19] text-white">
+      <section className="relative pt-24 pb-14 sm:pt-32 sm:pb-20 lg:pt-36 lg:pb-24 overflow-hidden bg-gradient-to-b from-[#0B1329] via-[#0d152c] to-[#0B1329] text-white">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(251,176,52,0.18),transparent_55%)] pointer-events-none" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(59,130,246,0.12),transparent_50%)] pointer-events-none" />
 
@@ -502,7 +502,7 @@ export const SchoolAdmissionView: React.FC<SchoolAdmissionViewProps> = ({
       {/* 2. HOW SCHOOL ADMISSIONS DIFFER FROM UNIVERSITY ADMISSIONS */}
       <section className="py-14 sm:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
-          <span className="text-[#070b19] dark:text-[#fbb034] font-bold text-xs uppercase tracking-wider bg-amber-50 dark:bg-amber-950/60 px-3 py-1 rounded-full border border-amber-200 dark:border-amber-800">
+          <span className="text-[#0B1329] dark:text-[#fbb034] font-bold text-xs uppercase tracking-wider bg-amber-50 dark:bg-amber-950/60 px-3 py-1 rounded-full border border-amber-200 dark:border-amber-800">
             Crucial Distinction
           </span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white mt-3">
@@ -587,7 +587,7 @@ export const SchoolAdmissionView: React.FC<SchoolAdmissionViewProps> = ({
                 onClick={() => setSelectedAge(item.age)}
                 className={`px-4 sm:px-6 py-2.5 rounded-full font-bold text-xs sm:text-sm transition-all cursor-pointer flex items-center gap-1.5 ${
                   selectedAge === item.age
-                    ? 'bg-[#070b19] dark:bg-[#fbb034] text-white dark:text-slate-950 shadow-lg scale-105'
+                    ? 'bg-[#0B1329] dark:bg-[#fbb034] text-white dark:text-slate-950 shadow-lg scale-105'
                     : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                 }`}
               >
@@ -700,7 +700,7 @@ export const SchoolAdmissionView: React.FC<SchoolAdmissionViewProps> = ({
       {/* 4. COMPREHENSIVE CURRICULA COMPARISON */}
       <section className="py-14 sm:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
-          <span className="text-[#070b19] dark:text-[#fbb034] font-bold text-xs uppercase tracking-wider bg-amber-50 dark:bg-amber-950/60 px-3 py-1 rounded-full border border-amber-200 dark:border-amber-800">
+          <span className="text-[#0B1329] dark:text-[#fbb034] font-bold text-xs uppercase tracking-wider bg-amber-50 dark:bg-amber-950/60 px-3 py-1 rounded-full border border-amber-200 dark:border-amber-800">
             Curriculum Selection
           </span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white mt-3">
@@ -719,7 +719,7 @@ export const SchoolAdmissionView: React.FC<SchoolAdmissionViewProps> = ({
               onClick={() => setActiveCurriculum(c.id)}
               className={`px-5 py-3 rounded-2xl font-bold text-xs sm:text-sm transition-all cursor-pointer flex items-center gap-2 ${
                 activeCurriculum === c.id
-                  ? 'bg-[#070b19] dark:bg-[#fbb034] text-white dark:text-slate-950 shadow-lg'
+                  ? 'bg-[#0B1329] dark:bg-[#fbb034] text-white dark:text-slate-950 shadow-lg'
                   : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-slate-400'
               }`}
             >
@@ -742,7 +742,7 @@ export const SchoolAdmissionView: React.FC<SchoolAdmissionViewProps> = ({
                   <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
                     {selectedCurriculum.name}
                   </h3>
-                  <p className="text-xs sm:text-sm text-[#070b19] dark:text-[#fbb034] font-semibold mt-0.5">
+                  <p className="text-xs sm:text-sm text-[#0B1329] dark:text-[#fbb034] font-semibold mt-0.5">
                     {selectedCurriculum.tagline}
                   </p>
                 </div>
@@ -813,7 +813,7 @@ export const SchoolAdmissionView: React.FC<SchoolAdmissionViewProps> = ({
             </span>
             <button
               onClick={() => onOpenConsultation(`Curriculum Guidance - ${selectedCurriculum.name}`)}
-              className="px-6 py-2.5 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-xs sm:text-sm font-bold hover:bg-[#070b19] transition-colors cursor-pointer"
+              className="px-6 py-2.5 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-xs sm:text-sm font-bold hover:bg-[#0B1329] transition-colors cursor-pointer"
             >
               Discuss {selectedCurriculum.name.split(' ')[0]} Admissions →
             </button>
@@ -843,7 +843,7 @@ export const SchoolAdmissionView: React.FC<SchoolAdmissionViewProps> = ({
                 onClick={() => setSchoolCountryFilter('all')}
                 className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer ${
                   schoolCountryFilter === 'all'
-                    ? 'bg-[#070b19] dark:bg-[#fbb034] text-white dark:text-slate-950'
+                    ? 'bg-[#0B1329] dark:bg-[#fbb034] text-white dark:text-slate-950'
                     : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800'
                 }`}
               >
@@ -853,7 +853,7 @@ export const SchoolAdmissionView: React.FC<SchoolAdmissionViewProps> = ({
                 onClick={() => setSchoolCountryFilter('Malaysia')}
                 className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer ${
                   schoolCountryFilter === 'Malaysia'
-                    ? 'bg-[#070b19] dark:bg-[#fbb034] text-white dark:text-slate-950'
+                    ? 'bg-[#0B1329] dark:bg-[#fbb034] text-white dark:text-slate-950'
                     : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800'
                 }`}
               >
@@ -863,7 +863,7 @@ export const SchoolAdmissionView: React.FC<SchoolAdmissionViewProps> = ({
                 onClick={() => setSchoolCountryFilter('United Kingdom')}
                 className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer ${
                   schoolCountryFilter === 'United Kingdom'
-                    ? 'bg-[#070b19] dark:bg-[#fbb034] text-white dark:text-slate-950'
+                    ? 'bg-[#0B1329] dark:bg-[#fbb034] text-white dark:text-slate-950'
                     : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800'
                 }`}
               >
@@ -880,7 +880,7 @@ export const SchoolAdmissionView: React.FC<SchoolAdmissionViewProps> = ({
               >
                 <div className="space-y-3.5">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-950/60 text-[#070b19] dark:text-[#fbb034] border border-amber-200 dark:border-amber-800/60">
+                    <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-950/60 text-[#0B1329] dark:text-[#fbb034] border border-amber-200 dark:border-amber-800/60">
                       {school.badge}
                     </span>
                     <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">
@@ -919,7 +919,7 @@ export const SchoolAdmissionView: React.FC<SchoolAdmissionViewProps> = ({
                 <div className="pt-5 mt-5 border-t border-slate-100 dark:border-slate-800 flex items-center gap-2">
                   <button
                     onClick={() => onOpenConsultation(`Admissions Prospectus for ${school.name}`)}
-                    className="flex-1 py-2.5 rounded-xl bg-slate-900 dark:bg-slate-800 hover:bg-[#070b19] dark:hover:bg-slate-700 text-white text-xs font-bold transition-all text-center cursor-pointer"
+                    className="flex-1 py-2.5 rounded-xl bg-slate-900 dark:bg-slate-800 hover:bg-[#0B1329] dark:hover:bg-slate-700 text-white text-xs font-bold transition-all text-center cursor-pointer"
                   >
                     Request Prospectus
                   </button>
@@ -1008,7 +1008,7 @@ export const SchoolAdmissionView: React.FC<SchoolAdmissionViewProps> = ({
                   {s.badge}
                 </span>
               </div>
-              <div className="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-950/60 text-[#070b19] dark:text-[#fbb034] flex items-center justify-center mb-4">
+              <div className="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-950/60 text-[#0B1329] dark:text-[#fbb034] flex items-center justify-center mb-4">
                 <span className="material-symbols-outlined text-[26px]">{s.icon}</span>
               </div>
               <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white mb-2">{s.title}</h3>
@@ -1070,7 +1070,7 @@ export const SchoolAdmissionView: React.FC<SchoolAdmissionViewProps> = ({
               <div className="flex flex-wrap gap-3 pt-2">
                 <button
                   onClick={() => onOpenConsultation('Guardian Visa Assistance')}
-                  className="px-6 py-3 rounded-full bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-bold text-xs sm:text-sm hover:bg-[#070b19] transition-all cursor-pointer shadow-md"
+                  className="px-6 py-3 rounded-full bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-bold text-xs sm:text-sm hover:bg-[#0B1329] transition-all cursor-pointer shadow-md"
                 >
                   Check Guardian Visa Eligibility →
                 </button>
@@ -1245,7 +1245,7 @@ export const SchoolAdmissionView: React.FC<SchoolAdmissionViewProps> = ({
                     Calculated from your checked checklist items
                   </p>
                 </div>
-                <div className="text-3xl font-black text-[#070b19] dark:text-[#fbb034]">
+                <div className="text-3xl font-black text-[#0B1329] dark:text-[#fbb034]">
                   {getDocProgress()}%
                 </div>
               </div>
@@ -1274,7 +1274,7 @@ export const SchoolAdmissionView: React.FC<SchoolAdmissionViewProps> = ({
               <div className="space-y-3 pt-2">
                 <button
                   onClick={() => onOpenConsultation('Document Pre-Check & Assessment')}
-                  className="w-full py-3.5 rounded-xl bg-slate-900 dark:bg-slate-100 hover:bg-[#070b19] text-white dark:text-slate-900 font-bold text-xs sm:text-sm transition-all shadow-md text-center cursor-pointer"
+                  className="w-full py-3.5 rounded-xl bg-slate-900 dark:bg-slate-100 hover:bg-[#0B1329] text-white dark:text-slate-900 font-bold text-xs sm:text-sm transition-all shadow-md text-center cursor-pointer"
                 >
                   Request Confidential Document Review →
                 </button>
@@ -1337,7 +1337,7 @@ export const SchoolAdmissionView: React.FC<SchoolAdmissionViewProps> = ({
               </div>
               <button
                 onClick={() => onOpenConsultation('Malaysia Day School Fee Guide')}
-                className="w-full mt-8 py-3 rounded-xl bg-slate-900 dark:bg-slate-800 hover:bg-[#070b19] text-white font-bold text-xs transition-colors text-center cursor-pointer"
+                className="w-full mt-8 py-3 rounded-xl bg-slate-900 dark:bg-slate-800 hover:bg-[#0B1329] text-white font-bold text-xs transition-colors text-center cursor-pointer"
               >
                 Inquire for Malaysia Day Schools
               </button>
@@ -1414,7 +1414,7 @@ export const SchoolAdmissionView: React.FC<SchoolAdmissionViewProps> = ({
               </div>
               <button
                 onClick={() => onOpenConsultation('UK Boarding School Admissions')}
-                className="w-full mt-8 py-3 rounded-xl bg-slate-900 dark:bg-slate-800 hover:bg-[#070b19] text-white font-bold text-xs transition-colors text-center cursor-pointer"
+                className="w-full mt-8 py-3 rounded-xl bg-slate-900 dark:bg-slate-800 hover:bg-[#0B1329] text-white font-bold text-xs transition-colors text-center cursor-pointer"
               >
                 Inquire for UK Boarding Schools
               </button>
@@ -1569,7 +1569,7 @@ export const SchoolAdmissionView: React.FC<SchoolAdmissionViewProps> = ({
 
       {/* 12. PROMINENT PARENT CONSULTATION CTA & DIRECT CONTACT */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
-        <div className="p-8 sm:p-12 lg:p-14 rounded-3xl bg-gradient-to-r from-[#070b19] via-[#0d162f] to-[#070b19] border border-[#fbb034]/30 text-white shadow-2xl relative overflow-hidden">
+        <div className="p-8 sm:p-12 lg:p-14 rounded-3xl bg-gradient-to-r from-[#0B1329] via-[#0d162f] to-[#0B1329] border border-[#fbb034]/30 text-white shadow-2xl relative overflow-hidden">
           <div className="absolute -right-20 -bottom-20 w-80 h-80 rounded-full bg-[#fbb034]/10 blur-3xl pointer-events-none" />
 
           <div className="max-w-3xl mx-auto text-center space-y-6 relative z-10">

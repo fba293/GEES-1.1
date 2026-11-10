@@ -64,6 +64,7 @@ import { TrackVisaPage } from './pages/TrackVisaPage.tsx';
 import { CurrencyProvider } from './context/CurrencyContext.tsx';
 import { ThemeProvider, useTheme } from './context/ThemeContext.tsx';
 import { WishlistProvider } from './context/WishlistContext.tsx';
+import { AuthenticationView } from './components/auth/AuthenticationView.tsx';
 
 function AppContent() {
   // Theme state from global ThemeContext
@@ -73,6 +74,7 @@ function AppContent() {
   const [currentView, setCurrentView] = useState<string>(() => {
     if (typeof window !== 'undefined') {
       const path = window.location.pathname.toLowerCase();
+      if (path.includes('login') || path.includes('signin') || path.includes('auth')) return 'login';
       if (path.includes('track-visa') || path.includes('emgs') || path.includes('track-my-visa')) return 'track-visa';
       if (path.includes('study-in-') || path.includes('study-malaysia') || path.includes('study-uk') || path.includes('study-australia')) return 'study-destination';
       if (path.includes('wishlist') || path.includes('saved-courses')) return 'wishlist';
@@ -425,7 +427,7 @@ function AppContent() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#070D1E] text-slate-900 dark:text-slate-100 font-sans selection:bg-[#fbb034]/30 transition-colors duration-200">
+    <div className="min-h-screen bg-white dark:bg-[#0B1329] text-slate-900 dark:text-slate-100 font-sans selection:bg-[#fbb034]/30 transition-colors duration-200">
       {/* Floating Universal Header */}
       <Navbar
         currentView={currentView}
@@ -440,7 +442,7 @@ function AppContent() {
       />
 
       {/* Main Content Area */}
-      <main className="pt-24 sm:pt-28 lg:pt-32 pb-20 md:pb-0 bg-white dark:bg-[#070D1E]">
+      <main className="pt-24 sm:pt-28 lg:pt-32 pb-20 md:pb-0 bg-white dark:bg-[#0B1329]">
         {/* VIEW: HOME */}
         {currentView === 'home' && (
           <>
@@ -633,6 +635,15 @@ function AppContent() {
             </div>
             <AgentPortalView />
           </div>
+        )}
+
+        {/* VIEW: AUTHENTICATION (Brand Consistent Sign In / Sign Up Gateway) */}
+        {(currentView === 'login' || currentView === 'signin' || currentView === 'auth' || currentView === 'signup') && (
+          <AuthenticationView
+            onNavigate={handleNavigate}
+            onRoleChange={setActiveRole}
+            initialTab={currentView === 'signup' ? 'signup' : 'signin'}
+          />
         )}
 
         {/* VIEW: STANDALONE BLOGS (Redesigned Magazine Blog Hub) */}
@@ -859,7 +870,7 @@ function AppContent() {
       {/* Service Detail Modal */}
       {selectedServiceDetail && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-[#0f172a] rounded-3xl max-w-2xl w-full p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+          <div className="bg-white dark:bg-[#0B1329] rounded-3xl max-w-2xl w-full p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setSelectedServiceDetail(null)}
               className="absolute top-5 right-5 p-2 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-white"

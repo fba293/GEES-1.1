@@ -25,7 +25,7 @@ export class GlobalErrorBoundary extends Component<Props, State> {
   public render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-[#070D1E] px-4">
+        <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-[#0B1329] px-4">
           <div className="max-w-md w-full bg-white dark:bg-slate-900 rounded-3xl shadow-2xl p-8 border border-slate-200 dark:border-slate-800 text-center">
             <div className="w-16 h-16 bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 rounded-2xl flex items-center justify-center mx-auto mb-5">
               <span className="material-symbols-outlined text-[32px]">warning</span>

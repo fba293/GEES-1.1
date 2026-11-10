@@ -29,7 +29,7 @@ export const CounselorsSection: React.FC<CounselorsSectionProps> = ({ onOpenBook
     : mockCounselors.filter(c => c.department === activeDepartment);
 
   return (
-    <section id="counselors-section" className="py-8 min-[390px]:py-10 sm:py-16 md:py-24 relative overflow-hidden bg-white dark:bg-[#070b19] border-t border-slate-100 dark:border-slate-800">
+    <section id="counselors-section" className="py-10 min-[390px]:py-12 sm:py-16 md:py-24 relative overflow-hidden bg-white dark:bg-[#0B1329] border-t border-slate-100 dark:border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-14 px-2">
@@ -44,12 +44,13 @@ export const CounselorsSection: React.FC<CounselorsSectionProps> = ({ onOpenBook
           </p>
 
           {/* Department Filter Tabs with Universal 120 FPS Sliding Indicator */}
-          <div className="mt-6 sm:mt-8 w-full flex justify-center">
+          <div className="mt-6 sm:mt-8 w-full max-w-full overflow-hidden">
             <AnimatedTabs
               tabs={departmentTabs}
               activeId={activeDepartment}
               onChange={(id) => setActiveDepartment(id as any)}
               size="md"
+              containerClassName="mx-auto justify-start sm:justify-center"
             />
           </div>
         </div>
@@ -244,7 +245,7 @@ export const CounselorsSection: React.FC<CounselorsSectionProps> = ({ onOpenBook
                               e.stopPropagation();
                               onOpenBooking(counselor.name, counselor.role);
                             }}
-                            className="ml-1 w-20 py-2 sm:py-1.5 min-h-[40px] px-2.5 rounded-xl bg-white dark:bg-slate-900 text-slate-950 dark:text-white border-slate-300 dark:border-slate-700 text-xs font-bold shadow-xs"
+                            className="ml-1 w-20 py-2 sm:py-1.5 min-h-[40px] px-2.5 rounded-full border-slate-300 dark:border-slate-700 text-xs font-bold text-slate-900 dark:text-white bg-white dark:bg-slate-900 shadow-xs cursor-pointer"
                           />
                         </div>
                       </div>
@@ -265,7 +266,7 @@ export const CounselorsSection: React.FC<CounselorsSectionProps> = ({ onOpenBook
                   type="button"
                   text="Connect Now"
                   onClick={() => onOpenBooking('Express Desk Advisor', 'Admissions Desk')}
-                  className="min-h-[44px] w-full xs:w-auto px-5 py-2.5 bg-amber-500 hover:bg-[#fbb034] text-slate-950 border-amber-400 text-xs font-extrabold rounded-xl shadow-sm cursor-pointer"
+                  className="min-h-[44px] w-full xs:w-auto px-6 py-2.5 rounded-full border-slate-300 dark:border-slate-700 text-xs font-bold text-slate-900 dark:text-white bg-white dark:bg-slate-900 shadow-sm cursor-pointer"
                 />
               </div>
             </div>

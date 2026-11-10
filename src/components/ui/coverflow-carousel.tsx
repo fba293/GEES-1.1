@@ -97,37 +97,36 @@ export function CoverflowCarousel({
     if (!width) return;
     const pitch = width * (1 + gap);
     const pos = posRef.current;
+    const halfCount = count / 2;
+    const centerX = -width / 2; // Pre-calculate center offset
 
     cardRefs.current.forEach((card, index) => {
       if (!card) return;
 
-      // Fold the distance into the shorter way round the ring. This is the
-      // whole looping mechanism — no cloned nodes, no shuffling the DOM.
+      // Fold the distance into the shorter way round the ring.
       let offset = index - pos;
       if (loop) {
         offset = ((offset % count) + count) % count;
-        if (offset > count / 2) offset -= count;
+        if (offset > halfCount) offset -= count;
       }
 
       const distance = Math.abs(offset);
-
-      // Both the tilt and the recession ease off as cards travel out —
-      // doubling the distance adds only about half again as much of each.
-      // A linear ramp folds the second card shut; this keeps it readable.
       const ramp = Math.pow(distance, falloff);
-
-      // Capped short of edge-on so a far card never turns its back.
       const tilt = Math.min(rotate * ramp, 82) * Math.sign(offset);
 
-      card.style.transform =
-        `translateX(calc(-50% + ${offset * pitch}px)) ` +
-        `translateZ(${-depth * width * ramp}px) rotateY(${-tilt}deg)`;
+      // Raw pixel values for pure GPU-accelerated motion without calc() overhead
+      const x = centerX + (offset * pitch);
+      const z = -depth * width * ramp;
 
-      // A card is teleported across the ring at exactly half a turn out, so it
-      // has to be gone by then or the jump is visible.
-      const edge = loop ? Math.min(1, Math.max(0, count / 2 - distance)) : 1;
+      card.style.transform = `translate3d(${x}px, 0, ${z}px) rotateY(${-tilt}deg)`;
+
+      // Optimized opacity and z-index assignment
+      const edge = loop ? Math.min(1, Math.max(0, halfCount - distance)) : 1;
       card.style.opacity = String(Math.max(0, 1 - fade * distance) * edge);
       card.style.zIndex = String(100 - Math.round(distance));
+      
+      // Hidden visibility for far cards to save GPU paint cycles
+      card.style.visibility = distance > halfCount + 1 ? "hidden" : "visible";
     });
   }, [count, depth, fade, falloff, gap, loop, rotate]);
 
@@ -135,21 +134,28 @@ export function CoverflowCarousel({
     (target: number) => {
       if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
       targetRef.current = target;
-      setSelected(indexAt(target));
 
       const step = () => {
         const remaining = target - posRef.current;
-        if (Math.abs(remaining) < 0.0004) {
+        if (Math.abs(remaining) < 0.0001) {
           posRef.current = target;
           paint();
           rafRef.current = null;
+          // Sync React state only once on settle to avoid re-renders during motion
+          setSelected(indexAt(target));
           return;
         }
 
-        // ponytail: exponential ease-out, not a spring. Swap in a spring only
-        // if the settle needs overshoot.
-        posRef.current += remaining * 0.16;
+        // exponential ease-out for fluidity
+        posRef.current += remaining * 0.2;
         paint();
+        
+        // Sync selected index sparingly during settle for UI feedback without killing FPS
+        const currentIdx = indexAt(posRef.current);
+        if (rafRef.current && rafRef.current % 4 === 0) {
+           setSelected(currentIdx);
+        }
+        
         rafRef.current = requestAnimationFrame(step);
       };
 
@@ -210,9 +216,13 @@ export function CoverflowCarousel({
     drag.v = ((posRef.current - previous) / Math.max(now - drag.t, 1)) * 1000;
     drag.t = now;
 
-    const index = indexAt(posRef.current);
-    if (index !== selected) setSelected(index);
-    paint();
+    // Throttle paint to animation frame and avoid React re-renders during motion
+    if (rafRef.current === null) {
+      rafRef.current = requestAnimationFrame(() => {
+        paint();
+        rafRef.current = null;
+      });
+    }
   };
 
   const endDrag = (event: React.PointerEvent<HTMLDivElement>) => {
@@ -297,7 +307,8 @@ export function CoverflowCarousel({
             }
           }}
           // Vertical padding keeps the drop shadows clear of the overflow clip.
-          className="cursor-grab overflow-hidden py-10 outline-none ring-ring focus-visible:ring-2 active:cursor-grabbing"
+          // translateZ(0) forces the entire 3D scene into its own layer.
+          className="cursor-grab overflow-hidden py-10 outline-none ring-ring focus-visible:ring-2 active:cursor-grabbing will-change-transform [transform:translateZ(0)]"
           style={{
             perspective: `calc(var(--cf-card) * ${perspective})`,
             // Horizontal drag is ours; the page keeps vertical scrolling.
@@ -328,7 +339,8 @@ export function CoverflowCarousel({
                   }
                 }}
                 className={cn(
-                  "absolute left-1/2 top-0 aspect-square overflow-hidden rounded-2xl bg-muted shadow-xl will-change-transform cursor-pointer",
+                  "absolute left-1/2 top-0 aspect-square overflow-hidden rounded-2xl bg-muted shadow-xl cursor-pointer will-change-transform",
+                  "[backface-visibility:hidden] [transform-style:preserve-3d] [contain:strict]",
                   cardClassName,
                 )}
                 style={{ width: "var(--cf-card)" }}
@@ -352,7 +364,7 @@ export function CoverflowCarousel({
               type="button"
               aria-label="Previous slide"
               onClick={() => nudge(-1)}
-              className="absolute left-3 top-1/2 z-[200] -translate-y-1/2 rounded-full bg-background/70 p-2 text-foreground backdrop-blur transition hover:bg-background cursor-pointer flex items-center justify-center"
+              className="absolute left-3 top-1/2 z-[200] -translate-y-1/2 w-11 h-11 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-[#fbb034] hover:text-slate-950 transition-all shadow-md cursor-pointer flex items-center justify-center active:scale-90"
             >
               <ChevronLeft className="size-5" />
             </button>
@@ -360,7 +372,7 @@ export function CoverflowCarousel({
               type="button"
               aria-label="Next slide"
               onClick={() => nudge(1)}
-              className="absolute right-3 top-1/2 z-[200] -translate-y-1/2 rounded-full bg-background/70 p-2 text-foreground backdrop-blur transition hover:bg-background cursor-pointer flex items-center justify-center"
+              className="absolute right-3 top-1/2 z-[200] -translate-y-1/2 w-11 h-11 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-[#fbb034] hover:text-slate-950 transition-all shadow-md cursor-pointer flex items-center justify-center active:scale-90"
             >
               <ChevronRight className="size-5" />
             </button>
@@ -395,7 +407,7 @@ export function CoverflowCarousel({
       )}
 
       {showPagination && (
-        <div className="mt-6 flex items-center justify-center gap-1">
+        <div className="mt-8 flex items-center justify-center gap-1.5">
           {slides.map((_, index) => (
             <button
               key={index}
@@ -403,12 +415,14 @@ export function CoverflowCarousel({
               aria-label={`Go to slide ${index + 1}`}
               aria-current={index === selected}
               onClick={() => goTo(index)}
-              className="p-2.5 flex items-center justify-center cursor-pointer tap-target-44"
+              className="min-h-[44px] min-w-[34px] p-2 flex items-center justify-center cursor-pointer tap-target-44 active:scale-90 group/dot"
             >
               <span
                 className={cn(
-                  "size-2 rounded-full bg-foreground transition-all",
-                  index === selected ? "opacity-100 scale-125 bg-[#fbb034]" : "opacity-30",
+                  "h-2 rounded-full transition-all duration-300 block",
+                  index === selected 
+                    ? "w-7 sm:w-8 bg-[#fbb034]" 
+                    : "w-2 bg-slate-200 dark:bg-slate-700 group-hover/dot:bg-slate-300 dark:group-hover/dot:bg-slate-600",
                 )}
               />
             </button>

@@ -29,18 +29,29 @@ const InteractiveHoverButton = React.forwardRef<
     if (onClick) onClick(e);
   };
 
+  const hasBg = className?.includes("bg-");
+  const hasText = className?.includes("text-");
+  const hasBorder = className?.includes("border-");
+
   return (
     <button
       ref={ref}
       onClick={handleClick}
       className={cn(
-        "group relative w-auto min-w-fit cursor-pointer overflow-hidden rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-6 py-2.5 text-center font-bold text-slate-900 dark:text-white shadow-xs transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] select-none active:scale-[0.97] inline-flex items-center justify-center whitespace-nowrap",
+        "group relative w-auto min-w-fit cursor-pointer overflow-hidden rounded-full border px-6 py-2.5 text-center font-bold shadow-xs transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] select-none active:scale-[0.97] inline-flex items-center justify-center whitespace-nowrap",
+        !hasBorder && "border-slate-300 dark:border-slate-700",
+        !hasBg && "bg-white dark:bg-slate-900",
+        !hasText && "text-slate-900 dark:text-white",
         className,
       )}
       {...props}
     >
       {/* 1. Base Layer (Resting state: 100% visible, centered, above background) */}
-      <span className="relative z-10 inline-flex items-center justify-center gap-2 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-12 group-hover:opacity-0 text-current font-bold whitespace-nowrap">
+      <span className={cn(
+        "relative z-10 inline-flex items-center justify-center gap-2 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-12 group-hover:opacity-0 font-bold whitespace-nowrap",
+        !hasText && "text-slate-900 dark:text-white",
+        className?.includes("text-") && "text-current"
+      )}>
         <span className="h-2 w-2 rounded-full bg-[#fbb034] shrink-0 transition-transform duration-300 group-hover:scale-0" />
         <span className="whitespace-nowrap">
           {mobileText ? (

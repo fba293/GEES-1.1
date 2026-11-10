@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#f8f9fc" />
+<title>GEES | Destination Prototype</title>
+<style>
+  :root {
+    --navy: #10192e;
+    --navy-2: #1b2943;
+    --muted: #66758e;
+    --muted-2: #8b98ac;
+    --line: #e5eaf1;
+    --surface: #ffffff;
+    --canvas: #f8f9fc;
+    --orange: #ffb326;
+    --orange-deep: #f3a20d;
+    --card-radius: 24px;
+    --card-width: 350px;
+    --card-height: 425px;
+    --carousel-gap: 20px;
+    --content-width: 1320px;
+    --shadow: 0 12px 30px rgba(15, 25, 46, .12), 0 2px 5px rgba(15, 25, 46, .07);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    color: var(--navy);
+    background: var(--canvas);
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  button { font: inherit; }
+  button:focus-visible, a:focus-visible { outline: 3px solid rgba(255,179,38,.85); outline-offset: 3px; }
+  .page { padding: 30px 0 76px; overflow: hidden; }
+  .section-header { width: min(calc(100% - 40px), 850px); margin: 0 auto; text-align: center; }
+  .eyebrow { display: inline-flex; align-items: center; gap: 12px; margin-bottom: 18px; color: #71819a; font-size: 11px; line-height: 1; font-weight: 850; letter-spacing: .17em; text-transform: uppercase; }
+  .eyebrow::before, .eyebrow::after { content: ""; width: 42px; height: 1px; background: #cbd3df; }
+  h1 { margin: 0; font-size: clamp(43px, 5.2vw, 70px); line-height: 1.04; letter-spacing: -.065em; font-weight: 880; }
+  h1 .highlight { display: inline-block; padding: .045em .19em .09em; margin-left: .055em; border-radius: 15px; background: var(--orange); box-shadow: 0 4px 0 rgba(211,139,17,.10); }
+  .intro { max-width: 660px; margin: 18px auto 0; color: #53637d; font-size: 16px; line-height: 1.7; }
+  .filter-wrap { display: flex; justify-content: center; width: min(calc(100% - 34px), 100%); margin: 34px auto 28px; }
+  .filters { display: inline-flex; align-items: center; gap: 5px; max-width: 100%; padding: 6px; border: 1px solid #e5eaf1; border-radius: 999px; background: #f0f3f7; box-shadow: inset 0 1px 2px rgba(16,25,46,.035), 0 2px 5px rgba(16,25,46,.025); }
+  .filter-btn { flex: 0 0 auto; min-height: 42px; padding: 0 22px; border: 0; border-radius: 999px; color: #52617a; background: transparent; font-size: 14px; font-weight: 760; cursor: pointer; transition: color .2s ease, background .2s ease, box-shadow .2s ease, transform .2s ease; }
+  .filter-btn:hover { color: var(--navy); transform: translateY(-1px); }
+  .filter-btn[aria-pressed="true"] { color: #fff; background: #070e20; box-shadow: 0 4px 11px rgba(7,14,32,.2); }
+  .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 18px; width: min(calc(100% - 64px), var(--content-width)); margin: 0 auto 20px; }
+  .result-count { color: #72819a; font-size: 14px; font-weight: 600; white-space: nowrap; }
+  .result-count strong { color: var(--navy); font-weight: 850; }
+  .toolbar-actions { display: flex; align-items: center; justify-content: flex-end; gap: 16px; min-width: 0; }
+  .show-all { display: inline-flex; align-items: center; gap: 7px; min-height: 38px; padding: 0 4px; border: 0; color: #4c5d78; background: transparent; font-size: 13px; font-weight: 760; cursor: pointer; white-space: nowrap; transition: color .2s ease; }
+  .show-all:hover { color: #b87500; }
+  .show-all .count { color: #8a96a9; font-weight: 650; }
+  .show-all .arrow { color: #6c7a91; font-size: 17px; transition: transform .2s ease; }
+  .show-all:hover .arrow { transform: translateX(3px); }
+  .view-switch { display: inline-flex; align-items: center; gap: 4px; padding: 4px; border: 1px solid #e1e7ef; border-radius: 17px; background: #f0f3f7; }
+  .view-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 39px; padding: 0 13px; border: 0; border-radius: 13px; color: #56657e; background: transparent; font-size: 12px; font-weight: 800; cursor: pointer; transition: color .2s ease, background .2s ease, box-shadow .2s ease; }
+  .view-btn svg { width: 16px; height: 16px; flex: 0 0 auto; }
+  .view-btn[aria-pressed="true"] { color: #fff; background: #071024; box-shadow: 0 3px 8px rgba(7,16,36,.18); }
+  .carousel-shell { position: relative; }
+  .carousel-viewport { width: 100%; overflow: hidden; padding: 4px 0 24px; touch-action: pan-y; cursor: grab; -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 3.5%, #000 96.5%, transparent 100%); mask-image: linear-gradient(90deg, transparent 0, #000 3.5%, #000 96.5%, transparent 100%); }
+  .carousel-viewport.is-dragging { cursor: grabbing; }
+  .carousel-track { display: flex; width: max-content; will-change: transform; animation: gees-marquee 55s linear infinite; }
+  .carousel-shell:hover .carousel-track, .carousel-shell:focus-within .carousel-track { animation-play-state: paused; }
+  .carousel-group { display: flex; flex: 0 0 auto; gap: var(--carousel-gap); padding-right: var(--carousel-gap); }
+  @keyframes gees-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  .destination-card { position: relative; isolation: isolate; display: flex; flex: 0 0 var(--card-width); width: var(--card-width); height: var(--card-height); overflow: hidden; border: 1px solid rgba(255,255,255,.75); border-radius: var(--card-radius); color: #fff; text-decoration: none; background: #26354f; box-shadow: var(--shadow); transition: transform .28s ease, box-shadow .28s ease; }
+  .destination-card:hover { transform: translateY(-5px); box-shadow: 0 20px 42px rgba(15,25,46,.19); }
+  .card-image { position: absolute; z-index: -2; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; transition: transform .75s cubic-bezier(.2,.7,.2,1); }
+  .destination-card:hover .card-image { transform: scale(1.055); }
+  .card-fallback { position: absolute; z-index: -3; inset: 0; background: linear-gradient(145deg, #8199b8, #253750 65%, #111b31); }
+  .card-overlay { position: absolute; z-index: -1; inset: 0; background: linear-gradient(180deg, rgba(7,14,28,.02) 4%, rgba(7,14,28,.04) 34%, rgba(7,14,28,.43) 59%, rgba(5,11,24,.96) 100%); }
+  .card-content { display: flex; flex: 1; flex-direction: column; justify-content: flex-end; padding: 27px 27px 25px; min-width: 0; }
+  .study-label { margin: 0 0 10px; color: var(--orange); font-size: 12px; line-height: 1; font-weight: 900; letter-spacing: .16em; text-transform: uppercase; }
+  .country-name { margin: 0; color: #fff; font-size: 31px; line-height: 1.08; letter-spacing: -.045em; font-weight: 850; text-shadow: 0 2px 12px rgba(0,0,0,.16); }
+  .card-divider { height: 1px; margin: 17px 0 13px; background: rgba(255,255,255,.27); }
+  .card-bottom { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
+  .tuition { min-width: 0; }
+  .tuition-label { display: block; margin-bottom: 4px; color: rgba(255,255,255,.68); font-size: 10px; line-height: 1; font-weight: 850; letter-spacing: .13em; }
+  .tuition-value { display: block; color: #fff; font-size: 14px; line-height: 1.25; font-weight: 800; white-space: nowrap; }
+  .card-cta { display: inline-flex; align-items: center; gap: 6px; flex: 0 0 auto; color: var(--orange); font-size: 14px; font-weight: 900; white-space: nowrap; }
+  .card-cta .arrow { display: inline-block; font-size: 19px; line-height: 1; transition: transform .2s ease; }
+  .destination-card:hover .card-cta .arrow { transform: translateX(4px); }
+  .carousel-arrow { position: absolute; z-index: 3; top: 47%; display: grid; width: 52px; height: 52px; place-items: center; border: 1px solid rgba(225,231,239,.9); border-radius: 50%; color: #17233a; background: rgba(255,255,255,.96); box-shadow: 0 7px 20px rgba(13,25,46,.16); font-size: 25px; cursor: pointer; transition: transform .2s ease, box-shadow .2s ease; }
+  .carousel-arrow:hover { transform: scale(1.06); box-shadow: 0 10px 24px rgba(13,25,46,.2); }
+  .carousel-arrow.prev { left: max(18px, calc((100vw - 1500px)/2 + 12px)); }
+  .carousel-arrow.next { right: max(18px, calc((100vw - 1500px)/2 + 12px)); }
+  .grid-view { display: none; width: min(calc(100% - 64px), var(--content-width)); grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; margin: 0 auto; padding: 4px 0 8px; }
+  .grid-view.visible { display: grid; }
+  .grid-view .destination-card { width: 100%; min-width: 0; height: 405px; }
+  .carousel-shell.hidden { display: none; }
+  .empty-state { display: none; width: min(calc(100% - 64px), var(--content-width)); margin: 12px auto 0; padding: 48px 20px; border: 1px dashed #d7dee8; border-radius: 20px; color: var(--muted); text-align: center; background: #fff; }
+  .empty-state.visible { display: block; }
+  .empty-state strong { display: block; margin-bottom: 7px; color: var(--navy); font-size: 17px; }
+  .section-note { margin: 10px auto 0; color: #91a0b5; font-size: 12px; text-align: center; }
+  .modal-backdrop { position: fixed; z-index: 20; inset: 0; display: none; align-items: center; justify-content: center; padding: 20px; background: rgba(8,15,29,.64); backdrop-filter: blur(8px); }
+  .modal-backdrop.open { display: flex; }
+  .modal { position: relative; width: min(100%, 470px); padding: 34px; border-radius: 24px; background: #fff; box-shadow: 0 25px 75px rgba(0,0,0,.28); animation: modal-in .22s ease-out; }
+  @keyframes modal-in { from { opacity: 0; transform: translateY(10px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  .modal-close { position: absolute; top: 13px; right: 13px; display: grid; width: 36px; height: 36px; place-items: center; border: 0; border-radius: 50%; color: #526078; background: #f0f2f6; font-size: 21px; cursor: pointer; }
+  .modal-kicker { margin: 0 0 9px; color: #a36b08; font-size: 10px; font-weight: 900; letter-spacing: .15em; text-transform: uppercase; }
+  .modal h2 { margin: 0; font-size: 32px; letter-spacing: -.045em; }
+  .modal p { margin: 13px 0 22px; color: var(--muted); font-size: 14px; line-height: 1.65; }
+  .modal-fee { display: inline-block; margin: 0 0 22px; padding: 9px 12px; border-radius: 10px; color: #34435d; background: #f3f5f8; font-size: 12px; font-weight: 800; }
+  .modal-action { min-height: 43px; padding: 0 20px; border: 0; border-radius: 999px; color: #111827; background: var(--orange); font-size: 13px; font-weight: 900; cursor: pointer; }
+  .demo-note { width: min(calc(100% - 40px), 900px); margin: 30px auto 0; color: #9aa5b5; font-size: 11px; line-height: 1.6; text-align: center; }
+
+  @media (max-width: 1100px) {
+    :root { --card-width: 310px; --card-height: 395px; --carousel-gap: 18px; }
+    .page { padding-top: 35px; }
+    .toolbar { width: min(calc(100% - 48px), 900px); }
+    .grid-view { width: min(calc(100% - 48px), 900px); grid-template-columns: repeat(2, minmax(0,1fr)); gap: 18px; }
+    .grid-view .destination-card { height: 380px; }
+    .card-content { padding: 23px; }
+    .country-name { font-size: 28px; }
+    .carousel-arrow { width: 46px; height: 46px; }
+  }
+  @media (max-width: 760px) {
+    :root { --card-width: min(76vw, 310px); --card-height: 380px; --carousel-gap: 15px; }
+    .page { padding: 34px 0 56px; }
+    .section-header { width: min(calc(100% - 32px), 560px); }
+    .eyebrow { gap: 8px; margin-bottom: 14px; font-size: 9px; letter-spacing: .14em; }
+    .eyebrow::before, .eyebrow::after { width: 23px; }
+    h1 { font-size: clamp(36px, 7.5vw, 51px); line-height: 1.1; }
+    h1 .highlight { border-radius: 10px; }
+    .intro { max-width: 490px; margin-top: 13px; font-size: 14px; line-height: 1.6; }
+    .filter-wrap { justify-content: flex-start; width: 100%; margin: 25px 0 20px; padding: 0 17px 3px; overflow-x: auto; scrollbar-width: none; }
+    .filter-wrap::-webkit-scrollbar { display: none; }
+    .filters { width: max-content; flex-wrap: nowrap; }
+    .filter-btn { min-height: 39px; padding: 0 17px; font-size: 12px; }
+    .toolbar { width: calc(100% - 34px); align-items: flex-start; flex-direction: column; gap: 11px; margin-bottom: 14px; }
+    .toolbar-actions { width: 100%; justify-content: space-between; gap: 9px; }
+    .show-all { min-height: 36px; font-size: 12px; }
+    .view-switch { flex: 0 0 auto; }
+    .view-btn { min-height: 35px; padding: 0 10px; font-size: 11px; }
+    .carousel-viewport { padding: 3px 0 20px; -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 2%, #000 98%, transparent 100%); mask-image: linear-gradient(90deg, transparent 0, #000 2%, #000 98%, transparent 100%); }
+    .carousel-arrow { top: 45%; width: 39px; height: 39px; font-size: 21px; }
+    .carousel-arrow.prev { left: 9px; }
+    .carousel-arrow.next { right: 9px; }
+    .card-content { padding: 21px; }
+    .study-label { margin-bottom: 9px; font-size: 11px; }
+    .country-name { font-size: 27px; }
+    .card-divider { margin: 15px 0 12px; }
+    .tuition-value { font-size: 12px; }
+    .card-cta { font-size: 12px; }
+    .grid-view { width: calc(100% - 34px); grid-template-columns: 1fr; gap: 15px; }
+    .grid-view .destination-card { height: 370px; }
+    .empty-state { width: calc(100% - 34px); }
+    .section-note { width: calc(100% - 38px); font-size: 10px; line-height: 1.5; }
+    .demo-note { width: calc(100% - 36px); }
+  }
+  @media (max-width: 420px) {
+    :root { --card-width: 80vw; --card-height: 365px; }
+    .page { padding-top: 29px; }
+    h1 { font-size: 36px; }
+    .intro { font-size: 13px; }
+    .toolbar-actions { align-items: center; }
+    .show-all { gap: 4px; font-size: 11px; }
+    .show-all .count { display: none; }
+    .view-btn { gap: 5px; padding: 0 8px; font-size: 10px; }
+    .carousel-arrow { width: 35px; height: 35px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    .carousel-track { animation: none !important; }
+  }
+</style>
+</head>
+<body>
+<main class="page">
+  <header class="section-header">
+    <div class="eyebrow">Your next chapter starts here</div>
+    <h1>Choose your <span class="highlight">Destination</span></h1>
+    <p class="intro">Explore study destinations, discover new opportunities and find the right place to begin your international education journey.</p>
+  </header>
+
+  <nav class="filter-wrap" aria-label="Filter destinations by region">
+    <div class="filters" role="group" aria-label="Destination regions">
+      <button class="filter-btn" type="button" data-filter="all" aria-pressed="true">All</button>
+      <button class="filter-btn" type="button" data-filter="Europe" aria-pressed="false">Europe</button>
+      <button class="filter-btn" type="button" data-filter="Oceania" aria-pressed="false">Oceania</button>
+      <button class="filter-btn" type="button" data-filter="North America" aria-pressed="false">North America</button>
+      <button class="filter-btn" type="button" data-filter="Asia" aria-pressed="false">Asia</button>
+    </div>
+  </nav>
+
+  <section aria-label="Destination results">
+    <div class="toolbar">
+      <div class="result-count" aria-live="polite">Showing <strong id="result-number">15</strong> destinations</div>
+      <div class="toolbar-actions">
+        <button class="show-all" id="show-all" type="button">Show All Destinations <span class="count" id="show-all-count">(15)</span><span class="arrow" aria-hidden="true">→</span></button>
+        <div class="view-switch" role="group" aria-label="Choose destination display mode">
+          <button class="view-btn" id="compact-btn" type="button" aria-pressed="true">
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 5h2M8 5h9M3 10h2M8 10h9M3 15h2M8 15h9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            Compact
+          </button>
+          <button class="view-btn" id="expand-btn" type="button" aria-pressed="false">
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="2.5" y="2.5" width="6" height="6" rx="1.2" stroke="currentColor" stroke-width="1.6"/><rect x="11.5" y="2.5" width="6" height="6" rx="1.2" stroke="currentColor" stroke-width="1.6"/><rect x="2.5" y="11.5" width="6" height="6" rx="1.2" stroke="currentColor" stroke-width="1.6"/><rect x="11.5" y="11.5" width="6" height="6" rx="1.2" stroke="currentColor" stroke-width="1.6"/></svg>
+            Expand
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="carousel-shell" id="carousel-shell">
+      <button class="carousel-arrow prev" id="prev-btn" type="button" aria-label="Previous destinations">‹</button>
+      <div class="carousel-viewport" id="carousel-viewport" aria-label="Continuously scrolling destination cards">
+        <div class="carousel-track" id="carousel-track"></div>
+      </div>
+      <button class="carousel-arrow next" id="next-btn" type="button" aria-label="Next destinations">›</button>
+    </div>
+    <div class="grid-view" id="grid-view" aria-label="Destination cards in grid view"></div>
+    <div class="empty-state" id="empty-state"><strong>No destinations found</strong>There are currently no destinations in this region.</div>
+    <p class="section-note" id="section-note">Cards move automatically. Hover or focus to pause, or swipe on touch screens.</p>
+  </section>
+  <p class="demo-note">Interactive design prototype. Destination images load from Unsplash; tuition amounts and country records are illustrative placeholders, not live GEES database information.</p>
+</main>
+
+<div class="modal-backdrop" id="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-description">
+  <div class="modal">
+    <button class="modal-close" id="modal-close" type="button" aria-label="Close dialog">×</button>
+    <p class="modal-kicker">Study in</p>
+    <h2 id="modal-title">Destination</h2>
+    <p id="modal-description"></p>
+    <div class="modal-fee" id="modal-fee"></div><br />
+    <button class="modal-action" id="modal-action" type="button">Close preview</button>
+  </div>
+</div>
+
+<script>
+  // Demo records only. Replace these with live GEES destination records during integration.
+  const destinations = [
+    { country: 'Australia', region: 'Oceania', fee: 'AUD 25,000 / year', image: 'https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?auto=format&fit=crop&w=1100&q=85', alt: 'Sydney Harbour and the Opera House', description: 'Explore internationally recognised universities, vibrant student cities and a wide range of study pathways in Australia.' },
+    { country: 'Canada', region: 'North America', fee: 'CAD 18,000 / year', image: 'https://images.unsplash.com/photo-1517935706615-2717063c2225?auto=format&fit=crop&w=1100&q=85', alt: 'Toronto skyline beside Lake Ontario', description: 'Discover a welcoming learning environment, multicultural cities and a broad choice of academic programmes in Canada.' },
+    { country: 'Cyprus', region: 'Europe', fee: '€3,500 / year', image: 'https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=1100&q=85', alt: 'White Mediterranean coastal architecture overlooking blue water', description: 'Explore a Mediterranean study destination with international communities and a relaxed coastal lifestyle.' },
+    { country: 'Finland', region: 'Europe', fee: '€6,000 / year', image: 'https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?auto=format&fit=crop&w=1100&q=85', alt: 'Nordic city architecture in Finland', description: 'Discover innovative education, a strong student experience and the distinctive culture of Finland.' },
+    { country: 'United Kingdom', region: 'Europe', fee: 'GBP 15,000 / year', image: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=1100&q=85', alt: 'London skyline and River Thames', description: 'Explore established universities, diverse communities and globally recognised qualifications in the United Kingdom.' },
+    { country: 'New Zealand', region: 'Oceania', fee: 'NZD 22,000 / year', image: 'https://images.unsplash.com/photo-1469521669194-babb45599def?auto=format&fit=crop&w=1100&q=85', alt: 'Mountain lake landscape in New Zealand', description: 'Enjoy a welcoming study environment, natural landscapes and practical learning opportunities in New Zealand.' },
+    { country: 'Malaysia', region: 'Asia', fee: 'MYR 18,000 / year', image: 'https://images.unsplash.com/photo-1596422846543-75c6fc197f07?auto=format&fit=crop&w=1100&q=85', alt: 'Kuala Lumpur skyline and Petronas Towers', description: 'Study in a multicultural environment with internationally recognised institutions and a wide range of programmes.' },
+    { country: 'Malta', region: 'Europe', fee: '€8,000 / year', image: 'https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?auto=format&fit=crop&w=1100&q=85', alt: 'Mediterranean island coastline and historic buildings', description: 'Explore an English-speaking Mediterranean destination with a welcoming international student community.' },
+    { country: 'South Korea', region: 'Asia', fee: 'KRW 7,000,000 / year', image: 'https://images.unsplash.com/photo-1538485399081-7c8a0c6c0b5c?auto=format&fit=crop&w=1100&q=85', alt: 'Seoul city street in South Korea', description: 'Discover a dynamic destination known for technology, culture and a growing range of international study programmes.' },
+    { country: 'Germany', region: 'Europe', fee: '€4,000 / year', image: 'https://images.unsplash.com/photo-1560969184-10fe8719e047?auto=format&fit=crop&w=1100&q=85', alt: 'Brandenburg Gate in Berlin', description: 'Explore a strong academic environment, research opportunities and a wide range of study options in Germany.' },
+    { country: 'Japan', region: 'Asia', fee: 'JPY 900,000 / year', image: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1100&q=85', alt: 'Traditional street in Kyoto, Japan', description: 'Discover a distinctive blend of innovation, culture and academic opportunities in Japan.' },
+    { country: 'Ireland', region: 'Europe', fee: '€12,000 / year', image: 'https://images.unsplash.com/photo-1590089415225-401ed6f9db8e?auto=format&fit=crop&w=1100&q=85', alt: 'Historic architecture and green landscape in Ireland', description: 'Explore a friendly English-speaking study destination with a rich cultural heritage and strong academic options.' },
+    { country: 'Sweden', region: 'Europe', fee: 'SEK 100,000 / year', image: 'https://images.unsplash.com/photo-1509356843151-3e7d96241e11?auto=format&fit=crop&w=1100&q=85', alt: 'Scandinavian city street and architecture', description: 'Discover creative learning environments, innovation and an international outlook in Sweden.' },
+    { country: 'Singapore', region: 'Asia', fee: 'SGD 20,000 / year', image: 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=1100&q=85', alt: 'Singapore Marina Bay skyline', description: 'Study in a global education and business hub with modern infrastructure and a multicultural environment.' },
+    { country: 'France', region: 'Europe', fee: '€7,000 / year', image: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1100&q=85', alt: 'Paris cityscape and Eiffel Tower', description: 'Explore renowned institutions, cultural experiences and a wide range of academic opportunities in France.' }
+  ];
+
+  const $ = (selector) => document.querySelector(selector);
+  const filterButtons = [...document.querySelectorAll('.filter-btn')];
+  const carouselShell = $('#carousel-shell');
+  const carouselViewport = $('#carousel-viewport');
+  const carouselTrack = $('#carousel-track');
+  const gridView = $('#grid-view');
+  const resultNumber = $('#result-number');
+  const showAllCount = $('#show-all-count');
+  const showAllButton = $('#show-all');
+  const compactButton = $('#compact-btn');
+  const expandButton = $('#expand-btn');
+  const emptyState = $('#empty-state');
+  const sectionNote = $('#section-note');
+  const modalBackdrop = $('#modal-backdrop');
+  const modalTitle = $('#modal-title');
+  const modalDescription = $('#modal-description');
+  const modalFee = $('#modal-fee');
+  const modalClose = $('#modal-close');
+  const modalAction = $('#modal-action');
+  let selectedRegion = 'all';
+  let expanded = false;
+  let animationDurationMs = 55000;
+  let animationOffsetMs = 0;
+  let dragState = null;
+  let dragged = false;
+  let lastFocused = null;
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function filteredDestinations() {
+    return destinations.filter(item => selectedRegion === 'all' || item.region === selectedRegion);
+  }
+
+  function openModal(destination) {
+    lastFocused = document.activeElement;
+    modalTitle.textContent = destination.country;
+    modalDescription.textContent = destination.description;
+    modalFee.textContent = `Indicative tuition: ${destination.fee}`;
+    modalBackdrop.classList.add('open');
+    modalClose.focus();
+  }
+  function closeModal() {
+    modalBackdrop.classList.remove('open');
+    if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus();
+  }
+
+  function createCard(destination, duplicate = false) {
+    const card = document.createElement('a');
+    card.className = 'destination-card';
+    card.href = '#destination-preview';
+    card.setAttribute('aria-label', `Study in ${destination.country}. Explore destination details.`);
+    if (duplicate) {
+      card.setAttribute('aria-hidden', 'true');
+      card.tabIndex = -1;
+    }
+    card.innerHTML = `
+      <span class="card-fallback" aria-hidden="true"></span>
+      <img class="card-image" src="${destination.image}" alt="${destination.alt}" loading="lazy" />
+      <span class="card-overlay" aria-hidden="true"></span>
+      <span class="card-content">
+        <span class="study-label">Study in</span>
+        <span class="country-name">${destination.country}</span>
+        <span class="card-divider" aria-hidden="true"></span>
+        <span class="card-bottom">
+          <span class="tuition"><span class="tuition-label">Tuition from</span><span class="tuition-value">${destination.fee}</span></span>
+          <span class="card-cta">Explore <span class="arrow" aria-hidden="true">→</span></span>
+        </span>
+      </span>`;
+    const img = card.querySelector('img');
+    img.addEventListener('error', () => { img.style.display = 'none'; });
+    card.addEventListener('click', (event) => {
+      event.preventDefault();
+      if (duplicate || dragged) { dragged = false; return; }
+      openModal(destination);
+    });
+    return card;
+  }
+
+  function buildCarousel(items) {
+    carouselTrack.innerHTML = '';
+    const firstGroup = document.createElement('div');
+    const secondGroup = document.createElement('div');
+    firstGroup.className = 'carousel-group';
+    secondGroup.className = 'carousel-group';
+    firstGroup.setAttribute('aria-label', 'Destination carousel');
+    secondGroup.setAttribute('aria-hidden', 'true');
+    items.forEach(item => firstGroup.appendChild(createCard(item)));
+    items.forEach(item => secondGroup.appendChild(createCard(item, true)));
+    carouselTrack.append(firstGroup, secondGroup);
+    animationOffsetMs = 0;
+    requestAnimationFrame(() => {
+      const groupWidth = firstGroup.getBoundingClientRect().width;
+      animationDurationMs = Math.max(26000, groupWidth * 9.5);
+      carouselTrack.style.animation = 'none';
+      carouselTrack.style.animationDuration = `${animationDurationMs}ms`;
+      carouselTrack.style.animationDelay = '0ms';
+      carouselTrack.style.transform = '';
+      void carouselTrack.offsetHeight;
+      if (!reducedMotion) carouselTrack.style.animation = `gees-marquee ${animationDurationMs}ms linear infinite`;
+    });
+  }
+
+  function updateViewButtons() {
+    compactButton.setAttribute('aria-pressed', String(!expanded));
+    expandButton.setAttribute('aria-pressed', String(expanded));
+  }
+
+  function render() {
+    const items = filteredDestinations();
+    resultNumber.textContent = items.length;
+    showAllCount.textContent = `(${destinations.length})`;
+    emptyState.classList.toggle('visible', items.length === 0);
+    carouselShell.classList.toggle('hidden', expanded || items.length === 0);
+    gridView.classList.toggle('visible', expanded && items.length > 0);
+    sectionNote.style.display = items.length ? 'block' : 'none';
+    sectionNote.textContent = expanded ? 'Showing all destinations in a responsive grid. Select Compact to return to the moving carousel.' : 'Cards move automatically. Hover or focus to pause, or swipe on touch screens.';
+    gridView.innerHTML = '';
+    items.forEach(item => gridView.appendChild(createCard(item)));
+    buildCarousel(items);
+    updateViewButtons();
+    filterButtons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.filter === selectedRegion)));
+  }
+
+  filterButtons.forEach(button => button.addEventListener('click', () => {
+    selectedRegion = button.dataset.filter;
+    render();
+  }));
+
+  compactButton.addEventListener('click', () => {
+    expanded = false;
+    render();
+  });
+  expandButton.addEventListener('click', () => {
+    expanded = true;
+    render();
+  });
+  showAllButton.addEventListener('click', () => {
+    selectedRegion = 'all';
+    expanded = true;
+    render();
+    document.querySelector('.toolbar').scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'center' });
+  });
+
+  function shiftCarousel(direction) {
+    if (reducedMotion) return;
+    const group = carouselTrack.querySelector('.carousel-group');
+    if (!group) return;
+    const card = group.querySelector('.destination-card');
+    if (!card) return;
+    const gap = parseFloat(getComputedStyle(group).gap) || 0;
+    const groupWidth = group.getBoundingClientRect().width;
+    const step = card.getBoundingClientRect().width + gap;
+    const stepMs = (step / groupWidth) * animationDurationMs;
+    animationOffsetMs = (animationOffsetMs + direction * stepMs + animationDurationMs) % animationDurationMs;
+    carouselTrack.style.animationDelay = `${-animationOffsetMs}ms`;
+    carouselTrack.style.animationPlayState = 'running';
+  }
+  $('#prev-btn').addEventListener('click', () => shiftCarousel(-1));
+  $('#next-btn').addEventListener('click', () => shiftCarousel(1));
+
+  // Touch swipe support. Vertical page scrolling remains available; card taps still open the preview.
+  function touchStart(event) {
+    if (expanded || !event.touches.length) return;
+    const style = getComputedStyle(carouselTrack);
+    const matrix = new DOMMatrixReadOnly(style.transform === 'none' ? undefined : style.transform);
+    const currentX = matrix.m41 || 0;
+    carouselTrack.style.animationPlayState = 'paused';
+    carouselTrack.style.animation = 'none';
+    carouselTrack.style.transform = `translateX(${currentX}px)`;
+    dragState = { startX: event.touches[0].clientX, currentX, moved: false };
+  }
+  function touchMove(event) {
+    if (!dragState || !event.touches.length) return;
+    const dx = event.touches[0].clientX - dragState.startX;
+    if (Math.abs(dx) > 7) dragState.moved = true;
+    if (dragState.moved) {
+      carouselTrack.style.transform = `translateX(${dragState.currentX + dx}px)`;
+      carouselViewport.classList.add('is-dragging');
+    }
+  }
+  function touchEnd(event) {
+    if (!dragState) return;
+    const endX = event.changedTouches && event.changedTouches.length ? event.changedTouches[0].clientX : dragState.startX;
+    const dx = endX - dragState.startX;
+    const didMove = dragState.moved;
+    const group = carouselTrack.querySelector('.carousel-group');
+    const groupWidth = group ? group.getBoundingClientRect().width : 1;
+    const finalX = dragState.currentX + (didMove ? dx : 0);
+    const progress = ((-finalX % groupWidth) + groupWidth) % groupWidth;
+    animationOffsetMs = (progress / groupWidth) * animationDurationMs;
+    dragState = null;
+    carouselViewport.classList.remove('is-dragging');
+    carouselTrack.style.transform = '';
+    carouselTrack.style.animation = reducedMotion ? 'none' : `gees-marquee ${animationDurationMs}ms linear infinite`;
+    carouselTrack.style.animationDelay = `${-animationOffsetMs}ms`;
+    carouselTrack.style.animationPlayState = '';
+    if (didMove) {
+      dragged = true;
+      setTimeout(() => { dragged = false; }, 280);
+    }
+  }
+  carouselViewport.addEventListener('touchstart', touchStart, { passive: true });
+  carouselViewport.addEventListener('touchmove', touchMove, { passive: true });
+  carouselViewport.addEventListener('touchend', touchEnd, { passive: true });
+  carouselViewport.addEventListener('touchcancel', touchEnd, { passive: true });
+
+  modalClose.addEventListener('click', closeModal);
+  modalAction.addEventListener('click', closeModal);
+  modalBackdrop.addEventListener('click', (event) => { if (event.target === modalBackdrop) closeModal(); });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && modalBackdrop.classList.contains('open')) closeModal();
+  });
+
+  render();
+</script>
+</body>
+</html>

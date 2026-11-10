@@ -2,7 +2,7 @@
  * @license
  * SPDX-License-Identifier: Apache-2.0
  * GEES Student Dependent Visa & Family Relocation Guidance View
- * Authentic GEES Visual Identity: #070b19 Deep Navy, #fbb034 Gold, Royal Blue
+ * Authentic GEES Visual Identity: #0B1329 Deep Navy, #fbb034 Gold, Royal Blue
  * Evidence-based, policy-grounded guidance for families of international students
  */
 
@@ -234,7 +234,7 @@ export const DependentVisaView: React.FC<DependentVisaViewProps> = ({
   };
 
   return (
-    <div className="w-full bg-slate-50 dark:bg-[#070b19] text-slate-900 dark:text-slate-100 min-h-screen">
+    <div className="w-full bg-slate-50 dark:bg-[#0B1329] text-slate-900 dark:text-slate-100 min-h-screen">
       {/* 1. BREADCRUMB & CONTEXT STRIP */}
       <nav aria-label="Breadcrumb" className="bg-white dark:bg-[#0c1229] border-b border-slate-200 dark:border-slate-800 sticky top-16 z-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between text-xs sm:text-sm">
@@ -259,7 +259,7 @@ export const DependentVisaView: React.FC<DependentVisaViewProps> = ({
           </div>
           <button
             onClick={handleConsultationTrigger}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-[#fbb034] hover:bg-[#e5a02e] text-[#070b19] rounded-full font-bold text-xs transition-colors cursor-pointer shrink-0 shadow-xs"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-[#fbb034] hover:bg-[#e5a02e] text-[#0B1329] rounded-full font-bold text-xs transition-colors cursor-pointer shrink-0 shadow-xs"
           >
             <span className="material-symbols-outlined text-[16px]">family_restroom</span>
             <span className="hidden min-[420px]:inline">Consultation</span>
@@ -286,7 +286,7 @@ export const DependentVisaView: React.FC<DependentVisaViewProps> = ({
       </aside>
 
       {/* 3. HERO SECTION */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#070b19] via-[#0c1229] to-[#0f1738] text-white py-12 sm:py-20 px-4 sm:px-6 lg:px-8 border-b border-slate-800">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#0B1329] via-[#0c1229] to-[#0f1738] text-white py-12 sm:py-20 px-4 sm:px-6 lg:px-8 border-b border-slate-800">
         <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#3b82f6_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none" />
 
         <div className="max-w-7xl mx-auto relative z-10">
@@ -373,7 +373,7 @@ export const DependentVisaView: React.FC<DependentVisaViewProps> = ({
                 </div>
 
                 <div className="space-y-3">
-                  <div className="p-3.5 bg-[#070b19] rounded-2xl border border-slate-800 flex items-start gap-3">
+                  <div className="p-3.5 bg-[#0B1329] rounded-2xl border border-slate-800 flex items-start gap-3">
                     <div className="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
                       <span className="material-symbols-outlined text-[18px]">check_circle</span>
                     </div>
@@ -385,7 +385,7 @@ export const DependentVisaView: React.FC<DependentVisaViewProps> = ({
                     </div>
                   </div>
 
-                  <div className="p-3.5 bg-[#070b19] rounded-2xl border border-slate-800 flex items-start gap-3">
+                  <div className="p-3.5 bg-[#0B1329] rounded-2xl border border-slate-800 flex items-start gap-3">
                     <div className="w-8 h-8 rounded-lg bg-rose-500/20 text-rose-400 flex items-center justify-center shrink-0 mt-0.5">
                       <span className="material-symbols-outlined text-[18px]">cancel</span>
                     </div>
@@ -397,7 +397,7 @@ export const DependentVisaView: React.FC<DependentVisaViewProps> = ({
                     </div>
                   </div>
 
-                  <div className="p-3.5 bg-[#070b19] rounded-2xl border border-slate-800 flex items-start gap-3">
+                  <div className="p-3.5 bg-[#0B1329] rounded-2xl border border-slate-800 flex items-start gap-3">
                     <div className="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 mt-0.5">
                       <span className="material-symbols-outlined text-[18px]">schedule</span>
                     </div>
@@ -599,7 +599,7 @@ export const DependentVisaView: React.FC<DependentVisaViewProps> = ({
           </div>
 
           {/* POLICY DETAIL CARD */}
-          <div className="bg-slate-50 dark:bg-[#070b19] border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 lg:p-10 shadow-sm space-y-8">
+          <div className="bg-slate-50 dark:bg-[#0B1329] border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 lg:p-10 shadow-sm space-y-8">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-6 border-b border-slate-200 dark:border-slate-800">
               <div>
                 <div className="flex items-center gap-2.5">
@@ -937,7 +937,7 @@ export const DependentVisaView: React.FC<DependentVisaViewProps> = ({
               .map((card, idx) => (
                 <div
                   key={idx}
-                  className="p-6 rounded-3xl bg-slate-50 dark:bg-[#070b19] border border-slate-200 dark:border-slate-800 space-y-4 shadow-xs"
+                  className="p-6 rounded-3xl bg-slate-50 dark:bg-[#0B1329] border border-slate-200 dark:border-slate-800 space-y-4 shadow-xs"
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-2xl bg-blue-100 dark:bg-blue-950/60 text-blue-600 dark:text-[#fbb034] flex items-center justify-center shrink-0">
@@ -966,7 +966,7 @@ export const DependentVisaView: React.FC<DependentVisaViewProps> = ({
 
       {/* 8. INTERACTIVE FAMILY READINESS SELF-CHECK */}
       <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
-        <div className="bg-gradient-to-br from-[#0c1229] via-[#0f1738] to-[#070b19] border border-slate-700/80 rounded-3xl p-6 sm:p-10 text-white shadow-xl space-y-8">
+        <div className="bg-gradient-to-br from-[#0c1229] via-[#0f1738] to-[#0B1329] border border-slate-700/80 rounded-3xl p-6 sm:p-10 text-white shadow-xl space-y-8">
           <div className="text-center space-y-2 max-w-2xl mx-auto">
             <span className="px-3 py-1 rounded-full bg-[#fbb034]/20 border border-[#fbb034]/40 text-[#fbb034] text-xs font-bold uppercase tracking-wider">
               Self-Evaluation Tool
@@ -1080,7 +1080,7 @@ export const DependentVisaView: React.FC<DependentVisaViewProps> = ({
           <div className="text-center pt-2">
             <button
               onClick={handleConsultationTrigger}
-              className="px-6 py-3.5 bg-[#fbb034] hover:bg-[#e5a02e] text-[#070b19] font-extrabold text-xs sm:text-sm rounded-full transition-all cursor-pointer inline-flex items-center gap-2 shadow-lg"
+              className="px-6 py-3.5 bg-[#fbb034] hover:bg-[#e5a02e] text-[#0B1329] font-extrabold text-xs sm:text-sm rounded-full transition-all cursor-pointer inline-flex items-center gap-2 shadow-lg"
             >
               <span className="material-symbols-outlined text-[18px]">forum</span>
               <span>Discuss Your Family Profile with a Senior GEES Advisor</span>
@@ -1208,7 +1208,7 @@ export const DependentVisaView: React.FC<DependentVisaViewProps> = ({
               return (
                 <div
                   key={idx}
-                  className="bg-slate-50 dark:bg-[#070b19] border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden transition-all"
+                  className="bg-slate-50 dark:bg-[#0B1329] border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden transition-all"
                 >
                   <button
                     onClick={() => setActiveFaq(isOpen ? null : idx)}
@@ -1233,7 +1233,7 @@ export const DependentVisaView: React.FC<DependentVisaViewProps> = ({
 
       {/* 11. TRANSPARENT CALL TO ACTION & CONSULTATION SECTION */}
       <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="bg-gradient-to-r from-[#070b19] via-[#0c1229] to-[#0f1738] rounded-3xl p-8 sm:p-12 text-white text-center space-y-6 shadow-2xl relative overflow-hidden border border-slate-700">
+        <div className="bg-gradient-to-r from-[#0B1329] via-[#0c1229] to-[#0f1738] rounded-3xl p-8 sm:p-12 text-white text-center space-y-6 shadow-2xl relative overflow-hidden border border-slate-700">
           <div className="relative z-10 max-w-3xl mx-auto space-y-4">
             <span className="px-3 py-1 bg-white/10 text-[#fbb034] rounded-full text-xs font-extrabold uppercase tracking-widest border border-white/20">
               Personalized Guidance
@@ -1252,7 +1252,7 @@ export const DependentVisaView: React.FC<DependentVisaViewProps> = ({
             <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
               <button
                 onClick={handleConsultationTrigger}
-                className="w-full sm:w-auto px-8 py-3.5 bg-[#fbb034] hover:bg-[#e5a02e] text-[#070b19] rounded-full font-extrabold text-sm shadow-xl transition-all cursor-pointer min-h-[44px]"
+                className="w-full sm:w-auto px-8 py-3.5 bg-[#fbb034] hover:bg-[#e5a02e] text-[#0B1329] rounded-full font-extrabold text-sm shadow-xl transition-all cursor-pointer min-h-[44px]"
               >
                 Schedule Family Consultation
               </button>

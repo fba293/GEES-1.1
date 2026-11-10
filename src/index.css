@@ -14,19 +14,19 @@
     --brand-blue: #2563EB;
 
     --background: #ffffff;
-    --foreground: #0f172a;
+    --foreground: #0B1329;
     --card: #ffffff;
-    --card-foreground: #0f172a;
+    --card-foreground: #0B1329;
     --popover: #ffffff;
-    --popover-foreground: #0f172a;
+    --popover-foreground: #0B1329;
     --primary: #FBB034;
-    --primary-foreground: #0f172a;
+    --primary-foreground: #0B1329;
     --secondary: #f1f5f9;
-    --secondary-foreground: #0f172a;
+    --secondary-foreground: #0B1329;
     --muted: #f1f5f9;
     --muted-foreground: #475569;
     --accent: #f1f5f9;
-    --accent-foreground: #0f172a;
+    --accent-foreground: #0B1329;
     --destructive: #ef4444;
     --destructive-foreground: #ffffff;
     --border: #e2e8f0;
@@ -36,14 +36,14 @@
   }
 
   .dark {
-    --background: #070D1E;
+    --background: #0B1329;
     --foreground: #f8fafc;
-    --card: #0f172a;
+    --card: #0B1329;
     --card-foreground: #f8fafc;
-    --popover: #0f172a;
+    --popover: #0B1329;
     --popover-foreground: #f8fafc;
     --primary: #FBB034;
-    --primary-foreground: #0f172a;
+    --primary-foreground: #0B1329;
     --secondary: #1e293b;
     --secondary-foreground: #f8fafc;
     --muted: #1e293b;
@@ -333,7 +333,7 @@
   }
 
   /* 11. Modal dialogue proportions on mobile */
-  .fixed.inset-0 .bg-white.dark\:bg-\[\#0f172a\],
+  .fixed.inset-0 .bg-white.dark\:bg-\[\#0B1329\],
   .fixed.inset-0 .rounded-3xl {
     border-radius: 1.25rem !important;
     padding: 1.25rem 1rem !important;
@@ -569,7 +569,6 @@
   border-radius: 22px !important;
   background: #ffffff !important;
   border: 1px solid rgba(255, 215, 106, 0.64) !important;
-  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.1) !important;
   contain: layout paint;
   transform: translateZ(0);
   -webkit-backface-visibility: hidden;
@@ -606,7 +605,6 @@ html.dark .home-partners-section .partner-logo,
 [data-theme="dark"] .home-partners-section .partner-logo {
   background: #ffffff !important;
   border-color: rgba(255, 215, 106, 0.74) !important;
-  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.28) !important;
 }
 
 html.dark .home-partners-section .partner-logo:hover,
@@ -1055,7 +1053,7 @@ body {
 
 .leaflet-popup-content-wrapper {
   background: #ffffff !important;
-  color: #0f172a !important;
+  color: #0B1329 !important;
   border-radius: 1.25rem !important;
   padding: 0 !important;
   box-shadow: 0 20px 30px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
@@ -1064,7 +1062,7 @@ body {
 }
 
 .dark .leaflet-popup-content-wrapper {
-  background: #0f172a !important;
+  background: #0B1329 !important;
   color: #f8fafc !important;
   border-color: rgba(30, 41, 59, 0.9) !important;
 }
@@ -1086,7 +1084,7 @@ body {
 }
 
 .dark .leaflet-popup-tip {
-  background: #0f172a !important;
+  background: #0B1329 !important;
 }
 
 /* Custom MarkerCluster Styling matching GEES Brand */
@@ -1195,7 +1193,7 @@ body {
   height: 40px;
   max-height: 40px;
   overflow: hidden;
-  background-color: #070B19;
+  background-color: #0B1329;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   opacity: 1;
   visibility: visible;
@@ -1247,7 +1245,7 @@ body {
 }
 
 .dark .gees-main-navbar.expanded {
-  background-color: #0b1329;
+  background-color: #0B1329;
   border-bottom: 1px solid rgba(30, 41, 59, 0.85);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
 }
@@ -1269,7 +1267,7 @@ body {
   max-width: 1360px;
   margin: 15px auto 0;
   border-radius: 100px;
-  background-color: #070b19 !important;
+  background-color: #0B1329 !important;
   border: 1px solid rgba(255, 255, 255, 0.14) !important;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.28) !important;
 }
@@ -1279,6 +1277,44 @@ body {
   .gees-main-navbar.scrolled-dark {
     width: 94%;
     margin: 10px auto 0;
+  }
+}
+
+/* Spring-based transition with ease-out-back timing function for mobile menu expand/collapse */
+@media (max-width: 1279px) {
+  .gees-main-navbar {
+    max-height: 60px;
+    overflow: hidden;
+    transition: max-height 0.48s cubic-bezier(0.34, 1.35, 0.64, 1),
+                border-radius 0.35s cubic-bezier(0.34, 1.35, 0.64, 1),
+                box-shadow 0.35s ease,
+                background-color 0.35s ease,
+                border-color 0.35s ease,
+                width 0.4s ease,
+                margin 0.4s ease;
+  }
+
+  @media (min-width: 640px) {
+    .gees-main-navbar {
+      max-height: 72px;
+    }
+  }
+
+  .gees-main-navbar.mobile-menu-open {
+    max-height: min(92vh, 840px) !important;
+    border-radius: 28px !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+    background-color: #ffffff !important;
+    border-color: rgba(226, 232, 240, 0.95) !important;
+    width: 94% !important;
+    margin-top: 10px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .dark .gees-main-navbar.mobile-menu-open {
+    background-color: #0B1329 !important;
+    border-color: rgba(255, 255, 255, 0.14) !important;
   }
 }
 
@@ -1294,7 +1330,7 @@ body {
 }
 
 .gees-header-wrapper.scrolled .gees-main-navbar.scrolled-light .gees-nav-link {
-  color: #0f172a !important;
+  color: #0B1329 !important;
 }
 .gees-header-wrapper.scrolled .gees-main-navbar.scrolled-light .gees-nav-link:hover {
   color: #2563eb !important;
@@ -1308,7 +1344,7 @@ body {
   color: #ffffff !important;
 }
 .gees-header-wrapper.scrolled .gees-main-navbar.scrolled-light .gees-brand-text {
-  color: #0f172a !important;
+  color: #0B1329 !important;
 }
 
 /* Icon button & Theme Toggle styling when scrolled */
@@ -1329,7 +1365,7 @@ body {
 .gees-header-wrapper.scrolled .gees-main-navbar.scrolled-light [data-gees-theme-toggle] {
   background-color: #ffffff !important;
   border-color: rgba(203, 213, 225, 0.8) !important;
-  color: #0f172a !important;
+  color: #0B1329 !important;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06) !important;
 }
 .gees-header-wrapper.scrolled .gees-main-navbar.scrolled-light .gees-header-icon-btn:hover,
@@ -1344,14 +1380,14 @@ body {
 .gees-header-wrapper.scrolled .gees-main-navbar button[class*="bg-[#fbb034]"],
 .gees-header-wrapper.scrolled .gees-main-navbar .bg-\[\#fbb034\] {
   background-color: #fbb034 !important;
-  color: #0f172a !important;
+  color: #0B1329 !important;
   border-color: #f59e0b !important;
   box-shadow: 0 4px 14px rgba(251, 176, 52, 0.35) !important;
 }
 .gees-header-wrapper.scrolled .gees-main-navbar button.bg-\[\#fbb034\]:hover,
 .gees-header-wrapper.scrolled .gees-main-navbar button[class*="bg-[#fbb034]"]:hover {
   background-color: #f59e0b !important;
-  color: #0f172a !important;
+  color: #0B1329 !important;
 }
 
 /* Ultra-Fluid, Hardware-Accelerated Smooth Scroll & Navbar GPU Optimization */

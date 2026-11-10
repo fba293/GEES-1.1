@@ -583,23 +583,14 @@ export const WishlistPortal: React.FC<WishlistPortalProps> = ({
                     {/* Bottom Action Row: Book Consultation (Amber/Gold) + Apply (Red) + Remove Button */}
                     <div className="p-5 pt-0 space-y-2">
                       <div className="flex items-center gap-2">
-                        {/* Book Consultation button with clear counselor icon */}
+                        {/* Book Consultation button */}
                         <button
                           type="button"
                           onClick={() => onOpenConsultation(`Admissions Consultation for ${course.title} at ${course.universityName}`)}
                           className="flex-1 py-2.5 px-3 rounded-xl bg-gradient-to-r from-amber-400 to-[#fbb034] hover:from-amber-300 hover:to-amber-400 text-slate-950 font-bold text-xs transition-all cursor-pointer text-center flex items-center justify-center gap-1.5 shadow-sm active:scale-95"
                         >
                           <span className="material-symbols-outlined text-[16px]">support_agent</span>
-                          <span>Book Consultation</span>
-                        </button>
-
-                        {/* Apply Now button */}
-                        <button
-                          type="button"
-                          onClick={() => onOpenConsultation(`Direct Application for ${course.title} at ${course.universityName}`)}
-                          className="py-2.5 px-3.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs transition-colors cursor-pointer text-center active:scale-95"
-                        >
-                          Apply
+                          <span>Book Free Consultation</span>
                         </button>
                       </div>
 

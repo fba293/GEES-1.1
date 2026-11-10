@@ -114,7 +114,7 @@ export const BlogsUpdatesSection: React.FC<BlogsUpdatesSectionProps> = ({
   return (
     <section
       id="blogs-section"
-      className="w-full bg-slate-50 dark:bg-[#070D1E] py-8 min-[390px]:py-10 sm:py-20 border-t border-slate-100 dark:border-slate-800 transition-colors"
+      className="w-full bg-white dark:bg-[#0B1329] py-10 min-[390px]:py-12 sm:py-20 border-t border-slate-100 dark:border-slate-800 transition-colors"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* 1. Header (Classic GEES Signature Style) */}
@@ -136,18 +136,19 @@ export const BlogsUpdatesSection: React.FC<BlogsUpdatesSectionProps> = ({
               activeId={activeCategory}
               onChange={(id) => setActiveCategory(id)}
               size="md"
+              containerClassName="mx-auto justify-start sm:justify-center"
             />
           </div>
         </div>
 
         {/* 2. Responsive 3-Column Articles Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch">
-          {filteredPosts.slice(0, 6).map((post) => {
+          {filteredPosts.slice(0, 3).map((post) => {
             return (
               <article
                 key={post.id}
                 onClick={() => setSelectedArticle(post)}
-                className="group relative bg-white dark:bg-slate-900 rounded-3xl overflow-hidden border border-slate-200/90 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between cursor-pointer active:scale-[0.99]"
+                className="group relative bg-white dark:bg-slate-900 rounded-3xl overflow-hidden border border-slate-200/90 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between cursor-pointer active:scale-[0.98]"
               >
                 {/* Image Banner */}
                 <div className="relative aspect-[16/10] overflow-hidden bg-slate-100 dark:bg-slate-800">
@@ -161,7 +162,7 @@ export const BlogsUpdatesSection: React.FC<BlogsUpdatesSectionProps> = ({
 
                   {/* Top Category Badge */}
                   <div className="absolute top-3.5 left-3.5 z-10">
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase bg-slate-900/80 backdrop-blur-md text-[#fbb034] border border-amber-400/20 shadow-xs">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-bold tracking-wide uppercase bg-slate-900/80 backdrop-blur-md text-[#fbb034] border border-amber-400/20 shadow-xs">
                       {post.category}
                     </span>
                   </div>
@@ -172,7 +173,7 @@ export const BlogsUpdatesSection: React.FC<BlogsUpdatesSectionProps> = ({
                       type="button"
                       aria-label={post.saved ? 'Remove bookmark' : 'Bookmark article'}
                       onClick={(e) => toggleBookmark(post.id, e)}
-                      className="w-11 h-11 flex items-center justify-center rounded-full bg-slate-900/70 hover:bg-slate-900 text-white backdrop-blur-md transition-colors cursor-pointer"
+                      className="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full bg-slate-900/70 hover:bg-slate-900 text-white backdrop-blur-md transition-colors cursor-pointer"
                     >
                       <span
                         className={`material-symbols-outlined text-[20px] transition-transform active:scale-125 ${
@@ -185,7 +186,7 @@ export const BlogsUpdatesSection: React.FC<BlogsUpdatesSectionProps> = ({
                   </div>
 
                   {/* Read time pill */}
-                  <div className="absolute bottom-3 left-3.5 z-10 flex items-center gap-2 text-white/90 text-xs font-semibold">
+                  <div className="absolute bottom-3 left-3.5 z-10 flex items-center gap-2 text-white/90 text-[11px] sm:text-xs font-semibold">
                     <span className="flex items-center gap-1 bg-black/50 backdrop-blur-xs px-2.5 py-0.5 rounded-full">
                       <span className="material-symbols-outlined text-xs text-[#fbb034]">schedule</span>
                       <span>{post.readTime}</span>
@@ -197,7 +198,7 @@ export const BlogsUpdatesSection: React.FC<BlogsUpdatesSectionProps> = ({
                 <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between">
                   <div>
                     {/* Author & Published Date */}
-                    <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-3">
+                    <div className="flex items-center justify-between text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mb-3">
                       <span className="font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                         <span className="w-5 h-5 rounded-full bg-amber-400/20 text-amber-500 flex items-center justify-center text-[10px] font-bold">
                           ✍️
@@ -211,22 +212,25 @@ export const BlogsUpdatesSection: React.FC<BlogsUpdatesSectionProps> = ({
                     </div>
 
                     {/* Title */}
-                    <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-[#fbb034] transition-colors tracking-tight leading-snug mb-2.5">
+                    <h3 className="text-base min-[390px]:text-[1.1rem] sm:text-lg font-black text-slate-900 dark:text-white line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-[#fbb034] transition-colors tracking-tight leading-snug mb-2.5">
                       {post.title}
                     </h3>
 
-                    {/* Excerpt */}
-                    <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 line-clamp-3 leading-relaxed mb-4">
-                      {post.excerpt}
-                    </p>
+                    {/* Excerpt with Fade Effect */}
+                    <div className="relative mb-4">
+                      <p className="text-[13px] sm:text-sm text-slate-600 dark:text-slate-300 line-clamp-3 leading-relaxed">
+                        {post.excerpt}
+                      </p>
+                      <div className="absolute inset-x-0 bottom-0 h-6 bg-gradient-to-t from-white dark:from-slate-900 to-transparent pointer-events-none" />
+                    </div>
                   </div>
 
                   {/* Card Bottom Actions */}
-                  <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                  <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
                     <button
                       type="button"
                       onClick={() => setSelectedArticle(post)}
-                      className="min-h-[44px] inline-flex items-center text-xs sm:text-sm font-bold text-blue-600 hover:text-blue-700 dark:text-[#fbb034] dark:hover:text-amber-300 transition-colors py-2 cursor-pointer"
+                      className="flex-1 min-h-[44px] inline-flex items-center justify-center text-xs sm:text-sm font-bold text-blue-600 hover:text-blue-700 dark:text-[#fbb034] dark:hover:text-amber-300 transition-colors py-2 cursor-pointer border border-transparent hover:border-slate-100 dark:hover:border-slate-800 rounded-xl"
                     >
                       Read More
                     </button>
@@ -246,6 +250,7 @@ export const BlogsUpdatesSection: React.FC<BlogsUpdatesSectionProps> = ({
           })}
         </div>
 
+
         {/* 3. Bottom CTA: "All Articles" Redirect Button */}
         <div className="mt-12 sm:mt-16 text-center flex items-center justify-center">
           <a
@@ -255,7 +260,7 @@ export const BlogsUpdatesSection: React.FC<BlogsUpdatesSectionProps> = ({
           >
             <InteractiveHoverButton
               text="All Articles"
-              className="min-h-[44px] text-sm sm:text-base py-3 px-8 shadow-md cursor-pointer"
+              className="min-h-[44px] w-full sm:w-auto px-6 sm:px-8 py-3.5 rounded-full border-slate-300 dark:border-slate-700 text-sm font-bold text-slate-900 dark:text-white bg-white dark:bg-slate-900 shadow-xs cursor-pointer"
             />
           </a>
         </div>
@@ -264,7 +269,7 @@ export const BlogsUpdatesSection: React.FC<BlogsUpdatesSectionProps> = ({
       {/* 4. Full Article Modal */}
       {selectedArticle && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-[#0f172a] rounded-3xl max-w-3xl w-full p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+          <div className="bg-white dark:bg-[#0B1329] rounded-3xl max-w-3xl w-full p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             {/* Close Button with 44px touch target */}
             <button
               onClick={() => setSelectedArticle(null)}

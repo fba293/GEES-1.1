@@ -25,6 +25,51 @@ interface CourseExplorerViewProps {
   initialField?: string;
 }
 
+const SORT_OPTIONS = [
+  { id: 'popularity', label: 'Popularity' },
+  { id: 'ielts-asc', label: 'IELTS score: Low to High' },
+  { id: 'ielts-desc', label: 'IELTS score: High to Low' },
+  { id: 'az', label: 'Course name: A-Z' },
+  { id: 'za', label: 'Course name: Z-A' },
+  { id: 'intake-next', label: 'Intake: Next starting' },
+  { id: 'fee-asc', label: 'Fee: Low to High' },
+  { id: 'fee-desc', label: 'Fee: High to Low' },
+  { id: 'qs', label: 'QS World Ranking' },
+];
+
+const monthMap: Record<string, number> = {
+  january: 0, jan: 0,
+  february: 1, feb: 1,
+  march: 2, mar: 2,
+  april: 3, apr: 3,
+  may: 4,
+  june: 5, jun: 5,
+  july: 6, jul: 6,
+  august: 7, aug: 7,
+  september: 8, sep: 8, sept: 8,
+  october: 9, oct: 9,
+  november: 10, nov: 10,
+  december: 11, dec: 11
+};
+
+const getNextIntakeScore = (intakes?: string[]): number => {
+  if (!intakes || intakes.length === 0) return 999;
+  const currentMonth = new Date().getMonth();
+  let minDiff = 999;
+  for (const intakeStr of intakes) {
+    if (!intakeStr) continue;
+    const lower = intakeStr.toLowerCase();
+    for (const [mName, mIdx] of Object.entries(monthMap)) {
+      if (lower.includes(mName)) {
+        let diff = mIdx - currentMonth;
+        if (diff < 0) diff += 12;
+        if (diff < minDiff) minDiff = diff;
+      }
+    }
+  }
+  return minDiff;
+};
+
 export const CourseExplorerView: React.FC<CourseExplorerViewProps> = ({
   onApply,
   onNavigateToUni,
@@ -88,7 +133,7 @@ export const CourseExplorerView: React.FC<CourseExplorerViewProps> = ({
   };
 
   // Sorting and Pagination
-  const [sortBy, setSortBy] = useState<'az' | 'fee-asc' | 'fee-desc' | 'qs'>('qs');
+  const [sortBy, setSortBy] = useState<'popularity' | 'ielts-asc' | 'ielts-desc' | 'az' | 'za' | 'intake-next' | 'fee-asc' | 'fee-desc' | 'qs'>('qs');
   const [currentPage, setCurrentPage] = useState<number>(1);
   const ITEMS_PER_PAGE = 9;
 
@@ -98,7 +143,7 @@ export const CourseExplorerView: React.FC<CourseExplorerViewProps> = ({
 
   // Interactive Global Map display state
   const [isMapExpanded, setIsMapExpanded] = useState<boolean>(true);
-  const [displayMode, setDisplayMode] = useState<'grid' | 'map' | 'both'>('both');
+  const [displayMode, setDisplayMode] = useState<'grid' | 'list' | 'map' | 'wishlist'>('grid');
 
   // Field Categories
   const fieldCategories = useMemo(() => [
@@ -549,8 +594,27 @@ export const CourseExplorerView: React.FC<CourseExplorerViewProps> = ({
     });
 
     return [...list].sort((a, b) => {
+      if (sortBy === 'popularity') {
+        const popA = (a.qsRank2027 ? 1 : 0) + (a.scholarshipCoveragePct ? 1 : 0);
+        const popB = (b.qsRank2027 ? 1 : 0) + (b.scholarshipCoveragePct ? 1 : 0);
+        return popB - popA;
+      }
+      if (sortBy === 'ielts-asc') {
+        return (a.ieltsRequirement || 6.0) - (b.ieltsRequirement || 6.0);
+      }
+      if (sortBy === 'ielts-desc') {
+        return (b.ieltsRequirement || 6.0) - (a.ieltsRequirement || 6.0);
+      }
       if (sortBy === 'az') {
         return a.title.localeCompare(b.title);
+      }
+      if (sortBy === 'za') {
+        return b.title.localeCompare(a.title);
+      }
+      if (sortBy === 'intake-next') {
+        const scoreA = getNextIntakeScore(a.intakes);
+        const scoreB = getNextIntakeScore(b.intakes);
+        return scoreA - scoreB;
       }
       if (sortBy === 'fee-asc') {
         return a.annualFeeUSD - b.annualFeeUSD;
@@ -590,12 +654,23 @@ export const CourseExplorerView: React.FC<CourseExplorerViewProps> = ({
     return allUnis.filter((uni) => uniIds.has(uni.id) || uniNames.has(uni.name));
   }, [filteredCourses, allUnis]);
 
+  // Effective courses based on display mode (normal filter vs wishlist filter)
+  const effectiveCourses = useMemo(() => {
+    if (displayMode === 'wishlist') {
+      return allCourses.filter((c) => isInWishlist(c.id));
+    }
+    return filteredCourses;
+  }, [displayMode, allCourses, filteredCourses, wishlist, isInWishlist]);
+
   // Pagination calculation
-  const totalPages = Math.ceil(filteredCourses.length / ITEMS_PER_PAGE) || 1;
+  const totalPages = Math.max(1, Math.ceil(effectiveCourses.length / ITEMS_PER_PAGE));
   const paginatedCourses = useMemo(() => {
     const start = (currentPage - 1) * ITEMS_PER_PAGE;
-    return filteredCourses.slice(start, start + ITEMS_PER_PAGE);
-  }, [filteredCourses, currentPage]);
+    return effectiveCourses.slice(start, start + ITEMS_PER_PAGE);
+  }, [effectiveCourses, currentPage]);
+
+  const startIndex = effectiveCourses.length === 0 ? 0 : (currentPage - 1) * ITEMS_PER_PAGE + 1;
+  const endIndex = Math.min(currentPage * ITEMS_PER_PAGE, effectiveCourses.length);
 
   const getPaginationPages = () => {
     const pages: (number | string)[] = [];
@@ -645,149 +720,426 @@ export const CourseExplorerView: React.FC<CourseExplorerViewProps> = ({
   }, [allCourses, comparedCourseIds]);
 
   return (
-    <div className="w-full max-w-[1600px] mx-auto px-2 xs:px-3 sm:px-6 lg:px-8 py-2 sm:py-10">
+    <div className="w-full max-w-[1600px] mx-auto px-2 xs:px-3 sm:px-6 lg:px-8 py-2 sm:py-4">
       {/* 1. Header Banner - Matching Universities Page Exactly */}
-      <div className="bg-[#0a1120] rounded-xl sm:rounded-3xl p-3.5 xs:p-4 sm:p-12 mb-3 sm:mb-8 shadow-lg sm:shadow-2xl relative overflow-hidden">
-        <div className="inline-flex items-center gap-1.5 px-2 py-0.5 sm:px-3 sm:py-1 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-500 text-[8.5px] xs:text-[9px] sm:text-[10px] font-bold uppercase tracking-wider sm:tracking-widest mb-1.5 sm:mb-6">
+      <div className="bg-[#0a1120] rounded-xl sm:rounded-3xl p-3.5 xs:p-4 sm:p-10 mb-3 sm:mb-4 shadow-lg sm:shadow-xl relative overflow-hidden">
+        <div className="inline-flex items-center gap-1.5 px-2 py-0.5 sm:px-3 sm:py-1 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-500 text-[8.5px] xs:text-[9px] sm:text-[10px] font-bold uppercase tracking-wider sm:tracking-widest mb-1.5 sm:mb-4">
           <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
           WORLD-CLASS EDUCATION
         </div>
-        <h1 className="text-lg xs:text-xl sm:text-6xl font-black text-white tracking-tight sm:tracking-tighter leading-snug sm:leading-tight mb-1.5 sm:mb-6">
-          Explore <span className="bg-[#fbb034] text-slate-950 px-1.5 py-0.5 sm:px-3 sm:py-1 rounded-md sm:rounded-lg">Degree Programs</span> & Courses
+        <h1 className="text-xl xs:text-2xl sm:text-5xl font-black text-white tracking-tight sm:tracking-tighter leading-snug sm:leading-tight mb-1.5 sm:mb-4">
+          Find <span className="bg-[#fbb034] text-[#0a1120] px-1.5 py-0.5 sm:px-3 sm:py-1 rounded-md sm:rounded-lg font-black">courses</span> to study abroad
         </h1>
-        <p className="text-[10px] xs:text-[11px] sm:text-lg text-slate-300 font-medium max-w-full sm:max-w-xl leading-tight sm:leading-relaxed whitespace-nowrap truncate">
-          Browse 1,000+ accredited degree programs across 200+ partner universities worldwide
+        <p className="text-[11px] xs:text-xs sm:text-base text-slate-300 font-medium max-w-full sm:max-w-2xl leading-normal">
+          Browse {allCourses.length}+ degree programs across {allUnis.length}+ partner universities worldwide
         </p>
       </div>
 
       {/* Directory with Filter Tick Options & Top Search */}
       <div className="space-y-3 sm:space-y-6">
-        {/* Top Search Bar & Sort Controls */}
-        <div className="bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl border border-slate-200/90 dark:border-slate-800 p-3 xs:p-4 sm:p-5 shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5 sm:gap-4">
-          {/* Search Input Bar */}
-          <div className="relative flex-1">
-            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px] sm:text-[20px] pointer-events-none">
-              search
-            </span>
-            <input
-              type="text"
-              placeholder="Search course title, faculty, university, city, or country..."
-              value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                setCurrentPage(1);
-              }}
-              className="w-full h-10 sm:h-12 pl-9 sm:pl-11 pr-9 rounded-lg sm:rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm font-medium text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 shadow-xs transition-all"
-            />
-            {searchQuery && (
-              <button
-                type="button"
-                aria-label="Clear search"
-                onClick={() => {
-                  setSearchQuery('');
-                  setCurrentPage(1);
-                }}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 w-5 h-5 sm:w-6 sm:h-6 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-white flex items-center justify-center cursor-pointer transition-colors"
-              >
-                <span className="material-symbols-outlined text-[14px] sm:text-[16px]">close</span>
-              </button>
-            )}
-          </div>
-
-          {/* Mobile Filter Button + Sort Dropdown */}
-          <div className="flex items-center gap-2 sm:gap-3 justify-between md:justify-end shrink-0">
-            {/* Mobile Filter Trigger Button */}
-            <button
-              type="button"
-              onClick={() => setIsMobileFilterOpen(true)}
-              className="lg:hidden h-10 sm:h-12 px-3 sm:px-4 rounded-lg sm:rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center gap-1.5 sm:gap-2 shadow-xs cursor-pointer active:scale-95 transition-all"
-            >
-              <span className="material-symbols-outlined text-[16px] sm:text-[18px] text-blue-600">tune</span>
-              <span>Filters</span>
-              {activeFiltersCount > 0 && (
-                <span className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-blue-600 text-white text-[9px] sm:text-[10px] font-black flex items-center justify-center">
-                  {activeFiltersCount}
+        <div className="bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl border border-slate-200/90 dark:border-slate-800 p-2.5 xs:p-3 sm:p-4 shadow-sm space-y-3">
+          {/* Top Row: Search Input + Controls Cluster - Single Row Strategy matching image_f5dc19b1.png */}
+          <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2.5 sm:gap-3">
+            
+            {/* 1. Search & Filter Toggle Row */}
+            <div className="flex items-center gap-2 flex-1">
+              {/* Search Input Bar */}
+              <div className="relative flex-1">
+                <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px] sm:text-[20px] pointer-events-none">
+                  search
                 </span>
-              )}
-            </button>
-
-            {/* Sort By Dropdown */}
-            <div className="relative flex-1 md:flex-none w-full md:w-[280px]">
-              <span className="material-symbols-outlined absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[16px] sm:text-[18px] pointer-events-none">
-                sort
-              </span>
-              <select
-                value={sortBy}
-                onChange={(e: any) => {
-                  setSortBy(e.target.value);
-                  setCurrentPage(1);
-                }}
-                className="w-full h-10 sm:h-12 pl-8 sm:pl-10 pr-8 sm:pr-10 rounded-lg sm:rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm font-semibold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 shadow-xs transition-all appearance-none cursor-pointer"
-              >
-                <option value="qs">Sort: QS World Ranking</option>
-                <option value="az">Sort: Alphabetical (A to Z)</option>
-                <option value="fee-asc">Sort: Tuition (Low to High)</option>
-                <option value="fee-desc">Sort: Tuition (High to Low)</option>
-              </select>
-              <span className="material-symbols-outlined absolute right-2.5 sm:right-3 top-1/2 -translate-y-1/2 text-slate-400 text-[16px] sm:text-[18px] pointer-events-none">
-                expand_more
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* PROMINENT HORIZONTALLY SCROLLABLE CHIP-BASED FILTER BAR */}
-        <div className="bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl border border-slate-200/90 dark:border-slate-800 p-3 sm:p-4 shadow-xs space-y-2">
-          <div className="flex items-center justify-between gap-2 px-1">
-            <div className="flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-              <span className="material-symbols-outlined text-sm text-[#fbb034]">auto_awesome</span>
-              <span>Popular Course Categories</span>
-            </div>
-            <span className="text-[11px] text-slate-400 font-medium hidden sm:inline">
-              Quick access to top fields
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2 overflow-x-auto pb-1 pt-1 no-scrollbar sm:sleek-scrollbar scroll-smooth">
-            {[
-              { id: 'all', label: 'All Fields', icon: 'apps', matchId: null },
-              { id: 'cs', label: 'STEM', icon: 'terminal', matchId: 'cs' },
-              { id: 'engineering', label: 'Engineering', icon: 'precision_manufacturing', matchId: 'engineering' },
-              { id: 'business', label: 'MBA & Business', icon: 'business_center', matchId: 'business' },
-              { id: 'arts', label: 'Art & Design', icon: 'palette', matchId: 'arts' },
-              { id: 'health', label: 'Medicine & Health', icon: 'medical_services', matchId: 'health' },
-              { id: 'law', label: 'Law & Legal', icon: 'gavel', matchId: 'law' },
-              { id: 'hospitality', label: 'Hospitality', icon: 'hotel', matchId: 'hospitality' },
-              { id: 'social', label: 'Social Sciences', icon: 'groups', matchId: 'social' },
-            ].map((chip) => {
-              const isAll = chip.id === 'all';
-              const isSelected = isAll ? selectedFields.length === 0 : selectedFields.includes(chip.matchId!);
-
-              return (
-                <button
-                  key={chip.id}
-                  type="button"
-                  onClick={() => {
-                    if (isAll) {
-                      setSelectedFields([]);
-                    } else if (chip.matchId) {
-                      setSelectedFields([chip.matchId]);
-                    }
+                <input
+                  type="text"
+                  placeholder="Search courses..."
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
                     setCurrentPage(1);
                   }}
-                  className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all duration-200 cursor-pointer shrink-0 border active:scale-95 shadow-xs ${
-                    isSelected
-                      ? 'bg-[#fbb034] border-[#fbb034] text-slate-950 font-black shadow-md shadow-amber-400/20 scale-[1.02]'
-                      : 'bg-slate-50 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-amber-50 dark:hover:bg-amber-950/30 hover:border-[#fbb034]/50 hover:text-amber-800 dark:hover:text-amber-300'
+                  className="w-full h-11 sm:h-12 pl-9 sm:pl-11 pr-9 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-sm font-medium text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all"
+                />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    aria-label="Clear search"
+                    onClick={() => {
+                      setSearchQuery('');
+                      setCurrentPage(1);
+                    }}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 w-5 h-5 sm:w-6 sm:h-6 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-white flex items-center justify-center cursor-pointer transition-colors"
+                  >
+                    <span className="material-symbols-outlined text-[14px] sm:text-[16px]">close</span>
+                  </button>
+                )}
+              </div>
+
+              {/* Mobile Filter Trigger Button (Compact) */}
+              <button
+                type="button"
+                onClick={() => setIsMobileFilterOpen(true)}
+                className="lg:hidden h-11 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center gap-1.5 shadow-xs cursor-pointer active:scale-95 transition-all"
+              >
+                <span className="material-symbols-outlined text-[18px] text-slate-500 dark:text-slate-400">tune</span>
+                <span className="hidden xs:inline">Filters</span>
+                {activeFiltersCount > 0 && (
+                  <span className="w-4 h-4 rounded-full bg-blue-600 text-white text-[9px] font-black flex items-center justify-center">
+                    {activeFiltersCount}
+                  </span>
+                )}
+              </button>
+            </div>
+
+            {/* 2. Controls Cluster: View Mode + Sort - Merged for Tablet/Desktop, Stacked for Mobile */}
+            <div className="flex flex-row items-center gap-2 sm:gap-3 overflow-x-auto no-scrollbar pb-0.5 lg:pb-0 shrink-0">
+              {/* View Mode Segmented Toggle: Cards, List, Map, Wishlist */}
+              <div className="flex items-center p-1 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setDisplayMode('grid')}
+                  className={`px-2.5 sm:px-3 py-2 rounded-lg text-[11px] sm:text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                    displayMode === 'grid'
+                      ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs'
+                      : 'text-slate-500 hover:text-slate-900 dark:text-slate-400'
                   }`}
                 >
-                  <span className={`material-symbols-outlined text-[16px] ${isSelected ? 'text-slate-950 font-black' : 'text-[#fbb034]'}`}>
-                    {chip.icon}
-                  </span>
-                  <span>{chip.label}</span>
+                  <span className="material-symbols-outlined text-[15px] sm:text-[17px]">grid_view</span>
+                  <span className="hidden sm:inline">Cards</span>
                 </button>
-              );
-            })}
+                <button
+                  type="button"
+                  onClick={() => setDisplayMode('list')}
+                  className={`px-2.5 sm:px-3 py-2 rounded-lg text-[11px] sm:text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                    displayMode === 'list'
+                      ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs'
+                      : 'text-slate-500 hover:text-slate-900 dark:text-slate-400'
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-[15px] sm:text-[17px]">format_list_bulleted</span>
+                  <span className="hidden sm:inline">List</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setDisplayMode('map'); setIsMapExpanded(true); }}
+                  className={`px-2.5 sm:px-3 py-2 rounded-lg text-[11px] sm:text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                    displayMode === 'map'
+                      ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs'
+                      : 'text-slate-500 hover:text-slate-900 dark:text-slate-400'
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-[15px] sm:text-[17px]">map</span>
+                  <span className="hidden sm:inline">Map</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setDisplayMode(displayMode === 'wishlist' ? 'grid' : 'wishlist')}
+                  className={`px-2.5 sm:px-3 py-2 rounded-lg text-[11px] sm:text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                    displayMode === 'wishlist'
+                      ? 'bg-[#fbb034] text-slate-950 shadow-xs font-extrabold'
+                      : 'text-slate-500 hover:text-slate-900 dark:text-slate-400'
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-[15px] sm:text-[17px]">
+                    {displayMode === 'wishlist' ? 'bookmark' : 'bookmark_border'}
+                  </span>
+                  <span className="hidden sm:inline">Wishlist</span>
+                  {wishlist.length > 0 && (
+                    <span className={`px-1.5 py-0.2 rounded-full text-[9px] font-black ${
+                      displayMode === 'wishlist' ? 'bg-slate-950 text-white' : 'bg-[#fbb034] text-slate-950'
+                    }`}>
+                      {wishlist.length}
+                    </span>
+                  )}
+                </button>
+              </div>
+
+              {/* Sort By Dropdown - Compact Refinement */}
+              <div className="relative min-w-[130px] sm:min-w-[180px]">
+                <span className="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 text-[16px] sm:text-[18px] pointer-events-none">
+                  filter_alt
+                </span>
+                <select
+                  value={sortBy}
+                  onChange={(e) => {
+                    setSortBy(e.target.value as any);
+                    setCurrentPage(1);
+                  }}
+                  className="w-full h-11 px-8 sm:px-9 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-[11px] sm:text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600/20 transition-all appearance-none cursor-pointer"
+                >
+                  <option value="qs">QS Ranking</option>
+                  <option value="popularity">Popularity</option>
+                  <option value="fee-asc">Fee (Low)</option>
+                  <option value="fee-desc">Fee (High)</option>
+                  <option value="az">Name A–Z</option>
+                </select>
+                <span className="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-[16px] sm:text-[18px] pointer-events-none">
+                  expand_more
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Active Filter Chips / Removable Pills if active filters exist */}
+          {activeFiltersCount > 0 && (
+            <div className="flex items-center gap-1.5 flex-wrap pt-1 text-xs">
+              <span className="text-[11px] text-slate-400 font-semibold mr-1">Active:</span>
+
+              {searchQuery && (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[11px] font-medium">
+                  <span>Search: "{searchQuery}"</span>
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery('')}
+                    className="hover:text-red-500 cursor-pointer ml-1"
+                  >
+                    ✕
+                  </button>
+                </span>
+              )}
+
+              {selectedCountries.map((c) => (
+                <span
+                  key={c}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-950/70 text-blue-700 dark:text-blue-300 text-[11px] font-medium"
+                >
+                  <span>{c}</span>
+                  <button
+                    type="button"
+                    onClick={() => toggleCountry(c)}
+                    className="hover:text-red-500 cursor-pointer ml-1"
+                  >
+                    ✕
+                  </button>
+                </span>
+              ))}
+
+              {selectedLevels.map((lvl) => (
+                <span
+                  key={lvl}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-purple-50 dark:bg-purple-950/70 text-purple-700 dark:text-purple-300 text-[11px] font-medium"
+                >
+                  <span className="capitalize">{lvl}</span>
+                  <button
+                    type="button"
+                    onClick={() => toggleLevel(lvl)}
+                    className="hover:text-red-500 cursor-pointer ml-1"
+                  >
+                    ✕
+                  </button>
+                </span>
+              ))}
+
+              {selectedFields.map((fId) => {
+                const label = fieldCategories.find((c) => c.id === fId)?.label || fId;
+                return (
+                  <span
+                    key={fId}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-950/70 text-amber-800 dark:text-amber-300 text-[11px] font-medium"
+                  >
+                    <span>{label}</span>
+                    <button
+                      type="button"
+                      onClick={() => toggleField(fId)}
+                      className="hover:text-red-500 cursor-pointer ml-1"
+                    >
+                      ✕
+                    </button>
+                  </span>
+                );
+              })}
+
+              {selectedIelts.map((val) => (
+                <span
+                  key={val}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-950/70 text-amber-800 dark:text-amber-300 text-[11px] font-medium"
+                >
+                  <span>IELTS: {val === 'waiver' ? 'Waiver' : val}</span>
+                  <button
+                    type="button"
+                    onClick={() => toggleIelts(val)}
+                    className="hover:text-red-500 cursor-pointer ml-1"
+                  >
+                    ✕
+                  </button>
+                </span>
+              ))}
+
+              {selectedDurations.map((d) => (
+                <span
+                  key={d}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/70 text-indigo-700 dark:text-indigo-300 text-[11px] font-medium"
+                >
+                  <span>Duration: {d}</span>
+                  <button
+                    type="button"
+                    onClick={() => toggleDuration(d)}
+                    className="hover:text-red-500 cursor-pointer ml-1"
+                  >
+                    ✕
+                  </button>
+                </span>
+              ))}
+
+              {selectedTypes.map((t) => (
+                <span
+                  key={t}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 text-[11px] font-medium"
+                >
+                  <span className="capitalize">{t === 'research' ? 'Research & Technical' : `${t} University`}</span>
+                  <button
+                    type="button"
+                    onClick={() => toggleType(t)}
+                    className="hover:text-red-500 cursor-pointer ml-1"
+                  >
+                    ✕
+                  </button>
+                </span>
+              ))}
+
+              {selectedIntakes.map((m) => (
+                <span
+                  key={m}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-teal-50 dark:bg-teal-950/70 text-teal-700 dark:text-teal-300 text-[11px] font-medium"
+                >
+                  <span>Intake: {m}</span>
+                  <button
+                    type="button"
+                    onClick={() => toggleIntake(m)}
+                    className="hover:text-red-500 cursor-pointer ml-1"
+                  >
+                    ✕
+                  </button>
+                </span>
+              ))}
+
+              {selectedTuitions.map((t) => (
+                <span
+                  key={t}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-sky-50 dark:bg-sky-950/70 text-sky-700 dark:text-sky-300 text-[11px] font-medium"
+                >
+                  <span>Fee: {t}</span>
+                  <button
+                    type="button"
+                    onClick={() => toggleTuition(t)}
+                    className="hover:text-red-500 cursor-pointer ml-1"
+                  >
+                    ✕
+                  </button>
+                </span>
+              ))}
+
+              {(minFee > 0 || maxFee < 214000) && (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[11px] font-medium">
+                  <span>Fee: ${minFee.toLocaleString()} – ${maxFee.toLocaleString()}</span>
+                  <button
+                    type="button"
+                    onClick={() => { setMinFee(0); setMaxFee(214000); }}
+                    className="hover:text-red-500 cursor-pointer ml-1"
+                  >
+                    ✕
+                  </button>
+                </span>
+              )}
+
+              {selectedModes.map((m) => (
+                <span
+                  key={m}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 text-[11px] font-medium"
+                >
+                  <span className="capitalize">{m}</span>
+                  <button
+                    type="button"
+                    onClick={() => toggleMode(m)}
+                    className="hover:text-red-500 cursor-pointer ml-1"
+                  >
+                    ✕
+                  </button>
+                </span>
+              ))}
+
+              {selectedRankTiers.map((tier) => (
+                <span
+                  key={tier}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-950/70 text-amber-800 dark:text-amber-300 text-[11px] font-medium"
+                >
+                  <span>{tier.replace('top', 'Top ')} QS</span>
+                  <button
+                    type="button"
+                    onClick={() => toggleRankTier(tier)}
+                    className="hover:text-red-500 cursor-pointer ml-1"
+                  >
+                    ✕
+                  </button>
+                </span>
+              ))}
+
+              {scholarshipOnly && (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-green-50 dark:bg-green-950/70 text-green-700 dark:text-green-300 text-[11px] font-medium">
+                  <span>Scholarships Only</span>
+                  <button
+                    type="button"
+                    onClick={() => setScholarshipOnly(false)}
+                    className="hover:text-red-500 cursor-pointer ml-1"
+                  >
+                    ✕
+                  </button>
+                </span>
+              )}
+
+              <button
+                type="button"
+                onClick={resetAllFilters}
+                className="text-[11px] font-bold text-red-600 dark:text-red-400 hover:underline cursor-pointer ml-auto"
+              >
+                Clear All
+              </button>
+            </div>
+          )}
+
+          {/* Divider Matching Screenshot image_f5dc19b1.png */}
+          <div className="border-t border-slate-100 dark:border-slate-800"></div>
+
+          {/* Bottom Row: Program Count on Left + Page Info with Pagination Chevrons on Right */}
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            <div className="flex items-baseline gap-2">
+              <span className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                {displayMode === 'wishlist' ? effectiveCourses.length : filteredCourses.length}
+              </span>
+              <span className="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300">
+                {displayMode === 'wishlist'
+                  ? (effectiveCourses.length === 1 ? 'Saved Programme Found' : 'Saved Programmes Found')
+                  : (filteredCourses.length === 1 ? 'Programme Found' : 'Programmes Found')}
+              </span>
+            </div>
+
+            <div className="flex items-center gap-2.5 sm:gap-3 text-xs sm:text-sm font-medium text-slate-500 dark:text-slate-400">
+              <span>Page {currentPage} of {totalPages}</span>
+              <div className="flex items-center gap-1">
+                <button
+                  type="button"
+                  disabled={currentPage === 1}
+                  onClick={() => {
+                    setCurrentPage((p) => Math.max(1, p - 1));
+                    window.scrollTo({ top: 300, behavior: 'smooth' });
+                  }}
+                  aria-label="Previous Page"
+                  className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-2xs cursor-pointer active:scale-95"
+                >
+                  <span className="material-symbols-outlined text-[16px] sm:text-[18px]">chevron_left</span>
+                </button>
+                <button
+                  type="button"
+                  disabled={currentPage === totalPages}
+                  onClick={() => {
+                    setCurrentPage((p) => Math.min(totalPages, p + 1));
+                    window.scrollTo({ top: 300, behavior: 'smooth' });
+                  }}
+                  aria-label="Next Page"
+                  className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-2xs cursor-pointer active:scale-95"
+                >
+                  <span className="material-symbols-outlined text-[16px] sm:text-[18px]">chevron_right</span>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -1661,298 +2013,11 @@ export const CourseExplorerView: React.FC<CourseExplorerViewProps> = ({
             </div>
           </aside>
 
-          {/* RIGHT CONTENT AREA: Results Bar, Grid & Pagination */}
+          {/* RIGHT CONTENT AREA: Grid & Pagination */}
           <div className="lg:col-span-3 space-y-3 sm:space-y-6">
-            {/* Results bar header */}
-            <div className="bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl border border-slate-200/90 dark:border-slate-800 p-3 xs:p-4 space-y-2.5 sm:space-y-3 shadow-xs">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                    {filteredCourses.length} Degree Programs Found
-                  </span>
-                  {wishlist.length > 0 && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (onNavigateToWishlist) {
-                          onNavigateToWishlist();
-                        } else {
-                          setIsWishlistSectionCollapsed(false);
-                        }
-                      }}
-                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 dark:bg-amber-950/60 border border-[#fbb034]/50 text-amber-900 dark:text-amber-300 text-[11px] font-bold hover:bg-amber-100 transition-all cursor-pointer shadow-xs active:scale-95"
-                    >
-                      <span className="material-symbols-outlined text-sm text-[#fbb034]">bookmark</span>
-                      <span>Wishlist ({wishlist.length})</span>
-                    </button>
-                  )}
-                </div>
-
-                <div className="flex items-center gap-2">
-                  {/* View Mode Toggle Switcher */}
-                  <div className="inline-flex items-center p-1 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-                    <button
-                      type="button"
-                      onClick={() => setDisplayMode('both')}
-                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
-                        displayMode === 'both'
-                          ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs'
-                          : 'text-slate-500 hover:text-slate-900 dark:text-slate-400'
-                      }`}
-                    >
-                      Both View
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setDisplayMode('map')}
-                      className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
-                        displayMode === 'map'
-                          ? 'bg-[#fbb034] text-slate-950 font-black shadow-xs'
-                          : 'text-slate-500 hover:text-slate-900 dark:text-slate-400'
-                      }`}
-                    >
-                      <span className="material-symbols-outlined text-xs">map</span>
-                      <span>Map ({filteredUniversities.length})</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setDisplayMode('grid')}
-                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
-                        displayMode === 'grid'
-                          ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs'
-                          : 'text-slate-500 hover:text-slate-900 dark:text-slate-400'
-                      }`}
-                    >
-                      Cards
-                    </button>
-                  </div>
-
-                  <div className="text-xs text-slate-400 font-medium hidden sm:block">
-                    Page {currentPage} of {totalPages}
-                  </div>
-                </div>
-              </div>
-
-              {/* Active Filter Chips / Removable Pills */}
-              {activeFiltersCount > 0 && (
-                <div className="flex items-center gap-1.5 flex-wrap pt-2 border-t border-slate-100 dark:border-slate-800 text-xs">
-                  <span className="text-[11px] text-slate-400 font-semibold mr-1">Active:</span>
-
-                  {searchQuery && (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[11px] font-medium">
-                      <span>Search: "{searchQuery}"</span>
-                      <button
-                        type="button"
-                        onClick={() => setSearchQuery('')}
-                        className="hover:text-red-500 cursor-pointer ml-1"
-                      >
-                        ✕
-                      </button>
-                    </span>
-                  )}
-
-                  {selectedCountries.map((c) => (
-                    <span
-                      key={c}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-950/70 text-blue-700 dark:text-blue-300 text-[11px] font-medium"
-                    >
-                      <span>{c}</span>
-                      <button
-                        type="button"
-                        onClick={() => toggleCountry(c)}
-                        className="hover:text-red-500 cursor-pointer ml-1"
-                      >
-                        ✕
-                      </button>
-                    </span>
-                  ))}
-
-                  {selectedLevels.map((lvl) => (
-                    <span
-                      key={lvl}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-purple-50 dark:bg-purple-950/70 text-purple-700 dark:text-purple-300 text-[11px] font-medium"
-                    >
-                      <span className="capitalize">{lvl}</span>
-                      <button
-                        type="button"
-                        onClick={() => toggleLevel(lvl)}
-                        className="hover:text-red-500 cursor-pointer ml-1"
-                      >
-                        ✕
-                      </button>
-                    </span>
-                  ))}
-
-                  {selectedFields.map((fId) => {
-                    const label = fieldCategories.find((c) => c.id === fId)?.label || fId;
-                    return (
-                      <span
-                        key={fId}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-950/70 text-amber-800 dark:text-amber-300 text-[11px] font-medium"
-                      >
-                        <span>{label}</span>
-                        <button
-                          type="button"
-                          onClick={() => toggleField(fId)}
-                          className="hover:text-red-500 cursor-pointer ml-1"
-                        >
-                          ✕
-                        </button>
-                      </span>
-                    );
-                  })}
-
-                  {selectedIelts.map((val) => (
-                    <span
-                      key={val}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-950/70 text-amber-800 dark:text-amber-300 text-[11px] font-medium"
-                    >
-                      <span>IELTS: {val === 'waiver' ? 'Waiver' : val}</span>
-                      <button
-                        type="button"
-                        onClick={() => toggleIelts(val)}
-                        className="hover:text-red-500 cursor-pointer ml-1"
-                      >
-                        ✕
-                      </button>
-                    </span>
-                  ))}
-
-                  {selectedDurations.map((d) => (
-                    <span
-                      key={d}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/70 text-indigo-700 dark:text-indigo-300 text-[11px] font-medium"
-                    >
-                      <span>Duration: {d}</span>
-                      <button
-                        type="button"
-                        onClick={() => toggleDuration(d)}
-                        className="hover:text-red-500 cursor-pointer ml-1"
-                      >
-                        ✕
-                      </button>
-                    </span>
-                  ))}
-
-                  {selectedTypes.map((t) => (
-                    <span
-                      key={t}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 text-[11px] font-medium"
-                    >
-                      <span className="capitalize">{t === 'research' ? 'Research & Technical' : `${t} University`}</span>
-                      <button
-                        type="button"
-                        onClick={() => toggleType(t)}
-                        className="hover:text-red-500 cursor-pointer ml-1"
-                      >
-                        ✕
-                      </button>
-                    </span>
-                  ))}
-
-                  {selectedIntakes.map((m) => (
-                    <span
-                      key={m}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-teal-50 dark:bg-teal-950/70 text-teal-700 dark:text-teal-300 text-[11px] font-medium"
-                    >
-                      <span>Intake: {m}</span>
-                      <button
-                        type="button"
-                        onClick={() => toggleIntake(m)}
-                        className="hover:text-red-500 cursor-pointer ml-1"
-                      >
-                        ✕
-                      </button>
-                    </span>
-                  ))}
-
-                  {selectedTuitions.map((t) => (
-                    <span
-                      key={t}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-sky-50 dark:bg-sky-950/70 text-sky-700 dark:text-sky-300 text-[11px] font-medium"
-                    >
-                      <span>Fee: {t}</span>
-                      <button
-                        type="button"
-                        onClick={() => toggleTuition(t)}
-                        className="hover:text-red-500 cursor-pointer ml-1"
-                      >
-                        ✕
-                      </button>
-                    </span>
-                  ))}
-
-                  {(minFee > 0 || maxFee < 214000) && (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[11px] font-medium">
-                      <span>Fee: ${minFee.toLocaleString()} – ${maxFee.toLocaleString()}</span>
-                      <button
-                        type="button"
-                        onClick={() => { setMinFee(0); setMaxFee(214000); }}
-                        className="hover:text-red-500 cursor-pointer ml-1"
-                      >
-                        ✕
-                      </button>
-                    </span>
-                  )}
-
-                  {selectedModes.map((m) => (
-                    <span
-                      key={m}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 text-[11px] font-medium"
-                    >
-                      <span className="capitalize">{m}</span>
-                      <button
-                        type="button"
-                        onClick={() => toggleMode(m)}
-                        className="hover:text-red-500 cursor-pointer ml-1"
-                      >
-                        ✕
-                      </button>
-                    </span>
-                  ))}
-
-                  {selectedRankTiers.map((tier) => (
-                    <span
-                      key={tier}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-950/70 text-amber-800 dark:text-amber-300 text-[11px] font-medium"
-                    >
-                      <span>{tier.replace('top', 'Top ')} QS</span>
-                      <button
-                        type="button"
-                        onClick={() => toggleRankTier(tier)}
-                        className="hover:text-red-500 cursor-pointer ml-1"
-                      >
-                        ✕
-                      </button>
-                    </span>
-                  ))}
-
-                  {scholarshipOnly && (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-green-50 dark:bg-green-950/70 text-green-700 dark:text-green-300 text-[11px] font-medium">
-                      <span>Scholarships Only</span>
-                      <button
-                        type="button"
-                        onClick={() => setScholarshipOnly(false)}
-                        className="hover:text-red-500 cursor-pointer ml-1"
-                      >
-                        ✕
-                      </button>
-                    </span>
-                  )}
-
-                  <button
-                    type="button"
-                    onClick={resetAllFilters}
-                    className="text-[11px] font-bold text-red-600 dark:text-red-400 hover:underline cursor-pointer ml-auto"
-                  >
-                    Clear All
-                  </button>
-                </div>
-              )}
-            </div>
 
             {/* INTERACTIVE GLOBAL PARTNER UNIVERSITY MAP */}
-            {displayMode !== 'grid' && (
+            {displayMode === 'map' && (
               <div className="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 p-3 sm:p-5 shadow-xs space-y-3">
                 <div className="flex items-center justify-between gap-3 flex-wrap">
                   <div className="flex items-center gap-2.5">
@@ -2109,26 +2174,236 @@ export const CourseExplorerView: React.FC<CourseExplorerViewProps> = ({
               </section>
             )}
 
-            {/* Courses Grid - Formatted identically to UniversityExplorerView cards */}
-            {filteredCourses.length === 0 ? (
+            {/* Courses Listing - List or Grid View */}
+            {effectiveCourses.length === 0 ? (
               <div className="text-center py-16 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-8 shadow-xs">
-                <span className="material-symbols-outlined text-4xl text-slate-400 mb-2">menu_book</span>
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white">No degree programs found</h3>
+                <span className="material-symbols-outlined text-4xl text-slate-400 mb-2">
+                  {displayMode === 'wishlist' ? 'bookmark_border' : 'menu_book'}
+                </span>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                  {displayMode === 'wishlist' ? 'Your Wishlist is Empty' : 'No degree programs found'}
+                </h3>
                 <p className="text-sm text-slate-500 max-w-md mx-auto mt-1 mb-5">
-                  No courses found matching your active filter criteria. Try searching with another term or reset your filters.
+                  {displayMode === 'wishlist'
+                    ? 'You have not added any degree courses to your wishlist yet. Tap the bookmark icon on any course card or list item to save it here.'
+                    : 'No courses found matching your active filter criteria. Try searching with another term or reset your filters.'}
                 </p>
-                <button
-                  type="button"
-                  onClick={resetAllFilters}
-                  className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition-all cursor-pointer shadow-xs active:scale-95"
-                >
-                  <span className="material-symbols-outlined text-sm">refresh</span>
-                  <span>Reset All Filters</span>
-                </button>
+                {displayMode === 'wishlist' ? (
+                  <button
+                    type="button"
+                    onClick={() => setDisplayMode('grid')}
+                    className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition-all cursor-pointer shadow-xs active:scale-95"
+                  >
+                    <span className="material-symbols-outlined text-sm">grid_view</span>
+                    <span>Browse All Programmes</span>
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={resetAllFilters}
+                    className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition-all cursor-pointer shadow-xs active:scale-95"
+                  >
+                    <span className="material-symbols-outlined text-sm">refresh</span>
+                    <span>Reset All Filters</span>
+                  </button>
+                )}
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                {displayMode === 'list' ? (
+                  <div className="space-y-4">
+                    {paginatedCourses.map((course) => {
+                      const uniSlug = getUniSlug(course.universityId);
+                      const bannerUrl = getUniBanner(course.universityId);
+                      const isCompared = comparedCourseIds.includes(course.id);
+                      const isSaved = isInWishlist(course.id);
+                      const isBouncing = bouncingCourseId === course.id;
+
+                      return (
+                        <article
+                          key={`list-${course.id}`}
+                          className={`bg-white dark:bg-slate-900 rounded-2xl border overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col md:flex-row items-stretch group ${
+                            isCompared
+                              ? 'border-[#fbb034] ring-2 ring-[#fbb034]/40 bg-amber-50/10'
+                              : 'border-slate-200/90 dark:border-slate-800'
+                          }`}
+                        >
+                          {/* Banner / Image Thumbnail */}
+                          <div className="relative w-full md:w-64 lg:w-72 h-44 md:h-auto shrink-0 overflow-hidden bg-slate-900">
+                            <img
+                              src={bannerUrl}
+                              alt={course.universityName}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-slate-950/85 via-slate-950/30 to-transparent"></div>
+
+                            {/* Top Badges */}
+                            <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2">
+                              <span className="px-2.5 py-1 rounded-full bg-slate-950/70 backdrop-blur-md border border-white/20 text-white text-[11px] font-extrabold shadow-md flex items-center gap-1">
+                                <span>{course.flagEmoji}</span>
+                                <span>{course.country}</span>
+                              </span>
+                              <div className="flex items-center gap-1.5">
+                                {course.qsRank2027 ? (
+                                  <span className="px-2 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[10px] font-black shadow-xs flex items-center gap-1">
+                                    <span>QS:</span>
+                                    <span>#{course.qsRank2027}</span>
+                                  </span>
+                                ) : (
+                                  <span className="px-2 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-white text-[10px] font-bold uppercase">
+                                    {course.level}
+                                  </span>
+                                )}
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    toggleWishlist(course);
+                                  }}
+                                  aria-label={isSaved ? `Remove ${course.title} from wishlist` : `Save ${course.title} to wishlist`}
+                                  title={isSaved ? "Saved in Wishlist" : "Save to Wishlist"}
+                                  className={`w-7 h-7 rounded-full flex items-center justify-center transition-all cursor-pointer backdrop-blur-md shadow-md ${
+                                    isSaved
+                                      ? 'bg-[#fbb034] text-slate-950 ring-2 ring-white/60'
+                                      : 'bg-slate-950/60 hover:bg-slate-950/90 text-white hover:text-[#fbb034] border border-white/25'
+                                  } ${isBouncing ? 'animate-wishlist-bounce' : 'active:scale-90 hover:scale-105'}`}
+                                >
+                                  <span className="material-symbols-outlined text-[15px]">
+                                    {isSaved ? 'bookmark' : 'bookmark_border'}
+                                  </span>
+                                </button>
+                              </div>
+                            </div>
+
+                            {/* University Name Over Image */}
+                            <div className="absolute bottom-3 left-3 right-3 text-white">
+                              <span className="text-[10px] uppercase font-bold text-amber-300">
+                                {course.city}{course.state ? `, ${course.state}` : ''}
+                              </span>
+                              <h4
+                                onClick={() => {
+                                  if (onNavigateToUni && uniSlug) {
+                                    onNavigateToUni(uniSlug);
+                                  }
+                                }}
+                                className="text-xs sm:text-sm font-bold line-clamp-1 hover:text-amber-300 cursor-pointer transition-colors"
+                              >
+                                {course.universityName}
+                              </h4>
+                            </div>
+                          </div>
+
+                          {/* Center Details */}
+                          <div className="flex-1 p-4 sm:p-5 flex flex-col justify-between space-y-3">
+                            <div className="space-y-1.5">
+                              <div className="flex items-center gap-1.5 flex-wrap">
+                                <span className="px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 text-[10.5px] font-extrabold uppercase">
+                                  {course.level}
+                                </span>
+                                <span className={`px-2 py-0.5 rounded-md text-[10.5px] font-bold ${
+                                  course.studyMode === 'Online'
+                                    ? 'bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300'
+                                    : 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300'
+                                }`}>
+                                  {course.studyMode || 'Full-Time'}
+                                </span>
+                                {course.scholarshipCoveragePct && course.scholarshipCoveragePct > 0 && (
+                                  <span className="px-2 py-0.5 rounded-md bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 text-[10px] font-bold">
+                                    Up to {course.scholarshipCoveragePct}% Scholarship
+                                  </span>
+                                )}
+                              </div>
+
+                              <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-snug">
+                                {course.title}
+                              </h3>
+                              <p className="text-xs text-slate-500 line-clamp-1">
+                                {course.department}
+                              </p>
+                            </div>
+
+                            {/* Program Spec Chips */}
+                            <div className="flex flex-wrap gap-1.5 pt-1">
+                              <span className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-[11px] font-medium text-slate-700 dark:text-slate-300 flex items-center gap-1">
+                                <span className="material-symbols-outlined text-[14px] text-slate-400">schedule</span>
+                                <span>{course.durationYears || `${Math.round(course.durationMonths / 12)} Yrs`}</span>
+                              </span>
+                              <span className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-[11px] font-medium text-slate-700 dark:text-slate-300 flex items-center gap-1">
+                                <span className="material-symbols-outlined text-[14px] text-slate-400">event</span>
+                                <span>Intakes: {course.intakes.slice(0, 3).join(', ')}</span>
+                              </span>
+                              {course.ieltsRequirement && (
+                                <span className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-[11px] font-medium text-slate-700 dark:text-slate-300 flex items-center gap-1">
+                                  <span className="material-symbols-outlined text-[14px] text-slate-400">translate</span>
+                                  <span>IELTS {course.ieltsRequirement}</span>
+                                </span>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Right Side: Fee & Actions */}
+                          <div className="w-full md:w-60 p-4 sm:p-5 bg-slate-50/70 dark:bg-slate-800/40 border-t md:border-t-0 md:border-l border-slate-100 dark:border-slate-800 flex flex-col justify-between shrink-0 space-y-3">
+                            <div>
+                              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+                                ANNUAL TUITION FEE
+                              </span>
+                              <div className="text-lg sm:text-xl font-black text-slate-900 dark:text-white mt-0.5">
+                                {formatPriceString(course.tuitionFeeLocal, course.annualFeeUSD)}
+                              </div>
+                            </div>
+
+                            <div className="space-y-2">
+                              <button
+                                type="button"
+                                onClick={() => onApply(`${course.title} at ${course.universityName}`)}
+                                className="w-full py-2.5 rounded-full bg-slate-950 dark:bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs sm:text-sm transition-all cursor-pointer text-center active:scale-95 shadow-xs"
+                              >
+                                Apply Now
+                              </button>
+                              <div className="grid grid-cols-2 gap-2">
+                                <button
+                                  type="button"
+                                  onClick={() => toggleCompare(course.id)}
+                                  title={isCompared ? 'Remove from comparison' : 'Add to comparison'}
+                                  className={`py-2 px-2.5 rounded-full text-xs font-semibold transition-all cursor-pointer border flex items-center justify-center gap-1 ${
+                                    isCompared
+                                      ? 'bg-[#fbb034] border-[#fbb034] text-slate-950 font-bold'
+                                      : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50'
+                                  }`}
+                                >
+                                  <span className="material-symbols-outlined text-[14px]">
+                                    {isCompared ? 'check_circle' : 'compare_arrows'}
+                                  </span>
+                                  <span>{isCompared ? 'Comparing' : 'Compare'}</span>
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    toggleWishlist(course);
+                                  }}
+                                  aria-label={isSaved ? "Saved in Wishlist" : "Save to Wishlist"}
+                                  title={isSaved ? "Saved in Wishlist" : "Save to Wishlist"}
+                                  className={`py-2 px-2.5 rounded-full text-xs font-semibold transition-all cursor-pointer border flex items-center justify-center gap-1 ${
+                                    isSaved
+                                      ? 'bg-amber-100 dark:bg-amber-950/70 border-amber-300 text-amber-900 dark:text-amber-300 font-bold'
+                                      : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50'
+                                  }`}
+                                >
+                                  <span className={`material-symbols-outlined text-[14px] ${isSaved ? 'text-[#fbb034]' : 'text-slate-400'}`}>
+                                    {isSaved ? 'bookmark_added' : 'bookmark_add'}
+                                  </span>
+                                  <span>{isSaved ? 'Saved' : 'Save'}</span>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </article>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
                   {paginatedCourses.map((course) => {
                     const uniSlug = getUniSlug(course.universityId);
                     const bannerUrl = getUniBanner(course.universityId);
@@ -2264,41 +2539,36 @@ export const CourseExplorerView: React.FC<CourseExplorerViewProps> = ({
                               </div>
                             </div>
 
-                            {/* Tuition Fee Breakdown */}
-                            <div className="grid grid-cols-2 gap-2 text-xs pt-2 border-t border-slate-100 dark:border-slate-800 items-center">
-                              <div>
-                                <span className="text-[10px] text-slate-400 uppercase font-bold block">Annual Tuition</span>
-                                <strong className="text-slate-900 dark:text-white text-sm font-black">
-                                  {formatUSD(course.annualFeeUSD)} / yr
-                                </strong>
-                              </div>
-                              <div className="text-right">
-                                <span className="text-[10px] text-slate-400 uppercase font-bold block">Local Tariff</span>
-                                <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 truncate block">
-                                  {formatPriceString(course.tuitionFeeLocal, course.annualFeeUSD)}
-                                </span>
+                            {/* Tuition Fee Breakdown - Matching Screenshot */}
+                            <div className="pt-2 border-t border-slate-100 dark:border-slate-800 space-y-0.5">
+                              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+                                ANNUAL TUITION FEE
+                              </span>
+                              <div className="text-lg sm:text-xl font-black text-slate-900 dark:text-white">
+                                {formatPriceString(course.tuitionFeeLocal, course.annualFeeUSD)}
                               </div>
                             </div>
                           </div>
                         </div>
 
-                        {/* Bottom Action Row: Apply Now (Red) + Save to Wishlist + Compare Toggle */}
+                        {/* Bottom Action Row - Exactly matching screenshot */}
                         <div className="p-5 pt-0 space-y-2">
-                          <div className="flex items-center gap-2">
-                            <button
-                              onClick={() => onApply(`${course.title} at ${course.universityName}`)}
-                              className="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs transition-colors cursor-pointer text-center active:scale-95 shadow-xs"
-                            >
-                              Apply Now
-                            </button>
+                          <button
+                            type="button"
+                            onClick={() => onApply(`${course.title} at ${course.universityName}`)}
+                            className="w-full py-3 rounded-full bg-slate-950 dark:bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs sm:text-sm transition-all cursor-pointer text-center active:scale-95 shadow-xs"
+                          >
+                            Apply Now
+                          </button>
+                          <div className="grid grid-cols-2 gap-2">
                             <button
                               type="button"
                               onClick={() => toggleCompare(course.id)}
                               title={isCompared ? 'Remove from comparison' : 'Add to comparison'}
-                              className={`px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                              className={`py-2.5 px-3 rounded-full text-xs font-semibold transition-all cursor-pointer border flex items-center justify-center gap-1.5 ${
                                 isCompared
-                                  ? 'bg-[#fbb034] text-slate-950 shadow-xs'
-                                  : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200'
+                                  ? 'bg-[#fbb034] border-[#fbb034] text-slate-950 font-bold'
+                                  : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50'
                               }`}
                             >
                               <span className="material-symbols-outlined text-[15px]">
@@ -2306,40 +2576,43 @@ export const CourseExplorerView: React.FC<CourseExplorerViewProps> = ({
                               </span>
                               <span>{isCompared ? 'Comparing' : 'Compare'}</span>
                             </button>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggleWishlist(course);
+                              }}
+                              aria-label={isSaved ? "Saved in Wishlist" : "Save to Wishlist"}
+                              title={isSaved ? "Saved in Wishlist" : "Save to Wishlist"}
+                              className={`py-2.5 px-3 rounded-full text-xs font-semibold transition-all cursor-pointer border flex items-center justify-center gap-1.5 ${
+                                isSaved
+                                  ? 'bg-amber-100 dark:bg-amber-950/70 border-amber-300 text-amber-900 dark:text-amber-300 font-bold'
+                                  : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50'
+                              }`}
+                            >
+                              <span className={`material-symbols-outlined text-[15px] ${isSaved ? 'text-[#fbb034]' : 'text-slate-400'}`}>
+                                {isSaved ? 'bookmark_added' : 'bookmark_add'}
+                              </span>
+                              <span>{isSaved ? 'Saved' : 'Save'}</span>
+                            </button>
                           </div>
-
-                          {/* Save to Wishlist button with subtle scaling bounce animation */}
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              toggleWishlist(course);
-                            }}
-                            aria-label={isSaved ? "Saved in Wishlist" : "Save to Wishlist"}
-                            title={isSaved ? "Course saved in your wishlist" : "Save course to wishlist"}
-                            className={`w-full py-2 px-3 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 select-none ${
-                              isSaved
-                                ? 'bg-amber-100 dark:bg-amber-950/70 text-amber-900 dark:text-amber-300 border border-[#fbb034]/60 shadow-xs'
-                                : 'bg-slate-100 dark:bg-slate-800 hover:bg-amber-50 dark:hover:bg-amber-950/30 text-slate-700 dark:text-slate-300 hover:text-amber-700 dark:hover:text-amber-300 border border-transparent hover:border-amber-200 dark:hover:border-amber-800/40'
-                            } ${isBouncing ? 'animate-wishlist-bounce' : 'hover:scale-[1.01] active:scale-95'}`}
-                          >
-                            <span className={`material-symbols-outlined text-[16px] transition-transform ${isSaved ? 'text-[#fbb034]' : 'text-slate-400 group-hover:text-amber-500'}`}>
-                              {isSaved ? 'bookmark_added' : 'bookmark_add'}
-                            </span>
-                            <span>{isSaved ? 'Saved in Wishlist' : 'Save to Wishlist'}</span>
-                          </button>
                         </div>
                       </article>
                     );
                   })}
                 </div>
+              )}
 
                 {/* Numbered Pagination Bar (Matching universities.html 100%) */}
-                {filteredCourses.length > ITEMS_PER_PAGE && (
-                  <nav
-                    aria-label="Course Directory Pagination"
-                    className="mt-10 flex items-center justify-center gap-1.5 sm:gap-2 select-none flex-wrap"
-                  >
+                {effectiveCourses.length > ITEMS_PER_PAGE && (
+                  <div className="mt-8 space-y-3 text-center">
+                    <span className="text-xs text-slate-500 dark:text-slate-400 font-medium block">
+                      Showing {startIndex}–{endIndex} of {effectiveCourses.length} programmes
+                    </span>
+                    <nav
+                      aria-label="Course Directory Pagination"
+                      className="flex items-center justify-center gap-1.5 sm:gap-2 select-none flex-wrap"
+                    >
                     {/* Previous Button */}
                     <button
                       type="button"
@@ -2406,11 +2679,13 @@ export const CourseExplorerView: React.FC<CourseExplorerViewProps> = ({
                       <span className="material-symbols-outlined text-[18px]">chevron_right</span>
                     </button>
                   </nav>
+                </div>
                 )}
               </>
             )}
           </div>
         </div>
+      </div>
 
         {/* MOBILE FILTER MODAL DRAWER (Matching Universities.html Drawer Exactly) */}
         {isMobileFilterOpen && (
@@ -2988,9 +3263,7 @@ export const CourseExplorerView: React.FC<CourseExplorerViewProps> = ({
             </div>
           </div>
         )}
-      </div>
 
-      {/* Docked Floating Comparison Trigger Bar */}
       {comparedCourses.length > 0 && (
         <div className="fixed bottom-4 inset-x-3 xs:inset-x-4 max-w-4xl mx-auto z-40 bg-slate-950/95 text-white backdrop-blur-md rounded-2xl sm:rounded-full p-3 sm:px-6 shadow-2xl border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 animate-slideUp">
           <div className="flex items-center gap-3 w-full sm:w-auto">
@@ -3030,7 +3303,7 @@ export const CourseExplorerView: React.FC<CourseExplorerViewProps> = ({
       {/* Comprehensive Comparison Matrix Modal */}
       {isCompareModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-950/80 backdrop-blur-md animate-fadeIn">
-          <div className="relative w-full max-w-5xl bg-white dark:bg-[#0f172a] rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden max-h-[92vh] flex flex-col">
+          <div className="relative w-full max-w-5xl bg-white dark:bg-[#0B1329] rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden max-h-[92vh] flex flex-col">
             {/* Modal Header */}
             <div className="p-4 sm:p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between gap-4 bg-slate-50/50 dark:bg-slate-900">
               <div>

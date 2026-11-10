@@ -44,7 +44,7 @@ export const ServicesCoverflow: React.FC<ServicesCoverflowProps> = ({
   return (
     <section 
       aria-labelledby="geesServicesTitle"
-      className="gees-services-coverflow relative w-full bg-white dark:bg-[#070b19] py-8 min-[390px]:py-10 sm:py-24 select-none border-b border-slate-100 dark:border-slate-800"
+      className="gees-services-coverflow relative w-full bg-white dark:bg-[#0B1329] py-10 min-[390px]:py-12 sm:py-24 select-none border-b border-slate-100 dark:border-slate-800"
       data-home-section="services"
       id="home-services"
     >
@@ -97,7 +97,7 @@ export const ServicesCoverflow: React.FC<ServicesCoverflowProps> = ({
             type="button"
             text="View all services"
             onClick={onViewAllServices}
-            className="min-h-[44px] px-8 py-3.5 rounded-full bg-white dark:bg-slate-900 text-slate-950 dark:text-white border-slate-300 dark:border-slate-700 font-semibold text-sm shadow-sm cursor-pointer"
+            className="min-h-[44px] px-8 py-3.5 rounded-full border-slate-300 dark:border-slate-700 text-sm font-bold text-slate-900 dark:text-white bg-white dark:bg-slate-900 shadow-xs cursor-pointer"
           />
         </div>
       </div>

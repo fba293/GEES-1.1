@@ -72,7 +72,7 @@ export const SuccessStoriesSection: React.FC<SuccessStoriesSectionProps> = ({ on
   };
 
   return (
-    <section className="w-full bg-white dark:bg-[#070b19] py-8 min-[390px]:py-10 sm:py-20 border-t border-slate-100 dark:border-slate-800">
+    <section className="w-full bg-white dark:bg-[#0B1329] py-8 min-[390px]:py-10 sm:py-20 border-t border-slate-100 dark:border-slate-800">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-6 sm:mb-8 px-2">
@@ -88,7 +88,7 @@ export const SuccessStoriesSection: React.FC<SuccessStoriesSectionProps> = ({ on
         </div>
 
         {/* Filter Segmented Tab Bar with Universal 120 FPS Sliding Indicator */}
-        <div className="w-full max-w-3xl mb-8 sm:mb-10 flex justify-center">
+        <div className="w-full mx-auto mb-8 sm:mb-10 flex justify-center">
           <AnimatedTabs
             tabs={tabs}
             activeId={selectedFilter}
@@ -97,6 +97,7 @@ export const SuccessStoriesSection: React.FC<SuccessStoriesSectionProps> = ({ on
               setCurrentIndex(0);
             }}
             size="md"
+            containerClassName="justify-start sm:justify-center"
           />
         </div>
 
@@ -167,21 +168,31 @@ export const SuccessStoriesSection: React.FC<SuccessStoriesSectionProps> = ({ on
                   </span>
                 </div>
 
-                {/* Name & Program */}
-                <h3 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
-                  {activeStory.name}
-                </h3>
-                <p className="text-xs sm:text-sm font-bold text-blue-600 dark:text-blue-400 mt-0.5">
-                  {activeStory.degree}
-                </p>
+                {/* Name & Program - Standardized height for baseline alignment */}
+                <div className="min-h-[60px] sm:min-h-[84px] flex flex-col justify-center">
+                  <h3 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
+                    {activeStory.name}
+                  </h3>
+                  <p className="text-xs sm:text-sm font-bold text-blue-600 dark:text-blue-400 mt-0.5">
+                    {activeStory.degree}
+                  </p>
+                </div>
 
-                {/* Quote with opening quote symbol */}
-                <div className="mt-5 mb-6 min-h-[100px] flex items-start">
-                  <p className="text-base sm:text-xl font-bold text-slate-800 dark:text-slate-200 leading-relaxed">
+                {/* Quote with opening quote symbol - Fixed height and truncation for identical alignment */}
+                <div className="mt-5 mb-6 h-[160px] sm:h-[180px] flex flex-col justify-between items-start overflow-hidden">
+                  <p className="text-base sm:text-xl font-bold text-slate-800 dark:text-slate-200 leading-relaxed line-clamp-4 sm:line-clamp-4">
                     <span className="text-slate-400 text-2xl mr-1 select-none font-serif">“</span>
                     {activeStory.quote}
                     <span className="text-slate-400 text-2xl ml-1 select-none font-serif">”</span>
                   </p>
+                  {activeStory.quote.length > 160 && (
+                    <button
+                      onClick={() => setSelectedCaseStudy(activeStory)}
+                      className="mt-2 text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer py-1"
+                    >
+                      Read more...
+                    </button>
+                  )}
                 </div>
 
                 {/* Touch hint for mobile users */}
@@ -197,14 +208,14 @@ export const SuccessStoriesSection: React.FC<SuccessStoriesSectionProps> = ({ on
                   <button
                     onClick={prevSlide}
                     aria-label="Previous testimonial"
-                    className="w-11 h-11 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-[#fbb034] hover:text-slate-950 active:scale-95 flex items-center justify-center transition-all shadow-md cursor-pointer"
+                    className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-[#fbb034] hover:text-slate-950 active:scale-95 flex items-center justify-center transition-all shadow-md cursor-pointer"
                   >
                     <span className="material-symbols-outlined text-[20px]">chevron_left</span>
                   </button>
                   <button
                     onClick={nextSlide}
                     aria-label="Next testimonial"
-                    className="w-11 h-11 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-[#fbb034] hover:text-slate-950 active:scale-95 flex items-center justify-center transition-all shadow-md cursor-pointer"
+                    className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-[#fbb034] hover:text-slate-950 active:scale-95 flex items-center justify-center transition-all shadow-md cursor-pointer"
                   >
                     <span className="material-symbols-outlined text-[20px]">chevron_right</span>
                   </button>
@@ -217,7 +228,7 @@ export const SuccessStoriesSection: React.FC<SuccessStoriesSectionProps> = ({ on
                       type="button"
                       aria-label={`Go to story ${i + 1}`}
                       onClick={() => setCurrentIndex(i)}
-                      className="min-h-[44px] min-w-[34px] p-2 flex items-center justify-center cursor-pointer tap-target-44 active:scale-90"
+                      className="min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer tap-target-44 active:scale-90"
                     >
                       <span
                         className={`h-2 rounded-full transition-all block ${
@@ -234,37 +245,26 @@ export const SuccessStoriesSection: React.FC<SuccessStoriesSectionProps> = ({ on
           </div>
         </div>
 
-        {/* Secondary Call-To-Action: Read Full Success Stories */}
-        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 text-center px-2 w-full sm:w-auto">
-          <button
-            onClick={() => {
-              if (onNavigate) {
-                onNavigate('blog');
-              } else {
-                setSelectedCaseStudy(activeStory);
-              }
-            }}
-            className="min-h-[44px] w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs uppercase tracking-wider hover:bg-blue-600 dark:hover:bg-[#fbb034] dark:hover:text-slate-950 transition-all shadow-md cursor-pointer active:scale-95"
-          >
-            <span>Read Full Success Stories</span>
-            <span className="material-symbols-outlined text-sm">menu_book</span>
-          </button>
-
-          {/* Google Reviews CTA */}
+        {/* Google Reviews CTA */}
+        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 text-center px-2 w-full">
           <a
             href="https://globaleducationexpert.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="min-h-[44px] w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3 rounded-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-bold text-xs shadow-xs hover:shadow-md transition-all active:scale-95"
+            className="w-full sm:w-auto block"
           >
-            <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
-              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
-              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
-              <path d="M5.84 14.1c-.22-.66-.35-1.36-.35-2.1s.13-1.44.35-2.1V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.62z" fill="#FBBC05"></path>
-              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"></path>
-            </svg>
-            <span>Read All Reviews on Google</span>
-            <span className="material-symbols-outlined text-[16px] text-slate-400">arrow_forward</span>
+            <InteractiveHoverButton
+              text="Read All Reviews on Google"
+              icon={
+                <svg className="w-4 h-4 shrink-0 transition-transform duration-300 group-hover:translate-x-0.5" viewBox="0 0 24 24">
+                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
+                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
+                  <path d="M5.84 14.1c-.22-.66-.35-1.36-.35-2.1s.13-1.44.35-2.1V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.62z" fill="#FBBC05"></path>
+                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"></path>
+                </svg>
+              }
+              className="min-h-[44px] w-full sm:w-auto px-6 sm:px-8 py-3.5 rounded-full border-slate-300 dark:border-slate-700 text-sm font-bold text-slate-900 dark:text-white bg-white dark:bg-slate-900 shadow-xs cursor-pointer"
+            />
           </a>
         </div>
       </div>
@@ -272,7 +272,7 @@ export const SuccessStoriesSection: React.FC<SuccessStoriesSectionProps> = ({ on
       {/* Case Study Modal */}
       {selectedCaseStudy && (
         <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="relative bg-white dark:bg-[#0f172a] w-full max-w-xl rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-100 dark:border-slate-800 animate-fadeIn">
+          <div className="relative bg-white dark:bg-[#0B1329] w-full max-w-xl rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-100 dark:border-slate-800 animate-fadeIn">
             <button
               onClick={() => setSelectedCaseStudy(null)}
               className="absolute top-4 right-4 w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-slate-900 cursor-pointer active:scale-95"
@@ -322,3 +322,4 @@ export const SuccessStoriesSection: React.FC<SuccessStoriesSectionProps> = ({ on
     </section>
   );
 };
+

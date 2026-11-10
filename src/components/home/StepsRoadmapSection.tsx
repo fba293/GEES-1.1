@@ -172,7 +172,7 @@ export const StepsRoadmapSection: React.FC<StepsRoadmapSectionProps> = ({ onOpen
   return (
     <section
       id="steps-roadmap-section"
-      className="relative w-full py-8 min-[390px]:py-10 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 bg-slate-50 dark:bg-[#070b19] text-slate-900 dark:text-white transition-colors duration-300 border-t border-slate-200/80 dark:border-slate-800/80 overflow-hidden"
+      className="relative w-full py-10 min-[390px]:py-12 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 bg-white dark:bg-[#0B1329] text-slate-900 dark:text-white transition-colors duration-300 border-t border-slate-200/80 dark:border-slate-800/80 overflow-hidden"
     >
       <div className="relative z-10 max-w-6xl mx-auto">
         {/* Section Heading */}
@@ -254,10 +254,10 @@ export const StepsRoadmapSection: React.FC<StepsRoadmapSectionProps> = ({ onOpen
                     <circle r="28" fill="transparent" pointerEvents="all" />
                     {/* Circle Node Button: GEES Gold Outline & Neutral Navy Fill */}
                     <circle
-                      r={isMobile ? 18 : 20}
-                      fill="#070b19"
+                      r={isMobile ? 20 : 20}
+                      fill="#0B1329"
                       stroke="#fbb034"
-                      strokeWidth={isMobile ? 2.2 : 2.5}
+                      strokeWidth={isMobile ? 2.5 : 2.5}
                       className="transition-transform duration-300 group-hover:scale-110"
                       style={{ filter: 'drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5))' }}
                     />
@@ -267,7 +267,7 @@ export const StepsRoadmapSection: React.FC<StepsRoadmapSectionProps> = ({ onOpen
                       textAnchor="middle"
                       dominantBaseline="central"
                       fill="#fbb034"
-                      fontSize={isMobile ? '13' : '14'}
+                      fontSize={isMobile ? '16' : '14'}
                       fontWeight="900"
                       fontFamily="sans-serif"
                     >
@@ -294,7 +294,7 @@ export const StepsRoadmapSection: React.FC<StepsRoadmapSectionProps> = ({ onOpen
               <motion.g
                 initial={false}
                 animate={{
-                  transform: `translate(${planePos.x}px, ${planePos.y - (isMobile ? 26 : 30)}px) rotate(${planePos.angle}deg)`
+                  transform: `translate(${planePos.x}px, ${planePos.y - (isMobile ? 30 : 30)}px) rotate(${planePos.angle}deg)`
                 }}
                 transition={{
                   type: 'spring',
@@ -306,8 +306,8 @@ export const StepsRoadmapSection: React.FC<StepsRoadmapSectionProps> = ({ onOpen
                   filter: 'drop-shadow(0 4px 12px rgba(0, 0, 0, 0.65)) drop-shadow(0 0 10px rgba(251, 176, 52, 0.35))'
                 }}
               >
-                <g transform={`translate(${isMobile ? -34 : -40}, ${isMobile ? -17 : -20})`}>
-                  <GEESAircraft width={isMobile ? 68 : 80} height={isMobile ? 34 : 40} />
+                <g transform={`translate(${isMobile ? -38 : -40}, ${isMobile ? -19 : -20})`}>
+                  <GEESAircraft width={isMobile ? 76 : 80} height={isMobile ? 38 : 40} />
                 </g>
               </motion.g>
             </svg>
@@ -316,7 +316,7 @@ export const StepsRoadmapSection: React.FC<StepsRoadmapSectionProps> = ({ onOpen
 
         {/* --- INTERACTIVE ACTIVE STEP DETAIL CARD (Proportional mobile & desktop layout) --- */}
         <div className="relative w-full max-w-4xl mx-auto">
-          <div className="relative w-full min-h-[135px] sm:min-h-[176px] flex items-center bg-white dark:bg-[#0f172a]/95 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-4 xs:p-5 sm:p-8 border border-slate-200/90 dark:border-slate-800/90 shadow-xl dark:shadow-2xl overflow-hidden text-slate-900 dark:text-white">
+          <div className="relative w-full min-h-[135px] sm:min-h-[176px] flex items-center bg-white dark:bg-[#0B1329]/95 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-4 xs:p-5 sm:p-8 border border-slate-200/90 dark:border-slate-800/90 shadow-xl dark:shadow-2xl overflow-hidden text-slate-900 dark:text-white">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeStep}
@@ -328,7 +328,7 @@ export const StepsRoadmapSection: React.FC<StepsRoadmapSectionProps> = ({ onOpen
               >
                 <div className="flex items-start gap-3 sm:gap-6 max-w-2xl">
                   {/* Step Icon Badge */}
-                  <div className="w-11 h-11 min-w-[44px] min-h-[44px] sm:w-16 sm:h-16 rounded-full bg-[#070b19] dark:bg-white text-[#fbb034] dark:text-slate-950 flex items-center justify-center shadow-md shrink-0 mt-0.5 sm:mt-0">
+                  <div className="w-11 h-11 min-w-[44px] min-h-[44px] sm:w-16 sm:h-16 rounded-full bg-[#0B1329] dark:bg-white text-[#fbb034] dark:text-slate-950 flex items-center justify-center shadow-md shrink-0 mt-0.5 sm:mt-0">
                     <span className="material-symbols-outlined text-xl sm:text-3xl">
                       {activeData.icon}
                     </span>
@@ -360,7 +360,7 @@ export const StepsRoadmapSection: React.FC<StepsRoadmapSectionProps> = ({ onOpen
             type="button"
             text="Start Your Free Journey"
             onClick={onOpenBooking}
-            className="min-h-[48px] px-8 py-3.5 rounded-full border-amber-400/50 bg-[#fbb034] hover:bg-[#f59e0b] text-slate-950 font-black text-sm sm:text-base shadow-md cursor-pointer"
+            className="min-h-[44px] w-full sm:w-auto px-8 py-3.5 rounded-full border-slate-300 dark:border-slate-700 text-sm sm:text-base font-bold text-slate-900 dark:text-white bg-white dark:bg-slate-900 shadow-xs cursor-pointer"
           />
         </div>
       </div>
@@ -368,7 +368,7 @@ export const StepsRoadmapSection: React.FC<StepsRoadmapSectionProps> = ({ onOpen
       {/* --- DEEP DIVE STEP CHECKLIST & ADVISOR DELIVERABLES MODAL --- */}
       {deepDiveStep !== null && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
-          <div className="relative w-full max-w-xl bg-white dark:bg-[#0f172a] rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-200 dark:border-slate-800 animate-fadeIn text-slate-900 dark:text-white">
+          <div className="relative w-full max-w-xl bg-white dark:bg-[#0B1329] rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-200 dark:border-slate-800 animate-fadeIn text-slate-900 dark:text-white">
             <button
               onClick={() => setDeepDiveStep(null)}
               className="absolute top-4 right-4 w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white flex items-center justify-center cursor-pointer transition-colors"

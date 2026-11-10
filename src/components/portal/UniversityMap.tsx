@@ -67,8 +67,20 @@ export const UniversityMap: React.FC<UniversityMapProps> = ({
   // Default to Light (OpenStreetMap Standard)
   const [activeTileStyle, setActiveTileStyle] = useState<TileStyleKey>('light');
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [hasTileError, setHasTileError] = useState(false);
   const [isMapReady, setIsMapReady] = useState(false);
+  const settingsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (settingsRef.current && !settingsRef.current.contains(event.target as Node)) {
+        setIsSettingsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // Compute course count per university
   const uniCourseCountMap = useMemo(() => {
@@ -468,36 +480,70 @@ export const UniversityMap: React.FC<UniversityMapProps> = ({
           )}
         </div>
 
-        {/* Right Tools: Recenter + Style Switcher + Fullscreen */}
-        <div className="pointer-events-auto flex items-center gap-1.5 bg-slate-950/85 backdrop-blur-md border border-slate-700/60 p-1 rounded-xl shadow-lg">
-          {/* Recenter View Button */}
+        {/* Right Tools: Map Settings Dropdown + Separate Fullscreen Toggle */}
+        <div className="pointer-events-auto flex items-center gap-1.5 bg-slate-950/85 backdrop-blur-md border border-slate-700/60 p-1 rounded-xl shadow-lg relative" ref={settingsRef}>
+          {/* Map Settings Dropdown Button */}
           <button
             type="button"
-            onClick={handleRecenter}
-            title="Recenter Map on Filtered Partners"
-            className="px-2.5 py-1 rounded-lg text-xs font-bold text-slate-200 hover:text-white hover:bg-slate-800 flex items-center gap-1 transition-all cursor-pointer"
+            onClick={() => setIsSettingsOpen((prev) => !prev)}
+            title="Map Settings"
+            className="px-2.5 py-1 rounded-lg text-xs font-bold text-slate-200 hover:text-white hover:bg-slate-800 flex items-center gap-1.5 transition-all cursor-pointer"
+            aria-expanded={isSettingsOpen}
           >
-            <span className="material-symbols-outlined text-[16px] text-amber-400">filter_center_focus</span>
-            <span className="hidden sm:inline">Fit Partners</span>
-          </button>
-
-          {/* Style Selector Dropdown */}
-          <div className="relative border-l border-slate-700 pl-1">
-            <select
-              value={activeTileStyle}
-              onChange={(e: any) => setActiveTileStyle(e.target.value as TileStyleKey)}
-              className="bg-transparent text-slate-200 hover:text-white text-xs font-semibold px-2 py-1 rounded-lg focus:outline-none cursor-pointer appearance-none pr-5"
-            >
-              <option value="light" className="bg-slate-900 text-white">Light</option>
-              <option value="dark" className="bg-slate-900 text-white">Dark</option>
-              <option value="satellite" className="bg-slate-900 text-white">Satellite</option>
-            </select>
-            <span className="material-symbols-outlined text-[14px] text-slate-400 absolute right-1 top-1/2 -translate-y-1/2 pointer-events-none">
+            <span className="material-symbols-outlined text-[16px] text-amber-400">tune</span>
+            <span>Map Settings</span>
+            <span className={`material-symbols-outlined text-[14px] text-slate-400 transition-transform duration-200 ${isSettingsOpen ? 'rotate-180' : ''}`}>
               expand_more
             </span>
-          </div>
+          </button>
 
-          {/* Fullscreen Toggle */}
+          {/* Map Settings Menu Popup (Collapsed by default) */}
+          {isSettingsOpen && (
+            <div className="absolute right-0 top-full mt-2 z-[600] w-56 bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl p-3 text-xs space-y-3 animate-fadeIn">
+              <div>
+                <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider block mb-1.5">
+                  Viewport Controls
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleRecenter();
+                    setIsSettingsOpen(false);
+                  }}
+                  className="w-full px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs flex items-center gap-2 transition-colors cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-sm text-amber-400">filter_center_focus</span>
+                  <span>Fit Partners</span>
+                </button>
+              </div>
+
+              <div>
+                <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider block mb-1.5">
+                  Map Appearance
+                </span>
+                <div className="grid grid-cols-3 gap-1 bg-slate-800/80 p-1 rounded-xl">
+                  {(['light', 'dark', 'satellite'] as TileStyleKey[]).map((styleKey) => (
+                    <button
+                      key={styleKey}
+                      type="button"
+                      onClick={() => {
+                        setActiveTileStyle(styleKey);
+                      }}
+                      className={`py-1.5 px-2 rounded-lg text-[11px] font-bold capitalize transition-all cursor-pointer ${
+                        activeTileStyle === styleKey
+                          ? 'bg-[#fbb034] text-slate-950 shadow-xs font-black'
+                          : 'text-slate-300 hover:text-white'
+                      }`}
+                    >
+                      {styleKey}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Separate Fullscreen Toggle */}
           <button
             type="button"
             onClick={() => setIsFullscreen((prev) => !prev)}

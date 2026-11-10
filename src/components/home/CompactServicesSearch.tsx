@@ -43,7 +43,7 @@ export const CompactServicesSearch: React.FC<CompactServicesSearchProps> = ({
       <div className="p-4 border-t border-slate-100">
         <InteractiveHoverButton 
           text="Find Programs" 
-          className="w-full h-10 rounded-full" 
+          className="min-h-[44px] w-full px-6 sm:px-8 py-3.5 rounded-full border-slate-300 dark:border-slate-700 text-sm font-bold text-slate-900 dark:text-white bg-white dark:bg-slate-900 shadow-xs cursor-pointer" 
           onClick={() => onViewAllServices?.()}
         />
       </div>

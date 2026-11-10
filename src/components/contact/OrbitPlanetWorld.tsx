@@ -990,7 +990,7 @@ export const OrbitPlanetWorld: React.FC<OrbitPlanetWorldProps> = ({
 
       {/* Floating Cloud Bank at Bottom */}
       <div
-        className="absolute inset-x-0 bottom-0 h-28 pointer-events-none bg-gradient-to-t from-white via-white/80 to-transparent dark:from-[#070D1E] dark:via-[#070D1E]/80 dark:to-transparent z-10"
+        className="absolute inset-x-0 bottom-0 h-28 pointer-events-none bg-gradient-to-t from-white via-white/80 to-transparent dark:from-[#0B1329] dark:via-[#0B1329]/80 dark:to-transparent z-10"
         aria-hidden="true"
       />
 

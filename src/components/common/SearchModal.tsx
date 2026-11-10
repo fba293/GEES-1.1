@@ -807,7 +807,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
       <div
         onClick={(e) => e.stopPropagation()}
         style={modalStyle}
-        className={`relative z-10 w-full flex flex-col bg-white dark:bg-[#0f172a] shadow-2xl transition-colors ${
+        className={`relative z-10 w-full flex flex-col bg-white dark:bg-[#0B1329] shadow-2xl transition-colors ${
           isMobile
             ? 'h-full rounded-none border-0'
             : isConstrainedHeight
@@ -820,7 +820,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
         {/* =================================================================== */}
         {/* HEADER: Search Input Region (Pinned at top, 60-64px mobile/tablet)   */}
         {/* =================================================================== */}
-        <div className="flex-shrink-0 pt-[max(0.65rem,env(safe-area-inset-top))] px-3.5 sm:px-5 pb-3 border-b border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0f172a]">
+        <div className="flex-shrink-0 pt-[max(0.65rem,env(safe-area-inset-top))] px-3.5 sm:px-5 pb-3 border-b border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#0B1329]">
           <div className="flex items-center gap-2 sm:gap-3 min-h-[44px]">
             {/* Back Arrow for Mobile or Search Icon for Tablet/Desktop */}
             {isMobile ? (
@@ -895,7 +895,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                 {isListening ? 'mic' : 'mic_none'}
               </span>
               {isListening && (
-                <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white dark:border-[#0f172a] animate-ping" />
+                <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white dark:border-[#0B1329] animate-ping" />
               )}
             </button>
 

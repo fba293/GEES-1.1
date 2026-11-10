@@ -325,7 +325,7 @@ export const BlogHubView: React.FC<BlogHubViewProps> = ({
   });
 
   return (
-    <div className="w-full bg-white dark:bg-[#070D1E] text-[#0b1c30] dark:text-slate-100 transition-colors">
+    <div className="w-full bg-white dark:bg-[#0B1329] text-[#0b1c30] dark:text-slate-100 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
 
         {/* Top Breadcrumb & Back Navigation */}

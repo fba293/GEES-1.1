@@ -137,7 +137,7 @@ export const AgentPortalView: React.FC = () => {
 
       {/* KPI Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <div className="bg-white dark:bg-[#0f172a] rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
+        <div className="bg-white dark:bg-[#0B1329] rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Earned Commissions</span>
             <span className="p-2 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
@@ -153,7 +153,7 @@ export const AgentPortalView: React.FC = () => {
           </p>
         </div>
 
-        <div className="bg-white dark:bg-[#0f172a] rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
+        <div className="bg-white dark:bg-[#0B1329] rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Pending Payout</span>
             <span className="p-2 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400">
@@ -168,7 +168,7 @@ export const AgentPortalView: React.FC = () => {
           </p>
         </div>
 
-        <div className="bg-white dark:bg-[#0f172a] rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
+        <div className="bg-white dark:bg-[#0B1329] rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Students Referred</span>
             <span className="p-2 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400">
@@ -183,7 +183,7 @@ export const AgentPortalView: React.FC = () => {
           </p>
         </div>
 
-        <div className="bg-white dark:bg-[#0f172a] rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
+        <div className="bg-white dark:bg-[#0B1329] rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Commission Tier</span>
             <span className="p-2 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400">
@@ -200,7 +200,7 @@ export const AgentPortalView: React.FC = () => {
       </div>
 
       {/* Commission Ledger Table */}
-      <div className="bg-white dark:bg-[#0f172a] rounded-3xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-sm">
+      <div className="bg-white dark:bg-[#0B1329] rounded-3xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-sm">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <div>
             <h2 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">
@@ -303,7 +303,7 @@ export const AgentPortalView: React.FC = () => {
       {/* Refer Student Modal */}
       {showReferModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-[#0f172a] rounded-3xl max-w-lg w-full p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-2xl relative">
+          <div className="bg-white dark:bg-[#0B1329] rounded-3xl max-w-lg w-full p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-2xl relative">
             <button
               onClick={() => setShowReferModal(false)}
               className="absolute top-5 right-5 p-2 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-white"
@@ -407,7 +407,7 @@ export const AgentPortalView: React.FC = () => {
       {/* Request Payout Modal */}
       {showPayoutModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-[#0f172a] rounded-3xl max-w-md w-full p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-2xl relative text-center">
+          <div className="bg-white dark:bg-[#0B1329] rounded-3xl max-w-md w-full p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-2xl relative text-center">
             <span className="w-14 h-14 rounded-2xl bg-emerald-500/10 text-emerald-600 mx-auto flex items-center justify-center mb-4">
               <span className="material-symbols-outlined text-3xl">account_balance</span>
             </span>

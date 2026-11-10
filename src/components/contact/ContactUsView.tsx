@@ -119,7 +119,7 @@ export const ContactUsView: React.FC<ContactUsViewProps> = ({
   };
 
   return (
-    <div className="w-full min-h-screen bg-white dark:bg-[#070D1E] text-slate-800 dark:text-slate-100 transition-colors">
+    <div className="w-full min-h-screen bg-white dark:bg-[#0B1329] text-slate-800 dark:text-slate-100 transition-colors">
       {/* Subtle Atmospheric Top Glow */}
       <div className="absolute top-0 inset-x-0 h-96 pointer-events-none overflow-hidden select-none z-0">
         <div className="w-full h-full bg-radial from-blue-200/40 via-amber-100/20 to-transparent dark:from-blue-900/20 dark:via-transparent dark:to-transparent opacity-80" />
@@ -149,7 +149,7 @@ export const ContactUsView: React.FC<ContactUsViewProps> = ({
               <p className="text-[11px] sm:text-xs font-black uppercase tracking-[0.32em] text-[#2563eb] dark:text-[#60a5fa] mb-3">
                 GOOD THINGS, ON THEIR WAY
               </p>
-              <h1 className="text-[34px] sm:text-[42px] lg:text-[48px] font-black tracking-[-0.04em] text-[#0d1424] dark:text-white leading-[1.05] mb-4">
+              <h1 className="text-[34px] sm:text-[42px] lg:text-[48px] font-black tracking-[-0.04em] text-[#0B1329] dark:text-white leading-[1.05] mb-4">
                 Good things.<br />
                 Delivered<br />
                 <em className="font-serif italic font-normal text-[#2563eb] dark:text-[#60a5fa]">with care.</em>
@@ -208,7 +208,7 @@ export const ContactUsView: React.FC<ContactUsViewProps> = ({
               
               {/* Header Row: Title & Readiness Tracker */}
               <div className="flex items-center justify-between gap-4 mb-7 sm:mb-8">
-                <h2 className="text-[28px] sm:text-[34px] md:text-[38px] font-black tracking-[-0.035em] text-[#0d1424] dark:text-white leading-tight">
+                <h2 className="text-[28px] sm:text-[34px] md:text-[38px] font-black tracking-[-0.035em] text-[#0B1329] dark:text-white leading-tight">
                   Send us a message
                 </h2>
 

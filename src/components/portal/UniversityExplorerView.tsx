@@ -12,6 +12,7 @@ import { getPartnerCountryTabs, getTotalPartnerCount } from '../../utils/Partner
 import { APPROVED_COUNTRY_NAMES } from '../../lib/country-config.ts';
 import { useCurrency } from '../../context/CurrencyContext.tsx';
 import Slider06 from '../ui/slider-06';
+import { UniversityMap } from './UniversityMap.tsx';
 
 interface UniversityExplorerViewProps {
   initialSlug?: string;
@@ -57,8 +58,34 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
   const [selectedArticleModal, setSelectedArticleModal] = useState<any | null>(null);
   const [isLoading] = useState<boolean>(false);
 
+  // View Modes & Wishlist State
+  const [displayMode, setDisplayMode] = useState<'grid' | 'list' | 'map' | 'wishlist'>('grid');
+  const [bouncingUniId, setBouncingUniId] = useState<string | null>(null);
+  const [savedUniIds, setSavedUniIds] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem('gees_saved_universities');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const toggleSaveUni = (uniId: string) => {
+    setBouncingUniId(uniId);
+    setTimeout(() => setBouncingUniId(null), 600);
+    setSavedUniIds((prev) => {
+      const next = prev.includes(uniId) ? prev.filter((id) => id !== uniId) : [...prev, uniId];
+      try {
+        localStorage.setItem('gees_saved_universities', JSON.stringify(next));
+      } catch {}
+      return next;
+    });
+  };
+
+  const isUniSaved = (uniId: string) => savedUniIds.includes(uniId);
+
   // Sorting state
-  const [sortBy, setSortBy] = useState<'az' | 'fee-asc' | 'fee-desc' | 'qs'>('qs');
+  const [sortBy, setSortBy] = useState<'az' | 'fee-asc' | 'fee-desc' | 'qs' | 'recommended' | 'acceptance-high-low' | 'established'>('qs');
   const [currentPage, setCurrentPage] = useState<number>(1);
   const ITEMS_PER_PAGE = 9;
 
@@ -410,6 +437,12 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
         const rankB = Number(b.qsRank2027 || 9999);
         return rankA - rankB;
       }
+      if (sortBy === 'acceptance-high-low') {
+        return (b.acceptanceRatePct || 0) - (a.acceptanceRatePct || 0);
+      }
+      if (sortBy === 'established') {
+        return (Number(b.established) || 0) - (Number(a.established) || 0);
+      }
       return 0;
     });
   }, [
@@ -424,11 +457,20 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
     sortBy,
   ]);
 
-  const totalPages = Math.max(1, Math.ceil(filteredUnis.length / ITEMS_PER_PAGE));
+  const effectiveUnis = useMemo(() => {
+    if (displayMode === 'wishlist') {
+      return filteredUnis.filter((u) => savedUniIds.includes(u.id));
+    }
+    return filteredUnis;
+  }, [displayMode, filteredUnis, savedUniIds]);
+
+  const totalPages = Math.max(1, Math.ceil(effectiveUnis.length / ITEMS_PER_PAGE));
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE + 1;
+  const endIndex = Math.min(currentPage * ITEMS_PER_PAGE, effectiveUnis.length);
   const paginatedUnis = useMemo(() => {
     const start = (currentPage - 1) * ITEMS_PER_PAGE;
-    return filteredUnis.slice(start, start + ITEMS_PER_PAGE);
-  }, [filteredUnis, currentPage]);
+    return effectiveUnis.slice(start, start + ITEMS_PER_PAGE);
+  }, [effectiveUnis, currentPage]);
 
   const getPaginationPages = () => {
     const pages: (number | string)[] = [];
@@ -904,78 +946,330 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
       ) : (
         /* VIEW B: Universities Faceted Directory with Filter Tick Options & Top Search */
         <div className="space-y-3 sm:space-y-6">
-          {/* Top Search Bar & Sort Controls */}
-          <div className="bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl border border-slate-200/90 dark:border-slate-800 p-3 xs:p-4 sm:p-5 shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5 sm:gap-4">
-            {/* Search Input Bar */}
-            <div className="relative flex-1">
-              <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px] sm:text-[20px] pointer-events-none">
-                search
-              </span>
-              <input
-                type="text"
-                placeholder="Search university by name, city, country, or course..."
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  setCurrentPage(1);
-                }}
-                className="w-full h-10 sm:h-12 pl-9 sm:pl-11 pr-9 rounded-lg sm:rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm font-medium text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 shadow-xs transition-all"
-              />
-              {searchQuery && (
+          {/* Top Search Bar, Controls & Results Counter - Merged Unified Card matching image_f5dc19b1.png */}
+          <div className="bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl border border-slate-200/90 dark:border-slate-800 p-2.5 xs:p-3 sm:p-4 shadow-sm space-y-3">
+            {/* Top Row: Search Input + Controls Cluster - Single Row Strategy matching image_f5dc19b1.png */}
+            <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2.5 sm:gap-3">
+              
+              {/* 1. Search & Filter Toggle Row */}
+              <div className="flex items-center gap-2 flex-1">
+                {/* Search Input Bar */}
+                <div className="relative flex-1">
+                  <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px] sm:text-[20px] pointer-events-none">
+                    search
+                  </span>
+                  <input
+                    type="text"
+                    placeholder="Search university..."
+                    value={searchQuery}
+                    onChange={(e) => {
+                      setSearchQuery(e.target.value);
+                      setCurrentPage(1);
+                    }}
+                    className="w-full h-11 sm:h-12 pl-9 sm:pl-11 pr-9 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-sm font-medium text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all"
+                  />
+                  {searchQuery && (
+                    <button
+                      type="button"
+                      aria-label="Clear search"
+                      onClick={() => {
+                        setSearchQuery('');
+                        setCurrentPage(1);
+                      }}
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 w-5 h-5 sm:w-6 sm:h-6 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-white flex items-center justify-center cursor-pointer transition-colors"
+                    >
+                      <span className="material-symbols-outlined text-[14px] sm:text-[16px]">close</span>
+                    </button>
+                  )}
+                </div>
+
+                {/* Mobile Filter Trigger Button (Compact) */}
                 <button
                   type="button"
-                  aria-label="Clear search"
-                  onClick={() => {
-                    setSearchQuery('');
-                    setCurrentPage(1);
-                  }}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 w-5 h-5 sm:w-6 sm:h-6 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-white flex items-center justify-center cursor-pointer transition-colors"
+                  onClick={() => setIsMobileFilterOpen(true)}
+                  className="lg:hidden h-11 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center gap-1.5 shadow-xs cursor-pointer active:scale-95 transition-all"
                 >
-                  <span className="material-symbols-outlined text-[14px] sm:text-[16px]">close</span>
+                  <span className="material-symbols-outlined text-[18px] text-blue-600">tune</span>
+                  <span className="hidden xs:inline">Filters</span>
+                  {activeFiltersCount > 0 && (
+                    <span className="w-4 h-4 rounded-full bg-blue-600 text-white text-[9px] font-black flex items-center justify-center">
+                      {activeFiltersCount}
+                    </span>
+                  )}
                 </button>
-              )}
+              </div>
+
+              {/* 2. Controls Cluster: View Mode + Sort - Merged for Tablet/Desktop, Stacked for Mobile */}
+              <div className="flex flex-row items-center gap-2 sm:gap-3 overflow-x-auto no-scrollbar pb-0.5 lg:pb-0 shrink-0">
+                {/* View Mode Segmented Toggle: Cards, List, Map, Wishlist */}
+                <div className="flex items-center p-1 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => setDisplayMode('grid')}
+                    className={`px-2.5 sm:px-3 py-2 rounded-lg text-[11px] sm:text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                      displayMode === 'grid'
+                        ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs'
+                        : 'text-slate-500 hover:text-slate-900 dark:text-slate-400'
+                    }`}
+                  >
+                    <span className="material-symbols-outlined text-[15px] sm:text-[17px]">grid_view</span>
+                    <span className="hidden sm:inline">Cards</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDisplayMode('list')}
+                    className={`px-2.5 sm:px-3 py-2 rounded-lg text-[11px] sm:text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                      displayMode === 'list'
+                        ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs'
+                        : 'text-slate-500 hover:text-slate-900 dark:text-slate-400'
+                    }`}
+                  >
+                    <span className="material-symbols-outlined text-[15px] sm:text-[17px]">format_list_bulleted</span>
+                    <span className="hidden sm:inline">List</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDisplayMode('map')}
+                    className={`px-2.5 sm:px-3 py-2 rounded-lg text-[11px] sm:text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                      displayMode === 'map'
+                        ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs'
+                        : 'text-slate-500 hover:text-slate-900 dark:text-slate-400'
+                    }`}
+                  >
+                    <span className="material-symbols-outlined text-[15px] sm:text-[17px]">map</span>
+                    <span className="hidden sm:inline">Map</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDisplayMode(displayMode === 'wishlist' ? 'grid' : 'wishlist')}
+                    className={`px-2.5 sm:px-3 py-2 rounded-lg text-[11px] sm:text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                      displayMode === 'wishlist'
+                        ? 'bg-[#fbb034] text-slate-950 shadow-xs font-extrabold'
+                        : 'text-slate-500 hover:text-slate-900 dark:text-slate-400'
+                    }`}
+                  >
+                    <span className="material-symbols-outlined text-[15px] sm:text-[17px]">
+                      {displayMode === 'wishlist' ? 'bookmark' : 'bookmark_border'}
+                    </span>
+                    <span className="hidden sm:inline">Wishlist</span>
+                    {savedUniIds.length > 0 && (
+                      <span className={`px-1.5 py-0.2 rounded-full text-[9px] font-black ${
+                        displayMode === 'wishlist' ? 'bg-slate-950 text-white' : 'bg-[#fbb034] text-slate-950'
+                      }`}>
+                        {savedUniIds.length}
+                      </span>
+                    )}
+                  </button>
+                </div>
+
+                {/* Sort By Dropdown - Compact Refinement */}
+                <div className="relative min-w-[130px] sm:min-w-[180px]">
+                  <span className="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 text-[16px] sm:text-[18px] pointer-events-none">
+                    filter_alt
+                  </span>
+                  <select
+                    value={sortBy}
+                    onChange={(e: any) => {
+                      setSortBy(e.target.value);
+                      setCurrentPage(1);
+                    }}
+                    className="w-full h-11 px-8 sm:px-9 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-[11px] sm:text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600/20 transition-all appearance-none cursor-pointer"
+                  >
+                    <option value="qs">QS Ranking</option>
+                    <option value="recommended">Recommended</option>
+                    <option value="acceptance-high-low">Acceptance</option>
+                    <option value="fee-asc">Fee (Low)</option>
+                    <option value="fee-desc">Fee (High)</option>
+                    <option value="az">Name A–Z</option>
+                  </select>
+                  <span className="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-[16px] sm:text-[18px] pointer-events-none">
+                    expand_more
+                  </span>
+                </div>
+              </div>
             </div>
 
-            {/* Mobile Filter Button + Sort Dropdown */}
-            <div className="flex items-center gap-2 sm:gap-3 justify-between md:justify-end shrink-0">
-              {/* Mobile Filter Trigger Button */}
-              <button
-                type="button"
-                onClick={() => setIsMobileFilterOpen(true)}
-                className="lg:hidden h-10 sm:h-12 px-3 sm:px-4 rounded-lg sm:rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center gap-1.5 sm:gap-2 shadow-xs cursor-pointer active:scale-95 transition-all"
-              >
-                <span className="material-symbols-outlined text-[16px] sm:text-[18px] text-blue-600">tune</span>
-                <span>Filters</span>
-                {activeFiltersCount > 0 && (
-                  <span className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-blue-600 text-white text-[9px] sm:text-[10px] font-black flex items-center justify-center">
-                    {activeFiltersCount}
+            {/* Active Filter Chips / Removable Pills if active filters exist */}
+            {activeFiltersCount > 0 && (
+              <div className="flex items-center gap-1.5 flex-wrap pt-1 text-xs">
+                <span className="text-[11px] text-slate-400 font-semibold mr-1">Active:</span>
+
+                {searchQuery && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[11px] font-medium">
+                    <span>Search: "{searchQuery}"</span>
+                    <button
+                      type="button"
+                      onClick={() => setSearchQuery('')}
+                      className="hover:text-red-500 cursor-pointer ml-1"
+                    >
+                      ✕
+                    </button>
                   </span>
                 )}
-              </button>
 
-              {/* Sort By Dropdown */}
-              <div className="relative flex-1 md:flex-none w-full md:w-[280px]">
-                <span className="material-symbols-outlined absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[16px] sm:text-[18px] pointer-events-none">
-                  sort
-                </span>
-                <select
-                  value={sortBy}
-                  onChange={(e: any) => {
-                    setSortBy(e.target.value);
-                    setCurrentPage(1);
-                  }}
-                  className="w-full h-10 sm:h-12 pl-8 sm:pl-10 pr-8 sm:pr-10 rounded-lg sm:rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm font-semibold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 shadow-xs transition-all appearance-none cursor-pointer"
+                {selectedCountries.map((c) => (
+                  <span
+                    key={c}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-950/70 text-blue-700 dark:text-blue-300 text-[11px] font-medium"
+                  >
+                    <span>{c}</span>
+                    <button
+                      type="button"
+                      onClick={() => toggleCountry(c)}
+                      className="hover:text-red-500 cursor-pointer ml-1"
+                    >
+                      ✕
+                    </button>
+                  </span>
+                ))}
+
+                {selectedLevels.map((lvl) => (
+                  <span
+                    key={lvl}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-purple-50 dark:bg-purple-950/70 text-purple-700 dark:text-purple-300 text-[11px] font-medium"
+                  >
+                    <span className="capitalize">{lvl}</span>
+                    <button
+                      type="button"
+                      onClick={() => toggleLevel(lvl)}
+                      className="hover:text-red-500 cursor-pointer ml-1"
+                    >
+                      ✕
+                    </button>
+                  </span>
+                ))}
+
+                {selectedTypes.map((t) => (
+                  <span
+                    key={t}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 text-[11px] font-medium"
+                  >
+                    <span className="capitalize">{t}</span>
+                    <button
+                      type="button"
+                      onClick={() => toggleType(t)}
+                      className="hover:text-red-500 cursor-pointer ml-1"
+                    >
+                      ✕
+                    </button>
+                  </span>
+                ))}
+
+                {selectedRankTiers.map((tier) => (
+                  <span
+                    key={tier}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-950/70 text-amber-800 dark:text-amber-300 text-[11px] font-medium"
+                  >
+                    <span>{tier.replace('top', 'Top ')} QS</span>
+                    <button
+                      type="button"
+                      onClick={() => toggleRankTier(tier)}
+                      className="hover:text-red-500 cursor-pointer ml-1"
+                    >
+                      ✕
+                    </button>
+                  </span>
+                ))}
+
+                {selectedTuitions.map((t) => (
+                  <span
+                    key={t}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-sky-50 dark:bg-sky-950/70 text-sky-700 dark:text-sky-300 text-[11px] font-medium"
+                  >
+                    <span>Fee: {t}</span>
+                    <button
+                      type="button"
+                      onClick={() => toggleTuition(t)}
+                      className="hover:text-red-500 cursor-pointer ml-1"
+                    >
+                      ✕
+                    </button>
+                  </span>
+                ))}
+
+                {selectedIelts.map((val) => (
+                  <span
+                    key={val}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-950/70 text-amber-800 dark:text-amber-300 text-[11px] font-medium"
+                  >
+                    <span>IELTS: {val === 'waiver' ? 'Waiver' : val}</span>
+                    <button
+                      type="button"
+                      onClick={() => toggleIelts(val)}
+                      className="hover:text-red-500 cursor-pointer ml-1"
+                    >
+                      ✕
+                    </button>
+                  </span>
+                ))}
+
+                {scholarshipOnly && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-green-50 dark:bg-green-950/70 text-green-700 dark:text-green-300 text-[11px] font-medium">
+                    <span>Scholarships Only</span>
+                    <button
+                      type="button"
+                      onClick={() => setScholarshipOnly(false)}
+                      className="hover:text-red-500 cursor-pointer ml-1"
+                    >
+                      ✕
+                    </button>
+                  </span>
+                )}
+
+                <button
+                  type="button"
+                  onClick={resetAllFilters}
+                  className="text-[11px] font-bold text-red-600 dark:text-red-400 hover:underline cursor-pointer ml-auto"
                 >
-                  <option value="recommended">Sort: Recommended</option>
-                  <option value="qs">Sort: QS World Ranking</option>
-                  <option value="acceptance-high-low">Sort: Acceptance Rate (High to Low)</option>
-                  <option value="fee-asc">Sort: Tuition (Low to High)</option>
-                  <option value="fee-desc">Sort: Tuition (High to Low)</option>
-                  <option value="established">Sort: Established Year</option>
-                </select>
-                <span className="material-symbols-outlined absolute right-2.5 sm:right-3 top-1/2 -translate-y-1/2 text-slate-400 text-[16px] sm:text-[18px] pointer-events-none">
-                  expand_more
+                  Clear All
+                </button>
+              </div>
+            )}
+
+            {/* Divider Matching Screenshot image_f5dc19b1.png */}
+            <div className="border-t border-slate-100 dark:border-slate-800"></div>
+
+            {/* Bottom Row: University Count on Left + Page Info with Pagination Chevrons on Right */}
+            <div className="flex items-center justify-between gap-3 flex-wrap">
+              <div className="flex items-baseline gap-2">
+                <span className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                  {displayMode === 'wishlist' ? effectiveUnis.length : filteredUnis.length}
                 </span>
+                <span className="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300">
+                  {displayMode === 'wishlist'
+                    ? (effectiveUnis.length === 1 ? 'Saved University Found' : 'Saved Universities Found')
+                    : (filteredUnis.length === 1 ? 'University Found' : 'Universities Found')}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2.5 sm:gap-3 text-xs sm:text-sm font-medium text-slate-500 dark:text-slate-400">
+                <span>Page {currentPage} of {totalPages}</span>
+                <div className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    disabled={currentPage === 1}
+                    onClick={() => {
+                      setCurrentPage((p) => Math.max(1, p - 1));
+                      window.scrollTo({ top: 300, behavior: 'smooth' });
+                    }}
+                    aria-label="Previous Page"
+                    className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-2xs cursor-pointer active:scale-95"
+                  >
+                    <span className="material-symbols-outlined text-[16px] sm:text-[18px]">chevron_left</span>
+                  </button>
+                  <button
+                    type="button"
+                    disabled={currentPage === totalPages}
+                    onClick={() => {
+                      setCurrentPage((p) => Math.min(totalPages, p + 1));
+                      window.scrollTo({ top: 300, behavior: 'smooth' });
+                    }}
+                    aria-label="Next Page"
+                    className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-2xs cursor-pointer active:scale-95"
+                  >
+                    <span className="material-symbols-outlined text-[16px] sm:text-[18px]">chevron_right</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -1704,167 +1998,67 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
 
             {/* RIGHT CONTENT AREA: Results Bar, Grid & Pagination */}
             <div className="lg:col-span-3 space-y-3 sm:space-y-6">
-              {/* Results bar header */}
-              <div className="bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl border border-slate-200/90 dark:border-slate-800 p-3 xs:p-4 space-y-2.5 sm:space-y-3 shadow-xs">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                      {filteredUnis.length} {filteredUnis.length === 1 ? 'University' : 'Universities'} Found
-                    </span>
-                  </div>
-                  <div className="text-xs text-slate-400 font-medium flex items-center gap-3 justify-between sm:justify-end">
-                    <span>Page {currentPage} of {totalPages}</span>
+            {/* INTERACTIVE GLOBAL PARTNER UNIVERSITY MAP */}
+            {displayMode === 'map' && (
+              <div className="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 p-3 sm:p-5 shadow-xs space-y-3">
+                <div className="flex items-center justify-between gap-3 flex-wrap">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-2xl bg-amber-500/10 text-amber-500 border border-amber-500/20 flex items-center justify-center shrink-0">
+                      <span className="material-symbols-outlined text-xl">map</span>
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-extrabold text-xs sm:text-sm text-slate-900 dark:text-white uppercase tracking-wider">
+                          Interactive Global Partner Map
+                        </h3>
+                        <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 text-[10px] font-black uppercase">
+                          {filteredUnis.length} Partner Universities
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:block">
+                        Explore verified partner campus locations automatically updated with your search & filter criteria.
+                      </p>
+                    </div>
                   </div>
                 </div>
 
-                {/* Active Filter Chips / Removable Pills */}
-                {activeFiltersCount > 0 && (
-                  <div className="flex items-center gap-1.5 flex-wrap pt-2 border-t border-slate-100 dark:border-slate-800 text-xs">
-                    <span className="text-[11px] text-slate-400 font-semibold mr-1">Active:</span>
-
-                    {searchQuery && (
-                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[11px] font-medium">
-                        <span>Search: "{searchQuery}"</span>
-                        <button
-                          type="button"
-                          onClick={() => setSearchQuery('')}
-                          className="hover:text-red-500 cursor-pointer ml-1"
-                        >
-                          ✕
-                        </button>
-                      </span>
-                    )}
-
-                    {selectedCountries.map((c) => (
-                      <span
-                        key={c}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-950/70 text-blue-700 dark:text-blue-300 text-[11px] font-medium"
-                      >
-                        <span>{c}</span>
-                        <button
-                          type="button"
-                          onClick={() => toggleCountry(c)}
-                          className="hover:text-red-500 cursor-pointer ml-1"
-                        >
-                          ✕
-                        </button>
-                      </span>
-                    ))}
-
-                    {selectedLevels.map((lvl) => (
-                      <span
-                        key={lvl}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-purple-50 dark:bg-purple-950/70 text-purple-700 dark:text-purple-300 text-[11px] font-medium"
-                      >
-                        <span className="capitalize">{lvl}</span>
-                        <button
-                          type="button"
-                          onClick={() => toggleLevel(lvl)}
-                          className="hover:text-red-500 cursor-pointer ml-1"
-                        >
-                          ✕
-                        </button>
-                      </span>
-                    ))}
-
-                    {selectedTypes.map((t) => (
-                      <span
-                        key={t}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 text-[11px] font-medium"
-                      >
-                        <span className="capitalize">{t}</span>
-                        <button
-                          type="button"
-                          onClick={() => toggleType(t)}
-                          className="hover:text-red-500 cursor-pointer ml-1"
-                        >
-                          ✕
-                        </button>
-                      </span>
-                    ))}
-
-                    {selectedRankTiers.map((tier) => (
-                      <span
-                        key={tier}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-950/70 text-amber-800 dark:text-amber-300 text-[11px] font-medium"
-                      >
-                        <span>{tier.replace('top', 'Top ')} QS</span>
-                        <button
-                          type="button"
-                          onClick={() => toggleRankTier(tier)}
-                          className="hover:text-red-500 cursor-pointer ml-1"
-                        >
-                          ✕
-                        </button>
-                      </span>
-                    ))}
-
-                    {selectedTuitions.map((t) => (
-                      <span
-                        key={t}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-sky-50 dark:bg-sky-950/70 text-sky-700 dark:text-sky-300 text-[11px] font-medium"
-                      >
-                        <span>Fee: {t}</span>
-                        <button
-                          type="button"
-                          onClick={() => toggleTuition(t)}
-                          className="hover:text-red-500 cursor-pointer ml-1"
-                        >
-                          ✕
-                        </button>
-                      </span>
-                    ))}
-
-                    {selectedIelts.map((val) => (
-                      <span
-                        key={val}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-950/70 text-amber-800 dark:text-amber-300 text-[11px] font-medium"
-                      >
-                        <span>IELTS: {val === 'waiver' ? 'Waiver' : val}</span>
-                        <button
-                          type="button"
-                          onClick={() => toggleIelts(val)}
-                          className="hover:text-red-500 cursor-pointer ml-1"
-                        >
-                          ✕
-                        </button>
-                      </span>
-                    ))}
-
-                    {scholarshipOnly && (
-                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-green-50 dark:bg-green-950/70 text-green-700 dark:text-green-300 text-[11px] font-medium">
-                        <span>Scholarships Only</span>
-                        <button
-                          type="button"
-                          onClick={() => setScholarshipOnly(false)}
-                          className="hover:text-red-500 cursor-pointer ml-1"
-                        >
-                          ✕
-                        </button>
-                      </span>
-                    )}
-
-                    <button
-                      type="button"
-                      onClick={resetAllFilters}
-                      className="text-[11px] font-bold text-red-600 dark:text-red-400 hover:underline cursor-pointer ml-auto"
-                    >
-                      Clear All
-                    </button>
-                  </div>
-                )}
+                <div className="pt-1">
+                  <UniversityMap
+                    universities={filteredUnis}
+                    allCourses={mockCourses}
+                    onNavigateToUni={(slug) => setSelectedUniSlug(slug)}
+                    onResetFilters={resetAllFilters}
+                  />
+                </div>
               </div>
+            )}
 
-              {/* Universities Grid with Skeleton Screens */}
-              {isLoading ? (
-                <SkeletonLoader type="university" count={6} />
-              ) : filteredUnis.length === 0 ? (
-                <div className="text-center py-16 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-8 shadow-xs">
-                  <span className="material-symbols-outlined text-4xl text-slate-400 mb-2">school</span>
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white">No partner universities found</h3>
-                  <p className="text-sm text-slate-500 max-w-md mx-auto mt-1 mb-5">
-                    No collaborated universities found matching your active filter criteria. Try searching with another term or reset your filters.
-                  </p>
+            {/* Universities Listing with Skeleton Screens - List or Grid View */}
+            {isLoading ? (
+              <SkeletonLoader type="university" count={6} />
+            ) : effectiveUnis.length === 0 ? (
+              <div className="text-center py-16 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-8 shadow-xs">
+                <span className="material-symbols-outlined text-4xl text-slate-400 mb-2">
+                  {displayMode === 'wishlist' ? 'bookmark_border' : 'school'}
+                </span>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                  {displayMode === 'wishlist' ? 'Your Saved Universities Wishlist is Empty' : 'No partner universities found'}
+                </h3>
+                <p className="text-sm text-slate-500 max-w-md mx-auto mt-1 mb-5">
+                  {displayMode === 'wishlist'
+                    ? 'You have not saved any partner universities to your wishlist yet. Tap the bookmark icon on any university card or list item to save it here.'
+                    : 'No collaborated universities found matching your active filter criteria. Try searching with another term or reset your filters.'}
+                </p>
+                {displayMode === 'wishlist' ? (
+                  <button
+                    type="button"
+                    onClick={() => setDisplayMode('grid')}
+                    className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition-all cursor-pointer shadow-xs active:scale-95"
+                  >
+                    <span className="material-symbols-outlined text-sm">grid_view</span>
+                    <span>Browse All Universities</span>
+                  </button>
+                ) : (
                   <button
                     type="button"
                     onClick={resetAllFilters}
@@ -1873,111 +2067,315 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
                     <span className="material-symbols-outlined text-sm">refresh</span>
                     <span>Reset All Filters</span>
                   </button>
-                </div>
-              ) : (
-                <>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-                    {paginatedUnis.map((uni) => (
-                      <article
-                        key={uni.id}
-                        className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between group"
-                      >
-                        <div onClick={() => setSelectedUniSlug(uni.slug)} className="cursor-pointer">
-                          {/* Card Banner */}
-                          <div className="relative h-44 w-full overflow-hidden bg-slate-900">
+                )}
+              </div>
+            ) : (
+              <>
+                {displayMode === 'list' ? (
+                  <div className="space-y-4">
+                    {paginatedUnis.map((uni) => {
+                      const isSaved = isUniSaved(uni.id);
+                      const isBouncing = bouncingUniId === uni.id;
+
+                      return (
+                        <article
+                          key={`list-${uni.id}`}
+                          className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col md:flex-row items-stretch group"
+                        >
+                          {/* Banner / Image */}
+                          <div
+                            onClick={() => setSelectedUniSlug(uni.slug)}
+                            className="relative w-full md:w-64 lg:w-72 h-44 md:h-auto shrink-0 overflow-hidden bg-slate-900 cursor-pointer"
+                          >
                             <img
                               src={uni.bannerUrl}
                               alt={uni.name}
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent"></div>
+                            <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-slate-950/85 via-slate-950/30 to-transparent"></div>
+
+                            {/* Top Badges */}
                             <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2">
                               <span className="px-2.5 py-1 rounded-full bg-slate-950/70 backdrop-blur-md border border-white/20 text-white text-[11px] font-extrabold shadow-md">
                                 {uni.country}
                               </span>
-                              {uni.qsRank2027 ? (
-                                <span className="px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[10.5px] font-black shadow-xs flex items-center gap-1">
-                                  <span>QS 2027:</span>
-                                  <span>#{uni.qsRank2027}</span>
-                                </span>
-                              ) : (
-                                <span className="px-2 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-white text-[10px] font-bold">
-                                  {uni.type || 'University'}
-                                </span>
-                              )}
+                              <div className="flex items-center gap-1.5">
+                                {uni.qsRank2027 ? (
+                                  <span className="px-2 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[10px] font-black shadow-xs flex items-center gap-1">
+                                    <span>QS:</span>
+                                    <span>#{uni.qsRank2027}</span>
+                                  </span>
+                                ) : (
+                                  <span className="px-2 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-white text-[10px] font-bold">
+                                    {uni.type || 'University'}
+                                  </span>
+                                )}
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    toggleSaveUni(uni.id);
+                                  }}
+                                  aria-label={isSaved ? `Remove ${uni.name} from saved` : `Save ${uni.name}`}
+                                  title={isSaved ? "Saved in Wishlist" : "Save to Wishlist"}
+                                  className={`w-7 h-7 rounded-full flex items-center justify-center transition-all cursor-pointer backdrop-blur-md shadow-md ${
+                                    isSaved
+                                      ? 'bg-[#fbb034] text-slate-950 ring-2 ring-white/60'
+                                      : 'bg-slate-950/60 hover:bg-slate-950/90 text-white hover:text-[#fbb034] border border-white/25'
+                                  } ${isBouncing ? 'animate-wishlist-bounce' : 'active:scale-90 hover:scale-105'}`}
+                                >
+                                  <span className="material-symbols-outlined text-[15px]">
+                                    {isSaved ? 'bookmark' : 'bookmark_border'}
+                                  </span>
+                                </button>
+                              </div>
                             </div>
+
+                            {/* City Location */}
                             <div className="absolute bottom-3 left-3 right-3 text-white">
                               <span className="text-[10px] uppercase font-bold text-amber-300">
-                                {uni.city}{uni.state ? `, ${uni.state}` : ''}, {uni.country}
+                                {uni.city}{uni.state ? `, ${uni.state}` : ''}
                               </span>
-                              <h3 className="text-base font-bold leading-snug line-clamp-1">{uni.name}</h3>
                             </div>
                           </div>
 
-                          {/* Card Content */}
-                          <div className="p-5 space-y-3">
-                            {/* Meta: Type & Established Year */}
-                            <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-                              <span className="font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1">
-                                <span className="material-symbols-outlined text-[14px] text-blue-600">account_balance</span>
-                                <span className="truncate max-w-[150px]">{uni.type || 'University'}</span>
-                              </span>
-                              {uni.established && (
-                                <span className="font-medium text-slate-500">Est. {uni.established}</span>
-                              )}
-                            </div>
-
-                            {/* Available Programs Chips */}
-                            <div className="space-y-1">
-                              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">
-                                Available Programs:
-                              </span>
-                              <div className="flex flex-wrap gap-1">
-                                {uni.popularPrograms.slice(0, 3).map((prog, idx) => (
-                                  <span
-                                    key={idx}
-                                    className="px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-[11px] font-medium text-slate-700 dark:text-slate-300 truncate max-w-[210px]"
-                                  >
-                                    {prog}
+                          {/* Center Details */}
+                          <div className="flex-1 p-4 sm:p-5 flex flex-col justify-between space-y-3">
+                            <div className="space-y-1.5">
+                              <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 flex-wrap">
+                                <span className="font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1">
+                                  <span className="material-symbols-outlined text-[14px] text-blue-600">account_balance</span>
+                                  <span>{uni.type || 'University'}</span>
+                                </span>
+                                {uni.established && (
+                                  <span>• Est. {uni.established}</span>
+                                )}
+                                {uni.acceptanceRatePct && (
+                                  <span className="px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 text-[10px] font-bold">
+                                    {uni.acceptanceRatePct}% Acceptance
                                   </span>
-                                ))}
+                                )}
+                              </div>
+
+                              <h3
+                                onClick={() => setSelectedUniSlug(uni.slug)}
+                                className="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-snug hover:text-blue-600 cursor-pointer transition-colors"
+                              >
+                                {uni.name}
+                              </h3>
+
+                              <div className="pt-1 space-y-1">
+                                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">
+                                  Available Programs:
+                                </span>
+                                <div className="flex flex-wrap gap-1.5">
+                                  {uni.popularPrograms.slice(0, 4).map((prog, idx) => (
+                                    <span
+                                      key={idx}
+                                      className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-[11px] font-medium text-slate-700 dark:text-slate-300"
+                                    >
+                                      {prog}
+                                    </span>
+                                  ))}
+                                </div>
                               </div>
                             </div>
 
-                            {/* Tuition & Website Action */}
-                            <div className="grid grid-cols-1 gap-2 text-xs pt-2 border-t border-slate-100 dark:border-slate-800 items-center">
-                              <div>
-                                <span className="text-[10px] text-slate-400 uppercase font-bold block">Avg Tuition</span>
-                                <strong className="text-slate-900 dark:text-white">{formatUSD(uni.avgTuitionAnnualUSD)} / yr</strong>
+                            {uni.scholarshipsAvailable && (
+                              <div className="flex items-center gap-1 text-[11px] font-bold text-amber-700 dark:text-amber-400">
+                                <span className="material-symbols-outlined text-[14px]">verified</span>
+                                <span>Scholarships Available for International Students</span>
                               </div>
+                            )}
+                          </div>
 
+                          {/* Right Side: Fee & Actions */}
+                          <div className="w-full md:w-56 p-4 sm:p-5 bg-slate-50/70 dark:bg-slate-800/40 border-t md:border-t-0 md:border-l border-slate-100 dark:border-slate-800 flex flex-col justify-between shrink-0 space-y-3">
+                            <div>
+                              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+                                AVG ANNUAL TUITION
+                              </span>
+                              <div className="text-base sm:text-lg font-black text-slate-900 dark:text-white mt-0.5">
+                                {formatUSD(uni.avgTuitionAnnualUSD)} / yr
+                              </div>
+                            </div>
+
+                            <div className="space-y-2">
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onApply(uni.name);
+                                }}
+                                className="w-full py-2.5 rounded-full bg-red-600 hover:bg-red-700 text-white font-bold text-xs sm:text-sm transition-all cursor-pointer text-center active:scale-95 shadow-xs"
+                              >
+                                Apply Now
+                              </button>
+                              <div className="grid grid-cols-2 gap-2">
+                                <button
+                                  type="button"
+                                  onClick={() => setSelectedUniSlug(uni.slug)}
+                                  className="py-2 px-2.5 rounded-full text-xs font-semibold transition-all cursor-pointer border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-50 text-center"
+                                >
+                                  Details
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    toggleSaveUni(uni.id);
+                                  }}
+                                  aria-label={isSaved ? "Saved" : "Save"}
+                                  className={`py-2 px-2.5 rounded-full text-xs font-semibold transition-all cursor-pointer border flex items-center justify-center gap-1 ${
+                                    isSaved
+                                      ? 'bg-amber-100 dark:bg-amber-950/70 border-amber-300 text-amber-900 dark:text-amber-300 font-bold'
+                                      : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50'
+                                  }`}
+                                >
+                                  <span className={`material-symbols-outlined text-[14px] ${isSaved ? 'text-[#fbb034]' : 'text-slate-400'}`}>
+                                    {isSaved ? 'bookmark_added' : 'bookmark_add'}
+                                  </span>
+                                  <span>{isSaved ? 'Saved' : 'Save'}</span>
+                                </button>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                        <div className="p-5 pt-0 flex items-center gap-3">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onApply(uni.name);
-                            }}
-                            className="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs transition-colors cursor-pointer"
-                          >
-                            Apply Now
-                          </button>
-                          <div className="flex items-center text-red-600 font-bold text-xs cursor-pointer hover:underline group-hover:text-red-700">
-                            <span>View Details</span>
-                            <span className="material-symbols-outlined text-[16px]">chevron_right</span>
-                          </div>
-                        </div>
-                      </article>
-                    ))}
+                        </article>
+                      );
+                    })}
                   </div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                    {paginatedUnis.map((uni) => {
+                      const isSaved = isUniSaved(uni.id);
+                      const isBouncing = bouncingUniId === uni.id;
 
-                  {/* Numbered Pagination Bar */}
-                  {filteredUnis.length > ITEMS_PER_PAGE && (
+                      return (
+                        <article
+                          key={uni.id}
+                          className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between group"
+                        >
+                          <div onClick={() => setSelectedUniSlug(uni.slug)} className="cursor-pointer">
+                            {/* Card Banner */}
+                            <div className="relative h-44 w-full overflow-hidden bg-slate-900">
+                              <img
+                                src={uni.bannerUrl}
+                                alt={uni.name}
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                              />
+                              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent"></div>
+                              <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2">
+                                <span className="px-2.5 py-1 rounded-full bg-slate-950/70 backdrop-blur-md border border-white/20 text-white text-[11px] font-extrabold shadow-md">
+                                  {uni.country}
+                                </span>
+                                <div className="flex items-center gap-1.5">
+                                  {uni.qsRank2027 ? (
+                                    <span className="px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[10.5px] font-black shadow-xs flex items-center gap-1">
+                                      <span>QS 2027:</span>
+                                      <span>#{uni.qsRank2027}</span>
+                                    </span>
+                                  ) : (
+                                    <span className="px-2 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-white text-[10px] font-bold">
+                                      {uni.type || 'University'}
+                                    </span>
+                                  )}
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      toggleSaveUni(uni.id);
+                                    }}
+                                    aria-label={isSaved ? `Remove ${uni.name} from saved` : `Save ${uni.name}`}
+                                    title={isSaved ? "Saved in Wishlist" : "Save to Wishlist"}
+                                    className={`w-7 h-7 rounded-full flex items-center justify-center transition-all cursor-pointer backdrop-blur-md shadow-md ${
+                                      isSaved
+                                        ? 'bg-[#fbb034] text-slate-950 ring-2 ring-white/60'
+                                        : 'bg-slate-950/60 hover:bg-slate-950/90 text-white hover:text-[#fbb034] border border-white/25'
+                                    } ${isBouncing ? 'animate-wishlist-bounce' : 'active:scale-90 hover:scale-105'}`}
+                                  >
+                                    <span className="material-symbols-outlined text-[15px]">
+                                      {isSaved ? 'bookmark' : 'bookmark_border'}
+                                    </span>
+                                  </button>
+                                </div>
+                              </div>
+                              <div className="absolute bottom-3 left-3 right-3 text-white">
+                                <span className="text-[10px] uppercase font-bold text-amber-300">
+                                  {uni.city}{uni.state ? `, ${uni.state}` : ''}, {uni.country}
+                                </span>
+                                <h3 className="text-base font-bold leading-snug line-clamp-1">{uni.name}</h3>
+                              </div>
+                            </div>
+
+                            {/* Card Content */}
+                            <div className="p-5 space-y-3">
+                              {/* Meta: Type & Established Year */}
+                              <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                                <span className="font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1">
+                                  <span className="material-symbols-outlined text-[14px] text-blue-600">account_balance</span>
+                                  <span className="truncate max-w-[150px]">{uni.type || 'University'}</span>
+                                </span>
+                                {uni.established && (
+                                  <span className="font-medium text-slate-500">Est. {uni.established}</span>
+                                )}
+                              </div>
+
+                              {/* Available Programs Chips */}
+                              <div className="space-y-1">
+                                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">
+                                  Available Programs:
+                                </span>
+                                <div className="flex flex-wrap gap-1">
+                                  {uni.popularPrograms.slice(0, 3).map((prog, idx) => (
+                                    <span
+                                      key={idx}
+                                      className="px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-[11px] font-medium text-slate-700 dark:text-slate-300 truncate max-w-[210px]"
+                                    >
+                                      {prog}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+
+                              {/* Tuition & Website Action */}
+                              <div className="grid grid-cols-1 gap-2 text-xs pt-2 border-t border-slate-100 dark:border-slate-800 items-center">
+                                <div>
+                                  <span className="text-[10px] text-slate-400 uppercase font-bold block">Avg Tuition</span>
+                                  <strong className="text-slate-900 dark:text-white">{formatUSD(uni.avgTuitionAnnualUSD)} / yr</strong>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="p-5 pt-0 flex items-center gap-3">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onApply(uni.name);
+                              }}
+                              className="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs transition-colors cursor-pointer"
+                            >
+                              Apply Now
+                            </button>
+                            <div className="flex items-center text-red-600 font-bold text-xs cursor-pointer hover:underline group-hover:text-red-700">
+                              <span>View Details</span>
+                              <span className="material-symbols-outlined text-[16px]">chevron_right</span>
+                            </div>
+                          </div>
+                        </article>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* Numbered Pagination Bar */}
+                {effectiveUnis.length > ITEMS_PER_PAGE && (
+                  <div className="mt-8 space-y-3 text-center">
+                    <span className="text-xs text-slate-500 dark:text-slate-400 font-medium block">
+                      Showing {startIndex}–{endIndex} of {effectiveUnis.length} universities
+                    </span>
                     <nav
                       aria-label="University Directory Pagination"
-                      className="mt-10 flex items-center justify-center gap-1.5 sm:gap-2 select-none flex-wrap"
+                      className="flex items-center justify-center gap-1.5 sm:gap-2 select-none flex-wrap"
                     >
                       {/* Previous Button */}
                       <button
@@ -2045,9 +2443,10 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
                         <span className="material-symbols-outlined text-[18px]">chevron_right</span>
                       </button>
                     </nav>
-                  )}
-                </>
-              )}
+                  </div>
+                )}
+              </>
+            )}
             </div>
           </div>
 

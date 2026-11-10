@@ -137,7 +137,7 @@ export const PartnersMarqueeSection: React.FC<PartnersMarqueeSectionProps> = ({ 
           type="button"
           text="View all university partners"
           onClick={() => onNavigate?.('universities')}
-          className="min-h-[44px] px-6 sm:px-8 py-3 sm:py-3.5 rounded-full bg-white dark:bg-slate-900 text-slate-950 dark:text-white border-slate-300 dark:border-slate-700 font-semibold text-sm sm:text-base shadow-xs cursor-pointer active:scale-95"
+          className="min-h-[44px] w-full sm:w-auto px-6 sm:px-8 py-3.5 rounded-full border-slate-300 dark:border-slate-700 text-sm font-bold text-slate-900 dark:text-white bg-white dark:bg-slate-900 shadow-xs cursor-pointer"
         />
       </div>
     </section>

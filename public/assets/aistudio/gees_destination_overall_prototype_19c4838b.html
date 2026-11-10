@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f7f8fb" />
+  <title>GEES | Destination Experience</title>
+  <style>
+    :root {
+      --ink: #111a2e;
+      --muted: #68748a;
+      --line: #e4e8ef;
+      --canvas: #f7f8fb;
+      --orange: #ffb52e;
+      --orange-soft: #fff1d3;
+      --white: #fff;
+      --shadow: 0 16px 38px rgba(16, 24, 45, .11);
+      --card-radius: 23px;
+      --page-width: 1320px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--canvas);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    button { font: inherit; }
+    button:focus-visible, a:focus-visible { outline: 3px solid rgba(255,181,46,.8); outline-offset: 3px; }
+
+    .page-shell { width: min(calc(100% - 64px), var(--page-width)); margin: 0 auto; padding: 64px 0 86px; }
+    .section-header { max-width: 760px; margin: 0 auto; text-align: center; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 17px; color: #7b879b; font-size: 10px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; }
+    .eyebrow::before, .eyebrow::after { content: ""; width: 23px; height: 1px; background: #cbd2df; }
+    h1 { margin: 0; font-size: clamp(42px, 5vw, 65px); line-height: 1.05; letter-spacing: -.06em; font-weight: 850; }
+    h1 .highlight { display: inline-block; margin-left: .07em; padding: .04em .2em .09em; border-radius: 12px; background: var(--orange); box-shadow: 0 4px 0 rgba(221,143,15,.12); }
+    .intro { max-width: 630px; margin: 18px auto 0; color: var(--muted); font-size: 15px; line-height: 1.75; }
+
+    .filter-wrap { display: flex; justify-content: center; margin: 31px auto 28px; }
+    .filters { display: flex; align-items: center; gap: 5px; max-width: 100%; padding: 6px; border: 1px solid var(--line); border-radius: 999px; background: #eef1f5; box-shadow: inset 0 1px 2px rgba(16,24,45,.035); }
+    .filter-btn { flex: 0 0 auto; min-height: 41px; padding: 0 20px; border: 0; border-radius: 999px; color: #59657b; background: transparent; font-size: 13px; font-weight: 750; cursor: pointer; transition: color .2s ease, background .2s ease, box-shadow .2s ease, transform .2s ease; }
+    .filter-btn:hover { color: var(--ink); transform: translateY(-1px); }
+    .filter-btn[aria-pressed="true"] { color: #fff; background: var(--ink); box-shadow: 0 4px 10px rgba(17,26,46,.17); }
+
+    .content-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 0 0 17px; }
+    .result-count { color: #78849a; font-size: 12px; font-weight: 650; }
+    .result-count strong { color: var(--ink); }
+    .view-toggle { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 15px; border: 1px solid #dfe4ec; border-radius: 999px; color: var(--ink); background: #fff; font-size: 12px; font-weight: 800; cursor: pointer; box-shadow: 0 3px 10px rgba(16,24,45,.035); transition: border-color .2s ease, background .2s ease, transform .2s ease; }
+    .view-toggle:hover { border-color: #f0b13e; background: #fffaf0; transform: translateY(-1px); }
+    .toggle-icon { display: inline-grid; width: 18px; height: 18px; place-items: center; color: #a36b08; font-size: 16px; line-height: 1; }
+
+    .carousel-shell { position: relative; }
+    .carousel-viewport { overflow: hidden; width: 100%; padding: 4px 2px 20px; touch-action: pan-y; }
+    .carousel-track { display: flex; width: max-content; gap: 22px; will-change: transform; animation: marquee 48s linear infinite; }
+    .carousel-shell:hover .carousel-track, .carousel-shell:focus-within .carousel-track, .carousel-shell.is-dragging .carousel-track { animation-play-state: paused; }
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    .destination-card { position: relative; isolation: isolate; display: flex; flex: 0 0 330px; width: 330px; min-height: 420px; overflow: hidden; border: 1px solid rgba(255,255,255,.8); border-radius: var(--card-radius); color: #fff; text-decoration: none; background: #253149; box-shadow: var(--shadow); transition: transform .28s ease, box-shadow .28s ease; }
+    .destination-card:hover { transform: translateY(-5px); box-shadow: 0 23px 44px rgba(16,24,45,.17); }
+    .card-image { position: absolute; z-index: -2; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .7s cubic-bezier(.2,.7,.2,1); }
+    .destination-card:hover .card-image { transform: scale(1.055); }
+    .card-overlay { position: absolute; z-index: -1; inset: 0; background: linear-gradient(180deg, rgba(7,14,28,.02) 12%, rgba(7,14,28,.16) 43%, rgba(7,14,28,.88) 100%); }
+    .card-content { display: flex; flex: 1; flex-direction: column; justify-content: flex-end; padding: 27px; }
+    .card-title { margin: 0; color: #fff; font-size: 31px; line-height: 1.08; letter-spacing: -.045em; font-weight: 820; }
+    .card-bottom { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 17px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,.25); }
+    .card-subtitle { color: rgba(255,255,255,.86); font-size: 12px; font-weight: 600; }
+    .card-cta { display: inline-flex; align-items: center; gap: 7px; color: #ffd27c; font-size: 11px; font-weight: 850; white-space: nowrap; }
+    .card-cta span { font-size: 16px; transition: transform .2s ease; }
+    .destination-card:hover .card-cta span { transform: translateX(4px); }
+
+    .grid-view { display: none; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; padding: 4px 2px 8px; }
+    .grid-view .destination-card { width: 100%; min-width: 0; min-height: 400px; }
+    .grid-view.is-visible { display: grid; }
+    .carousel-shell.is-hidden { display: none; }
+    .empty-state { display: none; margin-top: 10px; padding: 46px 20px; border: 1px dashed #d4dbe6; border-radius: 20px; color: var(--muted); text-align: center; background: #fff; }
+    .empty-state.visible { display: block; }
+    .empty-state strong { display: block; margin-bottom: 7px; color: var(--ink); font-size: 17px; }
+    .section-note { margin: 14px 0 0; color: #8b95a7; font-size: 11px; text-align: center; }
+
+    .modal-backdrop { position: fixed; z-index: 20; inset: 0; display: none; align-items: center; justify-content: center; padding: 20px; background: rgba(9,15,29,.62); backdrop-filter: blur(8px); }
+    .modal-backdrop.open { display: flex; }
+    .modal { position: relative; width: min(100%, 460px); padding: 34px; border-radius: 23px; background: #fff; box-shadow: 0 24px 70px rgba(0,0,0,.25); animation: modal-in .22s ease-out; }
+    @keyframes modal-in { from { opacity: 0; transform: translateY(10px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    .modal-close { position: absolute; top: 13px; right: 13px; display: grid; width: 36px; height: 36px; place-items: center; border: 0; border-radius: 50%; color: #536078; background: #f0f2f6; font-size: 20px; cursor: pointer; }
+    .modal-kicker { margin: 0 0 9px; color: #a66e0b; font-size: 10px; font-weight: 850; letter-spacing: .15em; text-transform: uppercase; }
+    .modal h2 { margin: 0; font-size: 31px; letter-spacing: -.04em; }
+    .modal p { margin: 13px 0 23px; color: var(--muted); font-size: 14px; line-height: 1.65; }
+    .modal-action { min-height: 43px; padding: 0 19px; border: 0; border-radius: 999px; color: #111827; background: var(--orange); font-size: 13px; font-weight: 850; cursor: pointer; }
+
+    @media (max-width: 1050px) {
+      .page-shell { width: min(calc(100% - 48px), 900px); padding-top: 55px; }
+      .carousel-track { gap: 18px; animation-duration: 42s; }
+      .destination-card { flex-basis: 300px; width: 300px; min-height: 390px; }
+      .grid-view { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+      .grid-view .destination-card { min-height: 370px; }
+      .card-content { padding: 23px; }
+      .card-title { font-size: 28px; }
+    }
+    @media (max-width: 680px) {
+      .page-shell { width: min(calc(100% - 34px), 480px); padding: 45px 0 60px; }
+      .eyebrow { margin-bottom: 13px; font-size: 9px; }
+      h1 { font-size: clamp(35px, 9vw, 43px); line-height: 1.1; }
+      h1 .highlight { border-radius: 9px; }
+      .intro { max-width: 360px; margin-top: 13px; font-size: 13px; line-height: 1.65; }
+      .filter-wrap { justify-content: flex-start; margin: 23px -17px 21px; padding: 0 17px 3px; overflow-x: auto; scrollbar-width: none; }
+      .filter-wrap::-webkit-scrollbar { display: none; }
+      .filters { width: max-content; flex-wrap: nowrap; }
+      .filter-btn { min-height: 38px; padding: 0 15px; font-size: 12px; }
+      .content-toolbar { align-items: center; margin-bottom: 12px; }
+      .result-count { font-size: 11px; }
+      .view-toggle { min-height: 37px; padding: 0 12px; font-size: 11px; }
+      .carousel-viewport { overflow: hidden; margin-right: -17px; padding-right: 17px; }
+      .carousel-track { gap: 14px; animation-duration: 34s; }
+      .destination-card { flex-basis: min(78vw, 300px); width: min(78vw, 300px); min-height: 365px; border-radius: 20px; }
+      .card-content { padding: 21px; }
+      .card-title { font-size: 27px; }
+      .card-bottom { margin-top: 14px; padding-top: 13px; }
+      .card-subtitle { font-size: 11px; }
+      .grid-view { grid-template-columns: 1fr; gap: 15px; }
+      .grid-view .destination-card { min-height: 355px; }
+      .section-note { font-size: 10px; }
+      .modal { padding: 30px 23px 24px; }
+      .modal h2 { font-size: 27px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+      .carousel-track { animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page-shell">
+    <section aria-labelledby="destination-heading">
+      <header class="section-header">
+        <div class="eyebrow">Your next chapter starts here</div>
+        <h1 id="destination-heading">Choose your <span class="highlight">Destination</span></h1>
+        <p class="intro">Explore study destinations, discover new opportunities and find the right place to begin your international education journey.</p>
+      </header>
+
+      <nav class="filter-wrap" aria-label="Filter destinations by region">
+        <div class="filters" role="group" aria-label="Destination regions">
+          <button class="filter-btn" type="button" data-filter="all" aria-pressed="true">All</button>
+          <button class="filter-btn" type="button" data-filter="Europe" aria-pressed="false">Europe</button>
+          <button class="filter-btn" type="button" data-filter="Oceania" aria-pressed="false">Oceania</button>
+          <button class="filter-btn" type="button" data-filter="North America" aria-pressed="false">North America</button>
+          <button class="filter-btn" type="button" data-filter="Asia" aria-pressed="false">Asia</button>
+        </div>
+      </nav>
+
+      <div class="content-toolbar">
+        <div class="result-count" aria-live="polite">Showing <strong id="result-number">8</strong> destinations</div>
+        <button class="view-toggle" id="view-toggle" type="button" aria-pressed="false"><span class="toggle-icon" aria-hidden="true">▦</span><span id="toggle-label">Expand View</span></button>
+      </div>
+
+      <div class="carousel-shell" id="carousel-shell">
+        <div class="carousel-viewport" id="carousel-viewport" aria-label="Continuously scrolling destination cards">
+          <div class="carousel-track" id="carousel-track"></div>
+        </div>
+      </div>
+      <div class="grid-view" id="grid-view" aria-label="All destination cards"></div>
+      <div class="empty-state" id="empty-state"><strong>No destinations found</strong>There are currently no destinations in this region.</div>
+      <p class="section-note" id="section-note">Cards move automatically. Hover or focus to pause, or swipe on touch screens.</p>
+    </section>
+  </main>
+
+  <div class="modal-backdrop" id="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-description">
+    <div class="modal">
+      <button class="modal-close" id="modal-close" type="button" aria-label="Close dialog">&times;</button>
+      <p class="modal-kicker">Explore destination</p>
+      <h2 id="modal-title">Destination</h2>
+      <p id="modal-description"></p>
+      <button class="modal-action" id="modal-action" type="button">Close</button>
+    </div>
+  </div>
+
+  <script>
+    // Demonstration data only. Replace with the existing GEES destination records during integration.
+    const destinations = [
+      { country: 'Australia', region: 'Oceania', image: 'https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?auto=format&fit=crop&w=1000&q=85', alt: 'Sydney Harbour and the Opera House', description: 'Explore universities, vibrant student cities and a wide range of study pathways in Australia.' },
+      { country: 'United Kingdom', region: 'Europe', image: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=1000&q=85', alt: 'London city and River Thames', description: 'Discover established universities, diverse communities and globally recognised qualifications in the United Kingdom.' },
+      { country: 'Canada', region: 'North America', image: 'https://images.unsplash.com/photo-1517935706615-2717063c2225?auto=format&fit=crop&w=1000&q=85', alt: 'Toronto skyline beside Lake Ontario', description: 'Find a welcoming learning environment, multicultural cities and a broad choice of academic programmes in Canada.' },
+      { country: 'Malaysia', region: 'Asia', image: 'https://images.unsplash.com/photo-1596422846543-75c6fc197f07?auto=format&fit=crop&w=1000&q=85', alt: 'Kuala Lumpur skyline and Petronas Towers', description: 'Study in a multicultural environment with internationally recognised institutions and a wide range of programmes.' },
+      { country: 'New Zealand', region: 'Oceania', image: 'https://images.unsplash.com/photo-1469521669194-babb45599def?auto=format&fit=crop&w=1000&q=85', alt: 'Mountain lake landscape in New Zealand', description: 'Enjoy a welcoming study environment, natural landscapes and practical learning opportunities in New Zealand.' },
+      { country: 'Germany', region: 'Europe', image: 'https://images.unsplash.com/photo-1560969184-10fe8719e047?auto=format&fit=crop&w=1000&q=85', alt: 'Brandenburg Gate in Berlin', description: 'Explore a strong academic environment, research opportunities and a wide range of study options in Germany.' },
+      { country: 'Japan', region: 'Asia', image: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1000&q=85', alt: 'Traditional street in Kyoto, Japan', description: 'Discover a distinctive blend of innovation, culture and academic opportunities in Japan.' },
+      { country: 'South Korea', region: 'Asia', image: 'https://images.unsplash.com/photo-1538485399081-7c8a0c6c0b5c?auto=format&fit=crop&w=1000&q=85', alt: 'Seoul city street in South Korea', description: 'Explore a dynamic destination known for technology, culture and a growing range of international study programmes.' }
+    ];
+
+    const filterButtons = [...document.querySelectorAll('.filter-btn')];
+    const carouselShell = document.getElementById('carousel-shell');
+    const carouselTrack = document.getElementById('carousel-track');
+    const gridView = document.getElementById('grid-view');
+    const resultNumber = document.getElementById('result-number');
+    const emptyState = document.getElementById('empty-state');
+    const viewToggle = document.getElementById('view-toggle');
+    const toggleLabel = document.getElementById('toggle-label');
+    const sectionNote = document.getElementById('section-note');
+    const modalBackdrop = document.getElementById('modal-backdrop');
+    const modalTitle = document.getElementById('modal-title');
+    const modalDescription = document.getElementById('modal-description');
+    const closeModalButton = document.getElementById('modal-close');
+    const modalAction = document.getElementById('modal-action');
+    let selectedRegion = 'all';
+    let expanded = false;
+    let lastFocusedElement = null;
+    let suppressCardClick = false;
+
+    function createCard(destination) {
+      const card = document.createElement('a');
+      card.className = 'destination-card';
+      card.href = '#destination-details';
+      card.setAttribute('aria-label', `Explore ${destination.country}`);
+      card.dataset.country = destination.country;
+      card.innerHTML = `
+        <img class="card-image" src="${destination.image}" alt="${destination.alt}" loading="lazy" />
+        <span class="card-overlay" aria-hidden="true"></span>
+        <span class="card-content">
+          <span class="card-title">${destination.country}</span>
+          <span class="card-bottom"><span class="card-subtitle">Explore study options</span><span class="card-cta">Explore <span aria-hidden="true">&#8594;</span></span></span>
+        </span>`;
+      card.addEventListener('click', (event) => {
+        event.preventDefault();
+        if (suppressCardClick) { suppressCardClick = false; return; }
+        openModal(destination);
+      });
+      return card;
+    }
+
+    function filteredDestinations() {
+      return destinations.filter(item => selectedRegion === 'all' || item.region === selectedRegion);
+    }
+
+    function render() {
+      const items = filteredDestinations();
+      resultNumber.textContent = items.length;
+      emptyState.classList.toggle('visible', items.length === 0);
+      carouselShell.classList.toggle('is-hidden', expanded || items.length === 0);
+      gridView.classList.toggle('is-visible', expanded && items.length > 0);
+      viewToggle.disabled = items.length === 0;
+      viewToggle.setAttribute('aria-pressed', String(expanded));
+      toggleLabel.textContent = expanded ? 'Compact View' : 'Expand View';
+      viewToggle.querySelector('.toggle-icon').textContent = expanded ? '↗' : '▦';
+      sectionNote.textContent = expanded ? 'Showing all destinations in a responsive grid.' : 'Cards move automatically. Hover or focus to pause, or swipe on touch screens.';
+
+      carouselTrack.innerHTML = '';
+      gridView.innerHTML = '';
+      items.forEach(item => gridView.appendChild(createCard(item)));
+      // Duplicate the filtered sequence to create a seamless continuous marquee.
+      [...items, ...items].forEach(item => carouselTrack.appendChild(createCard(item)));
+      carouselTrack.style.animation = 'none';
+      void carouselTrack.offsetHeight;
+      carouselTrack.style.animation = '';
+
+      filterButtons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.filter === selectedRegion)));
+    }
+
+    filterButtons.forEach(button => button.addEventListener('click', () => {
+      selectedRegion = button.dataset.filter;
+      render();
+    }));
+
+    viewToggle.addEventListener('click', () => {
+      expanded = !expanded;
+      render();
+    });
+
+    // Pause and scrub the continuous marquee while the user swipes horizontally.
+    const carouselViewport = document.getElementById('carousel-viewport');
+    let pointerStartX = 0;
+    let pointerDown = false;
+    let startAnimationTime = 0;
+    let marqueeAnimation = null;
+    let draggedDistance = 0;
+
+    carouselViewport.addEventListener('pointerdown', (event) => {
+      if (expanded || event.pointerType === 'mouse') return;
+      pointerDown = true;
+      pointerStartX = event.clientX;
+      draggedDistance = 0;
+      marqueeAnimation = carouselTrack.getAnimations().find(animation => animation.effect);
+      if (marqueeAnimation) {
+        marqueeAnimation.pause();
+        startAnimationTime = Number(marqueeAnimation.currentTime) || 0;
+      }
+      carouselShell.classList.add('is-dragging');
+      carouselViewport.setPointerCapture(event.pointerId);
+    });
+
+    carouselViewport.addEventListener('pointermove', (event) => {
+      if (!pointerDown || !marqueeAnimation) return;
+      const deltaX = event.clientX - pointerStartX;
+      draggedDistance = Math.max(draggedDistance, Math.abs(deltaX));
+      const loopDistance = Math.max(1, carouselTrack.scrollWidth / 2);
+      const duration = Number(marqueeAnimation.effect.getTiming().duration) || 48000;
+      const timeAdjustment = (-deltaX / loopDistance) * duration;
+      marqueeAnimation.currentTime = Math.max(0, startAnimationTime + timeAdjustment);
+    });
+
+    function finishSwipe() {
+      if (!pointerDown) return;
+      pointerDown = false;
+      if (draggedDistance > 8) {
+        suppressCardClick = true;
+        window.setTimeout(() => { suppressCardClick = false; }, 350);
+      }
+      if (marqueeAnimation) marqueeAnimation.play();
+      marqueeAnimation = null;
+      carouselShell.classList.remove('is-dragging');
+    }
+    carouselViewport.addEventListener('pointerup', finishSwipe);
+    carouselViewport.addEventListener('pointercancel', finishSwipe);
+
+    function openModal(destination) {
+      lastFocusedElement = document.activeElement;
+      modalTitle.textContent = destination.country;
+      modalDescription.textContent = destination.description;
+      modalBackdrop.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      closeModalButton.focus();
+    }
+    function closeModal() {
+      modalBackdrop.classList.remove('open');
+      document.body.style.overflow = '';
+      if (lastFocusedElement && typeof lastFocusedElement.focus === 'function') lastFocusedElement.focus();
+    }
+    closeModalButton.addEventListener('click', closeModal);
+    modalAction.addEventListener('click', closeModal);
+    modalBackdrop.addEventListener('click', event => { if (event.target === modalBackdrop) closeModal(); });
+    document.addEventListener('keydown', event => { if (event.key === 'Escape' && modalBackdrop.classList.contains('open')) closeModal(); });
+
+    render();
+  </script>
+</body>
+</html>

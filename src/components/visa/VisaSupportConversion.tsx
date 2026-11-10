@@ -99,7 +99,7 @@ export const VisaSupportConversion: React.FC<VisaSupportConversionProps> = ({
       </div>
 
       {/* 3. Pre-FAQ Banner: "Not applied through us yet?" */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-slate-900 dark:bg-[#070b19] text-white flex flex-col md:flex-row md:items-center justify-between gap-6 border border-slate-800 shadow-xl">
+      <div className="p-6 sm:p-8 rounded-3xl bg-slate-900 dark:bg-[#0B1329] text-white flex flex-col md:flex-row md:items-center justify-between gap-6 border border-slate-800 shadow-xl">
         <div className="space-y-1.5 max-w-xl">
           <h3 className="text-xl sm:text-2xl font-black tracking-tight text-white">
             Not applied through us yet?

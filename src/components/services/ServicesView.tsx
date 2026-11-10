@@ -263,7 +263,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
       {/* Service Detail Modal */}
       {activeModalService && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-md animate-fadeIn">
-          <div className="relative w-full max-w-xl bg-white dark:bg-[#0f172a] rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-200 dark:border-slate-800 animate-in fade-in duration-200">
+          <div className="relative w-full max-w-xl bg-white dark:bg-[#0B1329] rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-200 dark:border-slate-800 animate-in fade-in duration-200">
             {/* Close Button */}
             <button
               onClick={() => setActiveModalService(null)}

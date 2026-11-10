@@ -34,6 +34,7 @@ export const FaqSection: React.FC<FaqSectionProps> = ({
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [openIds, setOpenIds] = useState<Set<string>>(new Set());
   const [helpfulFeedback, setHelpfulFeedback] = useState<Record<string, boolean>>({});
+  const [isExpanded, setIsExpanded] = useState(false);
 
   // 6 Primary Questions specifically requested for the Homepage
   const homepageFaqs: FaqItem[] = [
@@ -277,7 +278,7 @@ export const FaqSection: React.FC<FaqSectionProps> = ({
   };
 
   return (
-    <section id="faqs" className={`w-full bg-white dark:bg-[#070b19] border-t border-slate-100 dark:border-slate-800/80 transition-colors relative overflow-hidden ${isCompact ? 'py-8 min-[390px]:py-10 sm:py-16' : 'py-12 sm:py-24'}`}>
+    <section id="faqs" className={`w-full bg-white dark:bg-[#0B1329] border-t border-slate-100 dark:border-slate-800/80 transition-colors relative overflow-hidden ${isCompact ? 'py-10 min-[390px]:py-12 sm:py-16' : 'py-12 sm:py-24'}`}>
       {/* Background Ambient Accents */}
       <div className="pointer-events-none absolute top-10 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-blue-500/5 dark:bg-blue-600/10 rounded-full blur-3xl -z-10" />
 
@@ -376,7 +377,7 @@ export const FaqSection: React.FC<FaqSectionProps> = ({
         </div>
 
         {/* Accordion List */}
-        <div className="space-y-2.5 max-w-3xl mx-auto">
+        <div className={`space-y-2.5 max-w-3xl mx-auto relative transition-all duration-700 ease-in-out ${isCompact && !isExpanded ? 'max-h-[280px] overflow-hidden' : 'max-h-[2000px]'}`}>
           {displayedFaqs.map((faq) => {
             const isOpen = openIds.has(faq.id);
             const feedback = helpfulFeedback[faq.id];
@@ -385,8 +386,8 @@ export const FaqSection: React.FC<FaqSectionProps> = ({
                 key={faq.id}
                 className={`rounded-2xl border transition-all duration-200 overflow-hidden ${
                   isOpen
-                    ? 'bg-white dark:bg-[#0f172a] border-[#FBB034]/70 dark:border-[#FBB034]/50 shadow-md ring-1 ring-[#FBB034]/20'
-                    : 'bg-white dark:bg-[#0f172a]/70 border-slate-200/80 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 shadow-2xs'
+                    ? 'bg-white dark:bg-[#0B1329] border-[#FBB034]/70 dark:border-[#FBB034]/50 shadow-md ring-1 ring-[#FBB034]/20'
+                    : 'bg-white dark:bg-[#0B1329]/70 border-slate-200/80 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 shadow-2xs'
                 }`}
               >
                 {/* Header / Toggle Button */}
@@ -399,7 +400,7 @@ export const FaqSection: React.FC<FaqSectionProps> = ({
                   <div className="flex-1 pr-1">
                     {!isCompact && (
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="inline-block px-2 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                        <span className="inline-block px-2 py-0.5 rounded-md text-[12px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
                           {faq.category}
                         </span>
                       </div>
@@ -448,7 +449,7 @@ export const FaqSection: React.FC<FaqSectionProps> = ({
 
                     {/* Footer Actions: Helpfulness feedback & Direct CTA Button */}
                     <div className="mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2">
-                      <div className="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
+                      <div className="flex items-center gap-1.5 text-[12px] text-slate-500 dark:text-slate-400">
                         <span>Helpful?</span>
                         {feedback === undefined ? (
                           <div className="flex items-center gap-1">
@@ -490,22 +491,36 @@ export const FaqSection: React.FC<FaqSectionProps> = ({
               </div>
             );
           })}
+          
+          {/* Fade Overlay for Compact Mode */}
+          {isCompact && !isExpanded && (
+            <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white dark:from-[#0B1329] to-transparent pointer-events-none z-10" />
+          )}
         </div>
 
         {/* COMPACT MODE BOTTOM BAR: "Show All FAQs" Redirect to faq.html */}
         {isCompact ? (
-          <div className="mt-8 flex items-center justify-center text-center">
-            <a
-              href="faq.html"
-              onClick={handleRedirectToFaqPage}
-              className="inline-block"
-            >
+          <div className="mt-8 flex flex-col items-center justify-center text-center gap-4">
+            {!isExpanded ? (
               <InteractiveHoverButton
                 type="button"
-                text="Show All FAQs"
-                className="min-h-[44px] px-8 py-3.5 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 border-slate-900 dark:border-white font-bold text-xs sm:text-sm shadow-sm cursor-pointer"
+                text="Show More FAQs"
+                onClick={() => setIsExpanded(true)}
+                className="min-h-[44px] w-full sm:w-auto px-6 sm:px-8 py-3.5 rounded-full border-slate-300 dark:border-slate-700 text-sm font-bold text-slate-900 dark:text-white bg-white dark:bg-slate-900 shadow-xs cursor-pointer"
               />
-            </a>
+            ) : (
+              <a
+                href="faq.html"
+                onClick={handleRedirectToFaqPage}
+                className="inline-block animate-in fade-in slide-in-from-bottom-2"
+              >
+                <InteractiveHoverButton
+                  type="button"
+                  text="Show All FAQs"
+                  className="min-h-[44px] w-full sm:w-auto px-6 sm:px-8 py-3.5 rounded-full border-slate-300 dark:border-slate-700 text-sm font-bold text-slate-900 dark:text-white bg-white dark:bg-slate-900 shadow-xs cursor-pointer"
+                />
+              </a>
+            )}
           </div>
         ) : (
           /* FULL MODE BOTTOM CTA BANNER */

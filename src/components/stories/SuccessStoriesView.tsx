@@ -44,7 +44,7 @@ export const SuccessStoriesView: React.FC<SuccessStoriesViewProps> = ({
   });
 
   return (
-    <div className="w-full bg-slate-50 dark:bg-[#070b19] min-h-screen pb-20">
+    <div className="w-full bg-slate-50 dark:bg-[#0B1329] min-h-screen pb-20">
       {/* Top Banner / Breadcrumb */}
       <div className="bg-gradient-to-b from-blue-900 via-blue-950 to-slate-950 text-white pt-12 pb-16 sm:pb-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(251,176,52,0.15),transparent_50%)]"></div>
@@ -191,7 +191,7 @@ export const SuccessStoriesView: React.FC<SuccessStoriesViewProps> = ({
         {/* Modal for Full Case Study */}
         {selectedStory && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="bg-white dark:bg-[#0f172a] rounded-3xl max-w-2xl w-full p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            <div className="bg-white dark:bg-[#0B1329] rounded-3xl max-w-2xl w-full p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-2xl relative max-h-[90vh] overflow-y-auto">
               <button
                 onClick={() => setSelectedStory(null)}
                 className="absolute top-5 right-5 p-2 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-white cursor-pointer"

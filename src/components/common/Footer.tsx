@@ -541,7 +541,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                     title="Chat on WhatsApp (BD 1)"
                     className="hover:underline hover:text-emerald-700 dark:hover:text-emerald-300"
                   >
-                    +880 1805-529577
+                    +880 1805 529577
                   </a>
                   <a
                     href="https://wa.me/8801805529578"
@@ -550,16 +550,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                     title="Chat on WhatsApp (BD 2)"
                     className="hover:underline hover:text-emerald-700 dark:hover:text-emerald-300"
                   >
-                    +880 1805-529578
-                  </a>
-                  <a
-                    href="https://wa.me/601112376224"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    title="Chat on WhatsApp (Malaysia)"
-                    className="hover:underline hover:text-emerald-700 dark:hover:text-emerald-300"
-                  >
-                    +60 11-1237 6224
+                    +880 1805 529578
                   </a>
                 </div>
               </div>

@@ -278,10 +278,10 @@ export const FlightTicketingView: React.FC<FlightTicketingViewProps> = ({
   };
 
   return (
-    <div className="w-full bg-[#f8fafc] dark:bg-[#070b19] min-h-screen text-slate-800 dark:text-slate-100 transition-colors duration-300">
+    <div className="w-full bg-[#f8fafc] dark:bg-[#0B1329] min-h-screen text-slate-800 dark:text-slate-100 transition-colors duration-300">
       
       {/* 1. TOP BREADCRUMB & BADGE BAR */}
-      <div className="w-full bg-white dark:bg-[#0b1329] border-b border-slate-200 dark:border-slate-800">
+      <div className="w-full bg-white dark:bg-[#0B1329] border-b border-slate-200 dark:border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-3 text-xs">
           <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
             <button
@@ -318,7 +318,7 @@ export const FlightTicketingView: React.FC<FlightTicketingViewProps> = ({
       </div>
 
       {/* 2. HERO SECTION */}
-      <section className="relative overflow-hidden pt-12 pb-16 lg:pt-20 lg:pb-24 bg-gradient-to-b from-white via-blue-50/40 to-slate-50 dark:from-[#0b1329] dark:via-[#091124] dark:to-[#070b19] border-b border-slate-200/80 dark:border-slate-800">
+      <section className="relative overflow-hidden pt-12 pb-16 lg:pt-20 lg:pb-24 bg-gradient-to-b from-white via-blue-50/40 to-slate-50 dark:from-[#0B1329] dark:via-[#091124] dark:to-[#0B1329] border-b border-slate-200/80 dark:border-slate-800">
         {/* Subtle Decorative Grid Pattern */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:28px_28px] opacity-40 pointer-events-none" />
 
@@ -390,7 +390,7 @@ export const FlightTicketingView: React.FC<FlightTicketingViewProps> = ({
 
             {/* Right Column: Visual Ticket Card Mockup */}
             <div className="lg:col-span-5">
-              <div className="relative mx-auto max-w-md bg-white dark:bg-[#0f172a] rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-xl overflow-hidden p-6 space-y-5">
+              <div className="relative mx-auto max-w-md bg-white dark:bg-[#0B1329] rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-xl overflow-hidden p-6 space-y-5">
                 {/* Header ribbon */}
                 <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
                   <div className="flex items-center gap-2">
@@ -487,7 +487,7 @@ export const FlightTicketingView: React.FC<FlightTicketingViewProps> = ({
       </section>
 
       {/* 3. NAVIGATION TAB STRIP */}
-      <div className="sticky top-0 z-30 bg-white/95 dark:bg-[#070b19]/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-xs">
+      <div className="sticky top-0 z-30 bg-white/95 dark:bg-[#0B1329]/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-start sm:justify-center gap-2 sm:gap-4 overflow-x-auto py-3 no-scrollbar">
             {[
@@ -533,7 +533,7 @@ export const FlightTicketingView: React.FC<FlightTicketingViewProps> = ({
               {AIRLINES.map((airline) => (
                 <div
                   key={airline.id}
-                  className="bg-white dark:bg-[#0f172a] rounded-3xl border border-slate-200/90 dark:border-slate-800 p-6 flex flex-col justify-between hover:shadow-md hover:border-blue-300 dark:hover:border-blue-700 transition-all duration-200"
+                  className="bg-white dark:bg-[#0B1329] rounded-3xl border border-slate-200/90 dark:border-slate-800 p-6 flex flex-col justify-between hover:shadow-md hover:border-blue-300 dark:hover:border-blue-700 transition-all duration-200"
                 >
                   <div className="space-y-4">
                     {/* Airline title & logo badge */}
@@ -654,7 +654,7 @@ export const FlightTicketingView: React.FC<FlightTicketingViewProps> = ({
             </div>
 
             {/* Selected Destination Detailed Card */}
-            <div className="bg-white dark:bg-[#0f172a] rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-sm p-6 sm:p-8 space-y-6">
+            <div className="bg-white dark:bg-[#0B1329] rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-sm p-6 sm:p-8 space-y-6">
               <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
                 <div className="flex items-center gap-3">
                   <span className="text-4xl">{currentDest.flag}</span>
@@ -777,7 +777,7 @@ export const FlightTicketingView: React.FC<FlightTicketingViewProps> = ({
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Category 1: Hand-Carry Cabin Bag */}
-              <div className="bg-white dark:bg-[#0f172a] rounded-3xl border border-slate-200 dark:border-slate-800 p-6 space-y-4">
+              <div className="bg-white dark:bg-[#0B1329] rounded-3xl border border-slate-200 dark:border-slate-800 p-6 space-y-4">
                 <div className="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-slate-800">
                   <span className="material-symbols-outlined text-blue-600 text-2xl">backpack</span>
                   <div>
@@ -815,7 +815,7 @@ export const FlightTicketingView: React.FC<FlightTicketingViewProps> = ({
               </div>
 
               {/* Category 2: Checked Luggage Guidelines */}
-              <div className="bg-white dark:bg-[#0f172a] rounded-3xl border border-slate-200 dark:border-slate-800 p-6 space-y-4">
+              <div className="bg-white dark:bg-[#0B1329] rounded-3xl border border-slate-200 dark:border-slate-800 p-6 space-y-4">
                 <div className="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-slate-800">
                   <span className="material-symbols-outlined text-amber-500 text-2xl">luggage</span>
                   <div>
@@ -849,7 +849,7 @@ export const FlightTicketingView: React.FC<FlightTicketingViewProps> = ({
               </div>
 
               {/* Category 3: Border Control & Transit */}
-              <div className="bg-white dark:bg-[#0f172a] rounded-3xl border border-slate-200 dark:border-slate-800 p-6 space-y-4">
+              <div className="bg-white dark:bg-[#0B1329] rounded-3xl border border-slate-200 dark:border-slate-800 p-6 space-y-4">
                 <div className="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-slate-800">
                   <span className="material-symbols-outlined text-purple-600 text-2xl">verified_user</span>
                   <div>
@@ -897,7 +897,7 @@ export const FlightTicketingView: React.FC<FlightTicketingViewProps> = ({
               </p>
             </div>
 
-            <div className="bg-white dark:bg-[#0f172a] rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-sm p-6 sm:p-8 space-y-6">
+            <div className="bg-white dark:bg-[#0B1329] rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-sm p-6 sm:p-8 space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
                 
                 {/* Winter Coats */}
@@ -1040,7 +1040,7 @@ export const FlightTicketingView: React.FC<FlightTicketingViewProps> = ({
       </div>
 
       {/* 5. INTERACTIVE FLIGHT QUOTE REQUEST FORM */}
-      <section id="flight-quote-form" className="py-16 bg-white dark:bg-[#0b1329] border-t border-slate-200 dark:border-slate-800">
+      <section id="flight-quote-form" className="py-16 bg-white dark:bg-[#0B1329] border-t border-slate-200 dark:border-slate-800">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           
           <div className="text-center space-y-2 mb-10">
@@ -1055,7 +1055,7 @@ export const FlightTicketingView: React.FC<FlightTicketingViewProps> = ({
             </p>
           </div>
 
-          <div className="bg-[#f8fafc] dark:bg-[#070b19] rounded-3xl border border-slate-200/90 dark:border-slate-800 p-6 sm:p-10 shadow-sm">
+          <div className="bg-[#f8fafc] dark:bg-[#0B1329] rounded-3xl border border-slate-200/90 dark:border-slate-800 p-6 sm:p-10 shadow-sm">
             {formSubmitted ? (
               <div className="text-center py-10 space-y-4">
                 <div className="w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto">
@@ -1308,7 +1308,7 @@ export const FlightTicketingView: React.FC<FlightTicketingViewProps> = ({
       </section>
 
       {/* 6. FAQ SECTION */}
-      <section className="py-16 bg-[#f8fafc] dark:bg-[#070b19]">
+      <section className="py-16 bg-[#f8fafc] dark:bg-[#0B1329]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
           <div className="text-center space-y-2">
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
@@ -1348,7 +1348,7 @@ export const FlightTicketingView: React.FC<FlightTicketingViewProps> = ({
             ].map((item, idx) => (
               <details
                 key={idx}
-                className="group bg-white dark:bg-[#0f172a] rounded-2xl border border-slate-200 dark:border-slate-800 p-5 cursor-pointer"
+                className="group bg-white dark:bg-[#0B1329] rounded-2xl border border-slate-200 dark:border-slate-800 p-5 cursor-pointer"
               >
                 <summary className="font-bold text-sm text-slate-900 dark:text-white flex items-center justify-between list-none">
                   <span>{item.q}</span>

@@ -7,6 +7,7 @@
 
 import React, { useState, useRef, MouseEvent } from 'react';
 import { InteractiveHoverButton } from '../ui/interactive-hover-button.tsx';
+import { AnimatedFeatureCard } from '../ui/feature-card-1.tsx';
 
 interface WhyChooseSectionProps {
   onSelectCountry: (countryName: string) => void;
@@ -78,10 +79,34 @@ export const WhyChooseSection: React.FC<WhyChooseSectionProps> = ({ onSelectCoun
     }, 600);
   };
 
+  const featureCards = [
+    {
+      index: "001",
+      tag: "ZERO SERVICE CHARGE",
+      title: "No Service Charge. 100% Free Transparent Mentorship & Guidance.",
+      imageSrc: "/public/assets/aistudio/Glossy_Orange_Zero_with_Radiant_Accents_e2d45759.png",
+      color: "orange" as const,
+    },
+    {
+      index: "002",
+      tag: "A–Z ADMISSIONS",
+      title: "Direct University Placement, Fast Offer Letters & SOP Reviews.",
+      imageSrc: "/public/assets/aistudio/Celebrating_the_University_Offer_Letter_ee24fec3.png",
+      color: "purple" as const,
+    },
+    {
+      index: "003",
+      tag: "VISA DESK",
+      title: "95% Visa Success with Mock Interviews & Embassy Preparation.",
+      imageSrc: "/public/assets/aistudio/Celebrating_Student_Visa_Approval_25dff35f.png",
+      color: "blue" as const,
+    },
+  ];
+
   return (
-    <section id="why-choose-section" className="relative z-10 w-full max-w-full sm:max-w-[95%] mx-auto px-4 sm:px-6 lg:px-8 py-8 min-[390px]:py-10 sm:py-20 bg-white dark:bg-[#070b19]">
+    <section id="why-choose-section" className="relative z-10 w-full max-w-full sm:max-w-[95%] mx-auto px-4 sm:px-6 lg:px-8 py-10 min-[390px]:py-12 sm:py-20 bg-white dark:bg-[#0B1329]">
       {/* Header with High-Impact Typography */}
-      <div className="text-center mb-8 sm:mb-14 px-2 max-w-3xl mx-auto">
+      <div className="text-center mb-8 sm:mb-12 px-2 max-w-3xl mx-auto">
         <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold font-display tracking-tight text-slate-900 dark:text-white leading-tight flex items-center justify-center flex-wrap gap-2 sm:gap-3 md:gap-3.5 select-none text-center">
           <span>Why Choose</span>
           <span className="bg-[#fbb034] text-slate-950 px-3.5 sm:px-5 md:px-6 py-0.5 sm:py-1 md:py-1.5 rounded-xl sm:rounded-2xl font-black tracking-tight leading-none shadow-sm shrink-0 inline-flex items-center">
@@ -93,168 +118,77 @@ export const WhyChooseSection: React.FC<WhyChooseSectionProps> = ({ onSelectCoun
         </p>
       </div>
 
-      {/* Grid: 3 Features on Left & Counselor Visual with Stats on Right */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10 lg:gap-14 items-stretch">
-        {/* Left Column: Interactive Features with Subtle Mouse-Move Parallax Tilt */}
-        <div
-          ref={featureContainerRef}
-          onMouseMove={handleMouseMove}
-          onMouseLeave={handleMouseLeave}
-          style={{
-            transform: `perspective(1000px) rotateX(${parallaxTilt.x}deg) rotateY(${parallaxTilt.y}deg)`,
-            transition: 'transform 0.15s ease-out'
-          }}
-          className="lg:col-span-5 flex flex-col justify-between space-y-2.5 sm:space-y-3 lg:space-y-3.5 h-full will-change-transform"
-        >
-          {/* Feature 01 */}
-          <div
-            onClick={() => setActiveFeature(1)}
-            className={`p-3.5 sm:p-5 rounded-xl sm:rounded-2xl cursor-pointer transition-all border-l-4 transform hover:scale-[1.01] duration-300 flex-1 flex flex-col justify-center ${
-              activeFeature === 1
-                ? 'border-[#F6BE48] bg-slate-50 dark:bg-slate-800/90 shadow-md ring-1 ring-amber-400/20'
-                : 'border-transparent hover:bg-slate-50/60 dark:hover:bg-slate-800/40'
-            }`}
-          >
-            <div className="flex items-start gap-3.5 sm:gap-5">
-              <span className={`text-2xl sm:text-4xl font-black select-none shrink-0 ${activeFeature === 1 ? 'text-[#fbb034]' : 'text-slate-400'}`}>
-                01
-              </span>
-              <div className="space-y-0.5 sm:space-y-1 flex-1 min-w-0">
-                <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-snug">
-                  No Service Charge. No Hidden Fees.
-                </h3>
-                <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm font-medium leading-relaxed">
-                  Clear guidance and complete mentorship support without surprise consultancy charges or fees.
-                </p>
-              </div>
-            </div>
-          </div>
+      {/* 3 Animated Feature Cards with Spring Motion & Floating 3D Elements */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8 max-w-6xl mx-auto mb-10 sm:mb-14">
+        {featureCards.map((feature, idx) => (
+          <AnimatedFeatureCard
+            key={feature.index}
+            index={feature.index}
+            tag={feature.tag}
+            title={feature.title}
+            imageSrc={feature.imageSrc}
+            color={feature.color}
+            isActive={activeFeature === idx + 1}
+            onClick={() => setActiveFeature(idx + 1)}
+            className="cursor-pointer"
+          />
+        ))}
+      </div>
 
-          {/* Feature 02 */}
-          <div
-            onClick={() => setActiveFeature(2)}
-            className={`p-3.5 sm:p-5 rounded-xl sm:rounded-2xl cursor-pointer transition-all border-l-4 transform hover:scale-[1.01] duration-300 flex-1 flex flex-col justify-center ${
-              activeFeature === 2
-                ? 'border-[#F6BE48] bg-slate-50 dark:bg-slate-800/90 shadow-md ring-1 ring-amber-400/20'
-                : 'border-transparent hover:bg-slate-50/60 dark:hover:bg-slate-800/40'
-            }`}
-          >
-            <div className="flex items-start gap-3.5 sm:gap-5">
-              <span className={`text-2xl sm:text-4xl font-black select-none shrink-0 ${activeFeature === 2 ? 'text-[#fbb034]' : 'text-slate-400'}`}>
-                02
-              </span>
-              <div className="space-y-0.5 sm:space-y-1 flex-1 min-w-0">
-                <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-snug">
-                  A–Z Guidelines & Admissions
-                </h3>
-                <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm font-medium leading-relaxed">
-                  Support from course shortlisting and SOP reviews to applications, scholarships, and preparation.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Feature 03 */}
-          <div
-            onClick={() => setActiveFeature(3)}
-            className={`p-3.5 sm:p-5 rounded-xl sm:rounded-2xl cursor-pointer transition-all border-l-4 transform hover:scale-[1.01] duration-300 flex-1 flex flex-col justify-center ${
-              activeFeature === 3
-                ? 'border-[#F6BE48] bg-slate-50 dark:bg-slate-800/90 shadow-md ring-1 ring-amber-400/20'
-                : 'border-transparent hover:bg-slate-50/60 dark:hover:bg-slate-800/40'
-            }`}
-          >
-            <div className="flex items-start gap-3.5 sm:gap-5">
-              <span className={`text-2xl sm:text-4xl font-black select-none shrink-0 ${activeFeature === 3 ? 'text-[#fbb034]' : 'text-slate-400'}`}>
-                03
-              </span>
-              <div className="space-y-0.5 sm:space-y-1 flex-1 min-w-0">
-                <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-snug">
-                  Hassle-Free Visa Processing
-                </h3>
-                <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm font-medium leading-relaxed">
-                  Precision document checklists, mock visa interview training, and structured embassy support.
-                </p>
-              </div>
-            </div>
-          </div>
+      {/* Live Status & Interactive Ripple Stats - Clean Refactored Layout */}
+      <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8 flex flex-col items-center">
+        {/* Live Status Pill */}
+        <div className="flex items-center gap-1.5 sm:gap-2 bg-slate-50 dark:bg-slate-900 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full border border-slate-200 dark:border-slate-800 shadow-xs text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200 animate-fadeIn">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          </span>
+          <span>Admission Open for 2026/2027</span>
         </div>
 
-        {/* Right Column: Visual with Admission Badge and Click Ripple Effect on Stats */}
-        <div className="lg:col-span-7 relative flex flex-col h-full">
-          <div className="relative w-full rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl bg-slate-100 dark:bg-slate-800 h-[280px] xs:h-[340px] sm:h-[420px] lg:h-full border border-white dark:border-slate-700 min-h-[300px]">
-            {/* Live Status Pill in Header */}
-            <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20">
-              <div className="flex items-center gap-1.5 sm:gap-2 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-full border border-white/80 shadow-md text-[11px] sm:text-xs font-bold text-slate-800 dark:text-slate-200">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                </span>
-                <span>Admission Open for 2026/2027</span>
-              </div>
-            </div> 
-
-            {/* Photo */}
-            <img
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuAFUG3LimCmQdFr1k1-wNK5zT18LimOcioRecatV_qZg4szgdi5Ix8xIvlJ4Q7J8YmCDAvemCEjGNIDpGh2KWrFc7XFraLsXflSPATEL6Al2PwyPU5x1RkoLaoKeE2T8_uF1xN7vXihk-zpG_tJwt6W-zYs6xlGwaXZXEgT6lZwp-f8tCo5vNklh45dzRpmetB0jwHwbqh2lkMwOfurbWkTsgixGDUJzk1KOJ5hRIqEZaAc6bEXXq3BPyZ5wXzkn8D2lV_yNf2dKtJWWmE"
-              alt="GEES Educational Counselor advising students"
-              className="w-full h-full object-cover object-center transform hover:scale-105 transition-transform duration-700 min-h-full"
-              loading="lazy"
-              decoding="async"
+        {/* Interactive Stats Block */}
+        <div
+          onClick={handleStatsClick}
+          className="relative overflow-hidden w-full bg-white dark:bg-[#0B1329] rounded-2xl sm:rounded-3xl py-6 sm:py-8 px-4 sm:px-6 shadow-xl border border-slate-200/80 dark:border-slate-800 cursor-pointer active:scale-[0.99] transition-transform select-none"
+        >
+          {/* Dynamic Click Ripples */}
+          {ripples.map((ripple) => (
+            <span
+              key={ripple.id}
+              className="absolute rounded-full bg-[#fbb034]/20 pointer-events-none animate-ping"
+              style={{
+                left: ripple.x - 24,
+                top: ripple.y - 24,
+                width: 48,
+                height: 48,
+                transform: 'scale(3)'
+              }}
             />
-            {/* Gradient shadow for card */}
-            <div className="absolute inset-x-0 bottom-0 h-32 sm:h-40 bg-gradient-to-t from-slate-950/80 to-transparent pointer-events-none"></div>
+          ))}
 
-            {/* Floating Interactive Stats Element with Click Ripple Effect */}
-            <div className="absolute bottom-3 inset-x-2.5 sm:bottom-5 sm:inset-x-6 z-20">
-              <div
-                onClick={handleStatsClick}
-                className="relative overflow-hidden bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-xl sm:rounded-2xl py-2.5 sm:py-3.5 px-2 sm:px-4 shadow-xl border border-white/80 dark:border-slate-800 cursor-pointer active:scale-[0.99] transition-transform select-none"
-              >
-                {/* Dynamic Click Ripples */}
-                {ripples.map((ripple) => (
-                  <span
-                    key={ripple.id}
-                    className="absolute rounded-full bg-[#fbb034]/30 pointer-events-none animate-ping"
-                    style={{
-                      left: ripple.x - 24,
-                      top: ripple.y - 24,
-                      width: 48,
-                      height: 48,
-                      transform: 'scale(2.5)'
-                    }}
-                  />
-                ))}
-
-                <div className="grid grid-cols-4 divide-x divide-slate-200 dark:divide-slate-800 text-center items-center">
-                  <div className="px-0.5 sm:px-2">
-                    <div className="text-sm xs:text-base sm:text-2xl font-black text-slate-900 dark:text-white">100+</div>
-                    <div className="text-[9.5px] min-[390px]:text-[10.5px] sm:text-xs font-bold text-slate-600 dark:text-slate-400 mt-0.5 leading-tight truncate">
-                      <span className="sm:hidden">Students</span>
-                      <span className="hidden sm:inline">Students Placed</span>
-                    </div>
-                  </div>
-                  <div className="px-0.5 sm:px-2">
-                    <div className="text-sm xs:text-base sm:text-2xl font-black text-slate-900 dark:text-white">200+</div>
-                    <div className="text-[9.5px] min-[390px]:text-[10.5px] sm:text-xs font-bold text-slate-600 dark:text-slate-400 mt-0.5 leading-tight truncate">
-                      <span className="sm:hidden">Unis</span>
-                      <span className="hidden sm:inline">Partner Universities</span>
-                    </div>
-                  </div>
-                  <div className="px-0.5 sm:px-2">
-                    <div className="text-sm xs:text-base sm:text-2xl font-black text-slate-900 dark:text-white">95%</div>
-                    <div className="text-[9.5px] min-[390px]:text-[10.5px] sm:text-xs font-bold text-slate-600 dark:text-slate-400 mt-0.5 leading-tight truncate">
-                      <span className="sm:hidden">Visa</span>
-                      <span className="hidden sm:inline">Visa Success</span>
-                    </div>
-                  </div>
-                  <div className="px-0.5 sm:px-2">
-                    <div className="text-sm xs:text-base sm:text-2xl font-black text-slate-900 dark:text-white">6+</div>
-                    <div className="text-[9.5px] min-[390px]:text-[10.5px] sm:text-xs font-bold text-slate-600 dark:text-slate-400 mt-0.5 leading-tight truncate">
-                      <span className="sm:hidden">Countries</span>
-                      <span className="hidden sm:inline">Countries We Send Students</span>
-                    </div>
-                  </div>
-                </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-0 md:divide-x divide-slate-200 dark:divide-slate-800 text-center items-center">
+            <div className="px-2">
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white">100+</div>
+              <div className="text-xs sm:text-sm font-bold text-slate-600 dark:text-slate-400 mt-1 leading-tight">
+                Students Placed
+              </div>
+            </div>
+            <div className="px-2">
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white">200+</div>
+              <div className="text-xs sm:text-sm font-bold text-slate-600 dark:text-slate-400 mt-1 leading-tight">
+                Partner Universities
+              </div>
+            </div>
+            <div className="px-2">
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white">95%</div>
+              <div className="text-xs sm:text-sm font-bold text-slate-600 dark:text-slate-400 mt-1 leading-tight">
+                Visa Success
+              </div>
+            </div>
+            <div className="px-2">
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white">6+</div>
+              <div className="text-xs sm:text-sm font-bold text-slate-600 dark:text-slate-400 mt-1 leading-tight">
+                Countries
               </div>
             </div>
           </div>
@@ -274,7 +208,7 @@ export const WhyChooseSection: React.FC<WhyChooseSectionProps> = ({ onSelectCoun
       {/* Modal: Select a Destination */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md">
-          <div className="relative w-full max-w-lg bg-white dark:bg-[#0f172a] rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-100 dark:border-slate-800 animate-fadeIn">
+          <div className="relative w-full max-w-lg bg-white dark:bg-[#0B1329] rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-100 dark:border-slate-800 animate-fadeIn">
             <button
               onClick={() => setIsModalOpen(false)}
               className="absolute top-4 right-4 w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-slate-900 dark:hover:text-white cursor-pointer active:scale-95"

@@ -135,12 +135,12 @@ const AnimatedTabsComponent: React.FC<AnimatedTabsProps> = ({
   return (
     <div 
       ref={scrollWrapperRef}
-      className={`w-full max-w-full overflow-x-auto no-scrollbar flex items-center justify-center px-1 xs:px-2 sm:px-6 touch-pan-x scroll-smooth ${containerClassName}`}
+      className={`w-full max-w-full overflow-x-auto no-scrollbar px-1 xs:px-2 sm:px-6 touch-pan-x scroll-smooth ${containerClassName}`}
     >
       <div
         ref={containerRef}
         role="tablist"
-        className={`relative inline-flex items-center p-0.5 xs:p-1 sm:p-1.5 bg-slate-100 dark:bg-slate-800/90 rounded-full border border-slate-200 dark:border-slate-700/80 shadow-xs whitespace-nowrap gap-0.5 xs:gap-1 sm:gap-1.5 select-none shrink-0 sm:mx-auto max-w-full ${className}`}
+        className={`relative flex items-center justify-center w-fit mx-auto p-0.5 xs:p-1 sm:p-1.5 bg-slate-100 dark:bg-slate-800/90 rounded-full border border-slate-200 dark:border-slate-700/80 shadow-xs whitespace-nowrap gap-0.5 xs:gap-1 sm:gap-1.5 select-none shrink-0 ${className}`}
         style={{
           transform: 'translateZ(0)',
           backfaceVisibility: 'hidden'

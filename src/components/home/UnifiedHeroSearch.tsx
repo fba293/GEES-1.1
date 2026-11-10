@@ -468,37 +468,8 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
             />
           </div>
 
-          {/* Right Icons: Microphone & Down Chevron Button */}
+          {/* Right Icon: Down Chevron Button */}
           <div className="flex items-center gap-1 shrink-0">
-            <button
-              type="button"
-              aria-label="Voice Search Integration"
-              title="Voice Search (Microphone)"
-              onClick={() => {
-                if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in (window as any)) {
-                  try {
-                    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-                    const recognition = new SpeechRecognition();
-                    recognition.onresult = (event: any) => {
-                      setSearchQuery(event.results[0][0].transcript);
-                    };
-                    recognition.start();
-                  } catch {
-                    alert("Voice search integration point ready.");
-                  }
-                } else {
-                  alert("Voice search integration point (Microphone ready)");
-                }
-              }}
-              className="w-11 h-11 sm:w-10 sm:h-10 min-w-[44px] min-h-[44px] sm:min-w-0 sm:min-h-0 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 flex items-center justify-center transition-colors cursor-pointer active:scale-95"
-            >
-              <svg className="w-4.5 h-4.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M19 10v2a7 7 0 01-14 0v-2" strokeLinecap="round" strokeLinejoin="round" />
-                <line x1="12" y1="19" x2="12" y2="23" strokeLinecap="round" strokeLinejoin="round" />
-                <line x1="8" y1="23" x2="16" y2="23" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
 
             {/* Functional Chevron Button */}
             <button
@@ -578,7 +549,7 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
       </div>
 
       {/* 2. Underline Navigation Tabs */}
-      <div className="flex items-center border-b border-[#e5e5ea] dark:border-slate-800 px-4 sm:px-6 bg-[#fafafc] dark:bg-slate-900/80 overflow-x-auto no-scrollbar relative z-30">
+      <div className="flex items-center border-b border-[#e5e5ea] dark:border-slate-800 px-4 sm:px-6 bg-white dark:bg-slate-900 overflow-x-auto no-scrollbar relative z-30">
         {[
           { id: 'courses', label: 'Courses' },
           { id: 'universities', label: 'Universities' },
@@ -619,7 +590,7 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
             
             {/* Study Level Dropdown */}
             <div className="relative">
-              <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Qualification</label>
+              <label className="block text-[12px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Qualification</label>
               <button
                 type="button"
                 onClick={(e) => {
@@ -675,7 +646,7 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
 
             {/* Destination Dropdown */}
             <div className="relative">
-              <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Destination</label>
+              <label className="block text-[12px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Destination</label>
               <button
                 type="button"
                 onClick={(e) => {
@@ -732,7 +703,7 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
 
             {/* Field of Study Dropdown */}
             <div className="relative">
-              <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Courses</label>
+              <label className="block text-[12px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Courses</label>
               <button
                 type="button"
                 onClick={(e) => {
@@ -829,7 +800,7 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
             
             {/* Study Level */}
             <div className="relative">
-              <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Study Level</label>
+              <label className="block text-[12px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Study Level</label>
               <button
                 type="button"
                 onClick={(e) => {

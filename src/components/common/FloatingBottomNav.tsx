@@ -146,8 +146,8 @@ function supportsRefraction() {
 
 /* ---------- CSS for Fluid Navigation & Icons ---------- */
 const LIQUID_NAV_CSS = `
-.gees-liquid-nav{--n-tint:rgba(255,255,255,.9);--n-fg:#0B132B;--n-fg-soft:rgba(11,19,43,.62);--n-rim:rgba(255,255,255,.95);
-  position:relative;display:inline-flex;align-items:center;justify-content:space-between;width:100%;height:58px;gap:2px;padding:4px 6px;border-radius:999px;isolation:isolate;
+.gees-liquid-nav{--n-tint:rgba(255,255,255,.92);--n-fg:#0B132B;--n-fg-soft:rgba(11,19,43,.62);--n-rim:rgba(255,255,255,.95);
+  position:relative;display:flex;align-items:center;justify-content:space-around;width:100%;height:64px;padding:4px 8px env(safe-area-inset-bottom, 12px);border-radius:0;border-top:1px solid rgba(0,0,0,0.08);isolation:isolate;
   font-family:ui-sans-serif,-apple-system,"SF Pro Text","Segoe UI",system-ui,sans-serif;-webkit-font-smoothing:antialiased;user-select:none;-webkit-tap-highlight-color:transparent}
 .gees-liquid-nav[data-tone="dark"]{--n-tint:rgba(12,20,39,.92);--n-fg:#FBB034;--n-fg-soft:rgba(241,247,255,.65);--n-rim:rgba(251,176,52,.35)}
 .gees-liquid-glass{position:absolute;inset:0;border-radius:inherit;z-index:-2;overflow:hidden;background:var(--n-tint);
@@ -208,7 +208,7 @@ export const FloatingBottomNav: React.FC<FloatingBottomNavProps> = ({
   const getActiveIndexFromView = (view: string): number => {
     if (view === 'home') return 0;
     if (view === 'universities' || view === 'courses' || view === 'destinations') return 1;
-    if (view === 'student-portal' || view === 'agent-portal' || view === 'crm') return 4;
+    if (view === 'wishlist' || view === 'saved-courses') return 4;
     return 0;
   };
 
@@ -569,7 +569,8 @@ export const FloatingBottomNav: React.FC<FloatingBottomNavProps> = ({
       onOpenSearch();
     } else if (index === 4) {
       setIsQuickActionsOpen(false);
-      onOpenMobileMenu();
+      onNavigate('wishlist');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -641,13 +642,12 @@ export const FloatingBottomNav: React.FC<FloatingBottomNavProps> = ({
       )
     },
     {
-      label: 'Profile',
+      label: 'Saved',
       fx: 'wave',
-      ariaLabel: 'Profile & Menu',
+      ariaLabel: 'Saved Wishlist Courses',
       icon: (
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <circle cx="12" cy="8" r="4" />
-          <path d="M5 20c1.2-3.2 4-4.8 7-4.8s5.8 1.6 7 4.8" />
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
         </svg>
       )
     }
@@ -673,7 +673,7 @@ export const FloatingBottomNav: React.FC<FloatingBottomNavProps> = ({
               zIndex: 9998,
               boxShadow: '0 12px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06)'
             }}
-            className="xl:hidden fixed bottom-[72px] xs:bottom-[76px] inset-x-3.5 sm:inset-x-4 max-w-[420px] mx-auto rounded-[22px] bg-white dark:bg-[#0f172a] border border-slate-200/90 dark:border-slate-800 text-[#0B132B] dark:text-slate-100 select-none max-h-[72vh] overflow-y-auto no-scrollbar"
+            className="xl:hidden fixed bottom-[72px] xs:bottom-[76px] inset-x-3.5 sm:inset-x-4 max-w-[420px] mx-auto rounded-[22px] bg-white dark:bg-[#0B1329] border border-slate-200/90 dark:border-slate-800 text-[#0B132B] dark:text-slate-100 select-none max-h-[72vh] overflow-y-auto no-scrollbar"
           >
             {/* Header: Quick Actions + Close Icon */}
             <div className="flex items-center justify-between px-4 pt-4 pb-2">
@@ -769,7 +769,7 @@ export const FloatingBottomNav: React.FC<FloatingBottomNavProps> = ({
                   </span>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
-                  <span className="text-[12px] font-bold px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300">
+                  <span className={`text-[12px] font-bold px-2 py-0.5 rounded-full ${wishlist.length === 0 ? 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-500' : 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300'}`}>
                     {wishlist.length}
                   </span>
                   <span className="material-symbols-outlined text-[18px] text-slate-300 dark:text-slate-600 group-hover:text-slate-500 transition-transform group-hover:translate-x-0.5">
@@ -873,8 +873,8 @@ export const FloatingBottomNav: React.FC<FloatingBottomNavProps> = ({
       {!isSearchSheetOpen && (
       <div
         aria-label="Mobile Bottom Navigation Wrapper"
-        className="xl:hidden fixed bottom-3 sm:bottom-4 inset-x-2.5 xs:inset-x-3.5 z-40 max-w-[390px] xs:max-w-[420px] sm:max-w-[440px] mx-auto select-none pointer-events-auto"
-        data-purpose="liquid-glass-dock-wrapper"
+        className="xl:hidden fixed bottom-0 inset-x-0 z-40 w-full select-none pointer-events-auto"
+        data-purpose="ios-native-bottom-nav-wrapper"
       >
         <style dangerouslySetInnerHTML={{ __html: LIQUID_NAV_CSS }} />
 
@@ -892,12 +892,12 @@ export const FloatingBottomNav: React.FC<FloatingBottomNavProps> = ({
           ref={navRef as any}
           className="gees-liquid-nav"
           data-tone={isDark ? "dark" : "light"}
-          data-gl={gl}
-          data-refract={refract ? "on" : "off"}
+          data-gl="off"
+          data-refract="off"
           aria-label="Main Navigation"
           onPointerMove={onMove}
           onPointerLeave={() => { st.current.mouse.on = false; loop(); }}
-          onPointerDown={(e) => { const p = local(e.clientX, e.clientY); ripple(p.x, p.y, 0.8); }}
+          onPointerDown={(e) => { const p = local(e.clientX, e.clientY); }}
         >
           {/* Frosted Glass Base Surface */}
           <span className="gees-liquid-glass" aria-hidden="true" />

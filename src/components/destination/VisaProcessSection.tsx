@@ -17,7 +17,7 @@ export const VisaProcessSection: React.FC<VisaProcessSectionProps> = ({
   onOpenConsultation
 }) => {
   return (
-    <section className="w-full bg-white dark:bg-[#070b19] py-12 sm:py-20 border-b border-slate-100 dark:border-slate-800">
+    <section className="w-full bg-white dark:bg-[#0B1329] py-12 sm:py-20 border-b border-slate-100 dark:border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-14">
