@@ -4,7 +4,7 @@
  * GEES - Multi-Currency Switcher (Supports All World Currencies)
  */
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { useCurrency, Currency } from '../context/CurrencyContext.tsx';
 
 export interface CurrencyOption {
@@ -114,10 +114,46 @@ export const HeaderCurrencyExchangeIcon: React.FC<HeaderCurrencyExchangeIconProp
   className = '',
   variant = 'circular'
 }) => {
-  const { currency, setCurrency, isLive } = useCurrency();
+  const { currency, setCurrency, isLive, lastUpdated, rates } = useCurrency();
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const { fxDateStr, fxTimeStr } = useMemo(() => {
+    if (lastUpdated) {
+      try {
+        const d = new Date(lastUpdated);
+        if (!isNaN(d.getTime())) {
+          const dateStr = d.toLocaleDateString('en-US', {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric'
+          });
+          const timeStr = d.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+          });
+          return { fxDateStr: dateStr, fxTimeStr: timeStr };
+        }
+      } catch {
+        // fallback
+      }
+    }
+    const now = new Date();
+    return {
+      fxDateStr: now.toLocaleDateString('en-US', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+      }),
+      fxTimeStr: now.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      })
+    };
+  }, [lastUpdated]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent | TouchEvent) => {
@@ -150,11 +186,11 @@ export const HeaderCurrencyExchangeIcon: React.FC<HeaderCurrencyExchangeIconProp
   );
 
   const buttonStyleClass = variant === 'minimal'
-    ? "relative w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-slate-800 dark:text-slate-200 hover:text-blue-600 dark:hover:text-[#fbb034] hover:bg-slate-100/60 dark:hover:bg-slate-800/60 transition-colors duration-200 cursor-pointer group"
-    : "relative w-10 h-10 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/80 flex items-center justify-center text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600 dark:hover:text-amber-400 transition-all duration-300 ease-out transform hover:scale-110 active:scale-95 cursor-pointer shadow-xs group";
+    ? "relative w-11 h-11 min-w-[44px] min-h-[44px] rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 flex items-center justify-center text-slate-800 dark:text-slate-200 hover:text-blue-600 dark:hover:text-[#fbb034] hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 transition-all shadow-2xs cursor-pointer group shrink-0"
+    : "relative w-11 h-11 min-w-[44px] min-h-[44px] rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/80 flex items-center justify-center text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600 dark:hover:text-amber-400 transition-all duration-300 ease-out transform hover:scale-105 active:scale-95 cursor-pointer shadow-2xs group shrink-0";
 
   return (
-    <div ref={containerRef} className={`relative inline-flex items-center ${className}`}>
+    <div ref={containerRef} className={`relative inline-flex items-center shrink-0 ${className}`}>
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
@@ -164,42 +200,74 @@ export const HeaderCurrencyExchangeIcon: React.FC<HeaderCurrencyExchangeIconProp
         title={`Current Currency: ${currency}. Click to switch currency.`}
         className={buttonStyleClass}
       >
-        <CircularExchangeIcon className="w-4.5 h-4.5 text-slate-700 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-amber-400 transition-transform duration-500 ease-out group-hover:rotate-180" />
-        <span className="absolute -bottom-0.5 -right-0.5 px-1 xs:px-1.5 py-0.2 rounded-full text-[8px] xs:text-[9px] font-black tracking-tight bg-[#fbb034] text-slate-950 shadow-xs ring-1 ring-white dark:ring-slate-900 leading-tight select-none">
+        <CircularExchangeIcon className="w-5.5 h-5.5 text-slate-700 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-amber-400 transition-transform duration-500 ease-out group-hover:rotate-180" />
+        <span className="absolute -bottom-0.5 -right-0.5 px-1.5 py-0.2 rounded-full text-[9px] font-black tracking-tight bg-[#fbb034] text-slate-950 shadow-xs ring-1 ring-white dark:ring-slate-900 leading-tight select-none">
           {currency}
         </span>
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-72 sm:w-80 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl z-50 overflow-hidden animate-fadeIn flex flex-col max-h-[420px]">
-          <div className="p-3 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 flex flex-col gap-2">
+        <div className="fixed inset-x-3 xs:inset-x-4 top-[68px] xs:top-[72px] max-w-[360px] mx-auto z-50 sm:absolute sm:inset-auto sm:right-0 sm:top-full sm:mt-2.5 sm:w-80 bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden animate-fadeIn flex flex-col max-h-[min(500px,calc(100vh-84px))] sm:max-h-[420px]">
+          <div className="p-3 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 flex flex-col gap-2 shrink-0">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-slate-800 dark:text-white uppercase tracking-wider">
-                Select World Currency
+                Select Currency
               </span>
-              <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${isLive ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'}`}>
-                {isLive ? '● Live FX Rates' : '● Standard FX'}
+              <div className="flex items-center gap-1.5">
+                <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${isLive ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'}`}>
+                  {isLive ? '● Live Rates' : '● Standard Rates'}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setIsOpen(false)}
+                  aria-label="Close currency selection"
+                  className="w-6 h-6 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-200/70 dark:hover:bg-slate-700 transition-colors cursor-pointer"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            {/* Live FX Rate Date & Last Update Time Banner */}
+            <div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200/90 dark:border-emerald-800/60 text-[10.5px]">
+              <div className="flex items-center gap-1.5 text-emerald-800 dark:text-emerald-300 font-medium min-w-0 flex-wrap">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
+                <span>Date: <strong className="font-bold text-slate-900 dark:text-white">{fxDateStr}</strong></span>
+                <span className="text-emerald-400 dark:text-emerald-600">•</span>
+                <span>Last updated: <strong className="font-semibold text-slate-800 dark:text-slate-200">{fxTimeStr}</strong></span>
+              </div>
+              <span className="text-[9px] font-bold text-emerald-700 dark:text-emerald-400 bg-white/80 dark:bg-slate-900/80 px-1.5 py-0.5 rounded shadow-2xs border border-emerald-100 dark:border-emerald-900 shrink-0">
+                1 MYR Base
               </span>
             </div>
-            <input
-              type="text"
-              placeholder="Search currency or country..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-400"
-              autoFocus
-            />
+
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search currency, code or country..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-8 pr-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-400"
+                autoFocus
+              />
+              <svg className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
           </div>
 
           <div
             role="listbox"
-            className="overflow-y-auto max-h-[300px] p-2 space-y-1 scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-700"
+            className="overflow-y-auto max-h-[320px] sm:max-h-[300px] p-2 space-y-1 scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-700 overscroll-contain"
           >
             {filteredOptions.length === 0 ? (
               <div className="py-6 text-center text-xs text-slate-500">No currencies found</div>
             ) : (
               filteredOptions.map((opt) => {
                 const isSelected = currency === opt.code;
+                const optRate = rates ? rates[opt.code] : undefined;
                 return (
                   <button
                     key={opt.code}
@@ -211,25 +279,30 @@ export const HeaderCurrencyExchangeIcon: React.FC<HeaderCurrencyExchangeIconProp
                       setIsOpen(false);
                       setSearchQuery('');
                     }}
-                    className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all cursor-pointer ${
+                    className={`w-full min-h-[44px] flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all cursor-pointer ${
                       isSelected
                         ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold border border-amber-500/30'
                         : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/80 font-medium'
                     }`}
                   >
-                    <div className="flex items-center gap-2.5">
-                      <span className="text-base select-none">{opt.flag}</span>
-                      <div className="flex flex-col text-left">
-                        <span className="font-bold text-slate-900 dark:text-white">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <span className="text-base select-none shrink-0">{opt.flag}</span>
+                      <div className="flex flex-col text-left min-w-0">
+                        <span className="font-bold text-slate-900 dark:text-white truncate">
                           {opt.code} — {opt.name}
                         </span>
-                        <span className="text-[10px] text-slate-500 dark:text-slate-400">
-                          {opt.country} ({opt.symbol})
-                        </span>
+                        <div className="flex items-center gap-1.5 text-[10px] text-slate-500 dark:text-slate-400 flex-wrap">
+                          <span className="truncate">{opt.country} ({opt.symbol})</span>
+                          {optRate !== undefined && (
+                            <span className="font-semibold text-emerald-600 dark:text-emerald-400 shrink-0">
+                              • 1 MYR = {optRate >= 100 ? Math.round(optRate).toLocaleString() : optRate < 0.01 ? optRate.toFixed(4) : optRate.toFixed(3)}
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
                     {isSelected && (
-                      <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0"></span>
+                      <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0 ml-1"></span>
                     )}
                   </button>
                 );
@@ -245,10 +318,46 @@ export const HeaderCurrencyExchangeIcon: React.FC<HeaderCurrencyExchangeIconProp
 export const SelectCurrencyDropdown: React.FC<HeaderCurrencyExchangeIconProps> = ({
   className = ''
 }) => {
-  const { currency, setCurrency, isLive } = useCurrency();
+  const { currency, setCurrency, isLive, lastUpdated, rates } = useCurrency();
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const { fxDateStr, fxTimeStr } = useMemo(() => {
+    if (lastUpdated) {
+      try {
+        const d = new Date(lastUpdated);
+        if (!isNaN(d.getTime())) {
+          const dateStr = d.toLocaleDateString('en-US', {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric'
+          });
+          const timeStr = d.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+          });
+          return { fxDateStr: dateStr, fxTimeStr: timeStr };
+        }
+      } catch {
+        // fallback
+      }
+    }
+    const now = new Date();
+    return {
+      fxDateStr: now.toLocaleDateString('en-US', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+      }),
+      fxTimeStr: now.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      })
+    };
+  }, [lastUpdated]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent | TouchEvent) => {
@@ -292,15 +401,29 @@ export const SelectCurrencyDropdown: React.FC<HeaderCurrencyExchangeIconProps> =
 
       {isOpen && (
         <div className="absolute left-0 sm:left-auto sm:right-0 bottom-full mb-2 w-72 sm:w-80 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl z-50 overflow-hidden animate-fadeIn flex flex-col max-h-[420px]">
-          <div className="p-3 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 flex flex-col gap-2">
+          <div className="p-3 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 flex flex-col gap-2 shrink-0">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-slate-800 dark:text-white uppercase tracking-wider">
                 Select Currency
               </span>
               <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${isLive ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'}`}>
-                {isLive ? '● Live FX' : '● FX'}
+                {isLive ? '● Live Rates' : '● Standard Rates'}
               </span>
             </div>
+
+            {/* Live FX Rate Date & Last Update Time Banner */}
+            <div className="flex items-center justify-between px-2 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200/90 dark:border-emerald-800/60 text-[10px]">
+              <div className="flex items-center gap-1.5 text-emerald-800 dark:text-emerald-300 font-medium min-w-0 flex-wrap">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>
+                <span>Date: <strong className="font-bold text-slate-900 dark:text-white">{fxDateStr}</strong></span>
+                <span className="text-emerald-400 dark:text-emerald-600">•</span>
+                <span>Last updated: <strong className="font-semibold text-slate-800 dark:text-slate-200">{fxTimeStr}</strong></span>
+              </div>
+              <span className="text-[9px] font-bold text-emerald-700 dark:text-emerald-400 bg-white/80 dark:bg-slate-900/80 px-1 py-0.2 rounded shrink-0">
+                1 MYR Base
+              </span>
+            </div>
+
             <input
               type="text"
               placeholder="Search currency or country..."
@@ -320,6 +443,7 @@ export const SelectCurrencyDropdown: React.FC<HeaderCurrencyExchangeIconProps> =
             ) : (
               filteredOptions.map((opt) => {
                 const isSelected = currency === opt.code;
+                const optRate = rates ? rates[opt.code] : undefined;
                 return (
                   <button
                     key={opt.code}
@@ -337,19 +461,24 @@ export const SelectCurrencyDropdown: React.FC<HeaderCurrencyExchangeIconProps> =
                         : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/80 font-medium'
                     }`}
                   >
-                    <div className="flex items-center gap-2.5">
-                      <span className="text-base select-none">{opt.flag}</span>
-                      <div className="flex flex-col text-left">
-                        <span className="font-bold text-slate-900 dark:text-white">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <span className="text-base select-none shrink-0">{opt.flag}</span>
+                      <div className="flex flex-col text-left min-w-0">
+                        <span className="font-bold text-slate-900 dark:text-white truncate">
                           {opt.code} — {opt.name}
                         </span>
-                        <span className="text-[10px] text-slate-500 dark:text-slate-400">
-                          {opt.country} ({opt.symbol})
-                        </span>
+                        <div className="flex items-center gap-1.5 text-[10px] text-slate-500 dark:text-slate-400 flex-wrap">
+                          <span className="truncate">{opt.country} ({opt.symbol})</span>
+                          {optRate !== undefined && (
+                            <span className="font-semibold text-emerald-600 dark:text-emerald-400 shrink-0">
+                              • 1 MYR = {optRate >= 100 ? Math.round(optRate).toLocaleString() : optRate < 0.01 ? optRate.toFixed(4) : optRate.toFixed(3)}
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
                     {isSelected && (
-                      <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0"></span>
+                      <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0 ml-1"></span>
                     )}
                   </button>
                 );

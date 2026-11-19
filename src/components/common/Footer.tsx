@@ -552,6 +552,15 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                   >
                     +880 1805 529578
                   </a>
+                  <a
+                    href="https://wa.me/601112376224"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Chat on WhatsApp (Malaysia)"
+                    className="hover:underline hover:text-emerald-700 dark:hover:text-emerald-300"
+                  >
+                    +60111 237 6224
+                  </a>
                 </div>
               </div>
 

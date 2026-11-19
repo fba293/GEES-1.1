@@ -8,6 +8,7 @@
 
 import React, { useState } from 'react';
 import { InteractiveHoverButton } from '../ui/interactive-hover-button.tsx';
+import { APPROVED_QUALIFICATIONS } from '../../lib/qualification-config.ts';
 
 interface DependentVisaViewProps {
   onBackToHome?: () => void;
@@ -990,11 +991,11 @@ export const DependentVisaView: React.FC<DependentVisaViewProps> = ({
                 onChange={(e) => setReadinessStep1(e.target.value)}
                 className="w-full p-2.5 min-h-[44px] rounded-xl bg-slate-900 border border-slate-700 text-white text-xs sm:text-sm focus:outline-hidden focus:border-[#fbb034]"
               >
-                <option value="">-- Select Degree --</option>
-                <option value="phd">PhD / Doctoral Research</option>
-                <option value="masters">Master’s Degree (Research/Coursework)</option>
-                <option value="bachelor">Bachelor’s Degree (Undergraduate)</option>
-                <option value="diploma">Diploma / Certificate Course</option>
+                {APPROVED_QUALIFICATIONS.map((qual) => (
+                  <option key={qual} value={qual}>
+                    {qual}
+                  </option>
+                ))}
               </select>
               <p className="text-[11px] text-slate-400">
                 UK &amp; Canada require Master&apos;s/PhD for spousal work rights.
@@ -1044,20 +1045,28 @@ export const DependentVisaView: React.FC<DependentVisaViewProps> = ({
           </div>
 
           {/* DYNAMIC FEEDBACK BOX */}
-          {(readinessStep1 || readinessStep2 || readinessStep3) && (
+          {((readinessStep1 && readinessStep1 !== 'All Levels') || readinessStep2 || readinessStep3) && (
             <div className="p-5 rounded-2xl bg-white/10 border border-white/20 text-xs sm:text-sm space-y-2">
               <h4 className="font-bold text-[#fbb034] flex items-center gap-1.5">
                 <span className="material-symbols-outlined text-[18px]">analytics</span>
                 <span>Immediate Assessment Summary</span>
               </h4>
 
-              {readinessStep1 === 'bachelor' && (
+              {readinessStep1 &&
+                readinessStep1 !== 'All Levels' &&
+                !['PhD / Doctorate', "Master's Degree (Postgraduate)", 'MBA', 'Postgraduate Diploma'].includes(readinessStep1) && (
                 <p className="text-amber-200">
-                  ⚠️ <strong>Undergraduate Note:</strong> Spousal dependent visas are severely restricted for Bachelor&apos;s degree students in the UK and Canada. Australia permits accompaniment, but spouse work rights are capped at 48 hours per fortnight. Malaysia does not permit dependent passes for undergraduates.
+                  ⚠️ <strong>Undergraduate / Pathway Note:</strong> Spousal dependent visas are severely restricted for {readinessStep1} students in the UK and Canada. Australia permits accompaniment for eligible degree programmes, with spouse work rights capped at 48 hours per fortnight. Malaysia does not permit dependent passes for non-postgraduate routes.
                 </p>
               )}
 
-              {readinessStep1 === 'phd' && (
+              {['Master\'s Degree (Postgraduate)', 'MBA', 'Postgraduate Diploma'].includes(readinessStep1) && (
+                <p className="text-blue-200">
+                  ℹ️ <strong>Postgraduate Route:</strong> Master&apos;s and Postgraduate students qualify for dependent visas in Malaysia, Australia, New Zealand, and research-designated programmes in the UK and Canada.
+                </p>
+              )}
+
+              {readinessStep1 === 'PhD / Doctorate' && (
                 <p className="text-emerald-200">
                   ✅ <strong>Doctoral Advantage:</strong> PhD students enjoy the highest dependent privileges across Malaysia, UK, Australia, New Zealand, and Canada, including full spousal work rights and access to schooling.
                 </p>

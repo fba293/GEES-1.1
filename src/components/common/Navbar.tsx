@@ -80,22 +80,65 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [portalOpen, setPortalOpen] = useState(false);
   const portalTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Mobile menu accordion expand states matching video & user screenshots
-  const [openMobileSection, setOpenMobileSection] = useState<string | null>('countries');
+  // Mobile menu accordion expand states - keep closed by default on all devices
+  const [openMobileSection, setOpenMobileSection] = useState<string | null>(null);
   const [mobilePortalTab, setMobilePortalTab] = useState<'signin' | 'signup'>('signin');
   const [mobilePortalRole, setMobilePortalRole] = useState<'student' | 'agent' | 'counselor'>('student');
   const [mobileSignupRole, setMobileSignupRole] = useState<'student' | 'agent'>('student');
 
-  // 21st.dev inspired shared hover indicator and smooth mega dropdown navigation states
+  // Reset mobile accordion sections whenever the mobile menu closes
+  useEffect(() => {
+    if (!isMobileMenuOpen) {
+      setOpenMobileSection(null);
+    }
+  }, [isMobileMenuOpen]);
+
+  // 120fps Hardware-Accelerated Liquid Hover Indicator & Mega Dropdown Navigation States
   const [hoveredNav, setHoveredNav] = useState<string | null>(null);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const navCloseTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const navContainerRef = useRef<HTMLElement | null>(null);
+  const navButtonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const [pillStyle, setPillStyle] = useState<{
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    visible: boolean;
+    shouldSlide: boolean;
+  }>({
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+    visible: false,
+    shouldSlide: false,
+  });
 
   const handleNavItemEnter = (itemKey: string, hasDropdown = false) => {
     if (navCloseTimeoutRef.current) {
       clearTimeout(navCloseTimeoutRef.current);
       navCloseTimeoutRef.current = null;
     }
+
+    const btn = navButtonRefs.current[itemKey];
+    if (btn) {
+      const wrapper = btn.parentElement;
+      const x = (wrapper ? wrapper.offsetLeft : 0) + btn.offsetLeft;
+      const y = (wrapper ? wrapper.offsetTop : 0) + btn.offsetTop;
+      const width = btn.offsetWidth;
+      const height = btn.offsetHeight;
+
+      setPillStyle((prev) => ({
+        x,
+        y,
+        width,
+        height,
+        visible: true,
+        shouldSlide: prev.visible,
+      }));
+    }
+
     setHoveredNav(itemKey);
     if (hasDropdown) {
       setActiveDropdown(itemKey);
@@ -108,7 +151,8 @@ export const Navbar: React.FC<NavbarProps> = ({
     navCloseTimeoutRef.current = setTimeout(() => {
       setHoveredNav(null);
       setActiveDropdown(null);
-    }, 180);
+      setPillStyle((prev) => ({ ...prev, visible: false, shouldSlide: false }));
+    }, 150);
   };
 
   const handleDropdownPanelEnter = () => {
@@ -121,6 +165,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   const handleMenuNavigate = (view: string, payload?: any) => {
     setHoveredNav(null);
     setActiveDropdown(null);
+    setPillStyle((prev) => ({ ...prev, visible: false, shouldSlide: false }));
     onNavigate(view, payload);
   };
 
@@ -159,7 +204,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 call
               </span>
               <span className="text-white/70 hidden min-[380px]:inline">BD:</span>
-              <strong className="text-white font-semibold tracking-wide font-mono text-[11px] sm:text-xs">+880 1805 529577</strong>
+              <strong className="text-white/90 font-normal font-mono text-[11px] sm:text-xs transition-colors group-hover:text-[#fbb034]">+880 1805 529577</strong>
             </a>
             <span className="text-white/30">|</span>
             <a
@@ -270,19 +315,42 @@ export const Navbar: React.FC<NavbarProps> = ({
           <span className="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full bg-[#fbb034] shadow-xs"></span>
         </div>
 
-        {/* Universal Desktop Navigation Bar with 21st.dev Shared Hover-Follow Indicator */}
+        {/* Universal Desktop Navigation Bar with 120fps Hardware-Accelerated Liquid Hover Indicator */}
         <nav
-          className="hidden xl:flex items-center gap-1.5 lg:gap-2 text-sm font-semibold select-none"
+          ref={navContainerRef}
+          className="relative hidden xl:flex items-center gap-1.5 lg:gap-2 text-sm font-semibold select-none"
           onMouseLeave={handleNavMenuLeave}
         >
+          {/* Single Persistent 120fps GPU-Accelerated Liquid Indicator Pill */}
+          <div
+            aria-hidden="true"
+            style={{
+              width: `${pillStyle.width}px`,
+              height: `${pillStyle.height}px`,
+              transform: `translate3d(${pillStyle.x}px, ${pillStyle.y}px, 0)`,
+              opacity: pillStyle.visible && hoveredNav ? 1 : 0,
+              transition: pillStyle.shouldSlide
+                ? 'transform 220ms cubic-bezier(0.22, 1, 0.36, 1), width 220ms cubic-bezier(0.22, 1, 0.36, 1), height 220ms cubic-bezier(0.22, 1, 0.36, 1), opacity 140ms ease-out'
+                : 'opacity 140ms ease-out',
+              willChange: 'transform, width, opacity',
+              backfaceVisibility: 'hidden',
+            }}
+            className={`pointer-events-none absolute top-0 left-0 rounded-full z-0 ${
+              isScrolled
+                ? (isDark ? 'bg-white/12 border border-white/20' : 'bg-slate-200/80 border border-slate-300/60 shadow-xs')
+                : (isDark ? 'bg-white/10 border border-white/15' : 'bg-slate-100/90 border border-slate-200/80 shadow-xs')
+            }`}
+          />
+
           {/* 1. Countries Mega-Menu */}
           <div
             className="relative py-2"
             onMouseEnter={() => handleNavItemEnter('countries', true)}
           >
             <button
+              ref={(el) => { navButtonRefs.current['countries'] = el; }}
               type="button"
-              className={`relative px-3.5 py-2 rounded-full flex items-center gap-1.5 transition-colors font-semibold cursor-pointer z-10 ${
+              className={`relative px-3.5 py-2 rounded-full flex items-center gap-1.5 transition-colors duration-150 font-semibold cursor-pointer z-10 ${
                 currentView === 'destinations'
                   ? (isScrolled
                       ? (isDark ? 'text-[#fbb034] font-bold' : 'text-blue-600 font-bold')
@@ -292,22 +360,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                       : 'text-slate-900 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400')
               }`}
             >
-              <AnimatePresence>
-                {hoveredNav === 'countries' && (
-                  <motion.div
-                    layoutId="navbar-hover-indicator"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className={`absolute inset-0 rounded-full -z-10 ${
-                      isScrolled
-                        ? (isDark ? 'bg-white/12 border border-white/20' : 'bg-slate-200/80 border border-slate-300/60 shadow-xs')
-                        : (isDark ? 'bg-white/10 border border-white/15' : 'bg-slate-100/90 border border-slate-200/80 shadow-xs')
-                    }`}
-                    transition={{ type: 'spring', stiffness: 440, damping: 30 }}
-                  />
-                )}
-              </AnimatePresence>
               <span>Countries</span>
               <span className="material-symbols-outlined text-[14px]">expand_more</span>
             </button>
@@ -433,9 +485,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             onMouseEnter={() => handleNavItemEnter('universities', false)}
           >
             <button
+              ref={(el) => { navButtonRefs.current['universities'] = el; }}
               type="button"
               onClick={() => handleMenuNavigate('universities')}
-              className={`relative px-3.5 py-2 rounded-full flex items-center gap-1.5 transition-colors cursor-pointer z-10 font-semibold ${
+              className={`relative px-3.5 py-2 rounded-full flex items-center gap-1.5 transition-colors duration-150 cursor-pointer z-10 font-semibold ${
                 currentView === 'universities'
                   ? (isScrolled
                       ? (isDark ? 'text-[#fbb034] font-bold' : 'text-blue-600 font-bold')
@@ -445,24 +498,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                       : 'text-slate-900 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400')
               }`}
             >
-              <AnimatePresence>
-                {hoveredNav === 'universities' && (
-                  <motion.div
-                    layoutId="navbar-hover-indicator"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className={`absolute inset-0 rounded-full -z-10 ${
-                      isScrolled
-                        ? (isDark ? 'bg-white/12 border border-white/20' : 'bg-slate-200/80 border border-slate-300/60 shadow-xs')
-                        : (isDark ? 'bg-white/10 border border-white/15' : 'bg-slate-100/90 border border-slate-200/80 shadow-xs')
-                    }`}
-                    transition={{ type: 'spring', stiffness: 440, damping: 30 }}
-                  />
-                )}
-              </AnimatePresence>
               <span>Universities</span>
-              <span className="material-symbols-outlined text-[14px]">expand_more</span>
             </button>
           </div>
 
@@ -472,9 +508,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             onMouseEnter={() => handleNavItemEnter('courses', false)}
           >
             <button
+              ref={(el) => { navButtonRefs.current['courses'] = el; }}
               type="button"
               onClick={() => handleMenuNavigate('courses')}
-              className={`relative px-3.5 py-2 rounded-full flex items-center gap-1.5 transition-colors cursor-pointer z-10 font-semibold ${
+              className={`relative px-3.5 py-2 rounded-full flex items-center gap-1.5 transition-colors duration-150 cursor-pointer z-10 font-semibold ${
                 currentView === 'courses'
                   ? (isScrolled
                       ? (isDark ? 'text-[#fbb034] font-bold' : 'text-blue-600 font-bold')
@@ -484,24 +521,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                       : 'text-slate-900 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400')
               }`}
             >
-              <AnimatePresence>
-                {hoveredNav === 'courses' && (
-                  <motion.div
-                    layoutId="navbar-hover-indicator"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className={`absolute inset-0 rounded-full -z-10 ${
-                      isScrolled
-                        ? (isDark ? 'bg-white/12 border border-white/20' : 'bg-slate-200/80 border border-slate-300/60 shadow-xs')
-                        : (isDark ? 'bg-white/10 border border-white/15' : 'bg-slate-100/90 border border-slate-200/80 shadow-xs')
-                    }`}
-                    transition={{ type: 'spring', stiffness: 440, damping: 30 }}
-                  />
-                )}
-              </AnimatePresence>
               <span>Courses</span>
-              <span className="material-symbols-outlined text-[14px]">expand_more</span>
             </button>
           </div>
 
@@ -511,8 +531,9 @@ export const Navbar: React.FC<NavbarProps> = ({
             onMouseEnter={() => handleNavItemEnter('services', true)}
           >
             <button
+              ref={(el) => { navButtonRefs.current['services'] = el; }}
               type="button"
-              className={`relative px-3.5 py-2 rounded-full flex items-center gap-1.5 transition-colors font-semibold cursor-pointer z-10 ${
+              className={`relative px-3.5 py-2 rounded-full flex items-center gap-1.5 transition-colors duration-150 font-semibold cursor-pointer z-10 ${
                 currentView === 'services'
                   ? (isScrolled
                       ? (isDark ? 'text-[#fbb034] font-bold' : 'text-blue-600 font-bold')
@@ -522,22 +543,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                       : 'text-slate-900 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400')
               }`}
             >
-              <AnimatePresence>
-                {hoveredNav === 'services' && (
-                  <motion.div
-                    layoutId="navbar-hover-indicator"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className={`absolute inset-0 rounded-full -z-10 ${
-                      isScrolled
-                        ? (isDark ? 'bg-white/12 border border-white/20' : 'bg-slate-200/80 border border-slate-300/60 shadow-xs')
-                        : (isDark ? 'bg-white/10 border border-white/15' : 'bg-slate-100/90 border border-slate-200/80 shadow-xs')
-                    }`}
-                    transition={{ type: 'spring', stiffness: 440, damping: 30 }}
-                  />
-                )}
-              </AnimatePresence>
               <span>Services</span>
               <span className="material-symbols-outlined text-[14px]">expand_more</span>
             </button>
@@ -721,9 +726,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             onMouseEnter={() => handleNavItemEnter('contact', true)}
           >
             <button
+              ref={(el) => { navButtonRefs.current['contact'] = el; }}
               type="button"
               onClick={() => handleMenuNavigate('contact')}
-              className={`relative px-3.5 py-2 rounded-full flex items-center gap-1.5 transition-colors font-semibold cursor-pointer z-10 ${
+              className={`relative px-3.5 py-2 rounded-full flex items-center gap-1.5 transition-colors duration-150 font-semibold cursor-pointer z-10 ${
                 currentView === 'contact' || currentView === 'about'
                   ? (isScrolled
                       ? (isDark ? 'text-[#fbb034] font-bold' : 'text-blue-600 font-bold')
@@ -733,22 +739,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                       : 'text-slate-900 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400')
               }`}
             >
-              <AnimatePresence>
-                {hoveredNav === 'contact' && (
-                  <motion.div
-                    layoutId="navbar-hover-indicator"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className={`absolute inset-0 rounded-full -z-10 ${
-                      isScrolled
-                        ? (isDark ? 'bg-white/12 border border-white/20' : 'bg-slate-200/80 border border-slate-300/60 shadow-xs')
-                        : (isDark ? 'bg-white/10 border border-white/15' : 'bg-slate-100/90 border border-slate-200/80 shadow-xs')
-                    }`}
-                    transition={{ type: 'spring', stiffness: 440, damping: 30 }}
-                  />
-                )}
-              </AnimatePresence>
               <span>Contact</span>
               <span className="material-symbols-outlined text-[14px]">expand_more</span>
             </button>
@@ -857,7 +847,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         </nav>
 
         {/* Right Action Controls */}
-        <div id="nav-utility-container" className="flex items-center gap-0.5 xs:gap-1 sm:gap-1.5 lg:gap-2.5 shrink-0">
+        <div id="nav-utility-container" className="flex items-center gap-1.5 xs:gap-2 sm:gap-2 lg:gap-2.5 shrink-0">
           {/* Header Multi-Currency Switcher */}
           <div className="flex items-center">
             <HeaderCurrencyExchangeIcon variant="minimal" />
@@ -867,10 +857,10 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             aria-label="Search Catalog"
             onClick={onOpenSearch}
-            className="hidden sm:flex w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 rounded-full items-center justify-center border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 hover:text-blue-600 dark:hover:text-[#fbb034] hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+            className="hidden sm:flex w-11 h-11 min-w-[44px] min-h-[44px] rounded-full items-center justify-center border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 hover:text-blue-600 dark:hover:text-[#fbb034] hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 transition-all shadow-2xs cursor-pointer"
             type="button"
           >
-            <span className="material-symbols-outlined text-[18px]">search</span>
+            <span className="material-symbols-outlined text-[20px]">search</span>
           </button>
 
           {/* Theme Toggle Button (Visible on all viewports) */}
@@ -889,10 +879,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               aria-label="Portal"
               onClick={() => setPortalOpen(!portalOpen)}
-              className="w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 hover:text-blue-600 dark:hover:text-[#fbb034] hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+              className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 hover:text-blue-600 dark:hover:text-[#fbb034] hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 transition-all shadow-2xs cursor-pointer"
               type="button"
             >
-              <span className="material-symbols-outlined text-[18px]">account_circle</span>
+              <span className="material-symbols-outlined text-[22px]">account_circle</span>
             </button>
 
             {/* Portal Dropdown Menu: GEES Brand-Consistent Authentication Panel */}
@@ -1094,93 +1084,96 @@ export const Navbar: React.FC<NavbarProps> = ({
                     Registration Type
                   </div>
 
-                  {/* Student Registration */}
-                  <button
-                    type="button"
-                    onClick={() => setSelectedSignupRole('student')}
-                    className={`w-full flex items-center gap-3 p-2.5 rounded-xl border transition-all text-left cursor-pointer ${
-                      selectedSignupRole === 'student'
-                        ? 'bg-amber-500/[0.08] dark:bg-amber-500/[0.12] border-[#fbb034] ring-1 ring-[#fbb034]/60'
-                        : 'bg-white dark:bg-slate-900/60 border-slate-200/90 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-50/80 dark:hover:bg-slate-850/50'
-                    }`}
-                  >
-                    <div
-                      className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
+                  {/* Both selections in a single row */}
+                  <div className="grid grid-cols-2 gap-2">
+                    {/* Student Registration */}
+                    <button
+                      type="button"
+                      onClick={() => setSelectedSignupRole('student')}
+                      className={`flex items-center gap-2 p-2.5 rounded-xl border transition-all text-left cursor-pointer ${
                         selectedSignupRole === 'student'
-                          ? 'bg-[#fbb034]/20 text-[#0A1120] dark:text-[#fbb034]'
-                          : 'bg-slate-100 dark:bg-slate-800 text-[#0A1120] dark:text-slate-200'
+                          ? 'bg-[#fff9e6] dark:bg-amber-950/30 border-[#fbb034] ring-1 ring-[#fbb034]/60'
+                          : 'bg-white dark:bg-slate-900/60 border-slate-200/90 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-50/80 dark:hover:bg-slate-850/50'
                       }`}
                     >
-                      <span className="material-symbols-outlined text-[19px]">school</span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <span
-                        className={`block text-xs font-bold leading-tight ${
+                      <div
+                        className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
                           selectedSignupRole === 'student'
-                            ? 'text-[#0A1120] dark:text-white'
-                            : 'text-slate-800 dark:text-slate-200'
+                            ? 'bg-[#fbb034]/20 text-[#0A1120] dark:text-[#fbb034]'
+                            : 'bg-slate-100 dark:bg-slate-800 text-[#0A1120] dark:text-slate-200'
                         }`}
                       >
-                        Student Registration
-                      </span>
-                      <span className="block text-[11px] text-slate-500 dark:text-slate-400 leading-tight mt-0.5 truncate">
-                        Apply to global partner universities
-                      </span>
-                    </div>
-                    <div className="shrink-0 ml-1.5">
-                      {selectedSignupRole === 'student' ? (
-                        <div className="w-4 h-4 rounded-full bg-[#fbb034] text-[#0A1120] flex items-center justify-center shadow-xs">
-                          <span className="material-symbols-outlined text-[12px] font-bold">check</span>
-                        </div>
-                      ) : (
-                        <div className="w-4 h-4 rounded-full border border-slate-300 dark:border-slate-700"></div>
-                      )}
-                    </div>
-                  </button>
+                        <span className="material-symbols-outlined text-[18px]">school</span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <span
+                          className={`block text-[11px] font-bold leading-tight truncate ${
+                            selectedSignupRole === 'student'
+                              ? 'text-[#0A1120] dark:text-white'
+                              : 'text-slate-800 dark:text-slate-200'
+                          }`}
+                        >
+                          Student
+                        </span>
+                        <span className="block text-[9.5px] text-slate-500 dark:text-slate-400 leading-tight mt-0.5 truncate">
+                          Registration
+                        </span>
+                      </div>
+                      <div className="shrink-0 ml-1">
+                        {selectedSignupRole === 'student' ? (
+                          <div className="w-3.5 h-3.5 rounded-full bg-[#fbb034] flex items-center justify-center shadow-xs">
+                            <div className="w-1.5 h-1.5 rounded-full bg-white"></div>
+                          </div>
+                        ) : (
+                          <div className="w-3.5 h-3.5 rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800"></div>
+                        )}
+                      </div>
+                    </button>
 
-                  {/* Agent Partner Registration */}
-                  <button
-                    type="button"
-                    onClick={() => setSelectedSignupRole('agent')}
-                    className={`w-full flex items-center gap-3 p-2.5 rounded-xl border transition-all text-left cursor-pointer ${
-                      selectedSignupRole === 'agent'
-                        ? 'bg-amber-500/[0.08] dark:bg-amber-500/[0.12] border-[#fbb034] ring-1 ring-[#fbb034]/60'
-                        : 'bg-white dark:bg-slate-900/60 border-slate-200/90 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-50/80 dark:hover:bg-slate-850/50'
-                    }`}
-                  >
-                    <div
-                      className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
+                    {/* Agent Partner Registration */}
+                    <button
+                      type="button"
+                      onClick={() => setSelectedSignupRole('agent')}
+                      className={`flex items-center gap-2 p-2.5 rounded-xl border transition-all text-left cursor-pointer ${
                         selectedSignupRole === 'agent'
-                          ? 'bg-[#fbb034]/20 text-[#0A1120] dark:text-[#fbb034]'
-                          : 'bg-slate-100 dark:bg-slate-800 text-[#0A1120] dark:text-slate-200'
+                          ? 'bg-[#fff9e6] dark:bg-amber-950/30 border-[#fbb034] ring-1 ring-[#fbb034]/60'
+                          : 'bg-white dark:bg-slate-900/60 border-slate-200/90 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-50/80 dark:hover:bg-slate-850/50'
                       }`}
                     >
-                      <span className="material-symbols-outlined text-[19px]">handshake</span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <span
-                        className={`block text-xs font-bold leading-tight ${
+                      <div
+                        className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
                           selectedSignupRole === 'agent'
-                            ? 'text-[#0A1120] dark:text-white'
-                            : 'text-slate-800 dark:text-slate-200'
+                            ? 'bg-[#fbb034]/20 text-[#0A1120] dark:text-[#fbb034]'
+                            : 'bg-slate-100 dark:bg-slate-800 text-[#0A1120] dark:text-slate-200'
                         }`}
                       >
-                        Agent Registration
-                      </span>
-                      <span className="block text-[11px] text-slate-500 dark:text-slate-400 leading-tight mt-0.5 truncate">
-                        Join GEES global recruitment network
-                      </span>
-                    </div>
-                    <div className="shrink-0 ml-1.5">
-                      {selectedSignupRole === 'agent' ? (
-                        <div className="w-4 h-4 rounded-full bg-[#fbb034] text-[#0A1120] flex items-center justify-center shadow-xs">
-                          <span className="material-symbols-outlined text-[12px] font-bold">check</span>
-                        </div>
-                      ) : (
-                        <div className="w-4 h-4 rounded-full border border-slate-300 dark:border-slate-700"></div>
-                      )}
-                    </div>
-                  </button>
+                        <span className="material-symbols-outlined text-[18px]">handshake</span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <span
+                          className={`block text-[11px] font-bold leading-tight truncate ${
+                            selectedSignupRole === 'agent'
+                              ? 'text-[#0A1120] dark:text-white'
+                              : 'text-slate-800 dark:text-slate-200'
+                          }`}
+                        >
+                          Agent
+                        </span>
+                        <span className="block text-[9.5px] text-slate-500 dark:text-slate-400 leading-tight mt-0.5 truncate">
+                          Registration
+                        </span>
+                      </div>
+                      <div className="shrink-0 ml-1">
+                        {selectedSignupRole === 'agent' ? (
+                          <div className="w-3.5 h-3.5 rounded-full bg-[#fbb034] flex items-center justify-center shadow-xs">
+                            <div className="w-1.5 h-1.5 rounded-full bg-white"></div>
+                          </div>
+                        ) : (
+                          <div className="w-3.5 h-3.5 rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800"></div>
+                        )}
+                      </div>
+                    </button>
+                  </div>
 
                   {/* Primary Action: Clear Continue button in GEES amber */}
                   <button
@@ -1196,7 +1189,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     className="mt-3 w-full py-2.5 px-4 rounded-xl bg-[#fbb034] hover:bg-[#f59e0b] active:scale-[0.98] text-[#0A1120] font-bold text-xs tracking-wide shadow-xs hover:shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                   >
                     <span>
-                      {selectedSignupRole === 'student' ? 'Start Student Application' : 'Register as Partner Agent'}
+                      Continue as {selectedSignupRole === 'student' ? 'Student' : 'Partner Agent'}
                     </span>
                     <span className="material-symbols-outlined text-[15px]">arrow_forward</span>
                   </button>
@@ -1220,31 +1213,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
           </div>
 
-          {/* Mobile Apply Now Button matching reference video */}
-          <div className="xl:hidden flex items-center">
-            <button
-              type="button"
-              onClick={() => {
-                onNavigate('apply');
-                if (isMobileMenuOpen) onOpenMobileMenu();
-              }}
-              className="px-3 py-1.5 xs:px-3.5 xs:py-1.5 sm:px-4 sm:py-2 rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-semibold text-xs sm:text-sm flex items-center gap-1.5 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-xs cursor-pointer select-none"
-            >
-              <span>Apply now</span>
-              <div className="w-5 h-5 rounded-full bg-[#0A1120] dark:bg-amber-400 text-white dark:text-[#0A1120] flex items-center justify-center">
-                <span className="material-symbols-outlined text-[13px] font-bold">arrow_forward</span>
-              </div>
-            </button>
-          </div>
 
-          {/* Primary Universal CTA: Apply on Desktop */}
-          <div className="hidden xl:block">
-            <InteractiveHoverButton
-              text="Apply"
-              onClick={() => onNavigate('apply')}
-              className="h-9 sm:h-10 lg:h-11 w-24 sm:w-28 rounded-full border-slate-300 dark:border-slate-700 text-sm font-bold text-slate-900 dark:text-white bg-white dark:bg-slate-900 shadow-xs cursor-pointer"
-            />
-          </div>
 
           {/* Responsive Morphing Hamburger Navigation Button */}
           <button
@@ -1252,24 +1221,24 @@ export const Navbar: React.FC<NavbarProps> = ({
             aria-expanded={isMobileMenuOpen}
             onClick={onOpenMobileMenu}
             title={isMobileMenuOpen ? 'Close Navigation Menu' : 'Open Navigation Menu'}
-            className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center transition-all cursor-pointer shrink-0 z-50 ${
+            className={`w-11 h-11 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center transition-all active:scale-95 cursor-pointer shrink-0 z-50 ${
               isMobileMenuOpen
                 ? 'bg-[#0A1120] dark:bg-slate-800 text-white shadow-md'
-                : 'border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 hover:text-blue-600 dark:hover:text-[#fbb034] hover:bg-slate-100 dark:hover:bg-slate-800'
+                : 'border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 hover:text-blue-600 dark:hover:text-[#fbb034] hover:bg-slate-100 dark:hover:bg-slate-800 shadow-2xs'
             }`}
             type="button"
           >
             <MorphingHamburgerIcon
               isOpen={isMobileMenuOpen}
-              className="w-4.5 h-4.5 text-current"
+              className="w-5.5 h-5.5 sm:w-6 sm:h-6 text-current"
             />
           </button>
         </div>
       </div>
 
-        {/* Unfolded Mobile Menu Body matching all 5 user screenshots */}
+        {/* Unfolded Menu Body matching all devices */}
         <div
-          className={`xl:hidden flex flex-col w-full border-t border-slate-100 dark:border-slate-800/80 overflow-y-auto overscroll-contain transition-opacity duration-300 ${
+          className={`flex flex-col w-full border-t border-slate-100 dark:border-slate-800/80 overflow-y-auto overscroll-contain transition-opacity duration-300 ${
             isMobileMenuOpen ? 'opacity-100 px-4 py-3 sm:px-6 sm:py-4 pointer-events-auto' : 'opacity-0 pointer-events-none h-0 py-0'
           }`}
           style={{
@@ -1288,7 +1257,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                 className="w-full text-left py-2 px-1 text-[20px] font-bold text-slate-900 dark:text-slate-100 hover:text-blue-600 transition-colors flex items-center justify-between cursor-pointer"
               >
                 <span>Home</span>
-                <span className="material-symbols-outlined text-[20px] text-slate-300 dark:text-slate-600">chevron_right</span>
               </button>
             </div>
 
@@ -1360,7 +1328,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                 className="w-full text-left py-2 px-1 text-[20px] font-bold text-slate-900 dark:text-slate-100 hover:text-blue-600 transition-colors flex items-center justify-between cursor-pointer"
               >
                 <span>Universities</span>
-                <span className="material-symbols-outlined text-[20px] text-slate-300 dark:text-slate-600">chevron_right</span>
               </button>
             </div>
 
@@ -1375,7 +1342,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                 className="w-full text-left py-2 px-1 text-[20px] font-bold text-slate-900 dark:text-slate-100 hover:text-blue-600 transition-colors flex items-center justify-between cursor-pointer"
               >
                 <span>Courses</span>
-                <span className="material-symbols-outlined text-[20px] text-slate-300 dark:text-slate-600">chevron_right</span>
               </button>
             </div>
 
@@ -1530,7 +1496,11 @@ export const Navbar: React.FC<NavbarProps> = ({
                             : 'bg-white dark:bg-slate-900/60 border-slate-200 dark:border-slate-800'
                         }`}
                       >
-                        <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0">
+                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
+                          mobilePortalRole === 'student'
+                            ? 'bg-[#fbb034]/20 text-[#0A1120] dark:text-[#fbb034]'
+                            : 'bg-slate-100 dark:bg-slate-800 text-[#0A1120] dark:text-slate-200'
+                        }`}>
                           <span className="material-symbols-outlined text-[19px]">school</span>
                         </div>
                         <div className="flex-1 min-w-0">
@@ -1539,11 +1509,11 @@ export const Navbar: React.FC<NavbarProps> = ({
                         </div>
                         <div className="shrink-0">
                           {mobilePortalRole === 'student' ? (
-                            <div className="w-5 h-5 rounded-full bg-[#fbb034] text-[#0A1120] flex items-center justify-center shadow-xs">
-                              <span className="material-symbols-outlined text-[13px] font-bold">check</span>
+                            <div className="w-5 h-5 rounded-full bg-[#fbb034] flex items-center justify-center shadow-xs">
+                              <div className="w-2 h-2 rounded-full bg-white"></div>
                             </div>
                           ) : (
-                            <div className="w-5 h-5 rounded-full border border-slate-300 dark:border-slate-700"></div>
+                            <div className="w-5 h-5 rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800"></div>
                           )}
                         </div>
                       </button>
@@ -1558,7 +1528,11 @@ export const Navbar: React.FC<NavbarProps> = ({
                             : 'bg-white dark:bg-slate-900/60 border-slate-200 dark:border-slate-800'
                         }`}
                       >
-                        <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0">
+                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
+                          mobilePortalRole === 'agent'
+                            ? 'bg-[#fbb034]/20 text-[#0A1120] dark:text-[#fbb034]'
+                            : 'bg-slate-100 dark:bg-slate-800 text-[#0A1120] dark:text-slate-200'
+                        }`}>
                           <span className="material-symbols-outlined text-[19px]">handshake</span>
                         </div>
                         <div className="flex-1 min-w-0">
@@ -1567,11 +1541,11 @@ export const Navbar: React.FC<NavbarProps> = ({
                         </div>
                         <div className="shrink-0">
                           {mobilePortalRole === 'agent' ? (
-                            <div className="w-5 h-5 rounded-full bg-[#fbb034] text-[#0A1120] flex items-center justify-center shadow-xs">
-                              <span className="material-symbols-outlined text-[13px] font-bold">check</span>
+                            <div className="w-5 h-5 rounded-full bg-[#fbb034] flex items-center justify-center shadow-xs">
+                              <div className="w-2 h-2 rounded-full bg-white"></div>
                             </div>
                           ) : (
-                            <div className="w-5 h-5 rounded-full border border-slate-300 dark:border-slate-700"></div>
+                            <div className="w-5 h-5 rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800"></div>
                           )}
                         </div>
                       </button>
@@ -1586,7 +1560,11 @@ export const Navbar: React.FC<NavbarProps> = ({
                             : 'bg-white dark:bg-slate-900/60 border-slate-200 dark:border-slate-800'
                         }`}
                       >
-                        <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0">
+                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
+                          mobilePortalRole === 'counselor'
+                            ? 'bg-[#fbb034]/20 text-[#0A1120] dark:text-[#fbb034]'
+                            : 'bg-slate-100 dark:bg-slate-800 text-[#0A1120] dark:text-slate-200'
+                        }`}>
                           <span className="material-symbols-outlined text-[19px]">badge</span>
                         </div>
                         <div className="flex-1 min-w-0">
@@ -1595,11 +1573,11 @@ export const Navbar: React.FC<NavbarProps> = ({
                         </div>
                         <div className="shrink-0">
                           {mobilePortalRole === 'counselor' ? (
-                            <div className="w-5 h-5 rounded-full bg-[#fbb034] text-[#0A1120] flex items-center justify-center shadow-xs">
-                              <span className="material-symbols-outlined text-[13px] font-bold">check</span>
+                            <div className="w-5 h-5 rounded-full bg-[#fbb034] flex items-center justify-center shadow-xs">
+                              <div className="w-2 h-2 rounded-full bg-white"></div>
                             </div>
                           ) : (
-                            <div className="w-5 h-5 rounded-full border border-slate-300 dark:border-slate-700"></div>
+                            <div className="w-5 h-5 rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800"></div>
                           )}
                         </div>
                       </button>
@@ -1621,31 +1599,39 @@ export const Navbar: React.FC<NavbarProps> = ({
                       </button>
                     </div>
                   ) : (
-                    <div className="space-y-2">
+                    <div className="grid grid-cols-2 gap-2">
                       {/* Student Registration */}
                       <button
                         type="button"
                         onClick={() => setMobileSignupRole('student')}
-                        className={`w-full flex items-center gap-3 p-2.5 rounded-xl border text-left cursor-pointer transition-all ${
+                        className={`flex items-center gap-2 p-2 xs:p-2.5 rounded-xl border text-left cursor-pointer transition-all ${
                           mobileSignupRole === 'student'
                             ? 'bg-[#fff9e6] dark:bg-amber-950/30 border-[#fbb034] ring-1 ring-[#fbb034]/60'
-                            : 'bg-white dark:bg-slate-900/60 border-slate-200 dark:border-slate-800'
+                            : 'bg-white dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
                         }`}
                       >
-                        <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0">
-                          <span className="material-symbols-outlined text-[19px]">school</span>
+                        <div className={`w-7 h-7 xs:w-8 xs:h-8 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
+                          mobileSignupRole === 'student'
+                            ? 'bg-[#fbb034]/20 text-[#0A1120] dark:text-[#fbb034]'
+                            : 'bg-slate-100 dark:bg-slate-800 text-[#0A1120] dark:text-slate-200'
+                        }`}>
+                          <span className="material-symbols-outlined text-[17px] xs:text-[19px]">school</span>
                         </div>
                         <div className="flex-1 min-w-0">
-                          <span className="block text-xs font-bold text-slate-900 dark:text-white leading-tight">Student Registration</span>
-                          <span className="block text-[11px] text-slate-500 dark:text-slate-400 leading-tight mt-0.5 truncate">Apply to global partner universities</span>
+                          <span className="block text-[11px] xs:text-xs font-bold text-slate-900 dark:text-white leading-tight truncate">
+                            Student
+                          </span>
+                          <span className="block text-[9.5px] xs:text-[10px] text-slate-500 dark:text-slate-400 leading-tight mt-0.5 truncate">
+                            Registration
+                          </span>
                         </div>
                         <div className="shrink-0">
                           {mobileSignupRole === 'student' ? (
-                            <div className="w-5 h-5 rounded-full bg-[#fbb034] text-[#0A1120] flex items-center justify-center shadow-xs">
-                              <span className="material-symbols-outlined text-[13px] font-bold">check</span>
+                            <div className="w-4 h-4 rounded-full bg-[#fbb034] flex items-center justify-center shadow-xs">
+                              <div className="w-1.5 h-1.5 rounded-full bg-white"></div>
                             </div>
                           ) : (
-                            <div className="w-5 h-5 rounded-full border border-slate-300 dark:border-slate-700"></div>
+                            <div className="w-4 h-4 rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800"></div>
                           )}
                         </div>
                       </button>
@@ -1654,26 +1640,34 @@ export const Navbar: React.FC<NavbarProps> = ({
                       <button
                         type="button"
                         onClick={() => setMobileSignupRole('agent')}
-                        className={`w-full flex items-center gap-3 p-2.5 rounded-xl border text-left cursor-pointer transition-all ${
+                        className={`flex items-center gap-2 p-2 xs:p-2.5 rounded-xl border text-left cursor-pointer transition-all ${
                           mobileSignupRole === 'agent'
                             ? 'bg-[#fff9e6] dark:bg-amber-950/30 border-[#fbb034] ring-1 ring-[#fbb034]/60'
-                            : 'bg-white dark:bg-slate-900/60 border-slate-200 dark:border-slate-800'
+                            : 'bg-white dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
                         }`}
                       >
-                        <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0">
-                          <span className="material-symbols-outlined text-[19px]">handshake</span>
+                        <div className={`w-7 h-7 xs:w-8 xs:h-8 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
+                          mobileSignupRole === 'agent'
+                            ? 'bg-[#fbb034]/20 text-[#0A1120] dark:text-[#fbb034]'
+                            : 'bg-slate-100 dark:bg-slate-800 text-[#0A1120] dark:text-slate-200'
+                        }`}>
+                          <span className="material-symbols-outlined text-[17px] xs:text-[19px]">handshake</span>
                         </div>
                         <div className="flex-1 min-w-0">
-                          <span className="block text-xs font-bold text-slate-900 dark:text-white leading-tight">Agent Registration</span>
-                          <span className="block text-[11px] text-slate-500 dark:text-slate-400 leading-tight mt-0.5 truncate">Join GEES recruitment network</span>
+                          <span className="block text-[11px] xs:text-xs font-bold text-slate-900 dark:text-white leading-tight truncate">
+                            Agent
+                          </span>
+                          <span className="block text-[9.5px] xs:text-[10px] text-slate-500 dark:text-slate-400 leading-tight mt-0.5 truncate">
+                            Registration
+                          </span>
                         </div>
                         <div className="shrink-0">
                           {mobileSignupRole === 'agent' ? (
-                            <div className="w-5 h-5 rounded-full bg-[#fbb034] text-[#0A1120] flex items-center justify-center shadow-xs">
-                              <span className="material-symbols-outlined text-[13px] font-bold">check</span>
+                            <div className="w-4 h-4 rounded-full bg-[#fbb034] flex items-center justify-center shadow-xs">
+                              <div className="w-1.5 h-1.5 rounded-full bg-white"></div>
                             </div>
                           ) : (
-                            <div className="w-5 h-5 rounded-full border border-slate-300 dark:border-slate-700"></div>
+                            <div className="w-4 h-4 rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800"></div>
                           )}
                         </div>
                       </button>
@@ -1688,7 +1682,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                         }}
                         className="w-full py-3 rounded-xl bg-[#fbb034] hover:bg-[#f59e0b] text-[#0A1120] font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer mt-2"
                       >
-                        <span>{mobileSignupRole === 'student' ? 'Start Student Application' : 'Register as Partner Agent'}</span>
+                        <span>Continue as {mobileSignupRole === 'student' ? 'Student' : 'Partner Agent'}</span>
                         <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
                       </button>
                     </div>
@@ -1899,10 +1893,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onNavigate('apply');
                 onOpenMobileMenu();
               }}
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-[#fbb034] to-[#f59e0b] hover:from-[#f59e0b] hover:to-[#d97706] text-slate-950 font-extrabold text-sm tracking-wide shadow-md flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-[0.99]"
+              className="group w-full py-3 rounded-xl bg-gradient-to-r from-[#fbb034] to-[#f59e0b] hover:from-[#f59e0b] hover:to-[#d97706] text-slate-950 font-extrabold text-sm tracking-wide shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer transition-all duration-300 active:scale-[0.99]"
             >
-              <span>Apply / Book Free Consultation</span>
-              <span className="material-symbols-outlined text-[17px]">arrow_forward</span>
+              <span className="transition-transform duration-200 group-hover:-translate-x-0.5">Book Free Consultation</span>
+              <span className="material-symbols-outlined text-[18px] transition-transform duration-300 ease-out group-hover:translate-x-1.5 group-hover:scale-110 inline-block shrink-0">
+                arrow_forward
+              </span>
             </button>
           </div>
         </div>

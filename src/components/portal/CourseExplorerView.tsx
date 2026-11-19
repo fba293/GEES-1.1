@@ -9,6 +9,8 @@ import React, { useState, useMemo } from 'react';
 import { Course } from '../../types/index.ts';
 import { getCollaboratedCourses, getCollaboratedUniversities } from '../../utils/PartnerUniversityManager.ts';
 import { APPROVED_COUNTRY_NAMES } from '../../lib/country-config.ts';
+import { APPROVED_QUALIFICATIONS, matchesCourseQualification } from '../../lib/qualification-config.ts';
+import { matchesCourseSubject } from '../../lib/subject-config.ts';
 import { useCurrency } from '../../context/CurrencyContext.tsx';
 import { useWishlist } from '../../context/WishlistContext.tsx';
 import { WishlistToast } from './WishlistToast.tsx';
@@ -87,10 +89,11 @@ export const CourseExplorerView: React.FC<CourseExplorerViewProps> = ({
 
   // Filter states (supporting single or multi-value initial props)
   const parseInitialFilter = (val?: string | string[]): string[] => {
-    if (!val || val === 'all') return [];
-    if (Array.isArray(val)) return val;
+    if (!val || val === 'all' || val === 'All Levels') return [];
+    if (Array.isArray(val)) return val.filter(v => v && v !== 'all' && v !== 'All Levels');
     if (typeof val === 'string') {
-      return val.includes(',') ? val.split(',').map(s => s.trim()).filter(Boolean) : [val];
+      return (val.includes(',') ? val.split(',').map(s => s.trim()) : [val.trim()])
+        .filter(v => Boolean(v) && v !== 'all' && v !== 'All Levels');
     }
     return [];
   };
@@ -161,6 +164,10 @@ export const CourseExplorerView: React.FC<CourseExplorerViewProps> = ({
   // Facet counts computed across allCourses
   const facetCounts = useMemo(() => {
     const countryMap: Record<string, number> = {};
+    const qualificationCounts: Record<string, number> = {};
+    APPROVED_QUALIFICATIONS.forEach((q) => {
+      qualificationCounts[q] = 0;
+    });
     let undergradCount = 0;
     let postgradCount = 0;
     let doctorateCount = 0;
@@ -209,7 +216,12 @@ export const CourseExplorerView: React.FC<CourseExplorerViewProps> = ({
         countryMap[c.country] = (countryMap[c.country] || 0) + 1;
       }
 
-      // Levels
+      // Levels & Approved Qualifications
+      APPROVED_QUALIFICATIONS.forEach((q) => {
+        if (matchesCourseQualification(c, q)) {
+          qualificationCounts[q] = (qualificationCounts[q] || 0) + 1;
+        }
+      });
       if (c.level === 'undergraduate') undergradCount++;
       else if (c.level === 'postgraduate') postgradCount++;
       else if (c.level === 'doctorate') doctorateCount++;
@@ -279,6 +291,7 @@ export const CourseExplorerView: React.FC<CourseExplorerViewProps> = ({
 
     return {
       countryMap,
+      qualificationCounts,
       undergradCount,
       postgradCount,
       doctorateCount,
@@ -321,9 +334,14 @@ export const CourseExplorerView: React.FC<CourseExplorerViewProps> = ({
   };
 
   const toggleLevel = (lvl: string) => {
-    setSelectedLevels((prev) =>
-      prev.includes(lvl) ? prev.filter((x) => x !== lvl) : [...prev, lvl]
-    );
+    if (lvl === 'All Levels') {
+      setSelectedLevels([]);
+    } else {
+      setSelectedLevels((prev) => {
+        const cleaned = prev.filter((x) => x !== 'All Levels');
+        return cleaned.includes(lvl) ? cleaned.filter((x) => x !== lvl) : [...cleaned, lvl];
+      });
+    }
     setCurrentPage(1);
   };
 
@@ -457,34 +475,23 @@ export const CourseExplorerView: React.FC<CourseExplorerViewProps> = ({
         if (!matchesCountry) return false;
       }
 
-      // 3. Degree Level
-      if (selectedLevels.length > 0) {
-        const hasLevel = selectedLevels.some((lvl) => {
-          if (lvl === 'undergrad') return course.level === 'undergraduate';
-          if (lvl === 'postgrad') return course.level === 'postgraduate';
-          if (lvl === 'doctorate') return course.level === 'doctorate';
-          if (lvl === 'diploma') {
-            return (
-              course.level === 'diploma' ||
-              course.level === 'foundation' ||
-              course.level === 'certificate' ||
-              course.level === 'a-level' ||
-              course.level === 'advanced-diploma'
-            );
-          }
-          return false;
-        });
+      // 3. Degree Level / Qualification
+      const activeSpecificLevels = selectedLevels.filter((l) => l !== 'All Levels');
+      if (activeSpecificLevels.length > 0) {
+        const hasLevel = activeSpecificLevels.some((lvl) => matchesCourseQualification(course, lvl));
         if (!hasLevel) return false;
       }
 
-      // 4. Fields / Disciplines
+      // 4. Fields / Disciplines (supports both sidebar category IDs and full IDP/GEES subject names)
       if (selectedFields.length > 0) {
         const matchesField = selectedFields.some((fId) => {
           const cat = fieldCategories.find((c) => c.id === fId);
-          if (!cat) return false;
-          const inTitle = course.title.toLowerCase().includes(cat.match);
-          const inDept = course.department.toLowerCase().includes(cat.match);
-          return inTitle || inDept;
+          if (cat) {
+            const inTitle = course.title.toLowerCase().includes(cat.match);
+            const inDept = course.department.toLowerCase().includes(cat.match);
+            return inTitle || inDept;
+          }
+          return matchesCourseSubject(course, fId);
         });
         if (!matchesField) return false;
       }
@@ -912,12 +919,12 @@ export const CourseExplorerView: React.FC<CourseExplorerViewProps> = ({
                 </span>
               ))}
 
-              {selectedLevels.map((lvl) => (
+              {selectedLevels.filter((lvl) => lvl !== 'All Levels').map((lvl) => (
                 <span
                   key={lvl}
                   className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-purple-50 dark:bg-purple-950/70 text-purple-700 dark:text-purple-300 text-[11px] font-medium"
                 >
-                  <span className="capitalize">{lvl}</span>
+                  <span>{lvl}</span>
                   <button
                     type="button"
                     onClick={() => toggleLevel(lvl)}
@@ -1320,19 +1327,18 @@ export const CourseExplorerView: React.FC<CourseExplorerViewProps> = ({
                   </div>
                 </button>
                 {openSections.studyLevel && (
-                  <div className="space-y-1">
-                    {[
-                      { id: 'undergrad', label: "Undergraduate (Bachelor's)", count: facetCounts.undergradCount },
-                      { id: 'postgrad', label: "Postgraduate (Master's / MBA)", count: facetCounts.postgradCount },
-                      { id: 'doctorate', label: "Doctorate (PhD / Research)", count: facetCounts.doctorateCount },
-                      { id: 'diploma', label: 'Diploma & Foundation', count: facetCounts.diplomaCount },
-                    ].map((item) => {
-                      const isSelected = selectedLevels.includes(item.id);
+                  <div className="space-y-1 max-h-64 overflow-y-auto custom-scrollbar pr-1">
+                    {APPROVED_QUALIFICATIONS.map((qual) => {
+                      const isSelected =
+                        qual === 'All Levels'
+                          ? selectedLevels.length === 0 || selectedLevels.includes('All Levels')
+                          : selectedLevels.includes(qual);
+                      const count = facetCounts.qualificationCounts[qual] ?? 0;
                       return (
                         <button
-                          key={item.id}
+                          key={qual}
                           type="button"
-                          onClick={() => toggleLevel(item.id)}
+                          onClick={() => toggleLevel(qual)}
                           className="w-full flex items-center justify-between py-1.5 px-2 rounded-lg text-left text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-amber-50/70 dark:hover:bg-amber-950/20 hover:text-amber-700 dark:hover:text-amber-400 transition-colors group cursor-pointer"
                         >
                           <div className="flex items-center gap-2.5 min-w-0 flex-1">
@@ -1350,11 +1356,11 @@ export const CourseExplorerView: React.FC<CourseExplorerViewProps> = ({
                               )}
                             </div>
                             <span className={`text-xs leading-snug break-words flex-1 text-left ${isSelected ? 'font-bold text-slate-900 dark:text-white' : ''}`}>
-                              {item.label}
+                              {qual}
                             </span>
                           </div>
                           <span className="text-[11px] text-slate-400 font-normal shrink-0 ml-2">
-                            ({item.count})
+                            ({count})
                           </span>
                         </button>
                       );
@@ -2819,19 +2825,18 @@ export const CourseExplorerView: React.FC<CourseExplorerViewProps> = ({
                       </button>
                     )}
                   </div>
-                  <div className="space-y-1">
-                    {[
-                      { id: 'undergrad', label: "Undergraduate (Bachelor's)", count: facetCounts.undergradCount },
-                      { id: 'postgrad', label: "Postgraduate (Master's / MBA)", count: facetCounts.postgradCount },
-                      { id: 'doctorate', label: "Doctorate (PhD / Research)", count: facetCounts.doctorateCount },
-                      { id: 'diploma', label: 'Diploma & Foundation', count: facetCounts.diplomaCount },
-                    ].map((item) => {
-                      const isSelected = selectedLevels.includes(item.id);
+                  <div className="space-y-1 max-h-64 overflow-y-auto custom-scrollbar pr-1">
+                    {APPROVED_QUALIFICATIONS.map((qual) => {
+                      const isSelected =
+                        qual === 'All Levels'
+                          ? selectedLevels.length === 0 || selectedLevels.includes('All Levels')
+                          : selectedLevels.includes(qual);
+                      const count = facetCounts.qualificationCounts[qual] ?? 0;
                       return (
                         <button
-                          key={item.id}
+                          key={qual}
                           type="button"
-                          onClick={() => toggleLevel(item.id)}
+                          onClick={() => toggleLevel(qual)}
                           className="w-full flex items-center justify-between py-1.5 px-2 rounded-lg text-left text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-amber-50/70 dark:hover:bg-amber-950/20"
                         >
                           <div className="flex items-center gap-2.5 min-w-0 flex-1">
@@ -2847,10 +2852,10 @@ export const CourseExplorerView: React.FC<CourseExplorerViewProps> = ({
                               )}
                             </div>
                             <span className={`text-xs leading-snug break-words flex-1 text-left ${isSelected ? 'font-bold text-slate-900 dark:text-white' : ''}`}>
-                              {item.label}
+                              {qual}
                             </span>
                           </div>
-                          <span className="text-[11px] text-slate-400">({item.count})</span>
+                          <span className="text-[11px] text-slate-400">({count})</span>
                         </button>
                       );
                     })}

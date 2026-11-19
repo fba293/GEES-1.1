@@ -8,6 +8,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { OrbitPlanetWorld } from './OrbitPlanetWorld.tsx';
+import { APPROVED_QUALIFICATIONS } from '../../lib/qualification-config.ts';
 
 interface ContactUsViewProps {
   onNavigate: (view: string, payload?: any) => void;
@@ -291,11 +292,11 @@ export const ContactUsView: React.FC<ContactUsViewProps> = ({
                       <option value="" disabled className="text-slate-400 dark:bg-slate-900">
                         Interested level of study
                       </option>
-                      <option value="Foundation / Pathway" className="dark:bg-slate-900">Foundation / Pathway</option>
-                      <option value="Diploma" className="dark:bg-slate-900">Diploma</option>
-                      <option value="Bachelor's Degree" className="dark:bg-slate-900">Bachelor's Degree</option>
-                      <option value="Master's Degree" className="dark:bg-slate-900">Master's Degree</option>
-                      <option value="PhD / Doctorate" className="dark:bg-slate-900">PhD / Doctorate</option>
+                      {APPROVED_QUALIFICATIONS.map((qual) => (
+                        <option key={qual} value={qual} className="dark:bg-slate-900">
+                          {qual}
+                        </option>
+                      ))}
                     </select>
                     <span className="material-symbols-outlined text-[18px] text-slate-400 pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 select-none">
                       expand_more

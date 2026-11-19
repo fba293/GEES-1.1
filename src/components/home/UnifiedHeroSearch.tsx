@@ -7,6 +7,8 @@
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { mockDestinations, mockUniversities, mockCourses } from '../../data/mockDatabase.ts';
+import { APPROVED_QUALIFICATIONS } from '../../lib/qualification-config.ts';
+import { ALL_IDP_SUBJECTS } from '../../lib/subject-config.ts';
 
 interface UnifiedHeroSearchProps {
   onNavigate: (view: string, payload?: any) => void;
@@ -42,16 +44,7 @@ const ROTATING_SERVICES = [
   "B2B Partnership"
 ];
 
-const STUDY_LEVELS = [
-  "School",
-  "English",
-  "Diploma",
-  "Foundation / Pathways",
-  "Undergraduate (Bachelor’s)",
-  "Postgraduate (Master’s)",
-  "Doctorate (PhD)",
-  "Vocational (VET)"
-];
+const STUDY_LEVELS: readonly string[] = APPROVED_QUALIFICATIONS;
 
 const FUNDING_OPTIONS = [
   "Fully funded",
@@ -61,134 +54,8 @@ const FUNDING_OPTIONS = [
   "Fee discount"
 ];
 
-// Complete 125-subject dataset (including Vocational Education and Training, Womens Health, Zoology)
-const ALL_SUBJECTS = [
-  "Accounting & Finance",
-  "Actuarial Studies",
-  "Aerospace Engineering",
-  "Agriculture & Environmental Forestry",
-  "AI & Machine Learning",
-  "Animation & Game Development",
-  "Anthropology & Archaeology",
-  "Applied Mathematics & Statistics",
-  "Archaeology & Ancient History",
-  "Architecture & Building Design",
-  "Artificial Intelligence & Data Science",
-  "Astrophysics & Astronomy",
-  "Automotive & Transport Engineering",
-  "Banking & Wealth Management",
-  "Biochemistry & Molecular Biology",
-  "Bioinformatics & Computational Biology",
-  "Biological & Life Sciences",
-  "Biomedical Engineering",
-  "Biomedical Science",
-  "Biotechnology",
-  "Business Administration (BBA/MBA)",
-  "Business Analytics & Intelligence",
-  "Business & Management",
-  "Chemical Engineering",
-  "Chemistry & Chemical Sciences",
-  "Civil & Structural Engineering",
-  "Cloud Computing & DevOps",
-  "Communications & Media Studies",
-  "Computer Engineering",
-  "Computer Science & IT",
-  "Creative Writing & Literature",
-  "Criminology & Criminal Justice",
-  "Cybersecurity & Digital Forensics",
-  "Data Analytics",
-  "Data Science",
-  "Dental Surgery & Dentistry",
-  "Digital Marketing & E-Commerce",
-  "Drama, Theater & Performing Arts",
-  "Earth & Marine Sciences",
-  "Ecology & Conservation Biology",
-  "Economics & Finance",
-  "Education & Teaching Pedagogy",
-  "Electrical & Electronic Engineering",
-  "Energy & Environmental Engineering",
-  "Engineering & Technology",
-  "English Literature & Linguistics",
-  "Entrepreneurship & Innovation",
-  "Environmental Science & Sustainability",
-  "Event Management & PR",
-  "Fashion & Textile Design",
-  "Film, Video & Television Production",
-  "Finance & Financial Markets",
-  "Fine Arts & Visual Design",
-  "Food Science & Human Nutrition",
-  "Forensic Science & Criminology",
-  "Game Design & Interactive Media",
-  "Genetics & Genomics",
-  "Geology & Earth Systems",
-  "Global Governance & Public Policy",
-  "Graphic & UI/UX Design",
-  "Health & Medicine",
-  "Health Informatics & E-Health",
-  "Healthcare & Hospital Management",
-  "History & International Studies",
-  "Hospitality & Tourism Management",
-  "Human Resource Management (HRM)",
-  "Human-Computer Interaction (HCI)",
-  "Industrial & Systems Engineering",
-  "Information Systems & Technology",
-  "Interior Architecture & Design",
-  "International Business & Trade",
-  "International Law & Human Rights",
-  "International Relations & Diplomacy",
-  "Journalism & Mass Communication",
-  "Law & Legal Studies",
-  "Logistics & Supply Chain Management",
-  "Marine Biology & Oceanography",
-  "Marketing & Brand Strategy",
-  "Materials Science & Engineering",
-  "Mechanical & Manufacturing Engineering",
-  "Mechatronics & Robotics Engineering",
-  "Media Production & Journalism",
-  "Medical Laboratory Technology",
-  "Medical Sciences & MBBS",
-  "Microbiology & Immunology",
-  "Music Production & Sound Design",
-  "Nanotechnology & Advanced Materials",
-  "Natural & Applied Sciences",
-  "Neuroscience & Cognitive Science",
-  "Nursing & Midwifery",
-  "Nutrition & Dietetics",
-  "Occupational Health & Safety",
-  "Occupational Therapy",
-  "Oceanography & Climate Science",
-  "Optometry & Vision Science",
-  "Petroleum & Mining Engineering",
-  "Pharmaceutical Sciences",
-  "Pharmacy",
-  "Philosophy & Ethics",
-  "Physics & Applied Physics",
-  "Physiotherapy & Sports Rehab",
-  "Political Science & Public Admin",
-  "Project Management",
-  "Psychology & Behavioral Science",
-  "Public Health & Epidemiology",
-  "Public Relations & Strategic Comm",
-  "Quantity Surveying & Commercial Mgmt",
-  "Real Estate & Property Management",
-  "Renewable & Clean Energy Tech",
-  "Robotics & Automation Engineering",
-  "Social Work & Community Dev",
-  "Social Sciences & Humanities",
-  "Software Engineering",
-  "Space Science & Satellite Tech",
-  "Special Education & Inclusion",
-  "Sports Science & Kinesiology",
-  "Statistics & Predictive Modeling",
-  "Sustainable Development & Environment",
-  "Telecommunication Networks",
-  "Urban Planning & Smart Cities",
-  "Veterinary Medicine & Animal Care",
-  "Vocational Education and Training",
-  "Web Development & Mobile Apps",
-  "Womens Health",
-  "Zoology"
-];
+// Complete GEES + IDP Study Abroad Subject Directory
+const ALL_SUBJECTS: readonly string[] = ALL_IDP_SUBJECTS;
 
 // Directory Services List
 interface ServiceDirectoryItem {
@@ -275,10 +142,22 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
   }, [destinationSearchQuery]);
 
   const filteredMockUniversities = useMemo(() => {
-    if (!universitySearchQuery.trim()) return mockUniversities;
+    const malaysiaFirst = [
+      ...mockUniversities.filter(u => u.country === 'Malaysia'),
+      ...mockUniversities.filter(u => u.country !== 'Malaysia'),
+    ];
+    const baseList =
+      selectedDestinations.length > 0
+        ? malaysiaFirst.filter(u =>
+            selectedDestinations.some(d => d.toLowerCase() === u.country.toLowerCase())
+          )
+        : malaysiaFirst;
+    if (!universitySearchQuery.trim()) return baseList;
     const q = universitySearchQuery.toLowerCase().trim();
-    return mockUniversities.filter(u => u.name.toLowerCase().includes(q) || u.country.toLowerCase().includes(q));
-  }, [universitySearchQuery]);
+    return baseList.filter(
+      u => u.name.toLowerCase().includes(q) || u.country.toLowerCase().includes(q)
+    );
+  }, [universitySearchQuery, selectedDestinations]);
 
   // Visual viewport, scroll lock, and bottom nav visibility event for mobile bottom sheet
   useEffect(() => {
@@ -367,9 +246,14 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
 
   // Immutable selection toggles
   const toggleLevel = (lvl: string) => {
-    setSelectedLevels(prev =>
-      prev.includes(lvl) ? prev.filter(item => item !== lvl) : [...prev, lvl]
-    );
+    if (lvl === 'All Levels') {
+      setSelectedLevels([]);
+      return;
+    }
+    setSelectedLevels(prev => {
+      const cleaned = prev.filter(item => item !== 'All Levels');
+      return cleaned.includes(lvl) ? cleaned.filter(item => item !== lvl) : [...cleaned, lvl];
+    });
   };
 
   const toggleDestination = (destName: string) => {
@@ -406,18 +290,19 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
   // Search Submission Handler
   const handleSearchAction = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
+    const activeSpecificLevels = selectedLevels.filter(l => l !== 'All Levels');
     if (activeTab === 'courses') {
       onNavigate('courses', {
         query: searchQuery,
         destination: selectedDestinations.length > 0 ? selectedDestinations.join(', ') : 'all',
-        level: selectedLevels.length > 0 ? selectedLevels.join(', ') : 'all',
+        level: activeSpecificLevels.length > 0 ? activeSpecificLevels.join(', ') : 'all',
         field: selectedFields.length > 0 ? selectedFields.join(', ') : 'all',
       });
     } else if (activeTab === 'scholarships') {
       onNavigate('courses', {
         query: searchQuery,
         destination: selectedDestinations.length > 0 ? selectedDestinations.join(', ') : 'all',
-        level: selectedLevels.length > 0 ? selectedLevels.join(', ') : 'all',
+        level: activeSpecificLevels.length > 0 ? activeSpecificLevels.join(', ') : 'all',
         funding: selectedFunding.length > 0 ? selectedFunding.join(', ') : 'all',
         scholarshipOnly: true,
       });
@@ -582,7 +467,7 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
       </div>
 
       {/* 3. Contextual Filters & Search Action */}
-      <div className="p-3 sm:p-4 bg-white dark:bg-slate-900 rounded-b-2xl relative z-30">
+      <div className="p-3 sm:p-4 bg-white dark:bg-slate-900 relative z-30">
         
         {/* COURSES TAB */}
         {activeTab === 'courses' && (
@@ -601,7 +486,9 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
                 className="w-full h-13 sm:h-16 px-3.5 rounded-xl border border-[#e2e4ea] dark:border-slate-700 bg-[#fafafc] dark:bg-slate-800 text-sm sm:text-base font-semibold text-slate-900 dark:text-white flex items-center justify-between cursor-pointer text-left transition-all hover:border-amber-500"
               >
                 <span className="truncate">
-                  {selectedLevels.length === 0 ? <><span className="sm:hidden">Any</span><span className="hidden sm:inline">Any level</span></> : selectedLevels.join(', ')}
+                  {selectedLevels.length === 0 || (selectedLevels.length === 1 && selectedLevels[0] === 'All Levels')
+                    ? 'All Levels'
+                    : selectedLevels.filter(l => l !== 'All Levels').join(', ')}
                 </span>
                 <svg className={`w-4 h-4 ml-2 shrink-0 text-slate-400 transition-transform ${openDropdown === 'level' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
@@ -612,10 +499,13 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
               {openDropdown === 'level' && (
                 <div
                   onClick={(e) => e.stopPropagation()}
-                  className="hidden sm:block absolute top-[calc(100%+6px)] left-0 right-0 z-50 bg-white dark:bg-slate-800 border border-[#e2e4ea] dark:border-slate-700 rounded-xl shadow-xl p-2 max-h-[260px] overflow-y-auto custom-scrollbar animate-in fade-in duration-150"
+                  className="hidden lg:block absolute top-[calc(100%+6px)] left-0 min-w-full w-max max-w-[340px] z-50 bg-white dark:bg-slate-800 border border-[#e2e4ea] dark:border-slate-700 rounded-xl shadow-xl p-2 max-h-[300px] overflow-y-auto custom-scrollbar animate-in fade-in duration-150"
                 >
                   {STUDY_LEVELS.map((lvl) => {
-                    const isChecked = selectedLevels.includes(lvl);
+                    const isChecked =
+                      lvl === 'All Levels'
+                        ? selectedLevels.length === 0 || selectedLevels.includes('All Levels')
+                        : selectedLevels.includes(lvl);
                     return (
                       <div
                         key={lvl}
@@ -623,7 +513,7 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
                           e.stopPropagation();
                           toggleLevel(lvl);
                         }}
-                        className="min-h-[44px] px-3 flex items-center gap-3 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700/70 rounded-lg transition-colors select-none"
+                        className="min-h-[42px] px-3 py-2 flex items-center gap-3 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700/70 rounded-lg transition-colors select-none"
                       >
                         <div className={`w-5 h-5 rounded border flex items-center justify-center shrink-0 transition-colors ${
                           isChecked ? 'bg-[#fbb034] border-[#fbb034] text-slate-950' : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800'
@@ -634,7 +524,7 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
                             </svg>
                           )}
                         </div>
-                        <span className="text-sm sm:text-base font-medium text-slate-900 dark:text-white flex-1 truncate">
+                        <span className="text-sm font-medium text-slate-900 dark:text-white flex-1 leading-snug break-words">
                           {lvl}
                         </span>
                       </div>
@@ -668,7 +558,7 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
               {openDropdown === 'destination' && (
                 <div
                   onClick={(e) => e.stopPropagation()}
-                  className="hidden sm:block absolute top-[calc(100%+6px)] left-0 right-0 z-50 bg-white dark:bg-slate-800 border border-[#e2e4ea] dark:border-slate-700 rounded-xl shadow-xl p-2 max-h-[260px] overflow-y-auto custom-scrollbar animate-in fade-in duration-150"
+                  className="hidden lg:block absolute top-[calc(100%+6px)] left-0 right-0 z-50 bg-white dark:bg-slate-800 border border-[#e2e4ea] dark:border-slate-700 rounded-xl shadow-xl p-2 max-h-[260px] overflow-y-auto custom-scrollbar animate-in fade-in duration-150"
                 >
                   {mockDestinations.map((d) => {
                     const isChecked = selectedDestinations.includes(d.name);
@@ -725,7 +615,7 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
               {openDropdown === 'field' && (
                 <div
                   onClick={(e) => e.stopPropagation()}
-                  className="hidden sm:block absolute top-[calc(100%+6px)] left-0 right-0 z-50 bg-white dark:bg-slate-800 border border-[#e2e4ea] dark:border-slate-700 rounded-xl shadow-xl p-2.5 max-h-[280px] flex flex-col animate-in fade-in duration-150"
+                  className="hidden lg:flex absolute top-[calc(100%+6px)] left-0 min-w-full w-max max-w-[360px] z-50 bg-white dark:bg-slate-800 border border-[#e2e4ea] dark:border-slate-700 rounded-xl shadow-xl p-2.5 max-h-[300px] flex-col animate-in fade-in duration-150"
                 >
                   {/* Search Filter Input inside Dropdown */}
                   <div className="mb-2 shrink-0">
@@ -733,13 +623,13 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
                       type="text"
                       value={fieldSearchQuery}
                       onChange={(e) => setFieldSearchQuery(e.target.value)}
-                      placeholder="Search 125+ subjects..."
+                      placeholder={`Search ${ALL_SUBJECTS.length}+ subjects...`}
                       className="w-full px-3 py-2 text-xs sm:text-sm border border-[#e2e4ea] dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:border-amber-500"
                     />
                   </div>
 
                   {/* Scrollable Subject Options */}
-                  <div className="overflow-y-auto custom-scrollbar flex-1 max-h-[210px] space-y-0.5">
+                  <div className="overflow-y-auto custom-scrollbar flex-1 max-h-[225px] space-y-0.5">
                     {filteredSubjects.length === 0 ? (
                       <div className="p-3 text-center text-xs text-slate-400">
                         No subject matching "{fieldSearchQuery}"
@@ -754,7 +644,7 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
                               e.stopPropagation();
                               toggleField(sub);
                             }}
-                            className="min-h-[44px] px-3 flex items-center gap-3 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700/70 rounded-lg transition-colors select-none"
+                            className="min-h-[44px] px-3 py-1.5 flex items-center gap-3 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700/70 rounded-lg transition-colors select-none"
                           >
                             <div className={`w-5 h-5 rounded border flex items-center justify-center shrink-0 transition-colors ${
                               isChecked ? 'bg-[#fbb034] border-[#fbb034] text-slate-950' : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800'
@@ -765,7 +655,7 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
                                 </svg>
                               )}
                             </div>
-                            <span className="text-sm sm:text-base font-medium text-slate-900 dark:text-white flex-1 truncate">
+                            <span className="text-sm sm:text-base font-medium text-slate-900 dark:text-white flex-1 leading-snug break-words">
                               {sub}
                             </span>
                           </div>
@@ -811,7 +701,9 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
                 className="w-full h-13 sm:h-16 px-3.5 rounded-xl border border-[#e2e4ea] dark:border-slate-700 bg-[#fafafc] dark:bg-slate-800 text-sm sm:text-base font-semibold text-slate-900 dark:text-white flex items-center justify-between cursor-pointer text-left transition-all hover:border-amber-500"
               >
                 <span className="truncate">
-                  {selectedLevels.length === 0 ? <><span className="sm:hidden">Any</span><span className="hidden sm:inline">Any level</span></> : selectedLevels.join(', ')}
+                  {selectedLevels.length === 0 || (selectedLevels.length === 1 && selectedLevels[0] === 'All Levels')
+                    ? 'All Levels'
+                    : selectedLevels.filter(l => l !== 'All Levels').join(', ')}
                 </span>
                 <svg className={`w-4 h-4 ml-2 shrink-0 text-slate-400 transition-transform ${openDropdown === 'level' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
@@ -821,10 +713,13 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
               {openDropdown === 'level' && (
                 <div
                   onClick={(e) => e.stopPropagation()}
-                  className="absolute top-[calc(100%+6px)] left-0 right-0 z-50 bg-white dark:bg-slate-800 border border-[#e2e4ea] dark:border-slate-700 rounded-xl shadow-xl p-2 max-h-[260px] overflow-y-auto custom-scrollbar animate-in fade-in duration-150"
+                  className="hidden lg:block absolute top-[calc(100%+6px)] left-0 min-w-full w-max max-w-[340px] z-50 bg-white dark:bg-slate-800 border border-[#e2e4ea] dark:border-slate-700 rounded-xl shadow-xl p-2 max-h-[300px] overflow-y-auto custom-scrollbar animate-in fade-in duration-150"
                 >
                   {STUDY_LEVELS.map((lvl) => {
-                    const isChecked = selectedLevels.includes(lvl);
+                    const isChecked =
+                      lvl === 'All Levels'
+                        ? selectedLevels.length === 0 || selectedLevels.includes('All Levels')
+                        : selectedLevels.includes(lvl);
                     return (
                       <div
                         key={lvl}
@@ -832,7 +727,7 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
                           e.stopPropagation();
                           toggleLevel(lvl);
                         }}
-                        className="min-h-[44px] px-3 flex items-center gap-3 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700/70 rounded-lg transition-colors select-none"
+                        className="min-h-[42px] px-3 py-2 flex items-center gap-3 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700/70 rounded-lg transition-colors select-none"
                       >
                         <div className={`w-5 h-5 rounded border flex items-center justify-center shrink-0 transition-colors ${
                           isChecked ? 'bg-[#fbb034] border-[#fbb034] text-slate-950' : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800'
@@ -843,7 +738,7 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
                             </svg>
                           )}
                         </div>
-                        <span className="text-sm sm:text-base font-medium text-slate-900 dark:text-white flex-1 truncate">
+                        <span className="text-sm font-medium text-slate-900 dark:text-white flex-1 leading-snug break-words">
                           {lvl}
                         </span>
                       </div>
@@ -876,7 +771,7 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
               {openDropdown === 'destination' && (
                 <div
                   onClick={(e) => e.stopPropagation()}
-                  className="absolute top-[calc(100%+6px)] left-0 right-0 z-50 bg-white dark:bg-slate-800 border border-[#e2e4ea] dark:border-slate-700 rounded-xl shadow-xl p-2 max-h-[260px] overflow-y-auto custom-scrollbar animate-in fade-in duration-150"
+                  className="hidden lg:block absolute top-[calc(100%+6px)] left-0 right-0 z-50 bg-white dark:bg-slate-800 border border-[#e2e4ea] dark:border-slate-700 rounded-xl shadow-xl p-2 max-h-[260px] overflow-y-auto custom-scrollbar animate-in fade-in duration-150"
                 >
                   {mockDestinations.map((d) => {
                     const isChecked = selectedDestinations.includes(d.name);
@@ -932,7 +827,7 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
               {openDropdown === 'funding' && (
                 <div
                   onClick={(e) => e.stopPropagation()}
-                  className="absolute top-[calc(100%+6px)] left-0 right-0 z-50 bg-white dark:bg-slate-800 border border-[#e2e4ea] dark:border-slate-700 rounded-xl shadow-xl p-2 max-h-[260px] overflow-y-auto custom-scrollbar animate-in fade-in duration-150"
+                  className="hidden lg:block absolute top-[calc(100%+6px)] left-0 right-0 z-50 bg-white dark:bg-slate-800 border border-[#e2e4ea] dark:border-slate-700 rounded-xl shadow-xl p-2 max-h-[260px] overflow-y-auto custom-scrollbar animate-in fade-in duration-150"
                 >
                   {FUNDING_OPTIONS.map((fund) => {
                     const isChecked = selectedFunding.includes(fund);
@@ -1008,7 +903,7 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
               {openDropdown === 'university' && (
                 <div
                   onClick={(e) => e.stopPropagation()}
-                  className="hidden sm:block absolute top-[calc(100%+6px)] left-0 right-0 z-50 bg-white dark:bg-slate-800 border border-[#e2e4ea] dark:border-slate-700 rounded-xl shadow-xl p-2.5 max-h-[280px] flex flex-col animate-in fade-in duration-150"
+                  className="hidden lg:flex absolute top-[calc(100%+6px)] left-0 min-w-full w-max max-w-[420px] z-50 bg-white dark:bg-slate-800 border border-[#e2e4ea] dark:border-slate-700 rounded-xl shadow-xl p-2.5 max-h-[300px] flex-col animate-in fade-in duration-150"
                 >
                   <div className="mb-2 shrink-0">
                     <input
@@ -1019,7 +914,7 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
                       className="w-full px-3 py-2 text-xs sm:text-sm border border-[#e2e4ea] dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:border-amber-500"
                     />
                   </div>
-                  <div className="overflow-y-auto custom-scrollbar flex-1 max-h-[210px] space-y-0.5">
+                  <div className="overflow-y-auto custom-scrollbar flex-1 max-h-[225px] space-y-0.5">
                     {filteredMockUniversities.length === 0 ? (
                       <div className="p-3 text-center text-xs text-slate-400">
                         No university matching "{universitySearchQuery}"
@@ -1034,7 +929,7 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
                               e.stopPropagation();
                               toggleUniversity(u.name);
                             }}
-                            className="min-h-[44px] px-3 flex items-center gap-3 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700/70 rounded-lg transition-colors select-none"
+                            className="min-h-[44px] px-3 py-1.5 flex items-center gap-3 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700/70 rounded-lg transition-colors select-none"
                           >
                             <div className={`w-5 h-5 rounded border flex items-center justify-center shrink-0 transition-colors ${
                               isChecked ? 'bg-[#fbb034] border-[#fbb034] text-slate-950' : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800'
@@ -1045,8 +940,8 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
                                 </svg>
                               )}
                             </div>
-                            <span className="text-sm sm:text-base font-medium text-slate-900 dark:text-white flex-1 truncate">
-                              {u.name} ({u.country})
+                            <span className="text-sm sm:text-base font-medium text-slate-900 dark:text-white flex-1 leading-snug break-words">
+                              {u.name}
                             </span>
                           </div>
                         );
@@ -1080,7 +975,7 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
               {openDropdown === 'destination' && (
                 <div
                   onClick={(e) => e.stopPropagation()}
-                  className="absolute top-[calc(100%+6px)] left-0 right-0 z-50 bg-white dark:bg-slate-800 border border-[#e2e4ea] dark:border-slate-700 rounded-xl shadow-xl p-2 max-h-[260px] overflow-y-auto custom-scrollbar animate-in fade-in duration-150"
+                  className="hidden lg:block absolute top-[calc(100%+6px)] left-0 right-0 z-50 bg-white dark:bg-slate-800 border border-[#e2e4ea] dark:border-slate-700 rounded-xl shadow-xl p-2 max-h-[260px] overflow-y-auto custom-scrollbar animate-in fade-in duration-150"
                 >
                   {mockDestinations.map((d) => {
                     const isChecked = selectedDestinations.includes(d.name);
@@ -1159,9 +1054,41 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
 
       </div>
 
-      {/* Mobile Bottom Sheet Modal */}
+      {/* 4. Horizontal Statistics Bar */}
+      <div className="px-4 sm:px-6 py-3 sm:py-3.5 bg-white dark:bg-slate-900 border-t border-[#e5e5ea] dark:border-slate-800 rounded-b-2xl relative z-20">
+        <div className="grid grid-cols-2 min-[520px]:grid-cols-3 lg:flex lg:flex-row lg:items-center lg:justify-between gap-y-2.5 gap-x-3 lg:gap-2">
+          {[
+            { num: "100", symbol: "+", label: "Students Placed" },
+            { num: "210", symbol: "+", label: "Partner Universities" },
+            { num: "100", symbol: "+", label: "Campuses" },
+            { num: "1000", symbol: "+", label: "Courses" },
+            { num: "95", symbol: "%", label: "Visa Success" },
+            { num: "15", symbol: "+", label: "Destinations" },
+          ].map((stat, idx, arr) => (
+            <React.Fragment key={stat.label}>
+              <div className="flex items-baseline gap-1.5 min-w-0">
+                <span className="text-[14px] sm:text-[15px] font-black text-[#0B1329] dark:text-white tracking-tight whitespace-nowrap leading-none">
+                  {stat.num}
+                  <span className="text-[#fbb034] font-black">{stat.symbol}</span>
+                </span>
+                <span className="text-[11.5px] sm:text-[12.5px] font-medium text-slate-500 dark:text-slate-400 whitespace-nowrap truncate leading-none">
+                  {stat.label}
+                </span>
+              </div>
+              {idx < arr.length - 1 && (
+                <span
+                  aria-hidden="true"
+                  className="hidden lg:inline-block w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-700 shrink-0"
+                />
+              )}
+            </React.Fragment>
+          ))}
+        </div>
+      </div>
+
+      {/* Mobile & Tablet Bottom Sheet Modal */}
       {openDropdown !== null && (
-        <div className="sm:hidden fixed inset-0 z-50 flex flex-col justify-end">
+        <div className="lg:hidden fixed inset-0 z-50 flex flex-col justify-end">
           {/* Backdrop */}
           <div 
             className="fixed inset-0 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200"
@@ -1170,7 +1097,7 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
 
           {/* Bottom Sheet Card */}
           <div 
-            className="relative bg-white dark:bg-slate-900 rounded-t-3xl shadow-2xl flex flex-col z-10 animate-in slide-in-from-bottom duration-300 transition-all"
+            className="relative bg-white dark:bg-slate-900 rounded-t-3xl shadow-2xl flex flex-col z-10 animate-in slide-in-from-bottom duration-300 transition-all sm:max-w-xl sm:mx-auto sm:w-full"
             style={{
               maxHeight: viewportHeight ? `${viewportHeight * 0.85}px` : '85vh',
               paddingBottom: keyboardOffset > 0 ? `${Math.min(keyboardOffset, 32)}px` : 'env(safe-area-inset-bottom, 16px)',
@@ -1188,17 +1115,20 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
                   {openDropdown === 'destination' && 'Select Destination'}
                   {openDropdown === 'field' && 'Select Courses'}
                   {openDropdown === 'university' && 'Select University'}
+                  {openDropdown === 'funding' && 'Select Funding'}
                 </h3>
                 {/* Count badge */}
                 {((openDropdown === 'level' && selectedLevels.length > 0) ||
                   (openDropdown === 'destination' && selectedDestinations.length > 0) ||
                   (openDropdown === 'field' && selectedFields.length > 0) ||
-                  (openDropdown === 'university' && selectedUniversities.length > 0)) && (
+                  (openDropdown === 'university' && selectedUniversities.length > 0) ||
+                  (openDropdown === 'funding' && selectedFunding.length > 0)) && (
                   <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300">
                     {openDropdown === 'level' && selectedLevels.length}
                     {openDropdown === 'destination' && selectedDestinations.length}
                     {openDropdown === 'field' && selectedFields.length}
                     {openDropdown === 'university' && selectedUniversities.length}
+                    {openDropdown === 'funding' && selectedFunding.length}
                   </span>
                 )}
               </div>
@@ -1221,7 +1151,7 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
                   type="text"
                   value={fieldSearchQuery}
                   onChange={(e) => setFieldSearchQuery(e.target.value)}
-                  placeholder="Search 125+ subjects..."
+                  placeholder={`Search ${ALL_SUBJECTS.length}+ subjects...`}
                   className="w-full px-4 py-3 text-sm border border-[#e2e4ea] dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:border-[#fbb034]"
                 />
               </div>
@@ -1252,9 +1182,12 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
             )}
 
             {/* Options List */}
-            <div className="overflow-y-auto flex-1 p-4 space-y-1.5 custom-scrollbar max-h-[35vh] sm:max-h-[50vh]">
+            <div className="overflow-y-auto flex-1 p-4 space-y-1.5 custom-scrollbar max-h-[45vh] sm:max-h-[55vh]">
               {openDropdown === 'level' && STUDY_LEVELS.map(lvl => {
-                const isChecked = selectedLevels.includes(lvl);
+                const isChecked =
+                  lvl === 'All Levels'
+                    ? selectedLevels.length === 0 || selectedLevels.includes('All Levels')
+                    : selectedLevels.includes(lvl);
                 return (
                   <div
                     key={lvl}
@@ -1270,7 +1203,7 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
                         </svg>
                       )}
                     </div>
-                    <span className="text-sm sm:text-base font-medium text-slate-900 dark:text-white flex-1 truncate">
+                    <span className="text-sm sm:text-base font-medium text-slate-900 dark:text-white flex-1 break-words">
                       {lvl}
                     </span>
                   </div>
@@ -1295,7 +1228,7 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
                       )}
                     </div>
                     <span className="text-base mr-1">{d.flagEmoji}</span>
-                    <span className="text-sm sm:text-base font-medium text-slate-900 dark:text-white flex-1 truncate">
+                    <span className="text-sm sm:text-base font-medium text-slate-900 dark:text-white flex-1 break-words">
                       {d.name}
                     </span>
                   </div>
@@ -1319,7 +1252,7 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
                         </svg>
                       )}
                     </div>
-                    <span className="text-sm sm:text-base font-medium text-slate-900 dark:text-white flex-1 truncate">
+                    <span className="text-sm sm:text-base font-medium text-slate-900 dark:text-white flex-1 break-words">
                       {sub}
                     </span>
                   </div>
@@ -1343,8 +1276,32 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
                         </svg>
                       )}
                     </div>
-                    <span className="text-sm sm:text-base font-medium text-slate-900 dark:text-white flex-1 truncate">
+                    <span className="text-sm sm:text-base font-medium text-slate-900 dark:text-white flex-1 break-words">
                       {u.name} ({u.country})
+                    </span>
+                  </div>
+                );
+              })}
+
+              {openDropdown === 'funding' && FUNDING_OPTIONS.map(fund => {
+                const isChecked = selectedFunding.includes(fund);
+                return (
+                  <div
+                    key={fund}
+                    onClick={() => toggleFunding(fund)}
+                    className="min-h-[48px] px-3.5 py-2.5 rounded-xl flex items-center gap-3 cursor-pointer select-none transition-colors hover:bg-slate-100 dark:hover:bg-slate-800/70"
+                  >
+                    <div className={`w-5 h-5 rounded border flex items-center justify-center shrink-0 transition-colors ${
+                      isChecked ? 'bg-[#fbb034] border-[#fbb034] text-slate-950' : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800'
+                    }`}>
+                      {isChecked && (
+                        <svg className="w-3.5 h-3.5 stroke-[3]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      )}
+                    </div>
+                    <span className="text-sm sm:text-base font-medium text-slate-900 dark:text-white flex-1 break-words">
+                      {fund}
                     </span>
                   </div>
                 );
@@ -1360,6 +1317,7 @@ export const UnifiedHeroSearch: React.FC<UnifiedHeroSearchProps> = ({ onNavigate
                   if (openDropdown === 'destination') setSelectedDestinations([]);
                   if (openDropdown === 'field') setSelectedFields([]);
                   if (openDropdown === 'university') setSelectedUniversities([]);
+                  if (openDropdown === 'funding') setSelectedFunding([]);
                 }}
                 className="px-4 py-3 text-sm font-bold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
               >

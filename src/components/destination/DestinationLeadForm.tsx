@@ -7,6 +7,7 @@
 import React, { useState } from 'react';
 import { StudyDestinationData } from '../../data/destinationDataRegistry.ts';
 import { APPROVED_COUNTRY_NAMES } from '../../lib/country-config.ts';
+import { APPROVED_QUALIFICATIONS } from '../../lib/qualification-config.ts';
 
 interface DestinationLeadFormProps {
   data: StudyDestinationData;
@@ -18,7 +19,7 @@ export const DestinationLeadForm: React.FC<DestinationLeadFormProps> = ({ data }
     email: '',
     phone: '',
     destination: data.countryName,
-    studyLevel: 'Undergraduate (Bachelor)',
+    studyLevel: 'All Levels',
     preferredCourse: '',
     expectedIntake: '2027 Spring (March/April)',
     englishProficiency: 'IELTS Completed',
@@ -183,10 +184,11 @@ export const DestinationLeadForm: React.FC<DestinationLeadFormProps> = ({ data }
                     onChange={(e) => setFormData({ ...formData, studyLevel: e.target.value })}
                     className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs font-medium focus:ring-2 focus:ring-amber-400 focus:outline-none min-h-[44px]"
                   >
-                    <option value="Undergraduate (Bachelor)">Undergraduate (Bachelor)</option>
-                    <option value="Postgraduate (Master)">Postgraduate (Master)</option>
-                    <option value="Doctorate (PhD)">Doctorate (PhD)</option>
-                    <option value="Foundation / Diploma">Foundation / Diploma</option>
+                    {APPROVED_QUALIFICATIONS.map((qual) => (
+                      <option key={qual} value={qual}>
+                        {qual}
+                      </option>
+                    ))}
                   </select>
                 </div>
 

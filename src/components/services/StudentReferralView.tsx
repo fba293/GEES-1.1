@@ -8,6 +8,7 @@
 
 import React, { useState } from 'react';
 import { InteractiveHoverButton } from '../ui/interactive-hover-button.tsx';
+import { APPROVED_QUALIFICATIONS } from '../../lib/qualification-config.ts';
 
 interface StudentReferralViewProps {
   onBackToHome: () => void;
@@ -30,7 +31,7 @@ export const StudentReferralView: React.FC<StudentReferralViewProps> = ({
   const [studentPhone, setStudentPhone] = useState('');
   const [studentEmail, setStudentEmail] = useState('');
   const [targetDestination, setTargetDestination] = useState('Malaysia');
-  const [studyLevel, setStudyLevel] = useState('Undergraduate');
+  const [studyLevel, setStudyLevel] = useState('All Levels');
   const [hasConsent, setHasConsent] = useState(false);
   const [submittedChannel, setSubmittedChannel] = useState<'whatsapp' | 'email' | null>(null);
 
@@ -444,6 +445,22 @@ export const StudentReferralView: React.FC<StudentReferralViewProps> = ({
                       <option value="Cyprus">Cyprus</option>
                       <option value="Europe">Europe (Finland, Belgium, Greece, Netherlands)</option>
                       <option value="Undecided">Undecided / Exploring Options</option>
+                    </select>
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                      Intended Qualification / Study Level
+                    </label>
+                    <select
+                      value={studyLevel}
+                      onChange={(e) => setStudyLevel(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-xs text-slate-900 dark:text-white outline-none focus:border-[#fbb034]"
+                    >
+                      {APPROVED_QUALIFICATIONS.map((qual) => (
+                        <option key={qual} value={qual}>
+                          {qual}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 </div>

@@ -254,93 +254,96 @@ export const AuthenticationView: React.FC<AuthenticationViewProps> = ({
                 Select Registration Type
               </label>
 
-              {/* Student Registration */}
-              <button
-                type="button"
-                onClick={() => setSelectedSignupRole('student')}
-                className={`w-full flex items-center gap-3.5 p-3 rounded-xl border transition-all text-left cursor-pointer ${
-                  selectedSignupRole === 'student'
-                    ? 'bg-amber-500/[0.08] dark:bg-amber-500/[0.12] border-[#fbb034] ring-1 ring-[#fbb034]/60'
-                    : 'bg-white dark:bg-slate-900/60 border-slate-200/90 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-50/80 dark:hover:bg-slate-850/50'
-                }`}
-              >
-                <div
-                  className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
+              {/* Both selections in a single row */}
+              <div className="grid grid-cols-2 gap-2">
+                {/* Student Registration */}
+                <button
+                  type="button"
+                  onClick={() => setSelectedSignupRole('student')}
+                  className={`flex items-center gap-2 p-2.5 rounded-xl border transition-all text-left cursor-pointer ${
                     selectedSignupRole === 'student'
-                      ? 'bg-[#fbb034]/20 text-[#0A1120] dark:text-[#fbb034]'
-                      : 'bg-slate-100 dark:bg-slate-800 text-[#0A1120] dark:text-slate-200'
+                      ? 'bg-[#fff9e6] dark:bg-amber-950/30 border-[#fbb034] ring-1 ring-[#fbb034]/60'
+                      : 'bg-white dark:bg-slate-900/60 border-slate-200/90 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-50/80 dark:hover:bg-slate-850/50'
                   }`}
                 >
-                  <span className="material-symbols-outlined text-[20px]">school</span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <span
-                    className={`block text-xs font-bold leading-tight ${
+                  <div
+                    className={`w-7 h-7 xs:w-8 xs:h-8 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
                       selectedSignupRole === 'student'
-                        ? 'text-[#0A1120] dark:text-white'
-                        : 'text-slate-800 dark:text-slate-200'
+                        ? 'bg-[#fbb034]/20 text-[#0A1120] dark:text-[#fbb034]'
+                        : 'bg-slate-100 dark:bg-slate-800 text-[#0A1120] dark:text-slate-200'
                     }`}
                   >
-                    Student Registration
-                  </span>
-                  <span className="block text-[11px] text-slate-500 dark:text-slate-400 leading-tight mt-0.5 truncate">
-                    Apply to global universities
-                  </span>
-                </div>
-                <div className="shrink-0 ml-2">
-                  {selectedSignupRole === 'student' ? (
-                    <div className="w-4.5 h-4.5 rounded-full bg-[#fbb034] text-[#0A1120] flex items-center justify-center shadow-xs">
-                      <span className="material-symbols-outlined text-[13px] font-bold">check</span>
-                    </div>
-                  ) : (
-                    <div className="w-4.5 h-4.5 rounded-full border border-slate-300 dark:border-slate-700"></div>
-                  )}
-                </div>
-              </button>
+                    <span className="material-symbols-outlined text-[18px]">school</span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <span
+                      className={`block text-[11px] xs:text-xs font-bold leading-tight truncate ${
+                        selectedSignupRole === 'student'
+                          ? 'text-[#0A1120] dark:text-white'
+                          : 'text-slate-800 dark:text-slate-200'
+                      }`}
+                    >
+                      Student
+                    </span>
+                    <span className="block text-[9.5px] text-slate-500 dark:text-slate-400 leading-tight mt-0.5 truncate">
+                      Registration
+                    </span>
+                  </div>
+                  <div className="shrink-0 ml-1">
+                    {selectedSignupRole === 'student' ? (
+                      <div className="w-3.5 h-3.5 rounded-full bg-[#fbb034] flex items-center justify-center shadow-xs">
+                        <div className="w-1.5 h-1.5 rounded-full bg-white"></div>
+                      </div>
+                    ) : (
+                      <div className="w-3.5 h-3.5 rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800"></div>
+                    )}
+                  </div>
+                </button>
 
-              {/* Agent Partner */}
-              <button
-                type="button"
-                onClick={() => setSelectedSignupRole('agent')}
-                className={`w-full flex items-center gap-3.5 p-3 rounded-xl border transition-all text-left cursor-pointer ${
-                  selectedSignupRole === 'agent'
-                    ? 'bg-amber-500/[0.08] dark:bg-amber-500/[0.12] border-[#fbb034] ring-1 ring-[#fbb034]/60'
-                    : 'bg-white dark:bg-slate-900/60 border-slate-200/90 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-50/80 dark:hover:bg-slate-850/50'
-                }`}
-              >
-                <div
-                  className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
+                {/* Agent Partner */}
+                <button
+                  type="button"
+                  onClick={() => setSelectedSignupRole('agent')}
+                  className={`flex items-center gap-2 p-2.5 rounded-xl border transition-all text-left cursor-pointer ${
                     selectedSignupRole === 'agent'
-                      ? 'bg-[#fbb034]/20 text-[#0A1120] dark:text-[#fbb034]'
-                      : 'bg-slate-100 dark:bg-slate-800 text-[#0A1120] dark:text-slate-200'
+                      ? 'bg-[#fff9e6] dark:bg-amber-950/30 border-[#fbb034] ring-1 ring-[#fbb034]/60'
+                      : 'bg-white dark:bg-slate-900/60 border-slate-200/90 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-50/80 dark:hover:bg-slate-850/50'
                   }`}
                 >
-                  <span className="material-symbols-outlined text-[20px]">handshake</span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <span
-                    className={`block text-xs font-bold leading-tight ${
+                  <div
+                    className={`w-7 h-7 xs:w-8 xs:h-8 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
                       selectedSignupRole === 'agent'
-                        ? 'text-[#0A1120] dark:text-white'
-                        : 'text-slate-800 dark:text-slate-200'
+                        ? 'bg-[#fbb034]/20 text-[#0A1120] dark:text-[#fbb034]'
+                        : 'bg-slate-100 dark:bg-slate-800 text-[#0A1120] dark:text-slate-200'
                     }`}
                   >
-                    Agent Registration
-                  </span>
-                  <span className="block text-[11px] text-slate-500 dark:text-slate-400 leading-tight mt-0.5 truncate">
-                    Join GEES global recruitment network
-                  </span>
-                </div>
-                <div className="shrink-0 ml-2">
-                  {selectedSignupRole === 'agent' ? (
-                    <div className="w-4.5 h-4.5 rounded-full bg-[#fbb034] text-[#0A1120] flex items-center justify-center shadow-xs">
-                      <span className="material-symbols-outlined text-[13px] font-bold">check</span>
-                    </div>
-                  ) : (
-                    <div className="w-4.5 h-4.5 rounded-full border border-slate-300 dark:border-slate-700"></div>
-                  )}
-                </div>
-              </button>
+                    <span className="material-symbols-outlined text-[18px]">handshake</span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <span
+                      className={`block text-[11px] xs:text-xs font-bold leading-tight truncate ${
+                        selectedSignupRole === 'agent'
+                          ? 'text-[#0A1120] dark:text-white'
+                          : 'text-slate-800 dark:text-slate-200'
+                      }`}
+                    >
+                      Agent
+                    </span>
+                    <span className="block text-[9.5px] text-slate-500 dark:text-slate-400 leading-tight mt-0.5 truncate">
+                      Registration
+                    </span>
+                  </div>
+                  <div className="shrink-0 ml-1">
+                    {selectedSignupRole === 'agent' ? (
+                      <div className="w-3.5 h-3.5 rounded-full bg-[#fbb034] flex items-center justify-center shadow-xs">
+                        <div className="w-1.5 h-1.5 rounded-full bg-white"></div>
+                      </div>
+                    ) : (
+                      <div className="w-3.5 h-3.5 rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800"></div>
+                    )}
+                  </div>
+                </button>
+              </div>
 
               {/* Primary Action: Clear Continue button in GEES amber */}
               <button
@@ -349,7 +352,7 @@ export const AuthenticationView: React.FC<AuthenticationViewProps> = ({
                 className="mt-4 w-full py-3 px-4 rounded-xl bg-[#fbb034] hover:bg-[#f59e0b] active:scale-[0.98] text-[#0A1120] font-bold text-xs tracking-wide shadow-xs hover:shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
                 <span>
-                  {selectedSignupRole === 'student' ? 'Start Student Application' : 'Register as Partner Agent'}
+                  Continue to {selectedSignupRole === 'student' ? 'Student Registration' : 'Partner Agent Registration'}
                 </span>
                 <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
               </button>

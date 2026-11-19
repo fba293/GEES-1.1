@@ -41,7 +41,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
       : 'w-10 h-10 sm:w-10 sm:h-10 lg:w-11 lg:h-11';
 
   const buttonStyleClass = variant === 'minimal'
-    ? `gees-action--theme group relative w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 transition-colors cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-900 dark:text-[#fbb034] shrink-0 ${className}`
+    ? `gees-action--theme group relative w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 transition-all active:scale-95 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-900 dark:text-[#fbb034] shadow-2xs shrink-0 ${className}`
     : `gees-action--theme group relative rounded-full flex items-center justify-center border border-slate-300 dark:border-slate-700 transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95 cursor-pointer shrink-0 ${
         isDark
           ? 'bg-slate-900 text-[#fbb034]'
@@ -59,7 +59,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
       onClick={handleClick}
       className={buttonStyleClass}
     >
-      <span className="relative w-[18px] h-[18px] flex items-center justify-center pointer-events-none" aria-hidden="true">
+      <span className="relative w-[22px] h-[22px] flex items-center justify-center pointer-events-none" aria-hidden="true">
         {/* Sun Icon (Screenshot 1 - Dark Navy Sun with Solid Center & 8 Radial Dashes) */}
         <svg
           viewBox="0 0 24 24"

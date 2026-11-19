@@ -11,6 +11,7 @@ import { Course } from '../../types/index.ts';
 import { useWishlist } from '../../context/WishlistContext.tsx';
 import { useCurrency } from '../../context/CurrencyContext.tsx';
 import { getCollaboratedCourses, getCollaboratedUniversities } from '../../utils/PartnerUniversityManager.ts';
+import { APPROVED_QUALIFICATIONS, matchesCourseQualification } from '../../lib/qualification-config.ts';
 
 interface WishlistPortalProps {
   onNavigate: (view: string, payload?: any) => void;
@@ -28,7 +29,7 @@ export const WishlistPortal: React.FC<WishlistPortalProps> = ({
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCountry, setSelectedCountry] = useState<string>('all');
-  const [selectedLevel, setSelectedLevel] = useState<string>('all');
+  const [selectedLevel, setSelectedLevel] = useState<string>('All Levels');
   const [sortBy, setSortBy] = useState<'default' | 'fee-asc' | 'fee-desc' | 'qs' | 'az'>('default');
   const [showClearConfirm, setShowClearConfirm] = useState(false);
 
@@ -67,7 +68,7 @@ export const WishlistPortal: React.FC<WishlistPortalProps> = ({
         return false;
       }
       // Level filter
-      if (selectedLevel !== 'all' && c.level !== selectedLevel) {
+      if (selectedLevel !== 'all' && selectedLevel !== 'All Levels' && !matchesCourseQualification(c, selectedLevel)) {
         return false;
       }
       return true;
@@ -389,13 +390,13 @@ export const WishlistPortal: React.FC<WishlistPortalProps> = ({
               <select
                 value={selectedLevel}
                 onChange={(e) => setSelectedLevel(e.target.value)}
-                className="px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 focus:outline-hidden cursor-pointer"
+                className="px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 focus:outline-hidden cursor-pointer max-w-[240px]"
               >
-                <option value="all">All Study Levels</option>
-                <option value="undergraduate">Undergraduate</option>
-                <option value="postgraduate">Postgraduate</option>
-                <option value="doctorate">Doctorate (PhD)</option>
-                <option value="diploma">Diploma</option>
+                {APPROVED_QUALIFICATIONS.map((qual) => (
+                  <option key={qual} value={qual}>
+                    {qual}
+                  </option>
+                ))}
               </select>
 
               {/* Sort by */}
@@ -419,13 +420,13 @@ export const WishlistPortal: React.FC<WishlistPortalProps> = ({
               Showing <strong className="text-slate-900 dark:text-white font-bold">{filteredCourses.length}</strong> of {wishlist.length} saved {wishlist.length === 1 ? 'degree program' : 'degree programs'}
             </span>
 
-            {(searchQuery || selectedCountry !== 'all' || selectedLevel !== 'all') && (
+            {(searchQuery || selectedCountry !== 'all' || (selectedLevel !== 'all' && selectedLevel !== 'All Levels')) && (
               <button
                 type="button"
                 onClick={() => {
                   setSearchQuery('');
                   setSelectedCountry('all');
-                  setSelectedLevel('all');
+                  setSelectedLevel('All Levels');
                 }}
                 className="text-amber-600 dark:text-amber-400 font-bold hover:underline cursor-pointer"
               >

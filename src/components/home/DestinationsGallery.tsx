@@ -7,7 +7,7 @@
  * - "YOUR NEXT CHAPTER STARTS HERE" uppercase eyebrow badge
  * - "Choose your [Destination]" heading with GEES orange badge
  * - Segmented text-only continent filter pills (All, Europe, Oceania, North America, Asia)
- * - Content toolbar: "Showing X destinations" on left, "See All Countries" and view switcher on right
+ * - Content toolbar: "Showing X destinations" on left, "View All Countries" and view switcher on right
  * - Clean destination cards with yellow "STUDY IN" eyebrow, bold title, starting tuition in local currency, and yellow "Explore →" button
  * - Footer caption "Cards move automatically. Hover or focus to pause, or swipe on touch screens."
  * - Continuous hardware-accelerated right-to-left 120 FPS auto-scrolling carousel in Compact View
@@ -281,62 +281,78 @@ export const DestinationsGallery: React.FC<DestinationsGalleryProps> = ({
         </div>
       </div>
 
-      {/* Content Toolbar: Reorganized for mobile & tablet responsiveness matching mockup */}
-      <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 mb-6 flex flex-col items-center gap-4">
-        {/* Row 1: Showing X destinations on left, Show All Destinations (15) → on right */}
-        <div className="w-full flex items-center justify-between text-xs sm:text-sm">
-          <div className="text-slate-500 dark:text-slate-400 font-medium">
-            Showing <strong className="font-extrabold text-slate-900 dark:text-white">{filteredDestinations.length}</strong> destinations
+      {/* Content Toolbar: Single horizontal line with Compact/Expand centered in the middle */}
+      <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 mb-6 grid grid-cols-[1fr_auto_1fr] items-center gap-2 sm:gap-4 whitespace-nowrap overflow-x-auto scrollbar-none">
+        {/* Left: Showing X curated destinations */}
+        <div className="text-[#475569] dark:text-slate-400 font-normal text-xs sm:text-[15px] tracking-tight justify-self-start">
+          Showing <strong className="font-extrabold text-[#0B1329] dark:text-white mx-0.5">{filteredDestinations.length}</strong> curated destinations
+        </div>
+
+        {/* Middle (Centered directly under the continent tabs): Low-focus Compact / Expand Pill Control */}
+        <div className="justify-self-center">
+          <div className="inline-flex items-center gap-0.5 p-1 bg-slate-100/80 dark:bg-slate-800/50 border border-slate-200/70 dark:border-slate-700/60 rounded-full">
+            <button
+              type="button"
+              onClick={() => setIsExpanded(false)}
+              className={`inline-flex items-center gap-1.5 px-3 sm:px-3.5 py-1 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-medium transition-all cursor-pointer ${
+                !isExpanded
+                  ? 'bg-white dark:bg-slate-700/90 text-slate-700 dark:text-slate-200 shadow-2xs border border-slate-200/60 dark:border-slate-600/50 font-semibold'
+                  : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300'
+              }`}
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 opacity-75">
+                <line x1="4" y1="7" x2="20" y2="7" />
+                <line x1="4" y1="12" x2="15" y2="12" />
+                <line x1="4" y1="17" x2="10" y2="17" />
+              </svg>
+              <span>Compact</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setIsExpanded(true)}
+              className={`inline-flex items-center gap-1.5 px-3 sm:px-3.5 py-1 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-medium transition-all cursor-pointer ${
+                isExpanded
+                  ? 'bg-white dark:bg-slate-700/90 text-slate-700 dark:text-slate-200 shadow-2xs border border-slate-200/60 dark:border-slate-600/50 font-semibold'
+                  : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300'
+              }`}
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 opacity-75">
+                <rect x="3.5" y="3.5" width="7" height="7" rx="1.8" />
+                <rect x="13.5" y="3.5" width="7" height="7" rx="1.8" />
+                <rect x="13.5" y="13.5" width="7" height="7" rx="1.8" />
+                <rect x="3.5" y="13.5" width="7" height="7" rx="1.8" />
+              </svg>
+              <span>Expand</span>
+            </button>
           </div>
+        </div>
+
+        {/* Right: View all countries link */}
+        <div className="justify-self-end">
           <button
             type="button"
             onClick={() => {
               setActiveRegion('all');
               onNavigateToCountry('all');
             }}
-            className="inline-flex items-center gap-1.5 font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition-colors cursor-pointer py-1 px-1"
+            className="group inline-flex items-center gap-1.5 sm:gap-2 text-xs sm:text-[15px] font-bold text-[#0B1329] dark:text-white hover:text-[#fbb034] dark:hover:text-[#fbb034] transition-colors cursor-pointer py-1"
           >
-            <span>See all countries</span>
-            <span className="transition-transform duration-200 hover:translate-x-1">→</span>
-          </button>
-        </div>
-
-        {/* Row 2: Compact / Expand Pill Segmented Control Centered */}
-        <div className="inline-flex items-center gap-1.5 p-1 bg-slate-200/70 dark:bg-slate-800/80 border border-slate-300/60 dark:border-slate-700 rounded-full shadow-2xs">
-          <button
-            type="button"
-            onClick={() => setIsExpanded(false)}
-            className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-xs sm:text-sm font-bold transition-all cursor-pointer ${
-              !isExpanded
-                ? 'bg-[#0A1120] dark:bg-white text-white dark:text-slate-900 shadow-md'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-            }`}
-          >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="5" cy="8" r="1.5" fill="currentColor"/>
-              <line x1="11" y1="8" x2="19" y2="8"/>
-              <circle cx="5" cy="16" r="1.5" fill="currentColor"/>
-              <line x1="11" y1="16" x2="19" y2="16"/>
+            <span>View all countries</span>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="shrink-0 transition-transform duration-200 group-hover:translate-x-1"
+            >
+              <line x1="5" y1="12" x2="19" y2="12" />
+              <polyline points="13 6 19 12 13 18" />
             </svg>
-            <span>Compact</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setIsExpanded(true)}
-            className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-xs sm:text-sm font-bold transition-all cursor-pointer ${
-              isExpanded
-                ? 'bg-[#0A1120] dark:bg-white text-white dark:text-slate-900 shadow-md'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-            }`}
-          >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3.5" y="3.5" width="7" height="7" rx="2"/>
-              <rect x="13.5" y="3.5" width="7" height="7" rx="2"/>
-              <rect x="13.5" y="13.5" width="7" height="7" rx="2"/>
-              <rect x="3.5" y="13.5" width="7" height="7" rx="2"/>
-            </svg>
-            <span>Expand</span>
           </button>
         </div>
       </div>

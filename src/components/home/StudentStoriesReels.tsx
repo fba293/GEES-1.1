@@ -303,7 +303,7 @@ export const StudentStoriesReels: React.FC = () => {
         <div className="mt-10 sm:mt-16 text-center flex justify-center">
           <InteractiveHoverButton
             type="button"
-            text="View All Student Stories"
+            text="View all stories"
             className="bg-white dark:bg-[#0B1329] text-[#0A1120] dark:text-white border-slate-200 dark:border-slate-800 shadow-sm hover:border-[#fbb034] transition-colors h-11 sm:h-12 px-8 font-bold text-sm sm:text-base rounded-full"
             onClick={() => {
               if (typeof window !== 'undefined') {

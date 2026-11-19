@@ -7,6 +7,7 @@
 import React, { useState } from 'react';
 import { InteractiveHoverButton } from '../ui/interactive-hover-button.tsx';
 import { AnimatedTabs } from '../ui/animated-tabs.tsx';
+import { APPROVED_QUALIFICATIONS } from '../../lib/qualification-config.ts';
 
 interface AdmissionSupportViewProps {
   onBackToHome: () => void;
@@ -20,7 +21,7 @@ export const AdmissionSupportView: React.FC<AdmissionSupportViewProps> = ({
   onNavigate
 }) => {
   // Eligibility & Matching State
-  const [degreeLevel, setDegreeLevel] = useState<'bachelor' | 'master' | 'phd'>('master');
+  const [degreeLevel, setDegreeLevel] = useState<string>('All Levels');
   const [gpaScore, setGpaScore] = useState<string>('3.2');
   const [englishScore, setEnglishScore] = useState<string>('6.5');
   const [targetIntake, setTargetIntake] = useState<string>('Fall 2026');
@@ -300,12 +301,14 @@ export const AdmissionSupportView: React.FC<AdmissionSupportViewProps> = ({
                   </label>
                   <select
                     value={degreeLevel}
-                    onChange={(e) => setDegreeLevel(e.target.value as any)}
+                    onChange={(e) => setDegreeLevel(e.target.value)}
                     className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 outline-none"
                   >
-                    <option value="bachelor">Bachelor's Degree (Undergraduate)</option>
-                    <option value="master">Master's Degree (Postgraduate)</option>
-                    <option value="phd">Doctorate / PhD Program</option>
+                    {APPROVED_QUALIFICATIONS.map((qual) => (
+                      <option key={qual} value={qual}>
+                        {qual}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
