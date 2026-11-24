@@ -29,22 +29,22 @@ export const CounselorsSection: React.FC<CounselorsSectionProps> = ({ onOpenBook
     : mockCounselors.filter(c => c.department === activeDepartment);
 
   return (
-    <section id="counselors-section" className="py-10 min-[390px]:py-12 sm:py-16 md:py-24 relative overflow-hidden bg-white dark:bg-[#0B1329] border-t border-slate-100 dark:border-slate-800">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="counselors-section" className="w-full max-w-[1600px] mx-auto py-10 sm:py-16 md:py-24 relative overflow-hidden bg-white dark:bg-[#0B1329] border-t border-slate-100 dark:border-slate-800">
+      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-14 px-2">
-          <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold font-display tracking-tight text-slate-900 dark:text-white flex items-center justify-center flex-wrap gap-2 sm:gap-3 md:gap-3.5 leading-tight text-center">
+        <div className="text-center max-w-3xl mx-auto mb-6 sm:mb-14 px-0 sm:px-2">
+          <h2 className="text-[30px] sm:text-4xl md:text-5xl lg:text-6xl font-extrabold font-display tracking-tight text-slate-900 dark:text-white flex items-center justify-center flex-wrap gap-2 sm:gap-3 md:gap-3.5 leading-[30px] sm:leading-tight text-center">
             <span>Meet Our</span>
             <span className="bg-[#fbb034] text-slate-950 px-3.5 sm:px-5 md:px-6 py-0.5 sm:py-1 md:py-1.5 rounded-xl sm:rounded-2xl tracking-tight font-black leading-none shadow-sm shrink-0">
               Counselors
             </span>
           </h2>
-          <p className="mt-2.5 sm:mt-3 text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-400 font-normal leading-relaxed max-w-2xl mx-auto px-2 text-center">
+          <p className="mt-2.5 sm:mt-3 text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-400 font-normal leading-relaxed max-w-2xl mx-auto px-0 sm:px-2 text-center">
             Personalized attention and expert guidance from seasoned admissions mentors.
           </p>
 
           {/* Department Filter Tabs with Universal 120 FPS Sliding Indicator */}
-          <div className="mt-6 sm:mt-8 w-full max-w-full overflow-hidden">
+          <div className="mt-5 sm:mt-8 w-full max-w-full overflow-hidden">
             <AnimatedTabs
               tabs={departmentTabs}
               activeId={activeDepartment}
@@ -179,7 +179,7 @@ export const CounselorsSection: React.FC<CounselorsSectionProps> = ({ onOpenBook
                     onMouseEnter={() => setHoveredCounselorId(counselor.id)}
                     onMouseLeave={() => setHoveredCounselorId(null)}
                     onClick={() => onOpenBooking(counselor.name, counselor.role)}
-                    className={`py-3.5 sm:py-4 px-3.5 rounded-2xl cursor-pointer transition-all duration-300 transform will-change-transform ${
+                    className={`py-3 sm:py-4 px-2.5 sm:px-3.5 rounded-2xl cursor-pointer transition-all duration-300 transform will-change-transform ${
                       isHovered
                         ? 'bg-amber-50/70 dark:bg-slate-800/90 -translate-y-1 shadow-md border border-amber-200/60 dark:border-amber-500/30'
                         : 'hover:bg-amber-50/40 dark:hover:bg-slate-800/60 hover:-translate-y-0.5 border border-transparent'

@@ -18,16 +18,16 @@ export const PreFooterCta: React.FC<PreFooterCtaProps> = ({
 }) => {
   return (
     <section className="relative w-full overflow-hidden bg-white dark:bg-[#0B1329] transition-colors" id="cta-reveal">
-      <div className="w-full flex flex-col justify-between overflow-hidden pt-6 pb-8 md:pb-16 bg-white dark:bg-[#0B1329]">
+      <div className="w-full flex flex-col justify-between overflow-hidden pt-4 pb-10 sm:pt-6 sm:pb-8 md:pb-16 bg-white dark:bg-[#0B1329]">
         {/* MAIN CTA CARD STAGE WITH OVERLAPPING "GEES" STYLING */}
         <div className="relative w-full max-w-full sm:max-w-6xl mx-auto px-4 sm:px-6 md:px-8 z-10 my-auto">
           {/* Outer card with gentle ambient border & shadow */}
-          <div className="relative bg-white dark:bg-[#0B1329] rounded-3xl md:rounded-[2.5rem] p-5 sm:p-10 md:p-14 lg:p-16 shadow-[0_20px_60px_-15px_rgba(15,23,42,0.08)] border border-slate-200/80 dark:border-slate-800 overflow-hidden flex flex-col items-center text-center transition-all duration-300">
+          <div className="relative bg-white dark:bg-[#0B1329] rounded-3xl md:rounded-[2.5rem] px-5 py-7 sm:p-10 md:p-14 lg:p-16 shadow-[0_20px_60px_-15px_rgba(15,23,42,0.08)] border border-slate-200/80 dark:border-slate-800 overflow-hidden flex flex-col items-center text-center transition-all duration-300">
             {/* Amber accent bar on top center of the card */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-28 md:w-36 h-1.5 bg-[#fbb034] rounded-b-full shadow-sm" />
 
             {/* Eyebrow Pill: Free Consultation */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#fbb034]/15 border border-[#fbb034]/40 text-slate-800 dark:text-slate-200 mb-6 sm:mb-8 md:mb-10 shadow-sm">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#fbb034]/15 border border-[#fbb034]/40 text-slate-800 dark:text-slate-200 mb-4 sm:mb-8 md:mb-10 shadow-sm">
               <span className="material-symbols-outlined text-sm md:text-base text-[#c58211] dark:text-[#fbb034]">headset_mic</span>
               <span className="text-xs md:text-sm font-semibold tracking-tight text-slate-800 dark:text-slate-200">
                 Free Consultation • <span className="font-bold text-slate-900 dark:text-white">100% Free</span>
@@ -35,22 +35,22 @@ export const PreFooterCta: React.FC<PreFooterCtaProps> = ({
             </div>
 
             {/* Main Headline */}
-            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-x-3 md:gap-x-4 mb-3 sm:mb-6 max-w-full">
-              <h2 className="font-sans font-black text-2xl xs:text-3xl sm:text-5xl md:text-6xl lg:text-7xl text-slate-900 dark:text-white tracking-tight leading-tight">
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-x-3 md:gap-x-4 mb-3 sm:mb-6 max-w-full text-[30px] leading-[30px] sm:text-base sm:leading-normal">
+              <h2 className="font-sans font-black text-[30px] sm:text-5xl md:text-6xl lg:text-7xl text-slate-900 dark:text-white tracking-tight leading-[30px] sm:leading-tight">
                 Still wondering
               </h2>
-              <span className="font-sans font-black text-2xl xs:text-3xl sm:text-5xl md:text-6xl lg:text-7xl text-slate-950 bg-[#fbb034] px-3.5 sm:px-6 md:px-8 py-1 sm:py-2.5 md:py-3.5 rounded-xl sm:rounded-2xl md:rounded-3xl inline-flex items-center justify-center tracking-tight leading-tight shadow-sm">
+              <span className="font-sans font-black text-[30px] sm:text-5xl md:text-6xl lg:text-7xl text-slate-950 bg-[#fbb034] px-3.5 sm:px-6 md:px-8 py-1 sm:py-2.5 md:py-3.5 rounded-xl sm:rounded-2xl md:rounded-3xl inline-flex items-center justify-center tracking-tight leading-[30px] sm:leading-tight shadow-sm">
                 what to do?
               </span>
             </div>
 
             {/* Subtitle description */}
-            <p className="text-sm sm:text-lg md:text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto mb-6 sm:mb-8 md:mb-12 leading-relaxed font-normal px-2">
+            <p className="text-sm sm:text-lg md:text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto mb-5 sm:mb-8 md:mb-12 leading-relaxed font-normal px-0 sm:px-2">
               Message our experts to start your study abroad journey today
             </p>
 
             {/* Call to Action Buttons with Consistent InteractiveHoverButton Animation */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-8 sm:mb-10 md:mb-12 w-full sm:w-auto">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-6 sm:mb-10 md:mb-12 w-full sm:w-auto">
               <InteractiveHoverButton
                 type="button"
                 text="Book A Free Consultation"
@@ -76,7 +76,7 @@ export const PreFooterCta: React.FC<PreFooterCtaProps> = ({
             </div>
 
             {/* Bottom Trust Row */}
-            <div className="w-full pt-6 sm:pt-8 border-t border-slate-100 dark:border-slate-800/80 flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-5 md:gap-6">
+            <div className="w-full pt-5 sm:pt-8 border-t border-slate-100 dark:border-slate-800/80 flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-5 md:gap-6">
               {/* Student Avatars & Count */}
               <div className="flex items-center gap-3">
                 <div className="flex -space-x-2.5 overflow-hidden p-0.5">

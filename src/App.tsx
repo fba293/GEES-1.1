@@ -58,50 +58,29 @@ import { MM2HView } from './components/services/MM2HView.tsx';
 import { HealthInsuranceView } from './components/services/HealthInsuranceView.tsx';
 import { FlightTicketingView } from './components/services/FlightTicketingView.tsx';
 import { WishlistPortal } from './components/portal/WishlistPortal.tsx';
+import { SiteMapView } from './components/portal/SiteMapView.tsx';
+import { LanguageCenterListView } from './components/portal/LanguageCenterListView.tsx';
+import { StudyAbroadView } from './components/portal/StudyAbroadView.tsx';
 import { StudyDestinationPage } from './components/destination/StudyDestinationPage.tsx';
 import { normalizeDestinationSlug } from './data/destinationDataRegistry.ts';
+import { resolveViewFromPathname } from './lib/sitemap-registry.ts';
 import { TrackVisaPage } from './pages/TrackVisaPage.tsx';
 import { CurrencyProvider } from './context/CurrencyContext.tsx';
 import { ThemeProvider, useTheme } from './context/ThemeContext.tsx';
 import { WishlistProvider } from './context/WishlistContext.tsx';
+import { ComparisonProvider } from './context/ComparisonContext.tsx';
+import { ComparisonBottomBar } from './components/comparison/ComparisonBottomBar.tsx';
+import { ComparisonPortalView } from './components/comparison/ComparisonPortalView.tsx';
 import { AuthenticationView } from './components/auth/AuthenticationView.tsx';
 
 function AppContent() {
   // Theme state from global ThemeContext
   const { isDark, toggleTheme } = useTheme();
 
-  // Current view routing state
+  // Current view routing state (driven by centralized sitemap-registry.ts so any new page updates routing & sitemap together)
   const [currentView, setCurrentView] = useState<string>(() => {
     if (typeof window !== 'undefined') {
-      const path = window.location.pathname.toLowerCase();
-      if (path.includes('login') || path.includes('signin') || path.includes('auth')) return 'login';
-      if (path.includes('track-visa') || path.includes('emgs') || path.includes('track-my-visa')) return 'track-visa';
-      if (path.includes('study-in-') || path.includes('study-malaysia') || path.includes('study-uk') || path.includes('study-australia')) return 'study-destination';
-      if (path.includes('wishlist') || path.includes('saved-courses')) return 'wishlist';
-      if (path.includes('flight-ticketing') || path.includes('flight') || path.includes('ticket')) return 'flight-ticketing';
-      if (path.includes('health-insurance') || path.includes('insurance') || path.includes('oshc')) return 'health-insurance';
-      if (path.includes('mm2h') || path.includes('malaysia-second-home') || path.includes('malaysia-my-second-home')) return 'mm2h';
-      if (path.includes('tourist-visa') || path.includes('tourist') || path.includes('visitor-visa')) return 'tourist-visa';
-      if (path.includes('dependent-visa') || path.includes('dependent')) return 'dependent-visa';
-      if (path.includes('student-visa-assistance') || path.includes('visa-assistance') || path.includes('student-visa')) return 'student-visa-assistance';
-      if (path.includes('student-referral') || path.includes('referral')) return 'student-referral';
-      if (path.includes('school-admission')) return 'school-admission';
-      if (path.includes('admission-support') || path.includes('admission')) return 'admission-support';
-      if (path.includes('blog')) return 'blog';
-      if (path.includes('news')) return 'news';
-      if (path.includes('about')) return 'about';
-      if (path.includes('faq')) return 'faq';
-      if (path.includes('event')) return 'events';
-      if (path.includes('contact')) return 'contact';
-      if (path.includes('services')) return 'services';
-      if (path.includes('success-stories') || path.includes('stories')) return 'success-stories';
-      if (path.includes('language-centers') || path.includes('language')) return 'language-centers';
-      if (path.includes('students-guide') || path.includes('guide')) return 'students-guide';
-      if (path.includes('resources')) return 'resources';
-      if (path.includes('leadership')) return 'leadership-director';
-      if (path.includes('countries') || path.includes('destinations')) return 'destinations';
-      if (path.includes('courses') || path.includes('course')) return 'courses';
-      if (path.includes('universities') || path.includes('university')) return 'universities';
+      return resolveViewFromPathname(window.location.pathname);
     }
     return 'home';
   });
@@ -112,6 +91,10 @@ function AppContent() {
       const path = window.location.pathname.toLowerCase().replace(/^\/+/, '');
       if (path.includes('study-in-') || path.includes('study-')) {
         return path;
+      }
+      if (path.startsWith('language-center-list/')) {
+        const slug = path.replace(/^language-center-list\//, '').replace(/\.html$/, '');
+        return slug || null;
       }
     }
     return null;
@@ -144,6 +127,65 @@ function AppContent() {
     if (view === 'apply') {
       setSelectedCounselorForModal(payload);
       setIsConsultationModalOpen(true);
+      return;
+    }
+
+    if (view === 'sitemap' || view === 'site-map') {
+      setCurrentView('sitemap');
+      setNavPayload(null);
+      if (typeof window !== 'undefined') {
+        const isHtml = window.location.pathname.includes('.html');
+        window.history.pushState({}, '', isHtml ? 'sitemap.html' : '/sitemap');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (view === 'compare-universities') {
+      setCurrentView('compare-universities');
+      setNavPayload(payload || null);
+      if (typeof window !== 'undefined') {
+        window.history.pushState({}, '', '/compare/universities');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (view === 'compare-programs' || view === 'compare-programmes') {
+      setCurrentView('compare-programs');
+      setNavPayload(payload || null);
+      if (typeof window !== 'undefined') {
+        window.history.pushState({}, '', '/compare/programs');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (view === 'study-abroad') {
+      setCurrentView('study-abroad');
+      setNavPayload(payload || null);
+      if (typeof window !== 'undefined') {
+        const isHtml = window.location.pathname.includes('.html');
+        window.history.pushState({}, '', isHtml ? 'study-abroad.html' : '/study-abroad');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (view === 'language-center-list') {
+      const slug = typeof payload === 'string' && payload.trim() ? payload.trim() : null;
+      setCurrentView('language-center-list');
+      setNavPayload(slug);
+      if (typeof window !== 'undefined') {
+        const isHtml = window.location.pathname.includes('.html');
+        const nextUrl = isHtml
+          ? 'language-center-list.html'
+          : slug
+            ? `/language-center-list/${slug}`
+            : '/language-center-list';
+        window.history.pushState({}, '', nextUrl);
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
@@ -357,6 +399,21 @@ function AppContent() {
       return;
     }
 
+    if (
+      view === 'home' &&
+      typeof window !== 'undefined' &&
+      (window.location.pathname.includes('sitemap') ||
+        window.location.pathname.includes('language-center-list') ||
+        window.location.pathname.includes('study-abroad') ||
+        window.location.pathname.includes('/compare'))
+    ) {
+      window.history.pushState({}, '', '/');
+      setNavPayload(null);
+      setCurrentView('home');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
     if (view === 'home' && typeof window !== 'undefined' && (window.location.pathname.includes('blog') || window.location.pathname.includes('news') || window.location.pathname.includes('services') || window.location.pathname.includes('faq') || window.location.pathname.includes('event') || window.location.pathname.includes('contact') || window.location.pathname.includes('countries') || window.location.pathname.includes('universities') || window.location.pathname.includes('courses') || window.location.pathname.includes('study-in-') || window.location.pathname.includes('track-visa'))) {
       window.location.href = '/';
       return;
@@ -442,7 +499,7 @@ function AppContent() {
       />
 
       {/* Main Content Area */}
-      <main className="pt-24 sm:pt-28 lg:pt-32 pb-20 md:pb-0 bg-white dark:bg-[#0B1329]">
+      <main className="pt-[68px] sm:pt-28 lg:pt-32 pb-0 bg-white dark:bg-[#0B1329]">
         {/* VIEW: HOME */}
         {currentView === 'home' && (
           <>
@@ -511,6 +568,7 @@ function AppContent() {
             <UniversityExplorerView
               initialSlug={typeof navPayload === 'string' ? navPayload : undefined}
               onApply={(uniName) => handleOpenConsultation(`Admissions Representative for ${uniName}`)}
+              onNavigateHome={() => handleNavigate('home')}
             />
           </div>
         )}
@@ -520,6 +578,7 @@ function AppContent() {
           <div className="py-2 max-w-[95%] mx-auto w-full">
             <CourseExplorerView
               onApply={(courseInfo) => handleOpenConsultation(`Admissions for ${courseInfo}`)}
+              onNavigateHome={() => handleNavigate('home')}
               onNavigateToUni={(uniSlug) => handleNavigate('universities', uniSlug)}
               onNavigateToWishlist={() => handleNavigate('wishlist')}
               initialQuery={navPayload && typeof navPayload === 'object' ? navPayload.query : (typeof navPayload === 'string' ? navPayload : '')}
@@ -541,13 +600,34 @@ function AppContent() {
           </div>
         )}
 
-        {/* VIEW: SERVICES DETAIL EXPLORER (Connoisseur Stack Interactor, No 6 Steps Section) */}
-        {currentView === 'services' && (
-          <ServicesView
-            onBackToHome={() => handleNavigate('home')}
-            onOpenConsultation={handleOpenConsultation}
-            initialSelectedServiceSlug={typeof navPayload === 'string' ? navPayload : undefined}
+        {/* VIEW: COMPARE UNIVERSITIES (/compare/universities) */}
+        {currentView === 'compare-universities' && (
+          <ComparisonPortalView
+            mode="universities"
+            onNavigate={handleNavigate}
+            onRequestDetails={(info) => handleOpenConsultation(info)}
           />
+        )}
+
+        {/* VIEW: COMPARE PROGRAMMES (/compare/programs) */}
+        {currentView === 'compare-programs' && (
+          <ComparisonPortalView
+            mode="programs"
+            onNavigate={handleNavigate}
+            onRequestDetails={(info) => handleOpenConsultation(info)}
+          />
+        )}
+
+        {/* VIEW: SERVICES DIRECTORY EXPLORER (Unified Layout with Courses, Universities & Countries) */}
+        {currentView === 'services' && (
+          <div className="py-2 max-w-[95%] mx-auto w-full">
+            <ServicesView
+              onBackToHome={() => handleNavigate('home')}
+              onOpenConsultation={handleOpenConsultation}
+              onNavigate={handleNavigate}
+              initialSelectedServiceSlug={typeof navPayload === 'string' ? navPayload : undefined}
+            />
+          </div>
         )}
 
         {/* VIEW: REUSABLE STUDY DESTINATION PAGE */}
@@ -646,12 +726,13 @@ function AppContent() {
           />
         )}
 
-        {/* VIEW: STANDALONE BLOGS (Redesigned Magazine Blog Hub) */}
+        {/* VIEW: STANDALONE BLOGS (Unified Explorer Architecture) */}
         {currentView === 'blog' && (
-          <div className="py-2 sm:py-4">
+          <div className="py-2 max-w-[95%] mx-auto w-full">
             <BlogHubView
-              onOpenConsultation={() => handleOpenConsultation()}
+              onOpenConsultation={(topicContext) => handleOpenConsultation(topicContext)}
               onNavigate={handleNavigate}
+              onNavigateHome={() => handleNavigate('home')}
             />
           </div>
         )}
@@ -678,20 +759,24 @@ function AppContent() {
 
         {/* VIEW: EVENTS & EDUCATION FAIRS */}
         {currentView === 'events' && (
-          <EventsView
-            onBackToHome={() => handleNavigate('home')}
-            onOpenConsultation={handleOpenConsultation}
-            onNavigate={handleNavigate}
-          />
+          <div className="py-2 max-w-[95%] mx-auto w-full">
+            <EventsView
+              onBackToHome={() => handleNavigate('home')}
+              onOpenConsultation={handleOpenConsultation}
+              onNavigate={handleNavigate}
+            />
+          </div>
         )}
 
         {/* VIEW: GLOBAL NEWS & VISA BULLETINS */}
         {currentView === 'news' && (
-          <NewsView
-            onBackToHome={() => handleNavigate('home')}
-            onOpenConsultation={handleOpenConsultation}
-            onNavigate={handleNavigate}
-          />
+          <div className="py-2 max-w-[95%] mx-auto w-full">
+            <NewsView
+              onBackToHome={() => handleNavigate('home')}
+              onOpenConsultation={handleOpenConsultation}
+              onNavigate={handleNavigate}
+            />
+          </div>
         )}
 
         {/* VIEW: ABOUT US */}
@@ -705,20 +790,24 @@ function AppContent() {
 
         {/* VIEW: SUCCESS STORIES */}
         {currentView === 'success-stories' && (
-          <SuccessStoriesView
-            onBackToHome={() => handleNavigate('home')}
-            onOpenConsultation={handleOpenConsultation}
-            onNavigate={handleNavigate}
-          />
+          <div className="py-2 max-w-[95%] mx-auto w-full">
+            <SuccessStoriesView
+              onBackToHome={() => handleNavigate('home')}
+              onOpenConsultation={handleOpenConsultation}
+              onNavigate={handleNavigate}
+            />
+          </div>
         )}
 
         {/* VIEW: LANGUAGE CENTERS */}
         {currentView === 'language-centers' && (
-          <LanguageCentersView
-            onBackToHome={() => handleNavigate('home')}
-            onOpenConsultation={handleOpenConsultation}
-            onNavigate={handleNavigate}
-          />
+          <div className="py-2 max-w-[95%] mx-auto w-full">
+            <LanguageCentersView
+              onBackToHome={() => handleNavigate('home')}
+              onOpenConsultation={handleOpenConsultation}
+              onNavigate={handleNavigate}
+            />
+          </div>
         )}
 
         {/* VIEW: STUDENTS GUIDE */}
@@ -732,11 +821,13 @@ function AppContent() {
 
         {/* VIEW: RESOURCES HUB */}
         {currentView === 'resources' && (
-          <ResourcesHubView
-            onBackToHome={() => handleNavigate('home')}
-            onOpenConsultation={handleOpenConsultation}
-            onNavigate={handleNavigate}
-          />
+          <div className="py-2 max-w-[95%] mx-auto w-full">
+            <ResourcesHubView
+              onBackToHome={() => handleNavigate('home')}
+              onOpenConsultation={handleOpenConsultation}
+              onNavigate={handleNavigate}
+            />
+          </div>
         )}
 
         {/* VIEW: LEADERSHIP & DIRECTOR */}
@@ -835,6 +926,37 @@ function AppContent() {
             onNavigate={handleNavigate}
             onOpenConsultationModal={handleOpenConsultation}
           />
+        )}
+
+        {/* VIEW: APPLE-STYLE AUTO-UPDATING SITE MAP */}
+        {currentView === 'sitemap' && (
+          <SiteMapView
+            onNavigate={handleNavigate}
+            onOpenConsultation={handleOpenConsultation}
+          />
+        )}
+
+        {/* VIEW: LANGUAGE CENTER DIRECTORY LIST (/language-center-list) */}
+        {currentView === 'language-center-list' && (
+          <div className="py-2 max-w-[95%] mx-auto w-full">
+            <LanguageCenterListView
+              initialSlug={typeof navPayload === 'string' ? navPayload : undefined}
+              onApply={(centerInfo) => handleOpenConsultation(centerInfo)}
+              onAskUs={(centerInfo) => handleOpenConsultation(centerInfo)}
+              onNavigateHome={() => handleNavigate('home')}
+            />
+          </div>
+        )}
+
+        {/* VIEW: STUDY ABROAD EXPLORER (/study-abroad) */}
+        {currentView === 'study-abroad' && (
+          <div className="py-2 max-w-[95%] mx-auto w-full">
+            <StudyAbroadView
+              onNavigate={handleNavigate}
+              onApply={(contextInfo) => handleOpenConsultation(contextInfo)}
+              onNavigateHome={() => handleNavigate('home')}
+            />
+          </div>
         )}
       </main>
 
@@ -946,6 +1068,12 @@ function AppContent() {
       {/* Floating Back-to-Top Button */}
       <BackToTopButton />
 
+      {/* Global Slide-Up Comparison Dock (Universities, Programmes & Shortlisted) */}
+      <ComparisonBottomBar
+        currentView={currentView}
+        onNavigate={handleNavigate}
+      />
+
       {/* Custom Floating Island Mobile Bottom Navigation Dock (GEES-1.1 across all pages) */}
       <FloatingBottomNav
         currentView={currentView}
@@ -963,7 +1091,9 @@ export default function App() {
     <ThemeProvider>
       <CurrencyProvider>
         <WishlistProvider>
-          <AppContent />
+          <ComparisonProvider>
+            <AppContent />
+          </ComparisonProvider>
         </WishlistProvider>
       </CurrencyProvider>
     </ThemeProvider>

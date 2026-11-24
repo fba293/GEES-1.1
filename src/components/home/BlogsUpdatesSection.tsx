@@ -114,23 +114,23 @@ export const BlogsUpdatesSection: React.FC<BlogsUpdatesSectionProps> = ({
   return (
     <section
       id="blogs-section"
-      className="w-full bg-white dark:bg-[#0B1329] py-10 min-[390px]:py-12 sm:py-20 border-t border-slate-100 dark:border-slate-800 transition-colors"
+      className="w-full bg-white dark:bg-[#0B1329] py-10 sm:py-20 border-t border-slate-100 dark:border-slate-800 transition-colors"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* 1. Header (Classic GEES Signature Style) */}
-        <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12 px-2">
-          <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold font-display tracking-tight text-slate-900 dark:text-white flex items-center justify-center flex-wrap gap-2 sm:gap-3 md:gap-3.5 leading-tight text-center">
+        <div className="text-center max-w-3xl mx-auto mb-6 sm:mb-12 px-0 sm:px-2">
+          <h2 className="text-[30px] sm:text-4xl md:text-5xl lg:text-6xl font-extrabold font-display tracking-tight text-slate-900 dark:text-white flex items-center justify-center flex-wrap gap-2 sm:gap-3 md:gap-3.5 leading-[30px] sm:leading-tight text-center">
             <span>Blogs &</span>
             <span className="bg-[#fbb034] text-slate-950 px-3.5 sm:px-5 md:px-6 py-0.5 sm:py-1 md:py-1.5 rounded-xl sm:rounded-2xl font-black tracking-tight leading-none shadow-sm shrink-0">
               Updates
             </span>
           </h2>
-          <p className="mt-2.5 sm:mt-3 text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-400 font-normal leading-relaxed max-w-4xl mx-auto px-2 text-center lg:whitespace-nowrap">
+          <p className="mt-2.5 sm:mt-3 text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-400 font-normal leading-relaxed max-w-4xl mx-auto px-0 sm:px-2 text-center lg:whitespace-nowrap">
             Get the latest news, visa updates, student stories, and scholarship guides.
           </p>
 
           {/* Category Tabs */}
-          <div className="mt-6 sm:mt-8 w-full flex justify-center">
+          <div className="mt-5 sm:mt-8 w-full flex justify-center">
             <AnimatedTabs
               tabs={tabs}
               activeId={activeCategory}
@@ -142,7 +142,7 @@ export const BlogsUpdatesSection: React.FC<BlogsUpdatesSectionProps> = ({
         </div>
 
         {/* 2. Responsive 3-Column Articles Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-8 items-stretch">
           {filteredPosts.slice(0, 3).map((post) => {
             return (
               <article
@@ -195,7 +195,7 @@ export const BlogsUpdatesSection: React.FC<BlogsUpdatesSectionProps> = ({
                 </div>
 
                 {/* Card Content */}
-                <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between">
+                <div className="p-4 sm:p-6 flex-1 flex flex-col justify-between">
                   <div>
                     {/* Author & Published Date */}
                     <div className="flex items-center justify-between text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mb-3">
@@ -252,7 +252,7 @@ export const BlogsUpdatesSection: React.FC<BlogsUpdatesSectionProps> = ({
 
 
         {/* 3. Bottom CTA: "All Articles" Redirect Button */}
-        <div className="mt-12 sm:mt-16 text-center flex items-center justify-center">
+        <div className="mt-8 sm:mt-16 text-center flex items-center justify-center">
           <a
             href="/blog.html"
             onClick={handleRedirectToBlog}

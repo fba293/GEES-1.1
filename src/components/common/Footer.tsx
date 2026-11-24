@@ -442,7 +442,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   return (
     <footer
       ref={rootRef}
-      className="gees-footer-theme w-full pt-8 sm:pt-10 pb-3 bg-[#F8FAFC] dark:bg-[#0B1329] text-slate-700 dark:text-slate-200 border-t border-slate-200/90 dark:border-slate-800 transition-colors"
+      className="gees-footer-theme w-full pt-9 sm:pt-10 pb-20 sm:pb-3 bg-[#F8FAFC] dark:bg-[#0B1329] text-slate-700 dark:text-slate-200 border-t border-slate-200/90 dark:border-slate-800 transition-colors"
       style={vars}
       data-in={seen ? "true" : "false"}
       onPointerMove={onPointer}
@@ -470,10 +470,10 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
       </div>
 
       {/* Main Multi-Column Content Area */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
         
         {/* Dynamic Responsive 4-Column CSS Grid with Compact Padding */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 pb-6 border-b border-slate-200/90 dark:border-slate-800/80">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 pb-6 border-b border-slate-200/90 dark:border-slate-800/80 h-auto lg:h-[391.667px]">
           
           {/* Col 1: Brand, Office Locations with Google Maps Links & Contacts */}
           <div className="space-y-3">
@@ -565,11 +565,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               </div>
 
               {/* Email in 1 Single Line */}
-              <div className="flex items-center gap-2 whitespace-nowrap">
+              <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
                 <span className="text-red-500 text-sm shrink-0 select-none">✉️</span>
                 <a
                   href="mailto:info@globaleducationexpert.com"
-                  className="text-slate-800 dark:text-slate-200 hover:text-[#D97706] dark:hover:text-[#FBB034] font-medium inline-block hover:underline"
+                  className="text-slate-800 dark:text-slate-200 hover:text-[#D97706] dark:hover:text-[#FBB034] font-medium inline-block hover:underline break-all sm:break-normal"
                 >
                   info@globaleducationexpert.com
                 </a>
@@ -578,11 +578,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           </div>
 
           {/* Col 2: Study Destinations */}
-          <div className="space-y-2.5">
+          <div className="space-y-3 sm:space-y-2.5 pt-5 sm:pt-0 border-t border-slate-200/70 dark:border-slate-800/70 sm:border-t-0">
             <h4 className="text-sm font-bold text-red-500 dark:text-red-400 tracking-wide">
               Study Destinations
             </h4>
-            <ul className="space-y-2 text-xs text-slate-600 dark:text-slate-300">
+            <ul className="grid grid-cols-2 gap-x-3 gap-y-2.5 sm:block sm:space-y-2 text-xs text-slate-600 dark:text-slate-300">
               {[
                 { flag: '🇲🇾', label: 'Study in Malaysia', slug: 'Malaysia' },
                 { flag: '🇬🇧', label: 'Study in UK', slug: 'United Kingdom' },
@@ -611,11 +611,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           </div>
 
           {/* Col 3: Usefull Links */}
-          <div className="space-y-2.5">
+          <div className="space-y-3 sm:space-y-2.5 pt-5 sm:pt-0 border-t border-slate-200/70 dark:border-slate-800/70 sm:border-t-0">
             <h4 className="text-sm font-bold text-red-500 dark:text-red-400 tracking-wide">
               Usefull Links
             </h4>
-            <ul className="space-y-2 text-xs text-slate-600 dark:text-slate-300">
+            <ul className="space-y-2.5 sm:space-y-2 text-xs text-slate-600 dark:text-slate-300">
               {[
                 { label: 'About Us', view: 'about' },
                 { label: 'Track EMGS Visa', view: 'track-visa' },
@@ -640,11 +640,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           </div>
 
           {/* Col 4: Quick links */}
-          <div className="space-y-2.5">
+          <div className="space-y-3 sm:space-y-2.5 pt-5 sm:pt-0 border-t border-slate-200/70 dark:border-slate-800/70 sm:border-t-0">
             <h4 className="text-sm font-bold text-red-500 dark:text-red-400 tracking-wide">
               Quick links
             </h4>
-            <ul className="space-y-2 text-xs text-slate-600 dark:text-slate-300">
+            <ul className="grid grid-cols-2 gap-x-3 gap-y-2.5 sm:block sm:space-y-2 text-xs text-slate-600 dark:text-slate-300">
               {[
                 { label: 'About Us', view: 'about' },
                 { label: 'Track EMGS Visa', view: 'track-visa' },
@@ -672,22 +672,29 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           </div>
 
           {/* Preferences Strip (Currency & Language) */}
-          <div className="col-span-full pt-3 flex flex-col sm:flex-row items-center justify-end gap-3 text-xs text-slate-500 dark:text-slate-400 border-t border-slate-200/60 dark:border-slate-800/60">
-            <div className="flex items-center gap-2.5 sm:gap-3 flex-wrap">
-              <SelectCurrencyDropdown compact placement="top" />
-              <GoogleTranslate compact={true} className="scale-90 origin-left sm:scale-95" />
+          <div className="col-span-full pt-5 sm:pt-3 flex flex-col sm:flex-row items-center justify-center sm:justify-end gap-3 text-xs text-slate-500 dark:text-slate-400 border-t border-slate-200/60 dark:border-slate-800/60">
+            <div className="w-full sm:w-auto grid grid-cols-2 sm:flex items-center justify-center sm:justify-end gap-2 sm:gap-3">
+              <SelectCurrencyDropdown
+                compact
+                placement="top"
+                className="w-full min-w-0 sm:w-auto [&>button]:min-w-0 [&>button]:w-full [&>button]:h-10 [&>button]:px-2.5 [&>button]:gap-1.5 [&>button>svg]:shrink-0 sm:[&>button]:min-w-[190px] sm:[&>button]:w-auto sm:[&>button]:px-4 sm:[&>button]:gap-3 [&>div]:max-w-[calc(100vw-2.5rem)]"
+              />
+              <GoogleTranslate
+                compact={true}
+                className="w-full min-w-0 sm:w-auto sm:origin-left sm:scale-95 [&>button]:min-w-0 [&>button]:w-full [&>button]:h-10 [&>button]:px-2.5 [&>button]:gap-1.5 sm:[&>button]:min-w-[190px] sm:[&>button]:w-auto sm:[&>button]:px-4 sm:[&>button]:gap-3 [&>div]:left-auto [&>div]:right-0 [&>div]:max-w-[calc(100vw-2.5rem)]"
+              />
             </div>
           </div>
         </div>
 
         {/* 8 Social Media Icons Strip directly above Legal Bar */}
-        <div className="pt-3 pb-2 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-slate-500 dark:text-slate-400">
-          <div className="flex items-center gap-3">
-            <p>© {new Date().getFullYear()} Global Education Expert Services (GEES). All rights reserved.</p>
+        <div className="pt-5 pb-4 sm:pt-3 sm:pb-2 flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-3 text-xs text-slate-500 dark:text-slate-400 text-center md:text-left">
+          <div className="w-full md:w-auto flex items-center justify-center md:justify-start gap-3">
+            <p className="whitespace-nowrap sm:whitespace-normal text-[clamp(8px,2.45vw,11.5px)] sm:text-xs tracking-[-0.02em] sm:tracking-normal leading-normal">© {new Date().getFullYear()} Global Education Expert Services (GEES). All rights reserved.</p>
           </div>
 
           {/* 8 Big Bold Circular B&W Social Media Icons in 1 Line */}
-          <div className="flex items-center gap-2 flex-nowrap overflow-x-auto no-scrollbar py-0.5">
+          <div className="flex items-center justify-center sm:justify-start gap-1.5 sm:gap-2 flex-wrap sm:flex-nowrap sm:overflow-x-auto no-scrollbar min-h-[40px] sm:h-[40px] w-full sm:w-[350px] pt-0 pb-0 pl-0 sm:pl-[2px] pr-0 m-0 text-[12px] leading-[15px] rounded-none">
             {allSocials.map((s) => (
               <a
                 key={s.label}
@@ -704,17 +711,25 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           </div>
 
           {/* Legal Links */}
-          <div className="flex items-center gap-3 text-slate-500 dark:text-slate-400">
-            <button type="button" onClick={() => onNavigate('home')} className="hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer">
+          <div className="flex items-center justify-center flex-nowrap sm:flex-wrap gap-1.5 sm:gap-3 text-[clamp(9px,2.75vw,11.5px)] sm:text-xs whitespace-nowrap text-slate-500 dark:text-slate-400">
+            <button type="button" onClick={() => onNavigate('home')} className="hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer shrink-0">
               Privacy Policy
             </button>
-            <span className="text-slate-300 dark:text-slate-700">·</span>
-            <button type="button" onClick={() => onNavigate('home')} className="hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer">
+            <span className="text-slate-300 dark:text-slate-700 shrink-0">·</span>
+            <button type="button" onClick={() => onNavigate('home')} className="hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer shrink-0">
               Refund Policy
             </button>
-            <span className="text-slate-300 dark:text-slate-700">·</span>
-            <button type="button" onClick={() => onNavigate('home')} className="hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer">
+            <span className="text-slate-300 dark:text-slate-700 shrink-0">·</span>
+            <button type="button" onClick={() => onNavigate('home')} className="hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer shrink-0">
               Terms & Conditions
+            </button>
+            <span className="text-slate-300 dark:text-slate-700 shrink-0">·</span>
+            <button
+              type="button"
+              onClick={() => onNavigate('sitemap')}
+              className="hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer font-medium shrink-0"
+            >
+              Site Map
             </button>
           </div>
         </div>

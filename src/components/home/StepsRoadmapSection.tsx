@@ -116,7 +116,7 @@ const STEPS_DATA: StepItem[] = [
   {
     stepIndex: 1,
     num: '01',
-    shortLabel: 'CALL',
+    shortLabel: 'Call',
     title: "Not sure where to start? Let's talk!",
     illustrationSrc: '/assets/aistudio/Contact--Streamline-Djakarta_7c07e804.png',
     paragraphs: [
@@ -137,7 +137,7 @@ const STEPS_DATA: StepItem[] = [
   {
     stepIndex: 2,
     num: '02',
-    shortLabel: 'CHOOSE',
+    shortLabel: 'Choose',
     title: 'Pick your country and course!',
     illustrationSrc: '/src/assets/images/step_02_choose_1795037700628.jpg',
     paragraphs: [
@@ -158,7 +158,7 @@ const STEPS_DATA: StepItem[] = [
   {
     stepIndex: 3,
     num: '03',
-    shortLabel: 'PREPARE',
+    shortLabel: 'Prepare',
     title: "Let's get your documents ready!",
     illustrationSrc: '/src/assets/images/step_03_prepare_1795037701592.jpg',
     paragraphs: [
@@ -178,7 +178,7 @@ const STEPS_DATA: StepItem[] = [
   {
     stepIndex: 4,
     num: '04',
-    shortLabel: 'APPLY',
+    shortLabel: 'Apply',
     title: "Let's apply to more universities!",
     illustrationSrc: '/src/assets/images/step_04_apply_1795037711744.jpg',
     paragraphs: [
@@ -199,7 +199,7 @@ const STEPS_DATA: StepItem[] = [
   {
     stepIndex: 5,
     num: '05',
-    shortLabel: 'OFFER',
+    shortLabel: 'Offer',
     title: 'Your offer letter is here!',
     illustrationSrc: '/src/assets/images/step_05_offer_1795037705103.jpg',
     paragraphs: [
@@ -220,7 +220,7 @@ const STEPS_DATA: StepItem[] = [
   {
     stepIndex: 6,
     num: '06',
-    shortLabel: 'PAY',
+    shortLabel: 'Pay',
     title: "Your payment, your choice. We're here to help!",
     illustrationSrc: '/src/assets/images/step_06_pay_1795037719476.jpg',
     paragraphs: [
@@ -241,7 +241,7 @@ const STEPS_DATA: StepItem[] = [
   {
     stepIndex: 7,
     num: '07',
-    shortLabel: 'VISA',
+    shortLabel: 'Visa',
     title: "Let's get your visa ready!",
     illustrationSrc: '/src/assets/images/step_07_visa_1795037706657.jpg',
     paragraphs: [
@@ -262,7 +262,7 @@ const STEPS_DATA: StepItem[] = [
   {
     stepIndex: 8,
     num: '08',
-    shortLabel: 'FLY',
+    shortLabel: 'Fly',
     title: 'Your new adventure starts here!',
     illustrationSrc: '/src/assets/images/step_08_fly_1795037708743.jpg',
     paragraphs: [
@@ -726,18 +726,18 @@ export const StepsRoadmapSection: React.FC<StepsRoadmapSectionProps> = ({ onOpen
   return (
     <section
       id="steps-roadmap-section"
-      className="relative w-full py-10 min-[390px]:py-12 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 bg-white dark:bg-[#0B1329] text-slate-900 dark:text-white transition-colors duration-300 border-t border-slate-200/80 dark:border-slate-800/80 overflow-hidden"
+      className="relative w-full max-w-[1600px] mx-auto py-10 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 bg-white dark:bg-[#0B1329] text-slate-900 dark:text-white transition-colors duration-300 border-t border-slate-200/80 dark:border-slate-800/80 overflow-hidden"
     >
-      <div className="relative z-10 max-w-6xl mx-auto">
+      <div className="relative z-10 w-full max-w-[1600px] mx-auto">
         {/* Section Heading */}
-        <header className="text-center max-w-5xl mx-auto mb-6 sm:mb-12 px-2">
-          <h2 className="gees-section-title text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold font-display tracking-tight text-slate-900 dark:text-white flex items-center justify-center flex-wrap gap-2 sm:gap-3 md:gap-3.5 leading-tight text-center">
+        <header className="text-center max-w-5xl mx-auto mb-6 sm:mb-12 px-0 sm:px-2">
+          <h2 className="gees-section-title text-[30px] sm:text-4xl md:text-5xl lg:text-6xl font-extrabold font-display tracking-tight text-slate-900 dark:text-white flex flex-col items-center justify-center gap-2 sm:gap-2.5 md:gap-3 leading-[30px] sm:leading-tight text-center">
             <span>Your Journey to</span>
             <span className="gees-section-highlight bg-[#fbb034] text-slate-950 px-3.5 sm:px-5 md:px-6 py-0.5 sm:py-1 md:py-1.5 rounded-xl sm:rounded-2xl font-black tracking-tight leading-none shadow-sm shrink-0 inline-flex items-center">
               Studying Abroad
             </span>
           </h2>
-          <p className="mt-2.5 sm:mt-3 text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-400 font-normal leading-relaxed max-w-2xl mx-auto text-center px-2">
+          <p className="mt-2.5 sm:mt-3 text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-400 font-normal leading-relaxed max-w-2xl mx-auto text-center px-0 sm:px-2">
             Eight clear steps. Expert guidance from your first call to departure.
           </p>
         </header>
@@ -867,7 +867,7 @@ export const StepsRoadmapSection: React.FC<StepsRoadmapSectionProps> = ({ onOpen
                         fill={isActive ? '#fbb034' : '#94a3b8'}
                         fontSize="12.5"
                         fontWeight={isActive ? '800' : '600'}
-                        letterSpacing="0.06em"
+                        letterSpacing="0.01em"
                         fontFamily="sans-serif"
                         className="transition-colors duration-300 select-none"
                       >
@@ -936,7 +936,7 @@ export const StepsRoadmapSection: React.FC<StepsRoadmapSectionProps> = ({ onOpen
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
         >
-          <div className="group/card relative w-full h-[218px] min-[400px]:h-[212px] sm:h-[224px] md:h-[234px] flex items-center bg-white dark:bg-[#0B1329]/95 backdrop-blur-xl rounded-2xl sm:rounded-3xl px-4 py-4 sm:px-8 sm:py-6 border border-slate-200/90 dark:border-slate-800/90 shadow-lg dark:shadow-2xl overflow-hidden text-slate-900 dark:text-white">
+          <div className="group/card relative w-full h-[218px] min-[400px]:h-[212px] sm:h-[224px] md:h-[234px] flex items-center bg-white dark:bg-[#0B1329]/95 backdrop-blur-xl rounded-2xl sm:rounded-3xl px-3.5 py-3.5 sm:px-8 sm:py-6 border border-slate-200/90 dark:border-slate-800/90 shadow-lg dark:shadow-2xl overflow-hidden text-slate-900 dark:text-white">
             {/* Soft warm-cream radial glow on the left side matching reference screenshot */}
             <div
               aria-hidden="true"
@@ -971,7 +971,7 @@ export const StepsRoadmapSection: React.FC<StepsRoadmapSectionProps> = ({ onOpen
                 </div>
 
                 {/* RIGHT SIDE: Prominent Heading, Readable Description & Bottom-Right Stage Number Watermark */}
-                <div className="relative flex-1 min-w-0 h-full flex flex-col justify-center py-0.5">
+                <div className="relative flex-1 min-w-0 h-full flex flex-col justify-center py-0.5 text-justify">
                   <h3 className="relative z-10 text-[16.5px] min-[400px]:text-[18px] sm:text-[23px] md:text-[27px] font-extrabold text-[#0B1329] dark:text-white tracking-tight leading-[1.2] break-words">
                     {activeData.title}
                   </h3>

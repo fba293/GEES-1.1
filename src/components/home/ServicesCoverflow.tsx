@@ -44,16 +44,16 @@ export const ServicesCoverflow: React.FC<ServicesCoverflowProps> = ({
   return (
     <section 
       aria-labelledby="geesServicesTitle"
-      className="gees-services-coverflow relative w-full bg-white dark:bg-[#0B1329] py-10 min-[390px]:py-12 sm:py-24 select-none border-b border-slate-100 dark:border-slate-800"
+      className="gees-services-coverflow relative w-full max-w-[1600px] mx-auto bg-white dark:bg-[#0B1329] py-10 sm:py-24 select-none border-b border-slate-100 dark:border-slate-800"
       data-home-section="services"
       id="home-services"
     >
-      <div className="gees-services-coverflow__shell w-full flex flex-col items-center">
+      <div className="gees-services-coverflow__shell w-full max-w-[1600px] mx-auto flex flex-col items-center">
         {/* Section Heading matching index.html */}
         <div className="gees-services-coverflow__head text-center mb-6 sm:mb-12 px-4 max-w-3xl mx-auto">
           <div>
             <h2 
-              className="gees-section-title text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold font-display tracking-tight text-slate-900 dark:text-white flex items-center justify-center flex-wrap gap-2 sm:gap-3 md:gap-3.5 leading-tight text-center"
+              className="gees-section-title text-[30px] sm:text-4xl md:text-5xl lg:text-6xl font-extrabold font-display tracking-tight text-slate-900 dark:text-white flex items-center justify-center flex-wrap gap-2 sm:gap-3 md:gap-3.5 leading-[30px] sm:leading-tight text-center"
               id="geesServicesTitle"
             >
               <span>Our</span>
@@ -61,7 +61,7 @@ export const ServicesCoverflow: React.FC<ServicesCoverflowProps> = ({
                 Services
               </span>
             </h2>
-            <p className="mt-2.5 sm:mt-3 text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-400 font-normal leading-relaxed max-w-2xl mx-auto px-2 text-center">
+            <p className="mt-2.5 sm:mt-3 text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-400 font-normal leading-relaxed max-w-2xl mx-auto px-0 sm:px-2 text-center">
               Everything you need, in one place — from admissions to visa support.
             </p>
           </div>
@@ -70,7 +70,7 @@ export const ServicesCoverflow: React.FC<ServicesCoverflowProps> = ({
         {/* 3D Coverflow Viewport Stage */}
         <div 
           aria-label="GEES services 3D coverflow"
-          className="relative w-full max-w-full sm:max-w-[95%] mx-auto flex flex-col items-center justify-center py-2 px-2 sm:px-4"
+          className="relative w-full max-w-[1600px] mx-auto flex flex-col items-center justify-center py-2 px-4"
         >
           <CoverflowCarousel
             slides={slides}
@@ -92,7 +92,7 @@ export const ServicesCoverflow: React.FC<ServicesCoverflowProps> = ({
         </div>
 
         {/* Footer Link matching index.html */}
-        <div className="gees-services-coverflow__footer mt-8 sm:mt-10 text-center">
+        <div className="gees-services-coverflow__footer mt-6 sm:mt-10 px-4 sm:px-0 w-full sm:w-auto text-center">
           <InteractiveHoverButton
             type="button"
             text="View all services"

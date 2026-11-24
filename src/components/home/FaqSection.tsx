@@ -278,13 +278,13 @@ export const FaqSection: React.FC<FaqSectionProps> = ({
   };
 
   return (
-    <section id="faqs" className={`w-full bg-white dark:bg-[#0B1329] border-t border-slate-100 dark:border-slate-800/80 transition-colors relative overflow-hidden ${isCompact ? 'py-10 min-[390px]:py-12 sm:py-16' : 'py-12 sm:py-24'}`}>
+    <section id="faqs" className={`w-full bg-white dark:bg-[#0B1329] border-t border-slate-100 dark:border-slate-800/80 transition-colors relative overflow-hidden ${isCompact ? 'py-10 sm:py-16' : 'py-10 sm:py-24'}`}>
       {/* Background Ambient Accents */}
       <div className="pointer-events-none absolute top-10 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-blue-500/5 dark:bg-blue-600/10 rounded-full blur-3xl -z-10" />
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12">
+        <div className="text-center max-w-3xl mx-auto mb-6 sm:mb-12">
           {/* Breadcrumb if Full FAQ Page */}
           {!isCompact && (
             <div className="flex items-center justify-center gap-2 text-xs text-slate-500 dark:text-slate-400 mb-4">
@@ -312,13 +312,13 @@ export const FaqSection: React.FC<FaqSectionProps> = ({
             </div>
           )}
 
-          <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold font-display tracking-tight text-slate-900 dark:text-white flex items-center justify-center gap-2 sm:gap-3 md:gap-3.5 flex-wrap leading-tight text-center">
+          <h2 className="text-[30px] sm:text-4xl md:text-5xl lg:text-6xl font-extrabold font-display tracking-tight text-slate-900 dark:text-white flex items-center justify-center gap-2 sm:gap-3 md:gap-3.5 flex-wrap leading-[30px] sm:leading-tight text-center">
             <span>Frequently Asked</span>
             <span className="inline-block bg-[#fbb034] text-slate-950 px-3.5 sm:px-5 md:px-6 py-0.5 sm:py-1 md:py-1.5 rounded-xl sm:rounded-2xl shadow-sm font-black tracking-tight leading-none shrink-0">
               Questions
             </span>
           </h2>
-          <p className="mt-2.5 sm:mt-3 text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-400 font-normal leading-relaxed max-w-2xl mx-auto px-2 text-center">
+          <p className="mt-2.5 sm:mt-3 text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-400 font-normal leading-relaxed max-w-2xl mx-auto px-0 sm:px-2 text-center">
             {isCompact 
               ? 'Find quick answers to common questions about studying abroad with GEES.' 
               : 'Everything you need to know about university admissions, student visas, scholarships, and living abroad.'}
@@ -336,7 +336,7 @@ export const FaqSection: React.FC<FaqSectionProps> = ({
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search questions (e.g. visa, IELTS, scholarships, gap)..."
-                  className="w-full pl-11 pr-10 py-3 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-[#FBB034] transition-all shadow-inner"
+                  className="w-full h-12 pl-11 pr-10 rounded-xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 text-sm font-medium focus:outline-none focus:border-[#0a1120] dark:focus:border-[#fbb034] focus:ring-1 focus:ring-[#0a1120] dark:focus:ring-[#fbb034] transition-all"
                 />
                 {searchQuery && (
                   <button
@@ -500,7 +500,7 @@ export const FaqSection: React.FC<FaqSectionProps> = ({
 
         {/* COMPACT MODE BOTTOM BAR: "Show All FAQs" Redirect to faq.html */}
         {isCompact ? (
-          <div className="mt-8 flex flex-col items-center justify-center text-center gap-4">
+          <div className="mt-6 sm:mt-8 flex flex-col items-center justify-center text-center gap-4">
             {!isExpanded ? (
               <InteractiveHoverButton
                 type="button"

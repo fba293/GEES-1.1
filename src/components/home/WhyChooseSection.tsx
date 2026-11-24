@@ -104,22 +104,22 @@ export const WhyChooseSection: React.FC<WhyChooseSectionProps> = ({ onSelectCoun
   ];
 
   return (
-    <section id="why-choose-section" className="relative z-10 w-full max-w-full sm:max-w-[95%] mx-auto px-4 sm:px-6 lg:px-8 py-10 min-[390px]:py-12 sm:py-20 bg-white dark:bg-[#0B1329]">
+    <section id="why-choose-section" className="relative z-10 w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-20 bg-white dark:bg-[#0B1329]">
       {/* Header with High-Impact Typography */}
-      <div className="text-center mb-8 sm:mb-12 px-2 max-w-3xl mx-auto">
-        <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold font-display tracking-tight text-slate-900 dark:text-white leading-tight flex items-center justify-center flex-wrap gap-2 sm:gap-3 md:gap-3.5 select-none text-center">
+      <div className="text-center mb-6 sm:mb-12 px-0 sm:px-2 max-w-3xl mx-auto">
+        <h2 className="text-[30px] sm:text-4xl md:text-5xl lg:text-6xl font-extrabold font-display tracking-tight text-slate-900 dark:text-white leading-[30px] sm:leading-tight flex items-center justify-center flex-wrap gap-2 sm:gap-3 md:gap-3.5 select-none text-center">
           <span>Why Choose</span>
           <span className="bg-[#fbb034] text-slate-950 px-3.5 sm:px-5 md:px-6 py-0.5 sm:py-1 md:py-1.5 rounded-xl sm:rounded-2xl font-black tracking-tight leading-none shadow-sm shrink-0 inline-flex items-center">
             GEES
           </span>
         </h2>
-        <p className="mt-2.5 sm:mt-3 text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-400 font-normal leading-relaxed max-w-2xl mx-auto px-2 text-center">
-          Trusted guidance. Transparent support. Hassle-free study abroad with 0 service charges.
+        <p className="mt-2.5 sm:mt-3 text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-400 font-normal leading-relaxed max-w-2xl mx-auto px-0 sm:px-2 text-center">
+          Trusted guidance. Transparent support. Hassle-free study abroad.
         </p>
       </div>
 
       {/* 3 Animated Feature Cards with Spring Motion & Floating 3D Elements */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8 max-w-6xl mx-auto mb-10 sm:mb-14">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 w-full max-w-[1600px] mx-auto mb-8 sm:mb-14">
         {featureCards.map((feature, idx) => (
           <AnimatedFeatureCard
             key={feature.index}
@@ -136,7 +136,7 @@ export const WhyChooseSection: React.FC<WhyChooseSectionProps> = ({ onSelectCoun
       </div>
 
       {/* Live Status & Interactive Ripple Stats - Clean Refactored Layout */}
-      <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8 flex flex-col items-center">
+      <div className="w-full max-w-[1600px] mx-auto space-y-6 sm:space-y-8 flex flex-col items-center">
         {/* Live Status Pill */}
         <div className="flex items-center gap-1.5 sm:gap-2 bg-slate-50 dark:bg-slate-900 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full border border-slate-200 dark:border-slate-800 shadow-xs text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200 animate-fadeIn">
           <span className="relative flex h-2 w-2">
@@ -149,7 +149,7 @@ export const WhyChooseSection: React.FC<WhyChooseSectionProps> = ({ onSelectCoun
         {/* Interactive Stats Block */}
         <div
           onClick={handleStatsClick}
-          className="relative overflow-hidden w-full bg-white dark:bg-[#0B1329] rounded-2xl sm:rounded-3xl py-6 sm:py-8 px-4 sm:px-6 shadow-xl border border-slate-200/80 dark:border-slate-800 cursor-pointer active:scale-[0.99] transition-transform select-none"
+          className="relative overflow-hidden w-full bg-white dark:bg-[#0B1329] rounded-2xl sm:rounded-3xl py-5 sm:py-8 px-4 sm:px-6 shadow-xl border border-slate-200/80 dark:border-slate-800 cursor-pointer active:scale-[0.99] transition-transform select-none"
         >
           {/* Dynamic Click Ripples */}
           {ripples.map((ripple) => (

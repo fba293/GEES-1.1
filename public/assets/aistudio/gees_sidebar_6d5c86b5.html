@@ -1,0 +1,1108 @@
+<!DOCTYPE html><html lang="en" style="width: 1280px; height: 1024px; overflow: hidden; position: relative;"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Refine Search Filter Panel | GEES Study Abroad</title>
+<!-- Google Fonts: Plus Jakarta Sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              navy: '#121927',
+              navyLight: '#1e293b',
+              navyMuted: '#334155',
+              amber: '#f59e0b',
+              amberHover: '#d97706',
+              amberLight: '#fef3c7',
+              grayBg: '#f8fafc',
+              border: '#e2e8f0',
+              textMain: '#0f172a',
+              textMuted: '#64748b',
+            }
+          }
+        }
+      }
+    }
+  </script>
+<!-- BEGIN: Custom Styles -->
+<style data-purpose="scrollbar-styling">
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 9999px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
+<style data-purpose="range-slider">
+    .range-slider-container {
+      position: relative;
+      height: 4px;
+    }
+    .range-input {
+      position: absolute;
+      top: -6px;
+      left: 0;
+      width: 100%;
+      height: 16px;
+      appearance: none;
+      -webkit-appearance: none;
+      background: transparent;
+      pointer-events: none;
+      margin: 0;
+    }
+    .range-input::-webkit-slider-thumb {
+      pointer-events: auto;
+      appearance: none;
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 2.5px solid #f59e0b;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+      transition: transform 0.1s ease;
+    }
+    .range-input::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+      border-color: #d97706;
+    }
+    .range-input::-moz-range-thumb {
+      pointer-events: auto;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 2.5px solid #f59e0b;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+    }
+  </style>
+<!-- END: Custom Styles -->
+</head>
+<body class="bg-[#f0f3f8] text-brand-textMain font-sans antialiased min-h-screen py-6 px-3 sm:px-6 flex justify-center items-start">
+<!-- BEGIN: MainContainer -->
+<main class="w-full max-w-[420px] bg-white rounded-2xl shadow-xl shadow-slate-200/90 border border-brand-border flex flex-col relative overflow-hidden transition-all duration-200" data-purpose="refine-search-card">
+<!-- BEGIN: HeaderSection -->
+<header class="bg-[#121927] text-white px-4 py-3 sm:px-5 sm:py-3.5 flex items-center justify-between select-none shrink-0" data-purpose="filter-header">
+<div class="flex items-center gap-2.5">
+<!-- Filter Sliders Icon -->
+<span class="text-amber-400 flex items-center justify-center">
+<svg class="w-4 h-4 sm:w-4.5 sm:h-4.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" viewBox="0 0 24 24">
+<path d="M4 6h16M4 12h16M4 18h16" opacity="0.3"></path>
+<circle cx="8" cy="6" fill="#f59e0b" r="2.5" stroke="none"></circle>
+<line x1="4" x2="5.5" y1="6" y2="6"></line>
+<line x1="10.5" x2="20" y1="6" y2="6"></line>
+<circle cx="16" cy="12" fill="#f59e0b" r="2.5" stroke="none"></circle>
+<line x1="4" x2="13.5" y1="12" y2="12"></line>
+<line x1="18.5" x2="20" y1="12" y2="12"></line>
+<circle cx="9" cy="18" fill="#f59e0b" r="2.5" stroke="none"></circle>
+<line x1="4" x2="6.5" y1="18" y2="18"></line>
+<line x1="11.5" x2="20" y1="18" y2="18"></line>
+</svg>
+</span>
+<h1 class="text-xs sm:text-sm font-bold tracking-wider text-white" data-stitch-orig-opacity="0">Filters</h1><span class="bg-amber-400 text-slate-950 font-bold text-[10px] px-2 py-0.5 rounded-full shrink-0" id="filter-total-count">233 results</span>
+
+</div>
+<button class="text-xs font-semibold text-slate-400 hover:text-amber-400 transition-colors focus:outline-none focus:underline" data-purpose="reset-all-button" id="reset-all-btn" type="button">
+      Reset all
+    </button>
+</header>
+<!-- END: HeaderSection -->
+<!-- BEGIN: Filter Rows Master Container -->
+<div class="divide-y divide-slate-100 flex-1 overflow-y-auto custom-scrollbar max-h-[calc(100vh-160px)]" id="filter-rows-list">
+<!-- 1. DESTINATIONS ROW -->
+<div class="filter-item-wrapper group bg-white transition-colors" id="wrapper-destinations">
+<button aria-expanded="false" class="filter-row-header w-full h-11 px-4 flex items-center justify-between hover:bg-slate-50/90 transition-colors focus:outline-none select-none text-left" data-target="content-destinations" type="button">
+<div class="flex items-center gap-2.5 min-w-0 pr-2">
+<svg class="w-4 h-4 text-slate-500 shrink-0 group-hover:text-amber-500 transition-colors" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"></circle><path d="M8.5 4.5c1.8.8 2.2 2.8 1.2 4.2-1 1.4-2.8 1.6-1.8 3.5 1 2 2.8 1.8 1.5 4.5-.6 1.2-1.8 1.8-2.2 1.8"></path><path d="M15.5 13.5c.8-1 2.2-.6 2.5.4s-.4 2.6-1.5 2.6c-.8 0-1.5-1.5-1-3z"></path></svg>
+<span class="text-[13px] font-bold text-slate-800 tracking-tight shrink-0">Study destination</span>
+</div>
+<div class="flex items-center gap-2 shrink-0">
+<span class="text-[11px] font-normal text-slate-400 bg-slate-100/80 border border-slate-200 px-2 py-0.5 rounded-md max-w-[125px] truncate" id="destinations-badge">All</span><svg class="chevron-icon w-3.5 h-3.5 text-slate-400 transform transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+
+</div>
+</button>
+<!-- Expandable Sub-panel -->
+<div class="bg-slate-50/70 p-3 border-t border-slate-100 hidden" id="content-destinations"><div class="bg-white rounded-xl border border-slate-200 p-2.5 shadow-xs space-y-2"><div class="flex items-center gap-2.5 px-3.5 py-2 bg-slate-100/80 rounded-full border border-transparent focus-within:border-amber-400 focus-within:bg-white transition-all"><svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg><input autocomplete="off" class="w-full text-xs font-normal bg-transparent border-0 p-0 focus:outline-none focus:ring-0 placeholder-slate-400 text-slate-700" id="country-search-input" placeholder="Search destinations" type="text"></div><div class="max-h-56 overflow-y-auto custom-scrollbar border border-slate-100 rounded-lg divide-y divide-slate-100 bg-white select-none" id="destinations-list"><label class="country-item flex items-center justify-between px-3.5 py-2.5 text-xs text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors group/item hidden"><div class="flex items-center gap-2.5"><input checked="" class="w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 focus:ring-offset-0 cursor-pointer" id="all-destinations-cb" type="checkbox"><span class="country-name font-semibold text-slate-900 group-hover/item:text-amber-600">All Destinations</span></div><span class="text-[11px] text-slate-400 font-normal">(15)</span></label><label class="country-item flex items-center justify-between px-3.5 py-2.5 text-xs text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors group/item hidden"><div class="flex items-center gap-2.5"><input class="country-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 focus:ring-offset-0 cursor-pointer" type="checkbox" value="Australia"><span class="text-base leading-none mr-0.5">🇦🇺</span><span class="country-name font-medium text-slate-700 group-hover/item:text-slate-900">Australia</span></div><span class="text-[11px] text-slate-400 font-normal">(10)</span></label><label class="country-item flex items-center justify-between px-3.5 py-2.5 text-xs text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors group/item hidden"><div class="flex items-center gap-2.5"><input class="country-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 focus:ring-offset-0 cursor-pointer" type="checkbox" value="Canada"><span class="text-base leading-none mr-0.5">🇨🇦</span><span class="country-name font-medium text-slate-700 group-hover/item:text-slate-900">Canada</span></div><span class="text-[11px] text-slate-400 font-normal">(10)</span></label><label class="country-item flex items-center justify-between px-3.5 py-2.5 text-xs text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors group/item hidden"><div class="flex items-center gap-2.5"><input class="country-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 focus:ring-offset-0 cursor-pointer" type="checkbox" value="Cyprus"><span class="text-base leading-none mr-0.5">🇨🇾</span><span class="country-name font-medium text-slate-700 group-hover/item:text-slate-900">Cyprus</span></div><span class="text-[11px] text-slate-400 font-normal">(8)</span></label><label class="country-item flex items-center justify-between px-3.5 py-2.5 text-xs text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors group/item hidden"><div class="flex items-center gap-2.5"><input class="country-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 focus:ring-offset-0 cursor-pointer" type="checkbox" value="Finland"><span class="text-base leading-none mr-0.5">🇫🇮</span><span class="country-name font-medium text-slate-700 group-hover/item:text-slate-900">Finland</span></div><span class="text-[11px] text-slate-400 font-normal">(15)</span></label><label class="country-item flex items-center justify-between px-3.5 py-2.5 text-xs text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors group/item hidden"><div class="flex items-center gap-2.5"><input class="country-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 focus:ring-offset-0 cursor-pointer" type="checkbox" value="France"><span class="text-base leading-none mr-0.5">🇫🇷</span><span class="country-name font-medium text-slate-700 group-hover/item:text-slate-900">France</span></div><span class="text-[11px] text-slate-400 font-normal">(4)</span></label><label class="country-item flex items-center justify-between px-3.5 py-2.5 text-xs text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors group/item hidden"><div class="flex items-center gap-2.5"><input class="country-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 focus:ring-offset-0 cursor-pointer" type="checkbox" value="Greece"><span class="text-base leading-none mr-0.5">🇬🇷</span><span class="country-name font-medium text-slate-700 group-hover/item:text-slate-900">Greece</span></div><span class="text-[11px] text-slate-400 font-normal">(6)</span></label><label class="country-item flex items-center justify-between px-3.5 py-2.5 text-xs text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors group/item hidden"><div class="flex items-center gap-2.5"><input class="country-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 focus:ring-offset-0 cursor-pointer" type="checkbox" value="Hungary"><span class="text-base leading-none mr-0.5">🇭🇺</span><span class="country-name font-medium text-slate-700 group-hover/item:text-slate-900">Hungary</span></div><span class="text-[11px] text-slate-400 font-normal">(14)</span></label><label class="country-item flex items-center justify-between px-3.5 py-2.5 text-xs text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors group/item hidden"><div class="flex items-center gap-2.5"><input class="country-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 focus:ring-offset-0 cursor-pointer" type="checkbox" value="India"><span class="text-base leading-none mr-0.5">🇮🇳</span><span class="country-name font-medium text-slate-700 group-hover/item:text-slate-900">India</span></div><span class="text-[11px] text-slate-400 font-normal">(22)</span></label><label class="country-item flex items-center justify-between px-3.5 py-2.5 text-xs text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors group/item hidden"><div class="flex items-center gap-2.5"><input class="country-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 focus:ring-offset-0 cursor-pointer" type="checkbox" value="Malaysia"><span class="text-base leading-none mr-0.5">🇲🇾</span><span class="country-name font-medium text-slate-700 group-hover/item:text-slate-900">Malaysia</span></div><span class="text-[11px] text-slate-400 font-normal">(18)</span></label><label class="country-item flex items-center justify-between px-3.5 py-2.5 text-xs text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors group/item hidden"><div class="flex items-center gap-2.5"><input class="country-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 focus:ring-offset-0 cursor-pointer" type="checkbox" value="Malta"><span class="text-base leading-none mr-0.5">🇲🇹</span><span class="country-name font-medium text-slate-700 group-hover/item:text-slate-900">Malta</span></div><span class="text-[11px] text-slate-400 font-normal">(7)</span></label><label class="country-item flex items-center justify-between px-3.5 py-2.5 text-xs text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors group/item hidden"><div class="flex items-center gap-2.5"><input class="country-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 focus:ring-offset-0 cursor-pointer" type="checkbox" value="New Zealand"><span class="text-base leading-none mr-0.5">🇳🇿</span><span class="country-name font-medium text-slate-700 group-hover/item:text-slate-900">New Zealand</span></div><span class="text-[11px] text-slate-400 font-normal">(12)</span></label><label class="country-item flex items-center justify-between px-3.5 py-2.5 text-xs text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors group/item hidden"><div class="flex items-center gap-2.5"><input class="country-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 focus:ring-offset-0 cursor-pointer" type="checkbox" value="South Korea"><span class="text-base leading-none mr-0.5">🇰🇷</span><span class="country-name font-medium text-slate-700 group-hover/item:text-slate-900">South Korea</span></div><span class="text-[11px] text-slate-400 font-normal">(9)</span></label><label class="country-item flex items-center justify-between px-3.5 py-2.5 text-xs text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors group/item hidden"><div class="flex items-center gap-2.5"><input class="country-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 focus:ring-offset-0 cursor-pointer" type="checkbox" value="Sweden"><span class="text-base leading-none mr-0.5">🇸🇪</span><span class="country-name font-medium text-slate-700 group-hover/item:text-slate-900">Sweden</span></div><span class="text-[11px] text-slate-400 font-normal">(11)</span></label><label class="country-item flex items-center justify-between px-3.5 py-2.5 text-xs text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors group/item hidden"><div class="flex items-center gap-2.5"><input class="country-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 focus:ring-offset-0 cursor-pointer" type="checkbox" value="United Kingdom"><span class="text-base leading-none mr-0.5">🇬🇧</span><span class="country-name font-medium text-slate-700 group-hover/item:text-slate-900">United Kingdom</span></div><span class="text-[11px] text-slate-400 font-normal">(42)</span></label><label class="country-item flex items-center justify-between px-3.5 py-2.5 text-xs text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors group/item hidden"><div class="flex items-center gap-2.5"><input class="country-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 focus:ring-offset-0 cursor-pointer" type="checkbox" value="United States"><span class="text-base leading-none mr-0.5">🇺🇸</span><span class="country-name font-medium text-slate-700 group-hover/item:text-slate-900">United States</span></div><span class="text-[11px] text-slate-400 font-normal">(45)</span></label></div><div class="flex items-center justify-between px-1 text-slate-400"><p class="text-xs font-medium">You can select up to 5</p><button class="text-[11px] text-amber-600 hover:text-amber-700 font-semibold" id="clear-destinations-btn" type="button">Clear</button></div></div><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='0' height='0'%3E%3C/svg%3E" alt="" class="hidden" onerror="(function(){const searchInput=document.getElementById('country-search-input');const items=document.querySelectorAll('#destinations-list .country-item');const allCb=document.getElementById('all-destinations-cb');const countryCbs=document.querySelectorAll('.country-cb');const badge=document.getElementById('destinations-badge');const clearBtn=document.getElementById('clear-destinations-btn');function updateBadge(){const checked=Array.from(countryCbs).filter(c=&gt;c.checked);if(allCb&amp;&amp;allCb.checked||checked.length===0){if(badge){badge.textContent='All';badge.className='text-[11px] font-semibold text-amber-700 bg-amber-50 border border-amber-200/60 px-2 py-0.5 rounded-md max-w-[125px] truncate';}}else if(checked.length===1){if(badge){badge.textContent=checked[0].value;badge.className='text-[11px] font-semibold text-white bg-[#121927] px-2 py-0.5 rounded-md max-w-[125px] truncate';}}else{if(badge){badge.textContent=checked.length+' selected';badge.className='text-[11px] font-semibold text-white bg-[#121927] px-2 py-0.5 rounded-md max-w-[125px] truncate';}}}if(allCb){allCb.addEventListener('change',()=&gt;{if(allCb.checked){countryCbs.forEach(c=&gt;c.checked=false);}updateBadge();});}countryCbs.forEach(cb=&gt;{cb.addEventListener('change',()=&gt;{const anyChecked=Array.from(countryCbs).some(c=&gt;c.checked);if(allCb)allCb.checked=!anyChecked;updateBadge();});});if(searchInput){searchInput.addEventListener('input',(e)=&gt;{const q=e.target.value.toLowerCase().trim();items.forEach(it=&gt;{const name=it.querySelector('.country-name').textContent.toLowerCase();if(name.includes(q))it.classList.remove('hidden');else it.classList.add('hidden');});});}if(clearBtn){clearBtn.addEventListener('click',()=&gt;{countryCbs.forEach(c=&gt;c.checked=false);if(allCb)allCb.checked=true;updateBadge();});}})()"></div>
+</div>
+<!-- 2. STUDY LEVEL ROW -->
+<!-- CITY FILTER ROW -->
+<div class="filter-item-wrapper group bg-white transition-colors" id="wrapper-city">
+<button aria-expanded="false" class="filter-row-header w-full h-11 px-4 flex items-center justify-between hover:bg-slate-50/90 transition-colors focus:outline-none select-none text-left" data-target="content-city" type="button">
+<div class="flex items-center gap-2.5 min-w-0 pr-2">
+<svg class="w-4 h-4 text-slate-500 shrink-0 group-hover:text-amber-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span class="text-[13px] font-bold text-slate-800 tracking-tight shrink-0">City</span>
+</div>
+<div class="flex items-center gap-2 shrink-0">
+<span class="text-[11px] font-normal text-slate-400 bg-slate-100/80 border border-slate-200 px-2 py-0.5 rounded-md max-w-[125px] truncate" id="city-badge" data-stitch-orig-opacity="0">All</span>
+<svg class="chevron-icon w-3.5 h-3.5 text-slate-400 transform transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</button>
+<div class="bg-slate-50/70 p-3 border-t border-slate-100 hidden" id="content-city"><div class="bg-white rounded-xl border border-slate-200 p-2.5 shadow-xs space-y-2"><div class="flex items-center gap-2.5 px-3.5 py-2 bg-slate-100/80 rounded-full border border-transparent focus-within:border-amber-400 focus-within:bg-white transition-all"><svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg><input autocomplete="off" class="w-full text-xs font-normal bg-transparent border-0 p-0 focus:outline-none focus:ring-0 placeholder-slate-400 text-slate-700" id="city-search-input" placeholder="Search cities" type="text"></div><div class="max-h-56 overflow-y-auto custom-scrollbar border border-slate-100 rounded-lg divide-y divide-slate-100 bg-white select-none" id="city-dropdown-list"><label class="city-item flex items-center justify-between px-3.5 py-2.5 text-xs text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="city-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 focus:ring-offset-0 cursor-pointer" type="checkbox" value="Charlottetown"><span class="city-label font-medium text-slate-700 group-hover/item:text-slate-900">Charlottetown</span></div><span class="text-[11px] text-slate-400 font-normal">(6)</span></label><label class="city-item flex items-center justify-between px-3.5 py-2.5 text-xs text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="city-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 focus:ring-offset-0 cursor-pointer" type="checkbox" value="Kamloops"><span class="city-label font-medium text-slate-700 group-hover/item:text-slate-900">Kamloops</span></div><span class="text-[11px] text-slate-400 font-normal">(10)</span></label><label class="city-item flex items-center justify-between px-3.5 py-2.5 text-xs text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="city-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 focus:ring-offset-0 cursor-pointer" type="checkbox" value="Vancouver"><span class="city-label font-medium text-slate-700 group-hover/item:text-slate-900">Vancouver</span></div><span class="text-[11px] text-slate-400 font-normal">(42)</span></label><label class="city-item flex items-center justify-between px-3.5 py-2.5 text-xs text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="city-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 focus:ring-offset-0 cursor-pointer" type="checkbox" value="Calgary"><span class="city-label font-medium text-slate-700 group-hover/item:text-slate-900">Calgary</span></div><span class="text-[11px] text-slate-400 font-normal">(18)</span></label><label class="city-item flex items-center justify-between px-3.5 py-2.5 text-xs text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="city-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 focus:ring-offset-0 cursor-pointer" type="checkbox" value="Toronto"><span class="city-label font-medium text-slate-700 group-hover/item:text-slate-900">Toronto</span></div><span class="text-[11px] text-slate-400 font-normal">(35)</span></label><label class="city-item flex items-center justify-between px-3.5 py-2.5 text-xs text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="city-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 focus:ring-offset-0 cursor-pointer" type="checkbox" value="Charlotte"><span class="city-label font-medium text-slate-700 group-hover/item:text-slate-900">Charlotte</span></div><span class="text-[11px] text-slate-400 font-normal">(9)</span></label><label class="city-item flex items-center justify-between px-3.5 py-2.5 text-xs text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="city-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 focus:ring-offset-0 cursor-pointer" type="checkbox" value="London"><span class="city-label font-medium text-slate-700 group-hover/item:text-slate-900">London</span></div><span class="text-[11px] text-slate-400 font-normal">(42)</span></label><label class="city-item flex items-center justify-between px-3.5 py-2.5 text-xs text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="city-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 focus:ring-offset-0 cursor-pointer" type="checkbox" value="Coventry"><span class="city-label font-medium text-slate-700 group-hover/item:text-slate-900">Coventry</span></div><span class="text-[11px] text-slate-400 font-normal">(12)</span></label><label class="city-item flex items-center justify-between px-3.5 py-2.5 text-xs text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="city-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 focus:ring-offset-0 cursor-pointer" type="checkbox" value="Exeter"><span class="city-label font-medium text-slate-700 group-hover/item:text-slate-900">Exeter</span></div><span class="text-[11px] text-slate-400 font-normal">(8)</span></label><label class="city-item flex items-center justify-between px-3.5 py-2.5 text-xs text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="city-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 focus:ring-offset-0 cursor-pointer" type="checkbox" value="Birmingham"><span class="city-label font-medium text-slate-700 group-hover/item:text-slate-900">Birmingham</span></div><span class="text-[11px] text-slate-400 font-normal">(24)</span></label><label class="city-item flex items-center justify-between px-3.5 py-2.5 text-xs text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="city-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 focus:ring-offset-0 cursor-pointer" type="checkbox" value="Liverpool"><span class="city-label font-medium text-slate-700 group-hover/item:text-slate-900">Liverpool</span></div><span class="text-[11px] text-slate-400 font-normal">(16)</span></label></div><div class="flex items-center justify-between px-1 text-slate-400"><p class="text-xs font-medium" id="city-selection-count-msg">You can select up to 5</p><button class="text-[11px] text-amber-600 hover:text-amber-700 font-semibold" id="clear-cities-btn" type="button">Clear</button></div></div><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='0' height='0'%3E%3C/svg%3E" alt="" class="hidden" onerror="(function(){const searchInput=document.getElementById('city-search-input');const items=document.querySelectorAll('#city-dropdown-list .city-item');const cityCbs=document.querySelectorAll('.city-cb');const badge=document.getElementById('city-badge');const clearBtn=document.getElementById('clear-cities-btn');const countMsg=document.getElementById('city-selection-count-msg');function updateBadge(){const checked=Array.from(cityCbs).filter(c=&gt;c.checked);if(countMsg){if(checked.length&gt;0){countMsg.textContent=checked.length+' of 5 selected';}else{countMsg.textContent='You can select up to 5';}}if(badge){if(checked.length===0){badge.textContent='All';badge.className='text-[11px] font-normal text-slate-400 bg-slate-100/80 border border-slate-200 px-2 py-0.5 rounded-md max-w-[125px] truncate';}else if(checked.length===1){badge.textContent=checked[0].value;badge.className='text-[11px] font-semibold text-white bg-[#121927] px-2 py-0.5 rounded-md max-w-[125px] truncate';}else{badge.textContent=checked.length+' selected';badge.className='text-[11px] font-semibold text-white bg-[#121927] px-2 py-0.5 rounded-md max-w-[125px] truncate';}}}cityCbs.forEach(cb=&gt;{cb.addEventListener('change',function(e){const checked=Array.from(cityCbs).filter(c=&gt;c.checked);if(checked.length&gt;5){cb.checked=false;alert('You can select up to 5 cities.');return;}updateBadge();});});if(searchInput){searchInput.addEventListener('input',function(e){const q=e.target.value.toLowerCase().trim();items.forEach(it=&gt;{const nameEl=it.querySelector('.city-label');if(!nameEl)return;const name=nameEl.textContent.toLowerCase();if(name.includes(q))it.classList.remove('hidden');else it.classList.add('hidden');});});}if(clearBtn){clearBtn.addEventListener('click',function(e){e.stopPropagation();cityCbs.forEach(c=&gt;c.checked=false);updateBadge();});}updateBadge();})()"></div>
+</div>
+
+<!-- INSTITUTION FILTER ROW -->
+<div class="filter-item-wrapper group bg-white transition-colors" id="wrapper-institution-search">
+<button aria-expanded="false" class="filter-row-header w-full h-11 px-4 flex items-center justify-between hover:bg-slate-50/90 transition-colors focus:outline-none select-none text-left" data-target="content-institution-search" type="button">
+<div class="flex items-center gap-2.5 min-w-0 pr-2">
+<svg class="w-4 h-4 text-slate-500 shrink-0 group-hover:text-amber-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M2 9.5L12 4l10 5.5"></path><path d="M4 10.5h16"></path><path d="M5.5 13.5v5M9.8 13.5v5M14.2 13.5v5M18.5 13.5v5"></path><path d="M3 20h18"></path></svg>
+<span class="text-[13px] font-bold text-slate-800 tracking-tight shrink-0">Institution</span>
+</div>
+<div class="flex items-center gap-2 shrink-0">
+<span class="text-[11px] font-normal text-slate-400 bg-slate-100/80 border border-slate-200 px-2 py-0.5 rounded-md max-w-[125px] truncate" id="institution-search-badge">All Institutions</span>
+<svg class="chevron-icon w-3.5 h-3.5 text-slate-400 transform transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</button>
+<div class="bg-slate-50/70 p-3 border-t border-slate-100 hidden" id="content-institution-search"><div class="bg-white rounded-xl border border-slate-200 p-2.5 shadow-xs space-y-2"><div class="flex items-center gap-2.5 px-3.5 py-2 bg-slate-100/80 rounded-full border border-transparent focus-within:border-amber-400 focus-within:bg-white transition-all"><svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg><input autocomplete="off" class="w-full text-xs font-normal bg-transparent border-0 p-0 focus:outline-none focus:ring-0 placeholder-slate-400 text-slate-700" id="institution-search-input" placeholder="Search Institutions" type="text"></div><div class="max-h-56 overflow-y-auto custom-scrollbar border border-slate-100 rounded-lg divide-y divide-slate-100 bg-white select-none" id="institution-dropdown-list"><label class="institution-item flex items-center justify-between px-3.5 py-2.5 text-xs text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input checked="" class="w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 focus:ring-offset-0 cursor-pointer" id="all-institutions-cb" type="checkbox"><span class="institution-label font-semibold text-slate-900 group-hover/item:text-amber-600">All Institutions</span></div><span class="text-[11px] text-slate-400 font-normal">(6)</span></label><label class="institution-item flex items-center justify-between px-3.5 py-2.5 text-xs text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors group/item" data-inst="Academy of Learning Career College, Scarborough"><div class="flex items-center gap-2.5"><input class="institution-item-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 focus:ring-offset-0 cursor-pointer" type="checkbox" value="Academy of Learning Career College, Scarborough"><span class="institution-label font-medium text-slate-700 group-hover/item:text-slate-900">Academy of Learning Career College, Scarborough</span></div></label><label class="institution-item flex items-center justify-between px-3.5 py-2.5 text-xs text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors group/item" data-inst="California Lutheran University"><div class="flex items-center gap-2.5"><input class="institution-item-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 focus:ring-offset-0 cursor-pointer" type="checkbox" value="California Lutheran University"><span class="institution-label font-medium text-slate-700 group-hover/item:text-slate-900">California Lutheran University</span></div></label><label class="institution-item flex items-center justify-between px-3.5 py-2.5 text-xs text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors group/item" data-inst="Cascadia College"><div class="flex items-center gap-2.5"><input class="institution-item-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 focus:ring-offset-0 cursor-pointer" type="checkbox" value="Cascadia College"><span class="institution-label font-medium text-slate-700 group-hover/item:text-slate-900">Cascadia College</span></div></label><label class="institution-item flex items-center justify-between px-3.5 py-2.5 text-xs text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors group/item" data-inst="College of Marin"><div class="flex items-center gap-2.5"><input class="institution-item-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 focus:ring-offset-0 cursor-pointer" type="checkbox" value="College of Marin"><span class="institution-label font-medium text-slate-700 group-hover/item:text-slate-900">College of Marin</span></div></label><label class="institution-item flex items-center justify-between px-3.5 py-2.5 text-xs text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors group/item" data-inst="City University of Seattle"><div class="flex items-center gap-2.5"><input class="institution-item-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 focus:ring-offset-0 cursor-pointer" type="checkbox" value="City University of Seattle"><span class="institution-label font-medium text-slate-700 group-hover/item:text-slate-900">City University of Seattle</span></div></label><label class="institution-item flex items-center justify-between px-3.5 py-2.5 text-xs text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors group/item" data-inst="College of San Mateo"><div class="flex items-center gap-2.5"><input class="institution-item-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 focus:ring-offset-0 cursor-pointer" type="checkbox" value="College of San Mateo"><span class="institution-label font-medium text-slate-700 group-hover/item:text-slate-900">College of San Mateo</span></div></label></div><div class="flex items-center justify-between px-1 text-slate-400"><p class="text-xs font-medium">You can select up to 5</p><button class="text-[11px] text-amber-600 hover:text-amber-700 font-semibold" id="clear-institutions-btn" type="button">Clear</button></div></div><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='0' height='0'%3E%3C/svg%3E" alt="" class="hidden" onerror="(function(){const searchInput=document.getElementById('institution-search-input');const items=document.querySelectorAll('#institution-dropdown-list .institution-item');const allCb=document.getElementById('all-institutions-cb');const instCbs=document.querySelectorAll('.institution-item-cb');const badge=document.getElementById('institution-search-badge');const clearBtn=document.getElementById('clear-institutions-btn');function updateBadge(){const checked=Array.from(instCbs).filter(c=&gt;c.checked);if(allCb&amp;&amp;allCb.checked||checked.length===0){if(badge){badge.textContent='All Institutions';badge.className='text-[11px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md max-w-[125px] truncate';}}else if(checked.length===1){if(badge){badge.textContent=checked[0].value;badge.className='text-[11px] font-semibold text-white bg-[#121927] px-2 py-0.5 rounded-md max-w-[125px] truncate';}}else{if(badge){badge.textContent=checked.length+' selected';badge.className='text-[11px] font-semibold text-white bg-[#121927] px-2 py-0.5 rounded-md max-w-[125px] truncate';}}}if(allCb){allCb.addEventListener('change',()=&gt;{if(allCb.checked){instCbs.forEach(c=&gt;c.checked=false);}updateBadge();});}instCbs.forEach(cb=&gt;{cb.addEventListener('change',()=&gt;{const checked=Array.from(instCbs).filter(c=&gt;c.checked);if(checked.length&gt;5){cb.checked=false;return;}if(allCb)allCb.checked=checked.length===0;updateBadge();});});if(searchInput){searchInput.addEventListener('input',(e)=&gt;{const q=e.target.value.toLowerCase().trim();items.forEach(it=&gt;{const span=it.querySelector('.institution-label');if(!span)return;const name=span.textContent.toLowerCase();if(name.includes(q))it.classList.remove('hidden');else it.classList.add('hidden');});});}if(clearBtn){clearBtn.addEventListener('click',()=&gt;{instCbs.forEach(c=&gt;c.checked=false);if(allCb)allCb.checked=true;updateBadge();});}updateBadge();})()"></div>
+<img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='0' height='0'%3E%3C/svg%3E" alt="" class="hidden" onerror="(function(){['city','institution-search'].forEach(id=&gt;{const btn=document.querySelector('[data-target=\'content-'+id+'\']');if(btn&amp;&amp;!btn._hasClick){btn._hasClick=true;btn.onclick=function(e){e.stopPropagation();const content=document.getElementById('content-'+id);const chevron=btn.querySelector('.chevron-icon');const exp=btn.getAttribute('aria-expanded')==='true';if(exp){content.classList.add('hidden');chevron.classList.remove('rotate-180');btn.setAttribute('aria-expanded','false');}else{content.classList.remove('hidden');chevron.classList.add('rotate-180');btn.setAttribute('aria-expanded','true');}};}});})()">
+</div><div class="filter-item-wrapper group bg-white transition-colors" id="wrapper-studylevel">
+<button aria-expanded="false" class="filter-row-header w-full h-11 px-4 flex items-center justify-between hover:bg-slate-50/90 transition-colors focus:outline-none select-none text-left" data-target="content-studylevel" type="button">
+<div class="flex items-center gap-2.5 min-w-0 pr-2">
+<svg class="w-4 h-4 text-slate-500 shrink-0 group-hover:text-amber-500 transition-colors" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
+<span class="text-[13px] font-bold text-slate-800 tracking-tight shrink-0">Study level</span>
+</div>
+<div class="flex items-center gap-2 shrink-0">
+<span class="text-[11px] font-normal text-slate-400 bg-slate-100/80 border border-slate-200 px-2 py-0.5 rounded-md max-w-[125px] truncate" id="studylevel-badge">All Levels</span>
+<svg class="chevron-icon w-3.5 h-3.5 text-slate-400 transform transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</button>
+<div class="bg-slate-50/70 p-3 border-t border-slate-100 hidden" id="content-studylevel">
+<div class="bg-white rounded-xl border border-slate-200 p-2 shadow-xs space-y-1">
+<div class="px-2 py-1 flex items-center justify-between text-[11px] text-slate-500 border-b border-slate-100 mb-1">
+<span class="font-medium">18 study levels</span>
+<div class="flex gap-2">
+<button class="text-amber-600 hover:text-amber-700 font-semibold" id="select-all-studylevel-btn" type="button">All</button>
+<span class="text-slate-300">|</span>
+<button class="text-slate-500 hover:text-slate-700" id="clear-all-studylevel-btn" type="button">Clear</button>
+</div>
+</div>
+<div class="max-h-56 overflow-y-auto custom-scrollbar space-y-0.5 select-none pr-1">
+<label class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item">
+<div class="flex items-center gap-2.5">
+<input checked="" class="w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" id="all-studylevel-cb" type="checkbox">
+<span class="text-xs font-semibold text-slate-900 group-hover/item:text-amber-600">All Levels</span>
+</div>
+<span class="text-[11px] text-slate-400">(786)</span>
+</label>
+<label class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item">
+<div class="flex items-center gap-2.5">
+<input class="studylevel-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="School Education">
+<span class="text-xs font-medium text-slate-700 group-hover/item:text-slate-900">School Education</span>
+</div>
+<span class="text-[11px] text-slate-400">(165)</span>
+</label>
+<label class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item">
+<div class="flex items-center gap-2.5">
+<input class="studylevel-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="O-Level / IGCSE / GCSE">
+<span class="text-xs font-medium text-slate-700 group-hover/item:text-slate-900">O-Level / IGCSE / GCSE</span>
+</div>
+<span class="text-[11px] text-slate-400">(267)</span>
+</label>
+<label class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item">
+<div class="flex items-center gap-2.5">
+<input class="studylevel-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="A-Level">
+<span class="text-xs font-medium text-slate-700 group-hover/item:text-slate-900">A-Level</span>
+</div>
+<span class="text-[11px] text-slate-400">(266)</span>
+</label>
+<label class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item">
+<div class="flex items-center gap-2.5">
+<input class="studylevel-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Pre-University">
+<span class="text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Pre-University</span>
+</div>
+<span class="text-[11px] text-slate-400">(277)</span>
+</label>
+<label class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item">
+<div class="flex items-center gap-2.5">
+<input class="studylevel-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Foundation">
+<span class="text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Foundation</span>
+</div>
+<span class="text-[11px] text-slate-400">(22)</span>
+</label>
+<label class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item">
+<div class="flex items-center gap-2.5">
+<input class="studylevel-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Certificate">
+<span class="text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Certificate</span>
+</div>
+<span class="text-[11px] text-slate-400">(276)</span>
+</label>
+<label class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item">
+<div class="flex items-center gap-2.5">
+<input class="studylevel-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Diploma">
+<span class="text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Diploma</span>
+</div>
+<span class="text-[11px] text-slate-400">(263)</span>
+</label>
+<label class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item">
+<div class="flex items-center gap-2.5">
+<input class="studylevel-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Advanced Diploma">
+<span class="text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Advanced Diploma</span>
+</div>
+<span class="text-[11px] text-slate-400">(264)</span>
+</label>
+<label class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item">
+<div class="flex items-center gap-2.5">
+<input class="studylevel-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Vocational Education &amp; Training (VET)">
+<span class="text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Vocational Education &amp; Training (VET)</span>
+</div>
+<span class="text-[11px] text-slate-400">(524)</span>
+</label>
+<label class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item">
+<div class="flex items-center gap-2.5">
+<input class="studylevel-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Bachelor's Degree">
+<span class="text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Bachelor's Degree (Undergraduate)</span>
+</div>
+<span class="text-[11px] text-slate-400">(534)</span>
+</label>
+<label class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item">
+<div class="flex items-center gap-2.5">
+<input class="studylevel-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Postgraduate Diploma">
+<span class="text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Postgraduate Diploma</span>
+</div>
+<span class="text-[11px] text-slate-400">(258)</span>
+</label>
+<label class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item">
+<div class="flex items-center gap-2.5">
+<input class="studylevel-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Master's Degree">
+<span class="text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Master's Degree (Postgraduate)</span>
+</div>
+<span class="text-[11px] text-slate-400">(532)</span>
+</label>
+<label class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item">
+<div class="flex items-center gap-2.5">
+<input class="studylevel-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="MBA">
+<span class="text-xs font-medium text-slate-700 group-hover/item:text-slate-900">MBA</span>
+</div>
+<span class="text-[11px] text-slate-400">(309)</span>
+</label>
+<label class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item">
+<div class="flex items-center gap-2.5">
+<input class="studylevel-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="PhD / Doctorate">
+<span class="text-xs font-medium text-slate-700 group-hover/item:text-slate-900">PhD / Doctorate</span>
+</div>
+<span class="text-[11px] text-slate-400">(226)</span>
+</label>
+<label class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item">
+<div class="flex items-center gap-2.5">
+<input class="studylevel-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Professional Qualifications">
+<span class="text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Professional Qualifications</span>
+</div>
+<span class="text-[11px] text-slate-400">(521)</span>
+</label>
+<label class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item">
+<div class="flex items-center gap-2.5">
+<input class="studylevel-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="English Language Courses">
+<span class="text-xs font-medium text-slate-700 group-hover/item:text-slate-900">English Language Courses</span>
+</div>
+<span class="text-[11px] text-slate-400">(528)</span>
+</label>
+<label class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item">
+<div class="flex items-center gap-2.5">
+<input class="studylevel-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="University Pathway Programmes">
+<span class="text-xs font-medium text-slate-700 group-hover/item:text-slate-900">University Pathway Programmes</span>
+</div>
+<span class="text-[11px] text-slate-400">(142)</span>
+</label>
+</div>
+</div>
+</div>
+</div>
+<!-- 3. COURSES / DISCIPLINES ROW -->
+<div class="filter-item-wrapper group bg-white transition-colors" id="wrapper-courses">
+<button aria-expanded="true" class="filter-row-header w-full h-11 px-4 flex items-center justify-between hover:bg-slate-50/90 transition-colors focus:outline-none select-none text-left" data-target="content-courses" type="button">
+<div class="flex items-center gap-2.5 min-w-0 pr-2">
+<svg class="w-4 h-4 text-slate-500 shrink-0 group-hover:text-amber-500 transition-colors" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+<span class="text-[13px] font-bold text-slate-800 tracking-tight shrink-0">Course subject</span>
+</div>
+<div class="flex items-center gap-2 shrink-0">
+<span class="text-[11px] font-normal text-slate-400 bg-slate-100/80 border border-slate-200 px-2 py-0.5 rounded-md max-w-[125px] truncate" id="discipline-badge">All Fields</span>
+<svg class="chevron-icon w-3.5 h-3.5 text-slate-400 transform transition-transform duration-200 rotate-180" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+</button>
+<div class="bg-slate-50/70 p-3 border-t border-slate-100" id="content-courses">
+<div class="bg-white rounded-xl border border-slate-200 p-2 shadow-xs space-y-1.5"><div class="flex items-center gap-2.5 px-3.5 py-2 bg-slate-100/80 rounded-full border border-transparent focus-within:border-amber-400 focus-within:bg-white transition-all"><svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg><input autocomplete="off" class="w-full text-xs font-normal bg-transparent border-0 p-0 focus:outline-none focus:ring-0 placeholder-slate-400 text-slate-700" id="course-search-input" placeholder="Search subjects or courses" type="text"></div>
+<div class="max-h-56 overflow-y-auto custom-scrollbar space-y-1 select-none pr-1" id="courses-list"><label class="subject-item flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors"><div class="flex items-center gap-2.5"><input checked="" class="w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" id="all-discipline-cb" type="checkbox"><span class="subject-name text-xs font-semibold text-slate-900">All Subjects</span></div><span class="text-[11px] text-slate-400 font-normal">(1,000)</span></label><div class="pt-1.5 pb-0.5 px-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider bg-slate-50 rounded">A</div><label class="subject-item flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="discipline-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Agriculture Sciences"><span class="subject-name text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Agriculture Sciences</span></div><span class="text-[11px] text-slate-400">(24)</span></label><label class="subject-item flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="discipline-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Agriculture, Environmental &amp; Rel Studies"><span class="subject-name text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Agriculture, Environmental &amp; Rel Studies</span></div><span class="text-[11px] text-slate-400">(18)</span></label><label class="subject-item flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="discipline-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="All Pharmacy"><span class="subject-name text-xs font-medium text-slate-700 group-hover/item:text-slate-900">All Pharmacy</span></div><span class="text-[11px] text-slate-400">(32)</span></label><label class="subject-item flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="discipline-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Art and Design"><span class="subject-name text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Art and Design</span></div><span class="text-[11px] text-slate-400">(64)</span></label><label class="subject-item flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="discipline-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Arts, Humanities And Social Science"><span class="subject-name text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Arts, Humanities And Social Science</span></div><span class="text-[11px] text-slate-400">(85)</span></label><label class="subject-item flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="discipline-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Arts, Visual and Performing"><span class="subject-name text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Arts, Visual and Performing</span></div><span class="text-[11px] text-slate-400">(42)</span></label><div class="pt-1.5 pb-0.5 px-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider bg-slate-50 rounded">B</div><label class="subject-item flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="discipline-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Biological and Biomedical Sciences"><span class="subject-name text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Biological and Biomedical Sciences</span></div><span class="text-[11px] text-slate-400">(58)</span></label><label class="subject-item flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="discipline-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Biological and life Sciences"><span class="subject-name text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Biological and life Sciences</span></div><span class="text-[11px] text-slate-400">(46)</span></label><label class="subject-item flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="discipline-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Building and Architecture"><span class="subject-name text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Building and Architecture</span></div><span class="text-[11px] text-slate-400">(39)</span></label><label class="subject-item flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="discipline-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Business"><span class="subject-name text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Business</span></div><span class="text-[11px] text-slate-400">(180)</span></label><label class="subject-item flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="discipline-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Business, Commerce And Management"><span class="subject-name text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Business, Commerce And Management</span></div><span class="text-[11px] text-slate-400">(142)</span></label><div class="pt-1.5 pb-0.5 px-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider bg-slate-50 rounded">C</div><label class="subject-item flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="discipline-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Chemistry"><span class="subject-name text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Chemistry</span></div><span class="text-[11px] text-slate-400">(31)</span></label><label class="subject-item flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="discipline-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Computer and Information Sciences"><span class="subject-name text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Computer and Information Sciences</span></div><span class="text-[11px] text-slate-400">(120)</span></label><label class="subject-item flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="discipline-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Computing and IT"><span class="subject-name text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Computing and IT</span></div><span class="text-[11px] text-slate-400">(164)</span></label><div class="pt-1.5 pb-0.5 px-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider bg-slate-50 rounded">E</div><label class="subject-item flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="discipline-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Economics"><span class="subject-name text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Economics</span></div><span class="text-[11px] text-slate-400">(52)</span></label><label class="subject-item flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="discipline-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Engineering"><span class="subject-name text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Engineering</span></div><span class="text-[11px] text-slate-400">(198)</span></label><label class="subject-item flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="discipline-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="English Language and Literature"><span class="subject-name text-xs font-medium text-slate-700 group-hover/item:text-slate-900">English Language and Literature</span></div><span class="text-[11px] text-slate-400">(37)</span></label><label class="subject-item flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="discipline-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="English Language Studies"><span class="subject-name text-xs font-medium text-slate-700 group-hover/item:text-slate-900">English Language Studies</span></div><span class="text-[11px] text-slate-400">(29)</span></label><label class="subject-item flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="discipline-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Environmental Science"><span class="subject-name text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Environmental Science</span></div><span class="text-[11px] text-slate-400">(41)</span></label><div class="pt-1.5 pb-0.5 px-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider bg-slate-50 rounded">F</div><label class="subject-item flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="discipline-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Family and Consumer Sciences"><span class="subject-name text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Family and Consumer Sciences</span></div><span class="text-[11px] text-slate-400">(15)</span></label><label class="subject-item flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="discipline-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Food, Hospitality And Personal Services"><span class="subject-name text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Food, Hospitality And Personal Services</span></div><span class="text-[11px] text-slate-400">(33)</span></label><div class="pt-1.5 pb-0.5 px-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider bg-slate-50 rounded">G</div><label class="subject-item flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="discipline-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="General Primary And Secondary Education"><span class="subject-name text-xs font-medium text-slate-700 group-hover/item:text-slate-900">General Primary And Secondary Education</span></div><span class="text-[11px] text-slate-400">(28)</span></label><div class="pt-1.5 pb-0.5 px-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider bg-slate-50 rounded">H</div><label class="subject-item flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="discipline-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Health and Medicine"><span class="subject-name text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Health and Medicine</span></div><span class="text-[11px] text-slate-400">(112)</span></label><label class="subject-item flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="discipline-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Health Professions &amp; Clinical Sciences"><span class="subject-name text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Health Professions &amp; Clinical Sciences</span></div><span class="text-[11px] text-slate-400">(76)</span></label><label class="subject-item flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="discipline-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Health, Medicine And Veterinary Studies"><span class="subject-name text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Health, Medicine And Veterinary Studies</span></div><span class="text-[11px] text-slate-400">(48)</span></label><label class="subject-item flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="discipline-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="History"><span class="subject-name text-xs font-medium text-slate-700 group-hover/item:text-slate-900">History</span></div><span class="text-[11px] text-slate-400">(22)</span></label><label class="subject-item flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="discipline-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Hospitality and Tourism"><span class="subject-name text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Hospitality and Tourism</span></div><span class="text-[11px] text-slate-400">(54)</span></label><div class="pt-1.5 pb-0.5 px-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider bg-slate-50 rounded">L</div><label class="subject-item flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="discipline-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Language and Culture"><span class="subject-name text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Language and Culture</span></div><span class="text-[11px] text-slate-400">(38)</span></label><label class="subject-item flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="discipline-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Law and Legal Studies"><span class="subject-name text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Law and Legal Studies</span></div><span class="text-[11px] text-slate-400">(65)</span></label><div class="pt-1.5 pb-0.5 px-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider bg-slate-50 rounded">M</div><label class="subject-item flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="discipline-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Marketing, Media and Communication"><span class="subject-name text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Marketing, Media and Communication</span></div><span class="text-[11px] text-slate-400">(89)</span></label><div class="pt-1.5 pb-0.5 px-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider bg-slate-50 rounded">N</div><label class="subject-item flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="discipline-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Natural And Physical Sciences"><span class="subject-name text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Natural And Physical Sciences</span></div><span class="text-[11px] text-slate-400">(44)</span></label><label class="subject-item flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="discipline-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Natural Resources and Conservation"><span class="subject-name text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Natural Resources and Conservation</span></div><span class="text-[11px] text-slate-400">(21)</span></label><div class="pt-1.5 pb-0.5 px-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider bg-slate-50 rounded">P</div><label class="subject-item flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="discipline-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Personal and Culinary Services"><span class="subject-name text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Personal and Culinary Services</span></div><span class="text-[11px] text-slate-400">(19)</span></label><label class="subject-item flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="discipline-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Philosophy &amp; Religion"><span class="subject-name text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Philosophy &amp; Religion</span></div><span class="text-[11px] text-slate-400">(16)</span></label><label class="subject-item flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="discipline-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Physical Sciences"><span class="subject-name text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Physical Sciences</span></div><span class="text-[11px] text-slate-400">(35)</span></label><label class="subject-item flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="discipline-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Physics"><span class="subject-name text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Physics</span></div><span class="text-[11px] text-slate-400">(27)</span></label><label class="subject-item flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="discipline-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Political and Social Sciences"><span class="subject-name text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Political and Social Sciences</span></div><span class="text-[11px] text-slate-400">(62)</span></label><div class="pt-1.5 pb-0.5 px-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider bg-slate-50 rounded">S</div><label class="subject-item flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="discipline-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Social Sciences"><span class="subject-name text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Social Sciences</span></div><span class="text-[11px] text-slate-400">(94)</span></label><div class="pt-1.5 pb-0.5 px-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider bg-slate-50 rounded">T</div><label class="subject-item flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="discipline-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Teaching and Education"><span class="subject-name text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Teaching and Education</span></div><span class="text-[11px] text-slate-400">(53)</span></label></div><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='0' height='0'%3E%3C/svg%3E" alt="" class="hidden" onerror="(function(){const searchInput=document.getElementById('course-search-input');const items=document.querySelectorAll('#courses-list .subject-item');const allCb=document.getElementById('all-discipline-cb');const discCbs=document.querySelectorAll('#courses-list .discipline-cb');const badge=document.getElementById('discipline-badge');function updateBadge(){const checked=Array.from(discCbs).filter(c=&gt;c.checked);if(allCb&amp;&amp;allCb.checked||checked.length===0){if(badge){badge.textContent='All Fields';badge.className='text-[11px] font-semibold text-amber-700 bg-amber-50 border border-amber-200/60 px-2 py-0.5 rounded-md max-w-[125px] truncate';}}else if(checked.length===1){if(badge){badge.textContent=checked[0].value;badge.className='text-[11px] font-semibold text-white bg-[#121927] px-2 py-0.5 rounded-md max-w-[125px] truncate';}}else{if(badge){badge.textContent=checked.length+' selected';badge.className='text-[11px] font-semibold text-white bg-[#121927] px-2 py-0.5 rounded-md max-w-[125px] truncate';}}}if(allCb){allCb.addEventListener('change',()=&gt;{if(allCb.checked){discCbs.forEach(c=&gt;c.checked=false);}updateBadge();});}discCbs.forEach(cb=&gt;{cb.addEventListener('change',()=&gt;{const anyChecked=Array.from(discCbs).some(c=&gt;c.checked);if(allCb)allCb.checked=!anyChecked;updateBadge();});});if(searchInput){searchInput.addEventListener('input',(e)=&gt;{const q=e.target.value.toLowerCase().trim();items.forEach(it=&gt;{const nameEl=it.querySelector('.subject-name');if(!nameEl)return;const name=nameEl.textContent.toLowerCase();if(name.includes(q))it.classList.remove('hidden');else it.classList.add('hidden');});});}updateBadge();})()">
+</div>
+</div>
+</div>
+<!-- 4. IELTS SCORE ROW -->
+<div class="filter-item-wrapper group bg-white transition-colors" id="wrapper-ielts">
+<button aria-expanded="false" class="filter-row-header w-full h-11 px-4 flex items-center justify-between hover:bg-slate-50/90 transition-colors focus:outline-none select-none text-left" data-target="content-ielts" type="button">
+<div class="flex items-center gap-2.5 min-w-0 pr-2">
+<svg class="w-4 h-4 text-slate-500 shrink-0 group-hover:text-amber-500 transition-colors" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
+<circle cx="12" cy="8.5" r="5.5"></circle>
+<path d="m9.5 8.5 1.8 1.8 3.5-3.5"></path>
+<path d="m7.5 13.5-2.5 7.5 7-3"></path>
+<path d="m16.5 13.5 2.5 7.5-7-3"></path>
+</svg>
+<span class="text-[13px] font-bold text-slate-800 tracking-tight shrink-0">IELTS score</span>
+</div>
+<div class="flex items-center gap-2 shrink-0">
+<span class="text-[11px] font-normal text-slate-400 bg-slate-100/80 border border-slate-200 px-2 py-0.5 rounded-md max-w-[125px] truncate" id="ielts-badge">Any</span>
+<svg class="chevron-icon w-3.5 h-3.5 text-slate-400 transform transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</button>
+<div class="bg-slate-50/70 p-3 border-t border-slate-100 hidden" id="content-ielts">
+<div class="bg-white rounded-xl border border-slate-200 p-2 shadow-xs space-y-1"><div class="grid grid-cols-2 gap-1.5 pb-2 border-b border-slate-100 mb-2"><label class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-slate-50 cursor-pointer"><input class="ielts-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400" type="checkbox" value="7.0 - 9.0"><span class="text-xs text-slate-700">IELTS 7.0 - 9.0</span></label><label class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-slate-50 cursor-pointer"><input class="ielts-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400" type="checkbox" value="6.5"><span class="text-xs text-slate-700">IELTS 6.5</span></label><label class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-slate-50 cursor-pointer"><input class="ielts-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400" type="checkbox" value="6.0"><span class="text-xs text-slate-700">IELTS 6.0</span></label><label class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-slate-50 cursor-pointer"><input class="ielts-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400" type="checkbox" value="5.5"><span class="text-xs text-slate-700">IELTS 5.5</span></label><label class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-slate-50 cursor-pointer col-span-2"><input class="ielts-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400" type="checkbox" value="Waiver"><span class="text-xs text-slate-700">English waiver</span></label></div><div class="p-1 space-y-3 pb-2 border-slate-100 mb-2"><div class="flex items-center justify-between"><span class="text-xs font-bold text-slate-900 tracking-tight"><span id="display-ielts-min">3.5</span> — <span id="display-ielts-max">9.0</span></span><button class="text-[11px] text-amber-600 hover:text-amber-700 font-semibold focus:outline-none" id="clear-ielts-btn" type="button">Reset</button></div><div class="range-slider-container my-1 relative"><div class="absolute inset-0 bg-slate-200 rounded-full"></div><div class="absolute h-full bg-amber-500 rounded-full" id="ielts-slider-track-highlight" style="left: 0%; right: 0%;"></div><input class="range-input" id="ielts-min-range-slider" max="9" min="3.5" step="0.5" type="range" value="3.5"><input class="range-input" id="ielts-max-range-slider" max="9" min="3.5" step="0.5" type="range" value="9"></div><div class="flex justify-between text-[10px] text-slate-400 font-medium"><span>3.5</span><span>5.0</span><span>6.5</span><span>8.0</span><span>9.0</span></div><div class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-100"><div class="flex flex-col gap-1"><label class="text-[10px] font-bold text-slate-400 tracking-wider uppercase" for="ielts-min-input">Min</label><div class="flex items-center bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 focus-within:border-amber-400 focus-within:ring-1 focus-within:ring-amber-400 transition-all"><input class="w-full text-xs font-semibold text-slate-800 bg-transparent border-0 p-0 focus:outline-none focus:ring-0" id="ielts-min-input" max="9" min="3.5" step="0.5" type="number" value="3.5"></div></div><div class="flex flex-col gap-1"><label class="text-[10px] font-bold text-slate-400 tracking-wider uppercase" for="ielts-max-input">Max</label><div class="flex items-center bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 focus-within:border-amber-400 focus-within:ring-1 focus-within:ring-amber-400 transition-all"><input class="w-full text-xs font-semibold text-slate-800 bg-transparent border-0 p-0 focus:outline-none focus:ring-0" id="ielts-max-input" max="9" min="3.5" step="0.5" type="number" value="9"></div></div></div></div><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='0' height='0'%3E%3C/svg%3E" alt="" class="hidden" onerror="(function(){const minS=document.getElementById('ielts-min-range-slider');const maxS=document.getElementById('ielts-max-range-slider');const minIn=document.getElementById('ielts-min-input');const maxIn=document.getElementById('ielts-max-input');const dispMin=document.getElementById('display-ielts-min');const dispMax=document.getElementById('display-ielts-max');const hl=document.getElementById('ielts-slider-track-highlight');const badge=document.getElementById('ielts-badge');const rst=document.getElementById('clear-ielts-btn');const MIN_LIMIT=3.5;const MAX_LIMIT=9.0;function sync(source){let minV=parseFloat(minS.value)||MIN_LIMIT;let maxV=parseFloat(maxS.value)||MAX_LIMIT;if(source==='minIn'){minV=Math.max(MIN_LIMIT,Math.min(parseFloat(minIn.value)||MIN_LIMIT,MAX_LIMIT));if(minV&gt;maxV){maxV=minV;maxS.value=maxV;maxIn.value=maxV;}minS.value=minV;}else if(source==='maxIn'){maxV=Math.max(MIN_LIMIT,Math.min(parseFloat(maxIn.value)||MIN_LIMIT,MAX_LIMIT));if(maxV&lt;minV){minV=maxV;minS.value=minV;minIn.value=minV;}maxS.value=maxV;}else if(source==='minS'){if(minV&gt;maxV){maxV=minV;maxS.value=maxV;maxIn.value=maxV;}minIn.value=minV;}else if(source==='maxS'){if(maxV&lt;minV){minV=maxV;minS.value=minV;minIn.value=minV;}maxIn.value=maxV;}const rangeSpan=MAX_LIMIT-MIN_LIMIT;const left=((minV-MIN_LIMIT)/rangeSpan)*100;const right=100-(((maxV-MIN_LIMIT)/rangeSpan)*100);hl.style.left=left+'%';hl.style.right=right+'%';dispMin.textContent=(+minV).toFixed(1);dispMax.textContent=(+maxV).toFixed(1);if(badge){if(minV===MIN_LIMIT&amp;&amp;maxV===MAX_LIMIT){badge.textContent='Any';badge.className='text-[11px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md max-w-[125px] truncate';}else{badge.textContent=(+minV).toFixed(1)+' - '+(+maxV).toFixed(1);badge.className='text-[11px] font-semibold text-white bg-[#121927] px-2 py-0.5 rounded-md max-w-[125px] truncate';}}}if(minS&amp;&amp;maxS){minS.oninput=()=&gt;sync('minS');maxS.oninput=()=&gt;sync('maxS');if(minIn)minIn.oninput=()=&gt;sync('minIn');if(maxIn)maxIn.oninput=()=&gt;sync('maxIn');if(rst){rst.onclick=()=&gt;{minS.value=MIN_LIMIT;maxS.value=MAX_LIMIT;if(minIn)minIn.value=MIN_LIMIT;if(maxIn)maxIn.value=MAX_LIMIT;sync('reset');};}}})()">
+
+</div>
+</div>
+</div>
+<!-- 5. INTAKE ROW (Ultra-compact chip design) -->
+<div class="filter-item-wrapper group bg-white transition-colors" id="wrapper-studymode">
+<button aria-expanded="false" class="filter-row-header w-full h-11 px-4 flex items-center justify-between hover:bg-slate-50/90 transition-colors focus:outline-none select-none text-left" data-target="content-study-mode" type="button">
+<div class="flex items-center gap-2.5 min-w-0 pr-2">
+<svg class="w-4 h-4 text-slate-500 shrink-0 group-hover:text-amber-500 transition-colors" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
+<rect height="14" rx="2" width="20" x="2" y="3"></rect>
+<line x1="8" x2="16" y1="21" y2="21"></line>
+<line x1="12" x2="12" y1="17" y2="21"></line>
+</svg>
+<span class="text-[13px] font-bold text-slate-800 tracking-tight shrink-0">Study mode</span>
+</div>
+<div class="flex items-center gap-2 shrink-0">
+<span class="text-[11px] font-normal text-slate-400 bg-slate-100/80 border border-slate-200 px-2 py-0.5 rounded-md max-w-[125px] truncate" id="study-mode-badge">All Modes</span>
+<svg class="chevron-icon w-3.5 h-3.5 text-slate-400 transform transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</button>
+<div class="bg-slate-50/70 p-3 border-t border-slate-100 hidden" id="content-study-mode">
+<div class="bg-white rounded-xl border border-slate-200 p-2 shadow-xs space-y-1"><label class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="study-mode-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Off Campus"><span class="text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Off Campus</span></div><span class="text-[11px] text-slate-400 font-normal">(34)</span></label><label class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="study-mode-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="On Campus"><span class="text-xs font-medium text-slate-700 group-hover/item:text-slate-900">On Campus</span></div><span class="text-[11px] text-slate-400 font-normal">(195)</span></label><label class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="study-mode-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="On Campus With Online Start"><span class="text-xs font-medium text-slate-700 group-hover/item:text-slate-900">On Campus With Online Start</span></div><span class="text-[11px] text-slate-400 font-normal">(48)</span></label><label class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="study-mode-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Online"><span class="text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Online</span></div><span class="text-[11px] text-slate-400 font-normal">(82)</span></label><label class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group/item"><div class="flex items-center gap-2.5"><input class="study-mode-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400 cursor-pointer" type="checkbox" value="Overseas Campus"><span class="text-xs font-medium text-slate-700 group-hover/item:text-slate-900">Overseas Campus</span></div><span class="text-[11px] text-slate-400 font-normal">(19)</span></label></div>
+</div>
+</div><div class="filter-item-wrapper group bg-white transition-colors" id="wrapper-intake">
+<button aria-expanded="false" class="filter-row-header w-full h-11 px-4 flex items-center justify-between hover:bg-slate-50/90 transition-colors focus:outline-none select-none text-left" data-target="content-intake" type="button">
+<div class="flex items-center gap-2.5 min-w-0 pr-2">
+<svg class="w-4 h-4 text-slate-500 shrink-0 group-hover:text-amber-500 transition-colors" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
+<rect height="18" rx="2" ry="2" width="18" x="3" y="4"></rect>
+<line x1="16" x2="16" y1="2" y2="6"></line>
+<line x1="8" x2="8" y1="2" y2="6"></line>
+<line x1="3" x2="21" y1="10" y2="10"></line>
+</svg>
+<span class="text-[13px] font-bold text-slate-800 tracking-tight shrink-0">Intake</span>
+</div>
+<div class="flex items-center gap-2 shrink-0">
+<span class="text-[11px] font-normal text-slate-400 bg-slate-100/80 border border-slate-200 px-2 py-0.5 rounded-md max-w-[125px] truncate" id="intake-badge">Any Month</span>
+<svg class="chevron-icon w-3.5 h-3.5 text-slate-400 transform transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</button>
+<div class="bg-slate-50/70 p-3 border-t border-slate-100 hidden" id="content-intake">
+<div class="bg-white rounded-xl border border-slate-200 p-2.5 shadow-xs">
+<div class="grid grid-cols-6 gap-1">
+<button class="month-btn py-1.5 px-0.5 rounded-md text-[11px] font-medium transition-colors text-center bg-slate-100 text-slate-700 hover:bg-slate-200" data-active="false" data-month="Jan" type="button">Jan</button>
+<button class="month-btn py-1.5 px-0.5 rounded-md text-[11px] font-medium transition-colors text-center bg-slate-100 text-slate-700 hover:bg-slate-200" data-active="false" data-month="Feb" type="button">Feb</button>
+<button class="month-btn py-1.5 px-0.5 rounded-md text-[11px] font-medium transition-colors text-center bg-slate-100 text-slate-700 hover:bg-slate-200" data-active="false" data-month="Mar" type="button">Mar</button>
+<button class="month-btn py-1.5 px-0.5 rounded-md text-[11px] font-medium transition-colors text-center bg-slate-100 text-slate-700 hover:bg-slate-200" data-active="false" data-month="Apr" type="button">Apr</button>
+<button class="month-btn py-1.5 px-0.5 rounded-md text-[11px] font-medium transition-colors text-center bg-slate-100 text-slate-700 hover:bg-slate-200" data-active="false" data-month="May" type="button">May</button>
+<button class="month-btn py-1.5 px-0.5 rounded-md text-[11px] font-medium transition-colors text-center bg-slate-100 text-slate-700 hover:bg-slate-200" data-active="false" data-month="Jun" type="button">Jun</button>
+<button class="month-btn py-1.5 px-0.5 rounded-md text-[11px] font-medium transition-colors text-center bg-slate-100 text-slate-700 hover:bg-slate-200" data-active="false" data-month="Jul" type="button">Jul</button>
+<button class="month-btn py-1.5 px-0.5 rounded-md text-[11px] font-medium transition-colors text-center bg-slate-100 text-slate-700 hover:bg-slate-200" data-active="false" data-month="Aug" type="button">Aug</button>
+<button class="month-btn py-1.5 px-0.5 rounded-md text-[11px] font-medium transition-colors text-center bg-slate-100 text-slate-700 hover:bg-slate-200" data-active="false" data-month="Sep" type="button">Sep</button>
+<button class="month-btn py-1.5 px-0.5 rounded-md text-[11px] font-medium transition-colors text-center bg-slate-100 text-slate-700 hover:bg-slate-200" data-active="false" data-month="Oct" type="button">Oct</button>
+<button class="month-btn py-1.5 px-0.5 rounded-md text-[11px] font-medium transition-colors text-center bg-slate-100 text-slate-700 hover:bg-slate-200" data-active="false" data-month="Nov" type="button">Nov</button>
+<button class="month-btn py-1.5 px-0.5 rounded-md text-[11px] font-medium transition-colors text-center bg-slate-100 text-slate-700 hover:bg-slate-200" data-active="false" data-month="Dec" type="button">Dec</button>
+</div>
+</div>
+</div>
+</div>
+<!-- 6. DURATION ROW -->
+<div class="filter-item-wrapper group bg-white transition-colors" id="wrapper-duration">
+<button aria-expanded="false" class="filter-row-header w-full h-11 px-4 flex items-center justify-between hover:bg-slate-50/90 transition-colors focus:outline-none select-none text-left" data-target="content-duration" type="button">
+<div class="flex items-center gap-2.5 min-w-0 pr-2">
+<svg class="w-4 h-4 text-slate-500 shrink-0 group-hover:text-amber-500 transition-colors" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
+<path d="M5 22h14"></path>
+<path d="M5 2h14"></path>
+<path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"></path>
+<path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"></path>
+</svg>
+<span class="text-[13px] font-bold text-slate-800 tracking-tight shrink-0">Duration</span>
+</div>
+<div class="flex items-center gap-2 shrink-0">
+<span class="text-[11px] font-normal text-slate-400 bg-slate-100/80 border border-slate-200 px-2 py-0.5 rounded-md max-w-[125px] truncate" id="duration-badge">Any</span>
+<svg class="chevron-icon w-3.5 h-3.5 text-slate-400 transform transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</button>
+<div class="bg-slate-50/70 p-3 border-t border-slate-100 hidden" id="content-duration">
+<div class="bg-white rounded-xl border border-slate-200 p-2 shadow-xs space-y-1">
+<div class="grid grid-cols-2 gap-1.5">
+<label class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-slate-50 cursor-pointer">
+<input class="duration-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400" type="checkbox" value="&lt; 1 yr">
+<span class="text-xs text-slate-700">Less than 1 year</span>
+</label>
+<label class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-slate-50 cursor-pointer">
+<input class="duration-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400" type="checkbox" value="" placeholder="1-2 yrs">
+<span class="text-xs text-slate-700">1 - 2 years</span>
+</label>
+<label class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-slate-50 cursor-pointer">
+<input class="duration-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400" type="checkbox" value="2-3 yrs">
+<span class="text-xs text-slate-700">2 - 3 years</span>
+</label>
+<label class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-slate-50 cursor-pointer">
+<input class="duration-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400" type="checkbox" value="3-4 yrs">
+<span class="text-xs text-slate-700">3 - 4 years</span>
+</label>
+<label class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-slate-50 cursor-pointer">
+<input class="duration-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400" type="checkbox" value="4-5 yrs">
+<span class="text-xs text-slate-700">4 - 5 years</span>
+</label>
+<label class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-slate-50 cursor-pointer">
+<input class="duration-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400" type="checkbox" value="" placeholder="5+ yrs">
+<span class="text-xs text-slate-700">More than 5 years</span>
+</label>
+</div>
+</div>
+</div>
+</div>
+<!-- 7. FEE RANGE ROW (Compact Accordion) -->
+<div class="filter-item-wrapper group bg-white transition-colors" id="wrapper-fee">
+<button aria-expanded="false" class="filter-row-header w-full h-11 px-4 flex items-center justify-between hover:bg-slate-50/90 transition-colors focus:outline-none select-none text-left" data-target="content-fee" type="button">
+<div class="flex items-center gap-2.5 min-w-0 pr-2">
+<svg class="w-4 h-4 text-slate-500 shrink-0 group-hover:text-amber-500 transition-colors" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
+<rect height="14" rx="2" width="20" x="2" y="5"></rect>
+<line x1="2" x2="22" y1="10" y2="10"></line>
+<line x1="6" x2="10" y1="15" y2="15"></line>
+</svg>
+<span class="text-[13px] font-bold text-slate-800 tracking-tight shrink-0">Budget</span>
+</div>
+<div class="flex items-center gap-2 shrink-0">
+<span class="text-[11px] font-normal text-slate-400 bg-slate-100/80 border border-slate-200 px-2 py-0.5 rounded-md max-w-[125px] truncate" id="fee-summary-badge">$0 – $150k USD</span>
+<svg class="chevron-icon w-3.5 h-3.5 text-slate-400 transform transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</button>
+<div class="bg-slate-50/70 p-3 border-t border-slate-100 hidden" id="content-fee"><div class="bg-white rounded-xl border border-slate-200 p-3 shadow-xs space-y-3"><div class="flex items-center justify-between"><span class="text-xs font-bold text-slate-900 tracking-tight">$<span id="display-min">0</span> USD — $<span id="display-max">150,000</span> USD</span><button class="text-[11px] text-amber-600 hover:text-amber-700 font-semibold focus:outline-none" id="clear-price-btn" type="button">Reset</button></div><div class="grid grid-cols-2 gap-2 pb-1 border-b border-slate-100"><div class="flex flex-col gap-1"><label class="text-[10px] font-bold text-slate-400 tracking-wider uppercase" for="budget-min-input">Min</label><div class="flex items-center bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 focus-within:border-amber-400 focus-within:ring-1 focus-within:ring-amber-400 transition-all"><span class="text-xs text-slate-400 font-medium mr-1">$</span><input class="w-full text-xs font-semibold text-slate-800 bg-transparent border-0 p-0 focus:outline-none focus:ring-0" id="budget-min-input" max="150000" min="0" step="1000" type="number" value="0"></div></div><div class="flex flex-col gap-1"><label class="text-[10px] font-bold text-slate-400 tracking-wider uppercase" for="budget-max-input">Max</label><div class="flex items-center bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 focus-within:border-amber-400 focus-within:ring-1 focus-within:ring-amber-400 transition-all"><span class="text-xs text-slate-400 font-medium mr-1">$</span><input class="w-full text-xs font-semibold text-slate-800 bg-transparent border-0 p-0 focus:outline-none focus:ring-0" id="budget-max-input" max="150000" min="0" step="1000" type="number" value="150000"></div></div></div><div class="range-slider-container my-1 relative"><div class="absolute inset-0 bg-slate-200 rounded-full"></div><div class="absolute h-full bg-amber-500 rounded-full" id="slider-track-highlight" style="left: 0%; right: 0%;"></div><input class="range-input" id="min-range-slider" max="150000" min="0" step="1000" type="range" value="0"><input class="range-input" id="max-range-slider" max="150000" min="0" step="1000" type="range" value="150000"></div><div class="flex justify-between text-[10px] text-slate-400 font-medium"><span>$0</span><span>$35k</span><span>$75k</span><span>$115k</span><span>$150k USD</span></div></div><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='0' height='0'%3E%3C/svg%3E" alt="" class="hidden" onerror="(function(){const minS=document.getElementById('min-range-slider');const maxS=document.getElementById('max-range-slider');const minIn=document.getElementById('budget-min-input');const maxIn=document.getElementById('budget-max-input');const dispMin=document.getElementById('display-min');const dispMax=document.getElementById('display-max');const hl=document.getElementById('slider-track-highlight');const badge=document.getElementById('fee-summary-badge');const rst=document.getElementById('clear-price-btn');const MAX_LIMIT=150000;function sync(source){let minV=parseInt(minS.value)||0;let maxV=parseInt(maxS.value)||0;if(source==='minIn'){minV=Math.max(0,Math.min(parseInt(minIn.value)||0,MAX_LIMIT));if(minV&gt;maxV){maxV=minV;maxS.value=maxV;maxIn.value=maxV;}minS.value=minV;}else if(source==='maxIn'){maxV=Math.max(0,Math.min(parseInt(maxIn.value)||0,MAX_LIMIT));if(maxV&lt;minV){minV=maxV;minS.value=minV;minIn.value=minV;}maxS.value=maxV;}else if(source==='minS'){if(minV&gt;maxV){maxV=minV;maxS.value=maxV;maxIn.value=maxV;}minIn.value=minV;}else if(source==='maxS'){if(maxV&lt;minV){minV=maxV;minS.value=minV;minIn.value=minV;}maxIn.value=maxV;}const left=(minV/MAX_LIMIT)*100;const right=100-((maxV/MAX_LIMIT)*100);hl.style.left=left+'%';hl.style.right=right+'%';dispMin.textContent=new Intl.NumberFormat().format(minV);dispMax.textContent=new Intl.NumberFormat().format(maxV);badge.textContent='$'+Math.round(minV/1000)+'k – $'+Math.round(maxV/1000)+'k USD';}minS.oninput=()=&gt;sync('minS');maxS.oninput=()=&gt;sync('maxS');minIn.oninput=()=&gt;sync('minIn');maxIn.oninput=()=&gt;sync('maxIn');if(rst){rst.onclick=()=&gt;{minS.value=0;maxS.value=MAX_LIMIT;minIn.value=0;maxIn.value=MAX_LIMIT;sync('reset');};}})()"></div>
+</div>
+<!-- 8. INSTITUTION TYPE ROW -->
+<div class="filter-item-wrapper group bg-white transition-colors" id="wrapper-institution">
+<button aria-expanded="false" class="filter-row-header w-full h-11 px-4 flex items-center justify-between hover:bg-slate-50/90 transition-colors focus:outline-none select-none text-left" data-target="content-institution" type="button">
+<div class="flex items-center gap-2.5 min-w-0 pr-2">
+<svg class="w-4 h-4 text-slate-500 shrink-0 group-hover:text-amber-500 transition-colors" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M2 9.5L12 4l10 5.5"></path><path d="M4 10.5h16"></path><path d="M5.5 13.5v5M9.8 13.5v5M14.2 13.5v5M18.5 13.5v5"></path><path d="M3 20h18"></path></svg>
+<span class="text-[13px] font-bold text-slate-800 tracking-tight shrink-0">Institution type</span>
+</div>
+<div class="flex items-center gap-2 shrink-0">
+<span class="text-[11px] font-normal text-slate-400 bg-slate-100/80 border border-slate-200 px-2 py-0.5 rounded-md max-w-[125px] truncate" id="institution-type-badge">All Types</span>
+<svg class="chevron-icon w-3.5 h-3.5 text-slate-400 transform transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</button>
+<div class="bg-slate-50/70 p-3 border-t border-slate-100 hidden" id="content-institution">
+<div class="bg-white rounded-xl border border-slate-200 p-2 shadow-xs space-y-1">
+<label class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer">
+<div class="flex items-center gap-2.5">
+<input checked="" class="w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400" id="all-institution-type-cb" type="checkbox">
+<span class="text-xs font-semibold text-slate-900">All Types</span>
+</div>
+<span class="text-[11px] text-slate-400">(233)</span>
+</label>
+<label class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer">
+<div class="flex items-center gap-2.5">
+<input class="institution-type-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400" type="checkbox" value="Public">
+<span class="text-xs text-slate-700">Public Universities</span>
+</div>
+<span class="text-[11px] text-slate-400">(141)</span>
+</label>
+<label class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer">
+<div class="flex items-center gap-2.5">
+<input class="institution-type-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400" type="checkbox" value="Private">
+<span class="text-xs text-slate-700">Private Universities</span>
+</div>
+<span class="text-[11px] text-slate-400">(88)</span>
+</label>
+<label class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer">
+<div class="flex items-center gap-2.5">
+<input class="institution-type-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400" type="checkbox" value="Research">
+<span class="text-xs text-slate-700">Research &amp; Technical</span>
+</div>
+<span class="text-[11px] text-slate-400">(75)</span>
+</label>
+</div>
+</div>
+</div>
+<!-- 9. STUDY MODE ROW -->
+
+<!-- 10. QS WORLD RANKING ROW -->
+<div class="filter-item-wrapper group bg-white transition-colors" id="wrapper-qsranking">
+<button aria-expanded="false" class="filter-row-header w-full h-11 px-4 flex items-center justify-between hover:bg-slate-50/90 transition-colors focus:outline-none select-none text-left" data-target="content-qs-ranking" type="button">
+<div class="flex items-center gap-2.5 min-w-0 pr-2">
+<svg class="w-4 h-4 text-slate-500 shrink-0 group-hover:text-amber-500 transition-colors" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
+<path d="M18 20V10"></path>
+<path d="M12 20V4"></path>
+<path d="M6 20v-6"></path>
+</svg>
+<span class="text-[13px] font-bold text-slate-800 tracking-tight shrink-0">QS World Ranking</span>
+</div>
+<div class="flex items-center gap-2 shrink-0">
+<span class="text-[11px] font-normal text-slate-400 bg-slate-100/80 border border-slate-200 px-2 py-0.5 rounded-md max-w-[125px] truncate" id="qs-ranking-badge">All Ranks</span>
+<svg class="chevron-icon w-3.5 h-3.5 text-slate-400 transform transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</button>
+<div class="bg-slate-50/70 p-3 border-t border-slate-100 hidden" id="content-qs-ranking">
+<div class="bg-white rounded-xl border border-slate-200 p-2 shadow-xs space-y-1">
+<label class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer">
+<div class="flex items-center gap-2.5">
+<input class="qs-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400" type="checkbox" value="Top 100">
+<span class="text-xs text-slate-700">Top 100 QS Rank</span>
+
+</div>
+<span class="text-[11px] text-slate-400">(8)</span>
+</label>
+<label class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer">
+<div class="flex items-center gap-2.5">
+<input class="qs-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400" type="checkbox" value="Top 300">
+<span class="text-xs text-slate-700">Top 300 QS Rank</span>
+</div>
+<span class="text-[11px] text-slate-400">(33)</span>
+</label>
+<label class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer">
+<div class="flex items-center gap-2.5">
+<input class="qs-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400" type="checkbox" value="Top 500">
+<span class="text-xs text-slate-700">Top 500 QS Rank</span>
+</div>
+<span class="text-[11px] text-slate-400">(55)</span>
+</label>
+<label class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer">
+<div class="flex items-center gap-2.5">
+<input class="qs-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400" type="checkbox" value="Top 1000">
+<span class="text-xs text-slate-700">Top 1000 QS Rank</span>
+</div>
+<span class="text-[11px] text-slate-400">(71)</span>
+</label></div>
+</div>
+</div>
+<!-- 11. TUITION FEE (ANNUAL) ROW -->
+<div class="filter-item-wrapper group bg-white transition-colors" id="wrapper-tuition">
+
+<div class="bg-slate-50/70 p-3 border-t border-slate-100 hidden" id="content-tuition">
+<div class="bg-white rounded-xl border border-slate-200 p-2 shadow-xs space-y-1">
+<label class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer">
+<div class="flex items-center gap-2.5">
+<input class="tuition-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400" type="checkbox" value="&lt; $5k">
+<span class="text-xs text-slate-700">Under $5,000 / yr</span>
+</div>
+<span class="text-[11px] text-slate-400">(6)</span>
+</label>
+<label class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer">
+<div class="flex items-center gap-2.5">
+<input class="tuition-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400" type="checkbox" value="$5k - $10k">
+<span class="text-xs text-slate-700">$5,000 – $10,000 / yr</span>
+</div>
+<span class="text-[11px] text-slate-400">(178)</span>
+</label>
+<label class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer">
+<div class="flex items-center gap-2.5">
+<input class="tuition-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400" type="checkbox" value="$10k - $20k">
+<span class="text-xs text-slate-700">$10,000 – $20,000 / yr</span>
+</div>
+<span class="text-[11px] text-slate-400">(27)</span>
+</label>
+<label class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer">
+<div class="flex items-center gap-2.5">
+<input class="tuition-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400" type="checkbox" value="&gt; $20k">
+<span class="text-xs text-slate-700">Above $20,000 / yr</span>
+</div>
+<span class="text-[11px] text-slate-400">(22)</span>
+</label>
+</div>
+</div>
+</div>
+<!-- 12. SCHOLARSHIP & BENEFITS ROW -->
+<div class="filter-item-wrapper group bg-white transition-colors" id="wrapper-scholarship">
+<button aria-expanded="false" class="filter-row-header w-full h-11 px-4 flex items-center justify-between hover:bg-slate-50/90 transition-colors focus:outline-none select-none text-left" data-target="content-scholarship" type="button">
+<div class="flex items-center gap-2.5 min-w-0 pr-2">
+<svg class="w-4 h-4 text-slate-500 shrink-0 group-hover:text-amber-500 transition-colors" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
+<circle cx="12" cy="8" r="6"></circle>
+<path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"></path>
+</svg>
+<span class="text-[13px] font-bold text-slate-800 tracking-tight shrink-0">Scholarships &amp; Grants</span>
+</div>
+<div class="flex items-center gap-2 shrink-0">
+<span class="text-[11px] font-normal text-slate-400 bg-slate-100/80 border border-slate-200 px-2 py-0.5 rounded-md max-w-[125px] truncate" id="scholarship-badge">Any</span>
+<svg class="chevron-icon w-3.5 h-3.5 text-slate-400 transform transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</button>
+<div class="bg-slate-50/70 p-3 border-t border-slate-100 hidden" id="content-scholarship">
+<div class="bg-white rounded-xl border border-slate-200 p-2 shadow-xs space-y-1">
+<label class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer">
+<div class="flex items-center gap-2.5">
+<input class="scholarship-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400" type="checkbox" value="Scholarships">
+<span class="text-xs text-slate-700">Scholarships Available</span>
+</div>
+<span class="text-[11px] text-slate-400">(142)</span>
+</label>
+<label class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer">
+<div class="flex items-center gap-2.5">
+<input class="scholarship-cb w-3.5 h-3.5 text-amber-500 rounded border-slate-300 focus:ring-amber-400" type="checkbox" value="Waiver">
+<span class="text-xs text-slate-700">Application Fee Waiver</span>
+</div>
+<span class="text-[11px] text-slate-400">(58)</span>
+</label>
+</div>
+</div>
+</div>
+</div>
+<!-- END: Filter Rows Master Container -->
+<!-- BEGIN: Sticky Footer Action Bar -->
+<footer class="p-3 bg-white border-t border-slate-200/90 flex items-center gap-2 shrink-0 select-none shadow-sm" data-purpose="bottom-action-bar">
+<button class="flex-1 bg-[#121927] hover:bg-slate-800 active:scale-[0.99] text-white font-bold text-xs py-2.5 px-3.5 rounded-xl shadow-xs transition-all duration-150 flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-1" id="apply-filters-btn" type="button">
+<span>Apply Filters</span>
+
+</button>
+<button class="text-xs font-semibold text-slate-600 hover:text-slate-900 px-3 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 active:scale-[0.98] transition-all focus:outline-none" id="footer-clear-btn" type="button">
+      Clear
+    </button>
+</footer>
+<!-- END: Sticky Footer Action Bar -->
+</main>
+<!-- END: MainContainer -->
+<!-- BEGIN: InteractiveScripts -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // --- 1. Global Accordion Handler for Compact Rows ---
+  const rowButtons = document.querySelectorAll('.filter-row-header');
+  
+  rowButtons.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const targetId = btn.getAttribute('data-target');
+      const content = document.getElementById(targetId);
+      const chevron = btn.querySelector('.chevron-icon');
+      const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+
+      // Toggle current panel
+      if (isExpanded) {
+        content.classList.add('hidden');
+        chevron.classList.remove('rotate-180');
+        btn.setAttribute('aria-expanded', 'false');
+      } else {
+        content.classList.remove('hidden');
+        chevron.classList.add('rotate-180');
+        btn.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+
+  // --- 2. Destinations Search & Select Logic ---
+  const allDestCb = document.getElementById('all-destinations-cb');
+  const countryCbs = document.querySelectorAll('.country-cb');
+  const countryItems = document.querySelectorAll('.country-item');
+  const countrySearch = document.getElementById('country-search-input');
+  const destBadge = document.getElementById('destinations-badge');
+
+  function updateDestBadge() {
+    const checked = Array.from(countryCbs).filter(c => c.checked);
+    if (allDestCb.checked || checked.length === 0) {
+      destBadge.textContent = 'All';
+      destBadge.className = 'text-[11px] font-semibold text-amber-700 bg-amber-50 border border-amber-200/60 px-2 py-0.5 rounded-md max-w-[125px] truncate';
+    } else if (checked.length === 1) {
+      destBadge.textContent = checked[0].value;
+      destBadge.className = 'text-[11px] font-semibold text-white bg-[#121927] px-2 py-0.5 rounded-md max-w-[125px] truncate';
+    } else {
+      destBadge.textContent = `${checked.length} selected`;
+      destBadge.className = 'text-[11px] font-semibold text-white bg-[#121927] px-2 py-0.5 rounded-md max-w-[125px] truncate';
+    }
+    updateResultTotal();
+  }
+
+  allDestCb.addEventListener('change', () => {
+    if (allDestCb.checked) {
+      countryCbs.forEach(c => c.checked = false);
+    }
+    updateDestBadge();
+  });
+
+  countryCbs.forEach(cb => {
+    cb.addEventListener('change', () => {
+      const anyChecked = Array.from(countryCbs).some(c => c.checked);
+      allDestCb.checked = !anyChecked;
+      updateDestBadge();
+    });
+  });
+
+  if (countrySearch) {
+    countrySearch.addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase().trim();
+      countryItems.forEach(item => {
+        const name = item.querySelector('.country-name').textContent.toLowerCase();
+        if (name.includes(q)) item.classList.remove('hidden');
+        else item.classList.add('hidden');
+      });
+    });
+  }
+
+  // --- 3. Study Level Logic ---
+  const allStudyCb = document.getElementById('all-studylevel-cb');
+  const studyCbs = document.querySelectorAll('.studylevel-cb');
+  const studyBadge = document.getElementById('studylevel-badge');
+
+  function updateStudyBadge() {
+    const checked = Array.from(studyCbs).filter(c => c.checked);
+    if (allStudyCb && allStudyCb.checked) {
+      studyBadge.textContent = 'All Levels';
+      studyBadge.className = 'text-[11px] font-semibold text-amber-700 bg-amber-50 border border-amber-200/60 px-2 py-0.5 rounded-md max-w-[125px] truncate';
+    } else if (checked.length === 0) {
+      studyBadge.textContent = 'All Levels';
+      studyBadge.className = 'text-[11px] font-semibold text-amber-700 bg-amber-50 border border-amber-200/60 px-2 py-0.5 rounded-md max-w-[125px] truncate';
+    } else if (checked.length === 1) {
+      studyBadge.textContent = checked[0].value;
+      studyBadge.className = 'text-[11px] font-semibold text-white bg-[#121927] px-2 py-0.5 rounded-md max-w-[125px] truncate';
+    } else {
+      studyBadge.textContent = `${checked.length} selected`;
+      studyBadge.className = 'text-[11px] font-semibold text-white bg-[#121927] px-2 py-0.5 rounded-md max-w-[125px] truncate';
+    }
+    updateResultTotal();
+  }
+
+  if (allStudyCb) {
+    allStudyCb.addEventListener('change', () => {
+      if (allStudyCb.checked) studyCbs.forEach(c => c.checked = false);
+      updateStudyBadge();
+    });
+  }
+
+  studyCbs.forEach(cb => {
+    cb.addEventListener('change', () => {
+      const anyChecked = Array.from(studyCbs).some(c => c.checked);
+      if (allStudyCb) allStudyCb.checked = !anyChecked;
+      updateStudyBadge();
+    });
+  });
+
+  const selectAllStudyBtn = document.getElementById('select-all-studylevel-btn');
+  const clearAllStudyBtn = document.getElementById('clear-all-studylevel-btn');
+
+  if (selectAllStudyBtn) {
+    selectAllStudyBtn.addEventListener('click', () => {
+      studyCbs.forEach(c => c.checked = true);
+      if (allStudyCb) allStudyCb.checked = false;
+      updateStudyBadge();
+    });
+  }
+  if (clearAllStudyBtn) {
+    clearAllStudyBtn.addEventListener('click', () => {
+      studyCbs.forEach(c => c.checked = false);
+      if (allStudyCb) allStudyCb.checked = true;
+      updateStudyBadge();
+    });
+  }
+
+  // --- 4. Course / Discipline Logic ---
+  const allDiscCb = document.getElementById('all-discipline-cb');
+  const discCbs = document.querySelectorAll('.discipline-cb');
+  const discBadge = document.getElementById('discipline-badge');
+
+  function updateDiscBadge() {
+    const checked = Array.from(discCbs).filter(c => c.checked);
+    if (allDiscCb && allDiscCb.checked) {
+      discBadge.textContent = 'All Fields';
+      discBadge.className = 'text-[11px] font-semibold text-amber-700 bg-amber-50 border border-amber-200/60 px-2 py-0.5 rounded-md max-w-[125px] truncate';
+    } else if (checked.length === 0) {
+      discBadge.textContent = 'All Fields';
+      discBadge.className = 'text-[11px] font-semibold text-amber-700 bg-amber-50 border border-amber-200/60 px-2 py-0.5 rounded-md max-w-[125px] truncate';
+    } else if (checked.length === 1) {
+      discBadge.textContent = checked[0].value;
+      discBadge.className = 'text-[11px] font-semibold text-white bg-[#121927] px-2 py-0.5 rounded-md max-w-[125px] truncate';
+    } else {
+      discBadge.textContent = `${checked.length} selected`;
+      discBadge.className = 'text-[11px] font-semibold text-white bg-[#121927] px-2 py-0.5 rounded-md max-w-[125px] truncate';
+    }
+    updateResultTotal();
+  }
+
+  if (allDiscCb) {
+    allDiscCb.addEventListener('change', () => {
+      if (allDiscCb.checked) discCbs.forEach(c => c.checked = false);
+      updateDiscBadge();
+    });
+  }
+  discCbs.forEach(cb => {
+    cb.addEventListener('change', () => {
+      const any = Array.from(discCbs).some(c => c.checked);
+      if (allDiscCb) allDiscCb.checked = !any;
+      updateDiscBadge();
+    });
+  });
+
+  // --- 5. IELTS Score Logic ---
+  const ieltsCbs = document.querySelectorAll('.ielts-cb');
+  const ieltsBadge = document.getElementById('ielts-badge');
+  function updateIelts() {
+    const checked = Array.from(ieltsCbs).filter(c => c.checked);
+    if (checked.length === 0) {
+      ieltsBadge.textContent = 'Any';
+      ieltsBadge.className = 'text-[11px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md max-w-[125px] truncate';
+    } else if (checked.length === 1) {
+      ieltsBadge.textContent = checked[0].value;
+      ieltsBadge.className = 'text-[11px] font-semibold text-white bg-[#121927] px-2 py-0.5 rounded-md max-w-[125px] truncate';
+    } else {
+      ieltsBadge.textContent = `${checked.length} selected`;
+      ieltsBadge.className = 'text-[11px] font-semibold text-white bg-[#121927] px-2 py-0.5 rounded-md max-w-[125px] truncate';
+    }
+    updateResultTotal();
+  }
+  ieltsCbs.forEach(cb => cb.addEventListener('change', updateIelts));
+
+  // --- 6. Intake Months Logic ---
+  const monthBtns = document.querySelectorAll('.month-btn');
+  const intakeBadge = document.getElementById('intake-badge');
+
+  monthBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const isActive = btn.dataset.active === 'true';
+      btn.dataset.active = !isActive;
+      btn.classList.toggle('bg-[#121927]', !isActive);
+      btn.classList.toggle('text-amber-400', !isActive);
+      btn.classList.toggle('font-bold', !isActive);
+      btn.classList.toggle('bg-slate-100', isActive);
+      btn.classList.toggle('text-slate-700', isActive);
+
+      const activeMonths = Array.from(document.querySelectorAll('.month-btn[data-active="true"]')).map(b => b.dataset.month);
+      if (activeMonths.length === 0) {
+        intakeBadge.textContent = 'Any Month';
+        intakeBadge.className = 'text-[11px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md max-w-[125px] truncate';
+      } else if (activeMonths.length <= 2) {
+        intakeBadge.textContent = activeMonths.join(', ');
+        intakeBadge.className = 'text-[11px] font-semibold text-white bg-[#121927] px-2 py-0.5 rounded-md max-w-[125px] truncate';
+      } else {
+        intakeBadge.textContent = `${activeMonths.length} months`;
+        intakeBadge.className = 'text-[11px] font-semibold text-white bg-[#121927] px-2 py-0.5 rounded-md max-w-[125px] truncate';
+      }
+      updateResultTotal();
+    });
+  });
+
+  // --- 7. Duration Logic ---
+  const durationCbs = document.querySelectorAll('.duration-cb');
+  const durationBadge = document.getElementById('duration-badge');
+  function updateDuration() {
+    const checked = Array.from(durationCbs).filter(c => c.checked);
+    if (checked.length === 0) {
+      durationBadge.textContent = 'Any';
+      durationBadge.className = 'text-[11px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md max-w-[125px] truncate';
+    } else if (checked.length === 1) {
+      durationBadge.textContent = checked[0].value;
+      durationBadge.className = 'text-[11px] font-semibold text-white bg-[#121927] px-2 py-0.5 rounded-md max-w-[125px] truncate';
+    } else {
+      durationBadge.textContent = `${checked.length} selected`;
+      durationBadge.className = 'text-[11px] font-semibold text-white bg-[#121927] px-2 py-0.5 rounded-md max-w-[125px] truncate';
+    }
+    updateResultTotal();
+  }
+  durationCbs.forEach(cb => cb.addEventListener('change', updateDuration));
+
+  // --- 8. Fee Range Slider Logic ---
+  const minSlider = document.getElementById('min-range-slider');
+  const maxSlider = document.getElementById('max-range-slider');
+  const displayMin = document.getElementById('display-min');
+  const displayMax = document.getElementById('display-max');
+  const highlight = document.getElementById('slider-track-highlight');
+  const feeBadge = document.getElementById('fee-summary-badge');
+  const clearPriceBtn = document.getElementById('clear-price-btn');
+  const maxLimit = 214000;
+
+  function updateSlider() {
+    let minVal = parseInt(minSlider.value);
+    let maxVal = parseInt(maxSlider.value);
+    if (minVal > maxVal - 5000) minSlider.value = maxVal - 5000;
+    
+    const leftPercent = (minVal / maxLimit) * 100;
+    const rightPercent = 100 - ((maxVal / maxLimit) * 100);
+
+    highlight.style.left = leftPercent + '%';
+    highlight.style.right = rightPercent + '%';
+
+    displayMin.textContent = new Intl.NumberFormat().format(minVal);
+    displayMax.textContent = new Intl.NumberFormat().format(maxVal);
+
+    const minK = Math.round(minVal / 1000);
+    const maxK = Math.round(maxVal / 1000);
+    feeBadge.textContent = `RM ${minK}k - ${maxK}k`;
+    updateResultTotal();
+  }
+
+  minSlider.addEventListener('input', updateSlider);
+  maxSlider.addEventListener('input', updateSlider);
+
+  if (clearPriceBtn) {
+    clearPriceBtn.addEventListener('click', () => {
+      minSlider.value = 0;
+      maxSlider.value = maxLimit;
+      updateSlider();
+    });
+  }
+
+  // --- 9. Institution, Study Mode, QS, Tuition, Scholarship Generic Listeners ---
+  function setupCheckboxGroup(cbsSelector, allCbId, badgeId, defaultLabel) {
+    const cbs = document.querySelectorAll(cbsSelector);
+    const allCb = allCbId ? document.getElementById(allCbId) : null;
+    const badge = document.getElementById(badgeId);
+
+    function update() {
+      const checked = Array.from(cbs).filter(c => c.checked);
+      if (allCb && allCb.checked) {
+        badge.textContent = defaultLabel;
+        badge.className = 'text-[11px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md max-w-[125px] truncate';
+      } else if (checked.length === 0) {
+        badge.textContent = defaultLabel;
+        badge.className = 'text-[11px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md max-w-[125px] truncate';
+      } else if (checked.length === 1) {
+        badge.textContent = checked[0].value;
+        badge.className = 'text-[11px] font-semibold text-white bg-[#121927] px-2 py-0.5 rounded-md max-w-[125px] truncate';
+      } else {
+        badge.textContent = `${checked.length} selected`;
+        badge.className = 'text-[11px] font-semibold text-white bg-[#121927] px-2 py-0.5 rounded-md max-w-[125px] truncate';
+      }
+      updateResultTotal();
+    }
+
+    if (allCb) {
+      allCb.addEventListener('change', () => {
+        if (allCb.checked) cbs.forEach(c => c.checked = false);
+        update();
+      });
+    }
+
+    cbs.forEach(cb => {
+      cb.addEventListener('change', () => {
+        if (allCb) {
+          const any = Array.from(cbs).some(c => c.checked);
+          allCb.checked = !any;
+        }
+        update();
+      });
+    });
+  }
+
+  setupCheckboxGroup('.institution-type-cb', 'all-institution-type-cb', 'institution-type-badge', 'All Types');
+  setupCheckboxGroup('.study-mode-cb', null, 'study-mode-badge', 'All Modes');
+  setupCheckboxGroup('.qs-cb', null, 'qs-ranking-badge', 'All Ranks');
+  setupCheckboxGroup('.tuition-cb', null, 'tuition-fee-badge', 'All Fees');
+  setupCheckboxGroup('.scholarship-cb', null, 'scholarship-badge', 'Any');
+
+  // --- 10. Dynamic Result Count Calculator ---
+  const totalCountEl = document.getElementById('filter-total-count');
+  function updateResultTotal() {
+    let checkedCount = document.querySelectorAll('input[type="checkbox"]:checked:not(#all-destinations-cb):not(#all-studylevel-cb):not(#all-discipline-cb):not(#all-institution-type-cb)').length;
+    let activeMonths = document.querySelectorAll('.month-btn[data-active="true"]').length;
+    let totalActive = checkedCount + activeMonths;
+    let count = Math.max(14, 233 - (totalActive * 19));
+    if (totalCountEl) totalCountEl.textContent = `${count} results`;
+  }
+
+  // --- 11. Reset All Handlers ---
+  function resetAll() {
+    document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
+    if (allDestCb) allDestCb.checked = true;
+    if (allStudyCb) allStudyCb.checked = true;
+    if (allDiscCb) allDiscCb.checked = true;
+    const instAll = document.getElementById('all-institution-type-cb');
+    if (instAll) instAll.checked = true;
+
+    monthBtns.forEach(btn => {
+      btn.dataset.active = 'false';
+      btn.className = 'month-btn py-1.5 px-0.5 rounded-md text-[11px] font-medium transition-colors text-center bg-slate-100 text-slate-700 hover:bg-slate-200';
+    });
+
+    if (minSlider && maxSlider) {
+      minSlider.value = 0;
+      maxSlider.value = maxLimit;
+      updateSlider();
+    }
+
+    updateDestBadge();
+    updateStudyBadge();
+    updateDiscBadge();
+    updateIelts();
+    updateDuration();
+
+    // Reset badges for other rows
+    document.getElementById('intake-badge').textContent = 'Any Month';
+    document.getElementById('intake-badge').className = 'text-[11px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md max-w-[125px] truncate';
+
+    document.getElementById('institution-type-badge').textContent = 'All Types';
+    document.getElementById('institution-type-badge').className = 'text-[11px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md max-w-[125px] truncate';
+
+    document.getElementById('study-mode-badge').textContent = 'All Modes';
+    document.getElementById('study-mode-badge').className = 'text-[11px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md max-w-[125px] truncate';
+
+    document.getElementById('qs-ranking-badge').textContent = 'All Ranks';
+    document.getElementById('qs-ranking-badge').className = 'text-[11px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md max-w-[125px] truncate';
+
+    document.getElementById('tuition-fee-badge').textContent = 'All Fees';
+    document.getElementById('tuition-fee-badge').className = 'text-[11px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md max-w-[125px] truncate';
+
+    document.getElementById('scholarship-badge').textContent = 'Any';
+    document.getElementById('scholarship-badge').className = 'text-[11px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md max-w-[125px] truncate';
+
+    if (totalCountEl) totalCountEl.textContent = '233 results';
+  }
+
+  const resetAllBtn = document.getElementById('reset-all-btn');
+  const footerClearBtn = document.getElementById('footer-clear-btn');
+  const applyBtn = document.getElementById('apply-filters-btn');
+
+  if (resetAllBtn) resetAllBtn.addEventListener('click', resetAll);
+  if (footerClearBtn) footerClearBtn.addEventListener('click', resetAll);
+
+  if (applyBtn) {
+    applyBtn.addEventListener('click', () => {
+      const orig = applyBtn.querySelector('span:first-child').textContent;
+      applyBtn.querySelector('span:first-child').textContent = 'Filters Applied!';
+      applyBtn.classList.add('ring-2', 'ring-amber-400');
+      setTimeout(() => {
+        applyBtn.querySelector('span:first-child').textContent = orig;
+        applyBtn.classList.remove('ring-2', 'ring-amber-400');
+      }, 1200);
+    });
+  }
+});
+</script>
+<!-- END: InteractiveScripts -->
+
+
+
+
+
+
+
+
+
+
+</body></html>

@@ -56,7 +56,7 @@ export const PartnersMarqueeSection: React.FC<PartnersMarqueeSectionProps> = ({ 
 
   return (
     <section 
-      className="home-partners-section w-full bg-white dark:bg-[#0B1329] py-8 min-[390px]:py-10 sm:py-20 lg:py-28 overflow-hidden relative transition-colors" 
+      className="home-partners-section w-full max-w-[1600px] mx-auto bg-white dark:bg-[#0B1329] py-10 sm:py-20 lg:py-28 overflow-hidden relative transition-colors" 
       data-purpose="partners-showcase"
       id="partners-section"
     >
@@ -65,25 +65,25 @@ export const PartnersMarqueeSection: React.FC<PartnersMarqueeSectionProps> = ({ 
       <div className="pointer-events-none absolute top-1/2 right-12 w-80 h-80 bg-indigo-400/20 dark:bg-indigo-600/10 rounded-full blur-3xl -z-10" />
       <div className="pointer-events-none absolute -bottom-20 left-10 w-72 h-72 bg-blue-400/10 dark:bg-blue-500/10 rounded-full blur-2xl -z-10" />
 
-      <div className="w-full max-w-full sm:max-w-[95%] mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-6 sm:mb-12 lg:mb-16 px-2" data-purpose="section-header">
+        <div className="text-center max-w-3xl mx-auto mb-6 sm:mb-12 lg:mb-16 px-0 sm:px-2" data-purpose="section-header">
           {/* Main Heading with Golden Pill Badge */}
-          <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold font-display tracking-tight text-slate-900 dark:text-white flex items-center justify-center gap-2 sm:gap-3 md:gap-3.5 flex-wrap leading-tight text-center">
+          <h2 className="text-[30px] sm:text-4xl md:text-5xl lg:text-6xl font-bold sm:font-extrabold font-display tracking-tight text-slate-900 dark:text-white flex items-center justify-center gap-2 sm:gap-3 md:gap-3.5 flex-wrap leading-[30px] sm:leading-tight text-center">
             <span>Our</span>
             <span className="bg-[#fbb034] text-slate-950 px-3.5 sm:px-5 md:px-6 py-0.5 sm:py-1 md:py-1.5 rounded-xl sm:rounded-2xl font-black tracking-tight leading-none shadow-sm shrink-0">
               Partners
             </span>
           </h2>
           {/* Supporting Subtext */}
-          <p className="mt-2 sm:mt-3 text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-400 font-normal leading-relaxed max-w-2xl mx-auto px-2 text-center">
+          <p className="mt-2 sm:mt-3 text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-400 font-normal leading-relaxed max-w-2xl mx-auto px-0 sm:px-2 text-center">
             Connecting you to 200+ top partner universities across the globe.
           </p>
         </div>
       </div>
 
       {/* Marquee Showcase Container */}
-      <div className="relative w-full max-w-[100vw] overflow-hidden py-2 sm:py-4" data-purpose="marquee-container">
+      <div className="relative w-full max-w-[1600px] mx-auto overflow-hidden py-2 sm:py-4" data-purpose="marquee-container">
         {/* Subtle side gradient fade for organic edge dissolve */}
         <div className="pointer-events-none absolute inset-y-0 left-0 w-8 sm:w-20 md:w-32 bg-gradient-to-r from-white dark:from-[#0B1329] via-white/80 dark:via-[#0B1329]/80 to-transparent z-20" />
         <div className="pointer-events-none absolute inset-y-0 right-0 w-8 sm:w-20 md:w-32 bg-gradient-to-l from-white dark:from-[#0B1329] via-white/80 dark:via-[#0B1329]/80 to-transparent z-20" />
@@ -132,7 +132,7 @@ export const PartnersMarqueeSection: React.FC<PartnersMarqueeSectionProps> = ({ 
       </div>
 
       {/* Call To Action */}
-      <div className="mt-8 sm:mt-16 flex justify-center px-4" data-purpose="cta-container">
+      <div className="mt-6 sm:mt-16 flex justify-center px-4" data-purpose="cta-container">
         <InteractiveHoverButton
           type="button"
           text="View all partners"

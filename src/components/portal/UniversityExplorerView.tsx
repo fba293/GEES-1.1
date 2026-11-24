@@ -9,49 +9,67 @@ import { mockUniversities, mockCourses } from '../../data/mockDatabase.ts';
 import { SkeletonLoader } from '../common/SkeletonLoader.tsx';
 import { AnimatedTabs, AnimatedTabItem } from '../ui/animated-tabs.tsx';
 import { getPartnerCountryTabs, getTotalPartnerCount } from '../../utils/PartnerUniversityManager.ts';
-import { APPROVED_COUNTRY_NAMES } from '../../lib/country-config.ts';
-import { APPROVED_QUALIFICATIONS, matchesUniversityQualification } from '../../lib/qualification-config.ts';
+import { SPECIFIC_QUALIFICATIONS } from '../../lib/qualification-config.ts';
 import { useCurrency } from '../../context/CurrencyContext.tsx';
-import Slider06 from '../ui/slider-06';
+import { useComparison } from '../../context/ComparisonContext.tsx';
 import { UniversityMap } from './UniversityMap.tsx';
+import { ExplorerHeroBanner, ExplorerPageShell, SectionHeader } from './ExplorerTheme.tsx';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '../ui/pagination.tsx';
+import {
+  StitchCourseFilterSidebar,
+  STITCH_MAX_BUDGET,
+  STITCH_IELTS_MIN,
+  STITCH_IELTS_MAX,
+  buildCoursesByUniversityMap,
+  getCoursesForUniversity,
+  matchesUniversityLevel,
+  matchesUniversitySubject,
+  matchesUniversityStudyMode,
+  matchesUniversityDuration,
+  matchesUniversityIeltsTier,
+  matchesUniversityFeeWaiver,
+  getCountryDisplayName,
+} from './StitchCourseFilterSidebar.tsx';
 
 interface UniversityExplorerViewProps {
   initialSlug?: string;
   onApply: (uniName: string) => void;
+  onNavigateHome?: () => void;
 }
 
 export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
   initialSlug,
-  onApply
+  onApply,
+  onNavigateHome
 }) => {
   const { formatUSD, formatPriceString } = useCurrency();
-  const [selectedCountry, setSelectedCountry] = useState<string>('all');
   const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
+  const [selectedCities, setSelectedCities] = useState<string[]>([]);
+  const [selectedInstitutions, setSelectedInstitutions] = useState<string[]>([]);
   const [selectedLevels, setSelectedLevels] = useState<string[]>([]);
+  const [selectedFields, setSelectedFields] = useState<string[]>([]);
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [selectedRankTiers, setSelectedRankTiers] = useState<string[]>([]);
-  const [selectedTuitions, setSelectedTuitions] = useState<string[]>([]);
   const [selectedIelts, setSelectedIelts] = useState<string[]>([]);
+  const [ieltsMin, setIeltsMin] = useState<number>(STITCH_IELTS_MIN);
+  const [ieltsMax, setIeltsMax] = useState<number>(STITCH_IELTS_MAX);
+  const [selectedModes, setSelectedModes] = useState<string[]>([]);
   const [selectedIntakes, setSelectedIntakes] = useState<string[]>([]);
+  const [selectedDurations, setSelectedDurations] = useState<string[]>([]);
   const [scholarshipOnly, setScholarshipOnly] = useState<boolean>(false);
   const [feeWaiverOnly, setFeeWaiverOnly] = useState<boolean>(false);
   const [minFee, setMinFee] = useState<number>(0);
-  const [maxFee, setMaxFee] = useState<number>(214000);
-  const [countrySearch, setCountrySearch] = useState<string>('');
+  const [maxFee, setMaxFee] = useState<number>(STITCH_MAX_BUDGET);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState<boolean>(false);
-  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
-    destinations: true,
-    studyLevel: true,
-    ielts: true,
-    intake: true,
-    institutionType: true,
-    duration: true,
-    feeRange: true,
-  });
-
-  const toggleSection = (section: string) => {
-    setOpenSections(prev => ({ ...prev, [section]: !prev[section] }));
-  };
+  const [showAllActiveChips, setShowAllActiveChips] = useState<boolean>(false);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedUniSlug, setSelectedUniSlug] = useState<string | null>(initialSlug || null);
@@ -59,31 +77,22 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
   const [selectedArticleModal, setSelectedArticleModal] = useState<any | null>(null);
   const [isLoading] = useState<boolean>(false);
 
-  // View Modes & Wishlist State
+  // View Modes, Global Comparison & Shortlist State
   const [displayMode, setDisplayMode] = useState<'grid' | 'list' | 'map' | 'wishlist'>('grid');
   const [bouncingUniId, setBouncingUniId] = useState<string | null>(null);
-  const [savedUniIds, setSavedUniIds] = useState<string[]>(() => {
-    try {
-      const saved = localStorage.getItem('gees_saved_universities');
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
+  const {
+    savedUniIds,
+    isUniversitySaved: isUniSaved,
+    toggleSaveUniversity,
+    isUniversityCompared,
+    toggleCompareUniversity,
+  } = useComparison();
 
   const toggleSaveUni = (uniId: string) => {
     setBouncingUniId(uniId);
     setTimeout(() => setBouncingUniId(null), 600);
-    setSavedUniIds((prev) => {
-      const next = prev.includes(uniId) ? prev.filter((id) => id !== uniId) : [...prev, uniId];
-      try {
-        localStorage.setItem('gees_saved_universities', JSON.stringify(next));
-      } catch {}
-      return next;
-    });
+    toggleSaveUniversity(uniId);
   };
-
-  const isUniSaved = (uniId: string) => savedUniIds.includes(uniId);
 
   // Sorting state
   const [sortBy, setSortBy] = useState<'az' | 'fee-asc' | 'fee-desc' | 'qs' | 'recommended' | 'acceptance-high-low' | 'established'>('qs');
@@ -95,148 +104,40 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
     return getPartnerCountryTabs();
   }, []);
 
-  // Filter Facet Counts calculation from mockUniversities
-  const facetCounts = useMemo(() => {
-    const countryMap: Record<string, number> = {};
-    let undergradCount = 0;
-    let postgradCount = 0;
-    let doctorateCount = 0;
-    let diplomaCount = 0;
-
-    let publicCount = 0;
-    let privateCount = 0;
-    let researchCount = 0;
-
-    let qsTop100 = 0;
-    let qsTop300 = 0;
-    let qsTop500 = 0;
-    let qsTop1000 = 0;
-
-    let under5k = 0;
-    let fee5k10k = 0;
-    let fee10k20k = 0;
-    let above20k = 0;
-
-    let ielts55 = 0;
-    let ielts60 = 0;
-    let ielts65 = 0;
-    let ielts70 = 0;
-    let ieltsWaiver = 0;
-
-    let scholarshipCount = 0;
-
-    const qualificationCounts: Record<string, number> = {};
-    APPROVED_QUALIFICATIONS.forEach((q) => {
-      qualificationCounts[q] = 0;
-    });
-
-    mockUniversities.forEach((u) => {
-      // Country count
-      countryMap[u.country] = (countryMap[u.country] || 0) + 1;
-
-      // Qualification counts for all 18 approved options
-      APPROVED_QUALIFICATIONS.forEach((q) => {
-        if (matchesUniversityQualification(u, q)) {
-          qualificationCounts[q] = (qualificationCounts[q] || 0) + 1;
-        }
-      });
-
-      // Legacy Degree Level counts based on popular programs or defaults
-      const programsText = u.popularPrograms.join(' ').toLowerCase();
-      if (programsText.includes('bachelor') || programsText.includes('btech') || programsText.includes('bsc') || programsText.includes('ba ') || u.type?.toLowerCase().includes('university')) {
-        undergradCount++;
-      }
-      if (programsText.includes('master') || programsText.includes('mba') || programsText.includes('msc') || programsText.includes('postgraduate') || u.type?.toLowerCase().includes('university')) {
-        postgradCount++;
-      }
-      if (programsText.includes('phd') || programsText.includes('doctor') || programsText.includes('research') || u.type?.toLowerCase().includes('research')) {
-        doctorateCount++;
-      }
-      if (programsText.includes('diploma') || programsText.includes('foundation') || u.type?.toLowerCase().includes('college')) {
-        diplomaCount++;
-      }
-
-      // Type counts
-      const t = (u.type || '').toLowerCase();
-      if (t.includes('public')) publicCount++;
-      if (t.includes('private')) privateCount++;
-      if (t.includes('research') || t.includes('uas') || t.includes('technology')) researchCount++;
-
-      // QS Tiers
-      const rank = Number(u.qsRank2027);
-      if (rank > 0) {
-        if (rank <= 100) qsTop100++;
-        if (rank <= 300) qsTop300++;
-        if (rank <= 500) qsTop500++;
-        if (rank <= 1000) qsTop1000++;
-      }
-
-      // Tuition ranges
-      const fee = u.avgTuitionAnnualUSD;
-      if (fee < 5000) under5k++;
-      else if (fee <= 10000) fee5k10k++;
-      else if (fee <= 20000) fee10k20k++;
-      else above20k++;
-
-      // IELTS Requirements
-      const iScore = u.minIeltsScore || 6.0;
-      if (iScore <= 5.5) ielts55++;
-      if (iScore <= 6.0) ielts60++;
-      if (iScore <= 6.5) ielts65++;
-      if (iScore >= 7.0 || (rank > 0 && rank <= 150)) ielts70++;
-      if (u.country === 'Malaysia' || u.country === 'Cyprus' || u.country === 'India' || t.includes('college') || iScore <= 5.5) {
-        ieltsWaiver++;
-      }
-
-      // Scholarships
-      if (u.scholarshipsAvailable) scholarshipCount++;
-    });
-
-    return {
-      countryMap,
-      qualificationCounts,
-      undergradCount,
-      postgradCount,
-      doctorateCount,
-      diplomaCount,
-      publicCount,
-      privateCount,
-      researchCount,
-      qsTop100,
-      qsTop300,
-      qsTop500,
-      qsTop1000,
-      under5k,
-      fee5k10k,
-      fee10k20k,
-      above20k,
-      ielts55,
-      ielts60,
-      ielts65,
-      ielts70,
-      ieltsWaiver,
-      scholarshipCount,
-    };
-  }, []);
+  // Pre-index GEES courses by university for O(1) subject/level/mode/duration filtering
+  const coursesByUniMap = useMemo(() => buildCoursesByUniversityMap(mockCourses), []);
 
   // Toggle helpers
   const toggleCountry = (country: string) => {
     if (country === 'all') {
       setSelectedCountries([]);
-      setSelectedCountry('all');
     } else {
       setSelectedCountries((prev) => {
         if (prev.includes(country)) {
-          const next = prev.filter((c) => c !== country);
-          if (next.length === 1) setSelectedCountry(next[0]);
-          else if (next.length === 0) setSelectedCountry('all');
-          return next;
-        } else {
-          setSelectedCountry(country);
-          return [...prev, country];
+          return prev.filter((c) => c !== country);
         }
+        if (prev.length >= 5) return prev;
+        return [...prev, country];
       });
     }
+    setCurrentPage(1);
+  };
+
+  const toggleCity = (city: string) => {
+    setSelectedCities((prev) => {
+      if (prev.includes(city)) return prev.filter((c) => c !== city);
+      if (prev.length >= 5) return prev;
+      return [...prev, city];
+    });
+    setCurrentPage(1);
+  };
+
+  const toggleInstitution = (institution: string) => {
+    setSelectedInstitutions((prev) => {
+      if (prev.includes(institution)) return prev.filter((i) => i !== institution);
+      if (prev.length >= 5) return prev;
+      return [...prev, institution];
+    });
     setCurrentPage(1);
   };
 
@@ -250,6 +151,13 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
       const clean = prev.filter((x) => x !== 'All Levels');
       return clean.includes(lvl) ? clean.filter((x) => x !== lvl) : [...clean, lvl];
     });
+    setCurrentPage(1);
+  };
+
+  const toggleField = (field: string) => {
+    setSelectedFields((prev) =>
+      prev.includes(field) ? prev.filter((f) => f !== field) : [...prev, field]
+    );
     setCurrentPage(1);
   };
 
@@ -267,16 +175,16 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
     setCurrentPage(1);
   };
 
-  const toggleTuition = (range: string) => {
-    setSelectedTuitions((prev) =>
-      prev.includes(range) ? prev.filter((x) => x !== range) : [...prev, range]
+  const toggleIelts = (tier: string) => {
+    setSelectedIelts((prev) =>
+      prev.includes(tier) ? prev.filter((x) => x !== tier) : [...prev, tier]
     );
     setCurrentPage(1);
   };
 
-  const toggleIelts = (tier: string) => {
-    setSelectedIelts((prev) =>
-      prev.includes(tier) ? prev.filter((x) => x !== tier) : [...prev, tier]
+  const toggleMode = (mode: string) => {
+    setSelectedModes((prev) =>
+      prev.includes(mode) ? prev.filter((m) => m !== mode) : [...prev, mode]
     );
     setCurrentPage(1);
   };
@@ -288,18 +196,33 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
     setCurrentPage(1);
   };
 
+  const toggleDuration = (dur: string) => {
+    setSelectedDurations((prev) =>
+      prev.includes(dur) ? prev.filter((d) => d !== dur) : [...prev, dur]
+    );
+    setCurrentPage(1);
+  };
+
   const resetAllFilters = () => {
     setSearchQuery('');
     setSelectedCountries([]);
-    setSelectedCountry('all');
+    setSelectedCities([]);
+    setSelectedInstitutions([]);
     setSelectedLevels([]);
+    setSelectedFields([]);
     setSelectedTypes([]);
     setSelectedRankTiers([]);
-    setSelectedTuitions([]);
     setSelectedIelts([]);
+    setIeltsMin(STITCH_IELTS_MIN);
+    setIeltsMax(STITCH_IELTS_MAX);
+    setSelectedModes([]);
     setSelectedIntakes([]);
+    setSelectedDurations([]);
     setScholarshipOnly(false);
     setFeeWaiverOnly(false);
+    setMinFee(0);
+    setMaxFee(STITCH_MAX_BUDGET);
+    setShowAllActiveChips(false);
     setSortBy('qs');
     setCurrentPage(1);
   };
@@ -307,28 +230,220 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
   const activeFiltersCount = useMemo(() => {
     let count = 0;
     if (selectedCountries.length > 0) count += selectedCountries.length;
+    if (selectedCities.length > 0) count += selectedCities.length;
+    if (selectedInstitutions.length > 0) count += selectedInstitutions.length;
     if (selectedLevels.length > 0) count += selectedLevels.length;
+    if (selectedFields.length > 0) count += selectedFields.length;
     if (selectedTypes.length > 0) count += selectedTypes.length;
     if (selectedRankTiers.length > 0) count += selectedRankTiers.length;
-    if (selectedTuitions.length > 0) count += selectedTuitions.length;
     if (selectedIelts.length > 0) count += selectedIelts.length;
+    if (ieltsMin > STITCH_IELTS_MIN || ieltsMax < STITCH_IELTS_MAX) count += 1;
+    if (selectedModes.length > 0) count += selectedModes.length;
     if (selectedIntakes.length > 0) count += selectedIntakes.length;
+    if (selectedDurations.length > 0) count += selectedDurations.length;
     if (scholarshipOnly) count += 1;
+    if (feeWaiverOnly) count += 1;
+    if (minFee > 0 || maxFee < STITCH_MAX_BUDGET) count += 1;
     if (searchQuery.trim()) count += 1;
     return count;
   }, [
     selectedCountries,
+    selectedCities,
+    selectedInstitutions,
     selectedLevels,
+    selectedFields,
     selectedTypes,
     selectedRankTiers,
-    selectedTuitions,
     selectedIelts,
+    ieltsMin,
+    ieltsMax,
+    selectedModes,
+    selectedIntakes,
+    selectedDurations,
     scholarshipOnly,
+    feeWaiverOnly,
+    minFee,
+    maxFee,
     searchQuery,
+  ]);
+
+  const activeFilterChips = useMemo(() => {
+    const chips: Array<{ id: string; category: string; value: string; onRemove: () => void }> = [];
+
+    if (searchQuery.trim()) {
+      chips.push({
+        id: 'search',
+        category: 'Search',
+        value: searchQuery.trim(),
+        onRemove: () => {
+          setSearchQuery('');
+          setCurrentPage(1);
+        },
+      });
+    }
+    selectedCountries.forEach((c) => {
+      chips.push({
+        id: `country-${c}`,
+        category: 'Country',
+        value: getCountryDisplayName(c),
+        onRemove: () => toggleCountry(c),
+      });
+    });
+    selectedCities.forEach((city) => {
+      chips.push({
+        id: `city-${city}`,
+        category: 'City',
+        value: city,
+        onRemove: () => toggleCity(city),
+      });
+    });
+    selectedInstitutions.forEach((inst) => {
+      chips.push({
+        id: `inst-${inst}`,
+        category: 'Institution',
+        value: inst,
+        onRemove: () => toggleInstitution(inst),
+      });
+    });
+    selectedLevels
+      .filter((l) => l !== 'All Levels')
+      .forEach((lvl) => {
+        chips.push({
+          id: `level-${lvl}`,
+          category: 'Level',
+          value: lvl,
+          onRemove: () => toggleLevel(lvl),
+        });
+      });
+    selectedFields.forEach((field) => {
+      chips.push({
+        id: `field-${field}`,
+        category: 'Subject',
+        value: field,
+        onRemove: () => toggleField(field),
+      });
+    });
+    selectedIelts.forEach((val) => {
+      chips.push({
+        id: `ielts-${val}`,
+        category: 'IELTS',
+        value: val === 'waiver' ? 'Waiver' : val,
+        onRemove: () => toggleIelts(val),
+      });
+    });
+    if (ieltsMin > STITCH_IELTS_MIN || ieltsMax < STITCH_IELTS_MAX) {
+      chips.push({
+        id: 'ielts-range',
+        category: 'IELTS',
+        value: `${ieltsMin.toFixed(1)}–${ieltsMax.toFixed(1)}`,
+        onRemove: () => {
+          setIeltsMin(STITCH_IELTS_MIN);
+          setIeltsMax(STITCH_IELTS_MAX);
+          setCurrentPage(1);
+        },
+      });
+    }
+    selectedModes.forEach((mode) => {
+      chips.push({
+        id: `mode-${mode}`,
+        category: 'Mode',
+        value: mode,
+        onRemove: () => toggleMode(mode),
+      });
+    });
+    selectedIntakes.forEach((month) => {
+      chips.push({
+        id: `intake-${month}`,
+        category: 'Intake',
+        value: month,
+        onRemove: () => toggleIntake(month),
+      });
+    });
+    selectedDurations.forEach((dur) => {
+      chips.push({
+        id: `dur-${dur}`,
+        category: 'Duration',
+        value: dur,
+        onRemove: () => toggleDuration(dur),
+      });
+    });
+    if (minFee > 0 || maxFee < STITCH_MAX_BUDGET) {
+      chips.push({
+        id: 'budget',
+        category: 'Budget',
+        value: `$${Math.round(minFee / 1000)}k–$${Math.round(maxFee / 1000)}k`,
+        onRemove: () => {
+          setMinFee(0);
+          setMaxFee(STITCH_MAX_BUDGET);
+          setCurrentPage(1);
+        },
+      });
+    }
+    selectedTypes.forEach((t) => {
+      chips.push({
+        id: `type-${t}`,
+        category: 'Type',
+        value: t.charAt(0).toUpperCase() + t.slice(1),
+        onRemove: () => toggleType(t),
+      });
+    });
+    selectedRankTiers.forEach((tier) => {
+      chips.push({
+        id: `rank-${tier}`,
+        category: 'Rank',
+        value: `${tier.replace('top', 'Top ')} QS`,
+        onRemove: () => toggleRankTier(tier),
+      });
+    });
+    if (scholarshipOnly) {
+      chips.push({
+        id: 'scholarship',
+        category: 'Grant',
+        value: 'Scholarships',
+        onRemove: () => {
+          setScholarshipOnly(false);
+          setCurrentPage(1);
+        },
+      });
+    }
+    if (feeWaiverOnly) {
+      chips.push({
+        id: 'fee-waiver',
+        category: 'Fee',
+        value: 'Waiver',
+        onRemove: () => {
+          setFeeWaiverOnly(false);
+          setCurrentPage(1);
+        },
+      });
+    }
+
+    return chips;
+  }, [
+    searchQuery,
+    selectedCountries,
+    selectedCities,
+    selectedInstitutions,
+    selectedLevels,
+    selectedFields,
+    selectedIelts,
+    ieltsMin,
+    ieltsMax,
+    selectedModes,
+    selectedIntakes,
+    selectedDurations,
+    minFee,
+    maxFee,
+    selectedTypes,
+    selectedRankTiers,
+    scholarshipOnly,
+    feeWaiverOnly,
   ]);
 
   const filteredUnis = useMemo(() => {
     const list = mockUniversities.filter((u) => {
+      const uniCourses = getCoursesForUniversity(u, coursesByUniMap);
+
       // 1. Search Query
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
@@ -339,7 +454,7 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
         if (!matchesName && !matchesCity && !matchesCountry && !matchesProg) return false;
       }
 
-      // 2. Countries (multi-select)
+      // 2. Study Destination (Countries, multi-select)
       if (selectedCountries.length > 0) {
         const matchesCountry = selectedCountries.some(
           (c) => c.toLowerCase() === u.country.toLowerCase()
@@ -347,28 +462,95 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
         if (!matchesCountry) return false;
       }
 
-      // 3. Degree Level / Qualification
+      // 3. City (multi-select)
+      if (selectedCities.length > 0) {
+        const matchesCity = selectedCities.some(
+          (city) => city.toLowerCase() === (u.city || '').trim().toLowerCase()
+        );
+        if (!matchesCity) return false;
+      }
+
+      // 4. Institution (multi-select)
+      if (selectedInstitutions.length > 0) {
+        const matchesInstitution = selectedInstitutions.some(
+          (inst) => inst.toLowerCase() === (u.name || '').trim().toLowerCase()
+        );
+        if (!matchesInstitution) return false;
+      }
+
+      // 5. Study Level / Qualification
       const activeSpecificLevels = selectedLevels.filter((l) => l !== 'All Levels');
       if (activeSpecificLevels.length > 0) {
         const hasLevel = activeSpecificLevels.some((lvl) =>
-          matchesUniversityQualification(u, lvl)
+          matchesUniversityLevel(u, uniCourses, lvl)
         );
         if (!hasLevel) return false;
       }
 
-      // 4. Institution Type
+      // 6. Course Subject (IDP subject taxonomy)
+      if (selectedFields.length > 0) {
+        const matchesSubject = selectedFields.some((field) =>
+          matchesUniversitySubject(u, uniCourses, field)
+        );
+        if (!matchesSubject) return false;
+      }
+
+      // 7. IELTS Score (Checkboxes + Dual Range Slider)
+      if (selectedIelts.length > 0) {
+        const matchesIelts = selectedIelts.some((val) => matchesUniversityIeltsTier(u, val));
+        if (!matchesIelts) return false;
+      }
+      if (ieltsMin > STITCH_IELTS_MIN || ieltsMax < STITCH_IELTS_MAX) {
+        const score = u.minIeltsScore || 6.0;
+        if (score < ieltsMin || score > ieltsMax) return false;
+      }
+
+      // 8. Study Mode
+      if (selectedModes.length > 0) {
+        const matchesMode = selectedModes.some((m) =>
+          matchesUniversityStudyMode(u, uniCourses, m)
+        );
+        if (!matchesMode) return false;
+      }
+
+      // 9. Intake (case-insensitive prefix/substring match so "Sep" matches "September" or "Sep")
+      if (selectedIntakes.length > 0) {
+        const matchesIntake = selectedIntakes.some((month) =>
+          (u.intakes || []).some((i) => i.toLowerCase().includes(month.toLowerCase()))
+        );
+        if (!matchesIntake) return false;
+      }
+
+      // 10. Duration
+      if (selectedDurations.length > 0) {
+        const matchesDur = selectedDurations.some((dur) =>
+          matchesUniversityDuration(u, uniCourses, dur)
+        );
+        if (!matchesDur) return false;
+      }
+
+      // 11. Annual Tuition Budget Range
+      if (minFee > 0 && u.avgTuitionAnnualUSD < minFee) {
+        return false;
+      }
+      if (maxFee < STITCH_MAX_BUDGET && u.avgTuitionAnnualUSD > maxFee) {
+        return false;
+      }
+
+      // 12. Institution Type
       if (selectedTypes.length > 0) {
         const t = (u.type || '').toLowerCase();
         const matchesType = selectedTypes.some((selectedT) => {
           if (selectedT === 'public') return t.includes('public');
           if (selectedT === 'private') return t.includes('private');
-          if (selectedT === 'research') return t.includes('research') || t.includes('uas') || t.includes('technology');
+          if (selectedT === 'research')
+            return t.includes('research') || t.includes('uas') || t.includes('technology');
           return false;
         });
         if (!matchesType) return false;
       }
 
-      // 5. QS Ranking Tiers
+      // 13. QS Ranking Tiers
       if (selectedRankTiers.length > 0) {
         const rank = Number(u.qsRank2027);
         const matchesRank = selectedRankTiers.some((tier) => {
@@ -381,48 +563,11 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
         if (!matchesRank) return false;
       }
 
-      // 6. Tuition Fee
-      if (selectedTuitions.length > 0) {
-        const fee = u.avgTuitionAnnualUSD;
-        const matchesTuition = selectedTuitions.some((rng) => {
-          if (rng === 'under5k') return fee < 5000;
-          if (rng === '5k-10k') return fee >= 5000 && fee <= 10000;
-          if (rng === '10k-20k') return fee > 10000 && fee <= 20000;
-          if (rng === 'above20k') return fee > 20000;
-          return false;
-        });
-        if (!matchesTuition) return false;
-      }
-
-      // 7. IELTS Score
-      if (selectedIelts.length > 0) {
-        const score = u.minIeltsScore || 6.0;
-        const rank = Number(u.qsRank2027);
-        const t = (u.type || '').toLowerCase();
-        const matchesIelts = selectedIelts.some((val) => {
-          if (val === '5.5') return score <= 5.5;
-          if (val === '6.0') return score <= 6.0;
-          if (val === '6.5') return score <= 6.5;
-          if (val === '7.0') return score >= 7.0 || (rank > 0 && rank <= 150);
-          if (val === 'waiver') return u.country === 'Malaysia' || u.country === 'Cyprus' || u.country === 'India' || t.includes('college') || score <= 5.5;
-          return false;
-        });
-        if (!matchesIelts) return false;
-      }
-
-      // 8. Scholarship
+      // 14. Scholarships & Application Fee Waiver
       if (scholarshipOnly && !u.scholarshipsAvailable) {
         return false;
       }
-      // 9. Intake
-      if (selectedIntakes.length > 0) {
-        const matchesIntake = selectedIntakes.some((month) =>
-          u.intakes.map((i) => i.toLowerCase()).includes(month.toLowerCase())
-        );
-        if (!matchesIntake) return false;
-      }
-      // 10. Fee Range
-      if (u.avgTuitionAnnualUSD < minFee || u.avgTuitionAnnualUSD > maxFee) {
+      if (feeWaiverOnly && !matchesUniversityFeeWaiver(u)) {
         return false;
       }
 
@@ -454,14 +599,25 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
       return 0;
     });
   }, [
+    coursesByUniMap,
     searchQuery,
     selectedCountries,
+    selectedCities,
+    selectedInstitutions,
     selectedLevels,
+    selectedFields,
+    selectedIelts,
+    ieltsMin,
+    ieltsMax,
+    selectedModes,
+    selectedIntakes,
+    selectedDurations,
+    minFee,
+    maxFee,
     selectedTypes,
     selectedRankTiers,
-    selectedTuitions,
-    selectedIntakes,
     scholarshipOnly,
+    feeWaiverOnly,
     sortBy,
   ]);
 
@@ -507,29 +663,57 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
     : [];
 
   return (
-    <div className="w-full max-w-[1600px] mx-auto px-2 xs:px-3 sm:px-6 lg:px-8 py-2 sm:py-10">
-      {/* Header Banner - Compact & Precision-Optimised for Small Mobile Screens */}
-      <div className="bg-[#0a1120] rounded-xl sm:rounded-3xl p-3.5 xs:p-4 sm:p-12 mb-3 sm:mb-8 shadow-lg sm:shadow-2xl relative overflow-hidden">
-        {selectedUniSlug && (
-          <button
-            onClick={() => setSelectedUniSlug(null)}
-            className="absolute top-2.5 right-2.5 sm:top-8 sm:right-8 inline-flex items-center gap-1 px-2 py-0.5 sm:px-4 sm:py-2.5 rounded-full bg-slate-800/90 text-slate-300 text-[9px] sm:text-xs font-bold hover:bg-slate-700 transition-colors cursor-pointer shadow-xs z-10"
-          >
-            <span className="material-symbols-outlined text-[13px] sm:text-[16px]">arrow_back</span>
-            <span>Back</span>
-          </button>
-        )}
-        <div className="inline-flex items-center gap-1.5 px-2 py-0.5 sm:px-3 sm:py-1 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-500 text-[8.5px] xs:text-[9px] sm:text-[10px] font-bold uppercase tracking-wider sm:tracking-widest mb-1.5 sm:mb-6">
-          <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-          WORLD-CLASS EDUCATION
-        </div>
-        <h1 className="text-lg xs:text-xl sm:text-6xl font-black text-white tracking-tight sm:tracking-tighter leading-snug sm:leading-tight mb-1.5 sm:mb-6">
-          Top <span className="bg-[#fbb034] text-slate-950 px-1.5 py-0.5 sm:px-3 sm:py-1 rounded-md sm:rounded-lg">Universities</span> Worldwide
-        </h1>
-        <p className="text-[10px] xs:text-[11px] sm:text-lg text-slate-300 font-medium max-w-full sm:max-w-xl leading-tight sm:leading-relaxed whitespace-nowrap truncate">
-          Browse {mockUniversities.length}+ partner universities across 15 global destinations
-        </p>
-      </div>
+    <ExplorerPageShell>
+      {/* Shared Explorer Hero Banner & Full-Width Search Theme */}
+      <ExplorerHeroBanner
+        dataPurpose="universities-hero-banner"
+        onNavigateHome={onNavigateHome}
+        topRightAction={
+          selectedUniSlug ? (
+            <button
+              onClick={() => setSelectedUniSlug(null)}
+              className="absolute top-2.5 right-2.5 sm:top-8 sm:right-8 inline-flex items-center gap-1 px-2 py-0.5 sm:px-4 sm:py-2.5 rounded-full bg-slate-800/90 text-slate-300 text-[9px] sm:text-xs font-bold hover:bg-slate-700 transition-colors cursor-pointer shadow-xs z-10"
+            >
+              <span className="material-symbols-outlined text-[13px] sm:text-[16px]">arrow_back</span>
+              <span>Back</span>
+            </button>
+          ) : undefined
+        }
+        breadcrumbs={
+          activeUniversity
+            ? [
+                { label: 'Universities', onClick: () => setSelectedUniSlug(null) },
+                { label: activeUniversity.name },
+              ]
+            : displayMode === 'wishlist'
+              ? [
+                  {
+                    label: 'Universities',
+                    onClick: () => {
+                      setDisplayMode('grid');
+                      setCurrentPage(1);
+                    },
+                  },
+                  { label: 'Wishlist' },
+                ]
+              : [{ label: 'Universities' }]
+        }
+        titleHighlight="Universities"
+        subtitle={`Browse ${mockUniversities.length}+ partner universities across 15 global destinations`}
+        search={
+          !activeUniversity
+            ? {
+                value: searchQuery,
+                onChange: (val) => {
+                  setSearchQuery(val);
+                  setCurrentPage(1);
+                },
+                onSubmit: () => setCurrentPage(1),
+                placeholder: 'Search universities, courses or destinations',
+              }
+            : undefined
+        }
+      />
 
       {/* VIEW A: Single University Profile [slug] */}
       {activeUniversity ? (
@@ -954,134 +1138,314 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
       ) : (
         /* VIEW B: Universities Faceted Directory with Filter Tick Options & Top Search */
         <div className="space-y-3 sm:space-y-6">
-          {/* Top Search Bar, Controls & Results Counter - Merged Unified Card matching image_f5dc19b1.png */}
-          <div className="bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl border border-slate-200/90 dark:border-slate-800 p-2.5 xs:p-3 sm:p-4 shadow-sm space-y-3">
-            {/* Top Row: Search Input + Controls Cluster - Single Row Strategy matching image_f5dc19b1.png */}
-            <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2.5 sm:gap-3">
-              
-              {/* 1. Search & Filter Toggle Row */}
-              <div className="flex items-center gap-2 flex-1">
-                {/* Search Input Bar */}
-                <div className="relative flex-1">
-                  <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px] sm:text-[20px] pointer-events-none">
-                    search
-                  </span>
-                  <input
-                    type="text"
-                    placeholder="Search university..."
-                    value={searchQuery}
-                    onChange={(e) => {
-                      setSearchQuery(e.target.value);
-                      setCurrentPage(1);
-                    }}
-                    className="w-full h-11 sm:h-12 pl-9 sm:pl-11 pr-9 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-sm font-medium text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all"
-                  />
-                  {searchQuery && (
-                    <button
-                      type="button"
-                      aria-label="Clear search"
-                      onClick={() => {
-                        setSearchQuery('');
-                        setCurrentPage(1);
-                      }}
-                      className="absolute right-2.5 top-1/2 -translate-y-1/2 w-5 h-5 sm:w-6 sm:h-6 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-white flex items-center justify-center cursor-pointer transition-colors"
-                    >
-                      <span className="material-symbols-outlined text-[14px] sm:text-[16px]">close</span>
-                    </button>
-                  )}
-                </div>
+          <SectionHeader
+            title={displayMode === 'wishlist' ? 'Saved Universities' : 'Partner Universities Directory'}
+            subtitle="Filter accredited institutions by country, QS ranking, tuition budget, scholarship availability, and intake."
+            countLabel={`(${(displayMode === 'wishlist' ? effectiveUnis.length : filteredUnis.length).toLocaleString()})`}
+          />
 
-                {/* Mobile Filter Trigger Button (Compact) */}
+          {/* Directory Controls Bar */}
+          <div className="space-y-3">
+            {/* Row 2: Subtle Secondary Metadata & Compact Controls */}
+            <div className="flex items-center justify-between gap-2 sm:gap-3 flex-wrap px-1">
+              {/* Left Cluster: Mobile Filter Trigger, Result Count & Active Filter Chips */}
+              <div className="flex items-center gap-2 flex-wrap flex-1 min-w-0">
                 <button
                   type="button"
                   onClick={() => setIsMobileFilterOpen(true)}
-                  className="lg:hidden h-11 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center gap-1.5 shadow-xs cursor-pointer active:scale-95 transition-all"
+                  className="lg:hidden no-min-touch h-8 px-3 rounded-full border border-slate-200/80 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/70 text-slate-600 dark:text-slate-300 text-[11.5px] font-medium inline-flex items-center gap-1.5 cursor-pointer active:scale-95 transition-all shrink-0"
                 >
-                  <span className="material-symbols-outlined text-[18px] text-blue-600">tune</span>
-                  <span className="hidden xs:inline">Filters</span>
+                  <span className="material-symbols-outlined text-[15px] text-slate-500 dark:text-slate-400">tune</span>
+                  <span>Filters</span>
                   {activeFiltersCount > 0 && (
-                    <span className="w-4 h-4 rounded-full bg-blue-600 text-white text-[9px] font-black flex items-center justify-center">
+                    <span className="min-w-[16px] h-[16px] px-1 rounded-full bg-[#FFCC00] text-slate-950 text-[10px] font-bold inline-flex items-center justify-center tabular-nums">
                       {activeFiltersCount}
                     </span>
                   )}
                 </button>
+
+                <div className="flex items-baseline gap-1 shrink-0">
+                  <span className="text-xs font-normal text-slate-400 dark:text-slate-400">
+                    {displayMode === 'wishlist' ? 'Saved Universities:' : 'Total Universities:'}
+                  </span>
+                  <span className="text-xs font-semibold text-slate-700 dark:text-slate-200 tabular-nums">
+                    {(displayMode === 'wishlist' ? effectiveUnis.length : filteredUnis.length).toLocaleString()}
+                  </span>
+                </div>
+
+                {activeFilterChips.length > 0 && (
+                  <>
+                    <span className="hidden sm:inline-block h-3.5 w-px bg-slate-200/80 dark:bg-slate-800 mx-0.5 shrink-0" />
+
+                    {(showAllActiveChips
+                      ? activeFilterChips
+                      : activeFilterChips.slice(0, 3)
+                    ).map((chip) => (
+                      <span
+                        key={chip.id}
+                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-50/80 dark:bg-slate-800/70 border border-slate-200/80 dark:border-slate-700/80 text-[11.5px] max-w-[200px]"
+                      >
+                        <span className="text-slate-400 font-normal shrink-0">
+                          {chip.category}:
+                        </span>
+                        <span className="text-slate-700 dark:text-slate-200 font-medium truncate">
+                          {chip.value}
+                        </span>
+                        <button
+                          type="button"
+                          aria-label={`Remove ${chip.category} ${chip.value}`}
+                          onClick={chip.onRemove}
+                          className="no-min-touch text-slate-400 hover:text-slate-700 dark:hover:text-white ml-0.5 inline-flex items-center justify-center cursor-pointer shrink-0"
+                        >
+                          <svg
+                            className="w-3 h-3"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            viewBox="0 0 24 24"
+                          >
+                            <path d="M18 6 6 18M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </span>
+                    ))}
+
+                    {activeFilterChips.length > 3 && (
+                      <button
+                        type="button"
+                        onClick={() => setShowAllActiveChips((prev) => !prev)}
+                        className="no-min-touch inline-flex items-center px-2 py-0.5 rounded-full bg-slate-100/80 dark:bg-slate-800 border border-slate-200/70 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-[11.5px] font-medium hover:bg-slate-200/70 transition-colors cursor-pointer shrink-0"
+                      >
+                        {showAllActiveChips
+                          ? 'Show less'
+                          : `+${activeFilterChips.length - 3} more`}
+                      </button>
+                    )}
+
+                    <button
+                      type="button"
+                      onClick={resetAllFilters}
+                      className="no-min-touch inline-flex items-center gap-1 text-[11.5px] font-medium text-slate-400 hover:text-rose-500 transition-colors cursor-pointer shrink-0 ml-0.5"
+                    >
+                      <span>Clear all</span>
+                    </button>
+                  </>
+                )}
               </div>
 
-              {/* 2. Controls Cluster: View Mode + Sort - Merged for Tablet/Desktop, Stacked for Mobile */}
-              <div className="flex flex-row items-center gap-2 sm:gap-3 overflow-x-auto no-scrollbar pb-0.5 lg:pb-0 shrink-0">
-                {/* View Mode Segmented Toggle: Cards, List, Map, Wishlist */}
-                <div className="flex items-center p-1 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shrink-0">
+              {/* Right Cluster: Subtle Page Indicator + Chevrons | Compact Icon Switcher | Quiet Sort Dropdown */}
+              <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap ml-auto shrink-0">
+                {/* Page Counter & Circular Chevrons */}
+                <div className="flex items-center gap-1.5 text-[11.5px] text-slate-400 dark:text-slate-400">
+                  <span className="whitespace-nowrap">
+                    Page{' '}
+                    <strong className="font-semibold text-slate-700 dark:text-slate-200 tabular-nums">
+                      {currentPage}
+                    </strong>{' '}
+                    / <span className="tabular-nums">{totalPages}</span>
+                  </span>
+                  <div className="flex items-center gap-1">
+                    <button
+                      type="button"
+                      disabled={currentPage === 1}
+                      onClick={() => {
+                        setCurrentPage((p) => Math.max(1, p - 1));
+                        window.scrollTo({ top: 300, behavior: 'smooth' });
+                      }}
+                      aria-label="Previous Page"
+                      className="no-min-touch w-7 h-7 flex items-center justify-center rounded-full border border-slate-200/80 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/70 text-slate-500 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-800 dark:hover:text-white disabled:opacity-35 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                    >
+                      <svg
+                        className="w-3.5 h-3.5"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="m15 18-6-6 6-6" />
+                      </svg>
+                    </button>
+                    <button
+                      type="button"
+                      disabled={currentPage === totalPages}
+                      onClick={() => {
+                        setCurrentPage((p) => Math.min(totalPages, p + 1));
+                        window.scrollTo({ top: 300, behavior: 'smooth' });
+                      }}
+                      aria-label="Next Page"
+                      className="no-min-touch w-7 h-7 flex items-center justify-center rounded-full border border-slate-200/80 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/70 text-slate-500 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-800 dark:hover:text-white disabled:opacity-35 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                    >
+                      <svg
+                        className="w-3.5 h-3.5"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="m9 18 6-6-6-6" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <span className="hidden sm:inline-block h-4 w-px bg-slate-200/80 dark:bg-slate-800 mx-0.5 shrink-0" />
+
+                {/* Compact Icon-Only Segmented Pill Switcher: Cards, List, Map, Wishlist */}
+                <div className="inline-flex items-center p-0.5 rounded-full bg-slate-50/80 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800 shrink-0 gap-0.5">
                   <button
                     type="button"
+                    title="Cards view"
+                    aria-label="Cards view"
+                    aria-pressed={displayMode === 'grid'}
                     onClick={() => setDisplayMode('grid')}
-                    className={`px-2.5 sm:px-3 py-2 rounded-lg text-[11px] sm:text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                    className={`no-min-touch w-7 h-7 rounded-full inline-flex items-center justify-center transition-all duration-150 cursor-pointer ${
                       displayMode === 'grid'
-                        ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs'
-                        : 'text-slate-500 hover:text-slate-900 dark:text-slate-400'
+                        ? 'bg-slate-800 text-white dark:bg-slate-700 dark:text-white'
+                        : 'text-slate-500 dark:text-slate-400 hover:bg-slate-200/60 dark:hover:bg-slate-800 hover:text-slate-800 dark:hover:text-white'
                     }`}
                   >
-                    <span className="material-symbols-outlined text-[15px] sm:text-[17px]">grid_view</span>
-                    <span className="hidden sm:inline">Cards</span>
+                    <svg
+                      className="w-3.5 h-3.5 shrink-0"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="1.9"
+                      viewBox="0 0 24 24"
+                    >
+                      <rect x="3.5" y="3.5" width="7" height="7" rx="1.2" />
+                      <rect x="13.5" y="3.5" width="7" height="7" rx="1.2" />
+                      <rect x="3.5" y="13.5" width="7" height="7" rx="1.2" />
+                      <rect x="13.5" y="13.5" width="7" height="7" rx="1.2" />
+                    </svg>
                   </button>
+
                   <button
                     type="button"
+                    title="List view"
+                    aria-label="List view"
+                    aria-pressed={displayMode === 'list'}
                     onClick={() => setDisplayMode('list')}
-                    className={`px-2.5 sm:px-3 py-2 rounded-lg text-[11px] sm:text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                    className={`no-min-touch w-7 h-7 rounded-full inline-flex items-center justify-center transition-all duration-150 cursor-pointer ${
                       displayMode === 'list'
-                        ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs'
-                        : 'text-slate-500 hover:text-slate-900 dark:text-slate-400'
+                        ? 'bg-slate-800 text-white dark:bg-slate-700 dark:text-white'
+                        : 'text-slate-500 dark:text-slate-400 hover:bg-slate-200/60 dark:hover:bg-slate-800 hover:text-slate-800 dark:hover:text-white'
                     }`}
                   >
-                    <span className="material-symbols-outlined text-[15px] sm:text-[17px]">format_list_bulleted</span>
-                    <span className="hidden sm:inline">List</span>
+                    <svg
+                      className="w-3.5 h-3.5 shrink-0"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="1.9"
+                      viewBox="0 0 24 24"
+                    >
+                      <line x1="9" y1="6.5" x2="20" y2="6.5" />
+                      <line x1="9" y1="12" x2="20" y2="12" />
+                      <line x1="9" y1="17.5" x2="20" y2="17.5" />
+                      <circle cx="4.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+                      <circle cx="4.5" cy="12" r="1" fill="currentColor" stroke="none" />
+                      <circle cx="4.5" cy="17.5" r="1" fill="currentColor" stroke="none" />
+                    </svg>
                   </button>
+
                   <button
                     type="button"
+                    title="Map view"
+                    aria-label="Map view"
+                    aria-pressed={displayMode === 'map'}
                     onClick={() => setDisplayMode('map')}
-                    className={`px-2.5 sm:px-3 py-2 rounded-lg text-[11px] sm:text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                    className={`no-min-touch w-7 h-7 rounded-full inline-flex items-center justify-center transition-all duration-150 cursor-pointer ${
                       displayMode === 'map'
-                        ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs'
-                        : 'text-slate-500 hover:text-slate-900 dark:text-slate-400'
+                        ? 'bg-slate-800 text-white dark:bg-slate-700 dark:text-white'
+                        : 'text-slate-500 dark:text-slate-400 hover:bg-slate-200/60 dark:hover:bg-slate-800 hover:text-slate-800 dark:hover:text-white'
                     }`}
                   >
-                    <span className="material-symbols-outlined text-[15px] sm:text-[17px]">map</span>
-                    <span className="hidden sm:inline">Map</span>
+                    <svg
+                      className="w-3.5 h-3.5 shrink-0"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="1.85"
+                      viewBox="0 0 24 24"
+                    >
+                      <polygon points="3 6 9 3.5 15 6 21 3.5 21 18 15 20.5 9 18 3 20.5 3 6" />
+                      <line x1="9" y1="3.5" x2="9" y2="18" />
+                      <line x1="15" y1="6" x2="15" y2="20.5" />
+                    </svg>
                   </button>
+
                   <button
                     type="button"
-                    onClick={() => setDisplayMode(displayMode === 'wishlist' ? 'grid' : 'wishlist')}
-                    className={`px-2.5 sm:px-3 py-2 rounded-lg text-[11px] sm:text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                    title="Saved wishlist"
+                    aria-label="Saved wishlist"
+                    aria-pressed={displayMode === 'wishlist'}
+                    onClick={() =>
+                      setDisplayMode(displayMode === 'wishlist' ? 'grid' : 'wishlist')
+                    }
+                    className={`no-min-touch h-7 rounded-full inline-flex items-center justify-center gap-1 transition-all duration-150 cursor-pointer ${
+                      savedUniIds.length > 0 ? 'px-2' : 'w-7'
+                    } ${
                       displayMode === 'wishlist'
-                        ? 'bg-[#fbb034] text-slate-950 shadow-xs font-extrabold'
-                        : 'text-slate-500 hover:text-slate-900 dark:text-slate-400'
+                        ? 'bg-slate-800 text-white dark:bg-slate-700 dark:text-white'
+                        : 'text-slate-500 dark:text-slate-400 hover:bg-slate-200/60 dark:hover:bg-slate-800 hover:text-slate-800 dark:hover:text-white'
                     }`}
                   >
-                    <span className="material-symbols-outlined text-[15px] sm:text-[17px]">
-                      {displayMode === 'wishlist' ? 'bookmark' : 'bookmark_border'}
-                    </span>
-                    <span className="hidden sm:inline">Wishlist</span>
+                    <svg
+                      className="w-3.5 h-3.5 shrink-0"
+                      fill={displayMode === 'wishlist' ? 'currentColor' : 'none'}
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="1.85"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M6 4.5A1.5 1.5 0 0 1 7.5 3h9A1.5 1.5 0 0 1 18 4.5v16l-6-3.5-6 3.5v-16Z" />
+                    </svg>
                     {savedUniIds.length > 0 && (
-                      <span className={`px-1.5 py-0.2 rounded-full text-[9px] font-black ${
-                        displayMode === 'wishlist' ? 'bg-slate-950 text-white' : 'bg-[#fbb034] text-slate-950'
-                      }`}>
+                      <span
+                        className={`text-[10.5px] font-semibold tabular-nums leading-none ${
+                          displayMode === 'wishlist'
+                            ? 'text-[#FFCC00]'
+                            : 'text-slate-600 dark:text-slate-300'
+                        }`}
+                      >
                         {savedUniIds.length}
                       </span>
                     )}
                   </button>
                 </div>
 
-                {/* Sort By Dropdown - Compact Refinement */}
-                <div className="relative min-w-[130px] sm:min-w-[180px]">
-                  <span className="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 text-[16px] sm:text-[18px] pointer-events-none">
-                    filter_alt
-                  </span>
+                {/* Uniform Minimalistic Sort Dropdown */}
+                <div className="relative inline-flex items-center w-[168px] rounded-xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 focus-within:border-[#0a1120] dark:focus-within:border-[#fbb034] focus-within:ring-1 focus-within:ring-[#0a1120] dark:focus-within:ring-[#fbb034] transition-all shrink-0">
+                  <svg
+                    className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="1.9"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M8 18V6m0 0-3 3m3-3 3 3" />
+                    <path d="M16 6v12m0 0-3-3m3 3 3-3" />
+                  </svg>
                   <select
+                    aria-label="Sort universities"
                     value={sortBy}
                     onChange={(e: any) => {
                       setSortBy(e.target.value);
                       setCurrentPage(1);
                     }}
-                    className="w-full h-11 px-8 sm:px-9 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-[11px] sm:text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600/20 transition-all appearance-none cursor-pointer"
+                    className="w-full h-[34px] pl-8 pr-7.5 rounded-xl bg-transparent text-xs font-medium text-slate-700 dark:text-slate-200 focus:outline-none appearance-none cursor-pointer truncate"
                   >
                     <option value="qs">QS Ranking</option>
                     <option value="recommended">Recommended</option>
@@ -1090,193 +1454,17 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
                     <option value="fee-desc">Fee (High)</option>
                     <option value="az">Name A–Z</option>
                   </select>
-                  <span className="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-[16px] sm:text-[18px] pointer-events-none">
-                    expand_more
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Active Filter Chips / Removable Pills if active filters exist */}
-            {activeFiltersCount > 0 && (
-              <div className="flex items-center gap-1.5 flex-wrap pt-1 text-xs">
-                <span className="text-[11px] text-slate-400 font-semibold mr-1">Active:</span>
-
-                {searchQuery && (
-                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[11px] font-medium">
-                    <span>Search: "{searchQuery}"</span>
-                    <button
-                      type="button"
-                      onClick={() => setSearchQuery('')}
-                      className="hover:text-red-500 cursor-pointer ml-1"
-                    >
-                      ✕
-                    </button>
-                  </span>
-                )}
-
-                {selectedCountries.map((c) => (
-                  <span
-                    key={c}
-                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-950/70 text-blue-700 dark:text-blue-300 text-[11px] font-medium"
+                  <svg
+                    className="w-3.5 h-3.5 text-slate-400 dark:text-slate-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
                   >
-                    <span>{c}</span>
-                    <button
-                      type="button"
-                      onClick={() => toggleCountry(c)}
-                      className="hover:text-red-500 cursor-pointer ml-1"
-                    >
-                      ✕
-                    </button>
-                  </span>
-                ))}
-
-                {selectedLevels.map((lvl) => (
-                  <span
-                    key={lvl}
-                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-purple-50 dark:bg-purple-950/70 text-purple-700 dark:text-purple-300 text-[11px] font-medium"
-                  >
-                    <span>{lvl}</span>
-                    <button
-                      type="button"
-                      onClick={() => toggleLevel(lvl)}
-                      className="hover:text-red-500 cursor-pointer ml-1"
-                    >
-                      ✕
-                    </button>
-                  </span>
-                ))}
-
-                {selectedTypes.map((t) => (
-                  <span
-                    key={t}
-                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 text-[11px] font-medium"
-                  >
-                    <span className="capitalize">{t}</span>
-                    <button
-                      type="button"
-                      onClick={() => toggleType(t)}
-                      className="hover:text-red-500 cursor-pointer ml-1"
-                    >
-                      ✕
-                    </button>
-                  </span>
-                ))}
-
-                {selectedRankTiers.map((tier) => (
-                  <span
-                    key={tier}
-                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-950/70 text-amber-800 dark:text-amber-300 text-[11px] font-medium"
-                  >
-                    <span>{tier.replace('top', 'Top ')} QS</span>
-                    <button
-                      type="button"
-                      onClick={() => toggleRankTier(tier)}
-                      className="hover:text-red-500 cursor-pointer ml-1"
-                    >
-                      ✕
-                    </button>
-                  </span>
-                ))}
-
-                {selectedTuitions.map((t) => (
-                  <span
-                    key={t}
-                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-sky-50 dark:bg-sky-950/70 text-sky-700 dark:text-sky-300 text-[11px] font-medium"
-                  >
-                    <span>Fee: {t}</span>
-                    <button
-                      type="button"
-                      onClick={() => toggleTuition(t)}
-                      className="hover:text-red-500 cursor-pointer ml-1"
-                    >
-                      ✕
-                    </button>
-                  </span>
-                ))}
-
-                {selectedIelts.map((val) => (
-                  <span
-                    key={val}
-                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-950/70 text-amber-800 dark:text-amber-300 text-[11px] font-medium"
-                  >
-                    <span>IELTS: {val === 'waiver' ? 'Waiver' : val}</span>
-                    <button
-                      type="button"
-                      onClick={() => toggleIelts(val)}
-                      className="hover:text-red-500 cursor-pointer ml-1"
-                    >
-                      ✕
-                    </button>
-                  </span>
-                ))}
-
-                {scholarshipOnly && (
-                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-green-50 dark:bg-green-950/70 text-green-700 dark:text-green-300 text-[11px] font-medium">
-                    <span>Scholarships Only</span>
-                    <button
-                      type="button"
-                      onClick={() => setScholarshipOnly(false)}
-                      className="hover:text-red-500 cursor-pointer ml-1"
-                    >
-                      ✕
-                    </button>
-                  </span>
-                )}
-
-                <button
-                  type="button"
-                  onClick={resetAllFilters}
-                  className="text-[11px] font-bold text-red-600 dark:text-red-400 hover:underline cursor-pointer ml-auto"
-                >
-                  Clear All
-                </button>
-              </div>
-            )}
-
-            {/* Divider Matching Screenshot image_f5dc19b1.png */}
-            <div className="border-t border-slate-100 dark:border-slate-800"></div>
-
-            {/* Bottom Row: University Count on Left + Page Info with Pagination Chevrons on Right */}
-            <div className="flex items-center justify-between gap-3 flex-wrap">
-              <div className="flex items-baseline gap-2">
-                <span className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-                  {displayMode === 'wishlist' ? effectiveUnis.length : filteredUnis.length}
-                </span>
-                <span className="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300">
-                  {displayMode === 'wishlist'
-                    ? (effectiveUnis.length === 1 ? 'Saved University Found' : 'Saved Universities Found')
-                    : (filteredUnis.length === 1 ? 'University Found' : 'Universities Found')}
-                </span>
-              </div>
-
-              <div className="flex items-center gap-2.5 sm:gap-3 text-xs sm:text-sm font-medium text-slate-500 dark:text-slate-400">
-                <span>Page {currentPage} of {totalPages}</span>
-                <div className="flex items-center gap-1">
-                  <button
-                    type="button"
-                    disabled={currentPage === 1}
-                    onClick={() => {
-                      setCurrentPage((p) => Math.max(1, p - 1));
-                      window.scrollTo({ top: 300, behavior: 'smooth' });
-                    }}
-                    aria-label="Previous Page"
-                    className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-2xs cursor-pointer active:scale-95"
-                  >
-                    <span className="material-symbols-outlined text-[16px] sm:text-[18px]">chevron_left</span>
-                  </button>
-                  <button
-                    type="button"
-                    disabled={currentPage === totalPages}
-                    onClick={() => {
-                      setCurrentPage((p) => Math.min(totalPages, p + 1));
-                      window.scrollTo({ top: 300, behavior: 'smooth' });
-                    }}
-                    aria-label="Next Page"
-                    className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-2xs cursor-pointer active:scale-95"
-                  >
-                    <span className="material-symbols-outlined text-[16px] sm:text-[18px]">chevron_right</span>
-                  </button>
+                    <path d="m6 9 6 6 6-6" />
+                  </svg>
                 </div>
               </div>
             </div>
@@ -1284,723 +1472,103 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
 
           {/* Main Grid: Left Filter Sidebar + Right Cards Area */}
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-3 sm:gap-8 items-start">
-            {/* DESKTOP FILTER SIDEBAR */}
-            <aside className="hidden lg:block lg:col-span-1 space-y-6 lg:sticky lg:top-24 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-xs max-h-[calc(100vh-120px)] overflow-y-auto sleek-scrollbar">
-              {/* Sidebar Header: Refine Search + Reset */}
-              <div className="flex items-center justify-between p-4 bg-[#111827] rounded-t-xl">
-                <div className="flex items-center gap-3">
-                  <span className="material-symbols-outlined text-[#fbb034] text-xl">tune</span>
-                  <h3 className="font-bold text-sm text-white uppercase tracking-wider">
-                    REFINE SEARCH
-                  </h3>
-                </div>
-              </div>
-
-              <div className="p-6 space-y-6">
-              {/* 1. DESTINATIONS & COUNTRIES (Tick Options) */}
-              <div className="space-y-3 pb-5 border-b border-slate-100 dark:border-slate-800">
-                <button
-                  type="button"
-                  onClick={() => toggleSection('destinations')}
-                  className="flex items-center justify-between w-full group py-1"
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-slate-400 group-hover:text-[#fbb034] text-xs">public</span>
-                    <label className="text-[11px] uppercase font-extrabold tracking-wider text-slate-400 group-hover:text-[#fbb034]">
-                      Destinations
-                    </label>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {selectedCountries.length > 0 && (
-                      <span
-                        role="button"
-                        tabIndex={0}
-                        onClick={(e) => { e.stopPropagation(); toggleCountry('all'); }}
-                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); toggleCountry('all'); } }}
-                        className="text-[11px] font-bold text-[#fbb034] hover:text-amber-600 hover:underline cursor-pointer"
-                      >
-                        Clear
-                      </span>
-                    )}
-                    <span className={`material-symbols-outlined text-slate-400 text-sm transition-transform ${openSections.destinations ? '' : '-rotate-90'}`}>expand_more</span>
-                  </div>
-                </button>
-                {openSections.destinations && (
-                  <div className="space-y-3">
-                    {/* Country Quick Search */}
-                    <div className="relative">
-                      <input
-                        type="text"
-                        placeholder="Filter countries..."
-                        value={countrySearch}
-                        onChange={(e) => setCountrySearch(e.target.value)}
-                        className="w-full h-8 px-2.5 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[11px] font-medium placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#fbb034]/40 focus:border-[#fbb034]"
-                      />
-                      {countrySearch && (
-                        <button
-                          type="button"
-                          onClick={() => setCountrySearch('')}
-                          className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs"
-                        >
-                          ✕
-                        </button>
-                      )}
-                    </div>
-
-                    <div className="space-y-1 max-h-[200px] overflow-y-auto sleek-scrollbar pr-1">
-                      {/* "All Countries" Tick Option */}
-                      <button
-                        type="button"
-                        onClick={() => toggleCountry('all')}
-                        className="w-full flex items-center justify-between py-1.5 px-2 rounded-lg text-left text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-amber-50/70 dark:hover:bg-amber-950/20 hover:text-amber-700 dark:hover:text-amber-400 transition-colors group cursor-pointer"
-                      >
-                        <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                          <div
-                            className={`w-4 h-4 rounded-[4px] border flex items-center justify-center shrink-0 transition-colors ${
-                              selectedCountries.length === 0
-                                ? 'bg-[#fbb034] border-[#fbb034] text-white shadow-xs'
-                                : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 group-hover:border-[#fbb034]'
-                            }`}
-                          >
-                            {selectedCountries.length === 0 && (
-                              <svg className="w-2.5 h-2.5 stroke-current stroke-[3.5]" viewBox="0 0 16 16" fill="none">
-                                <path d="M3.5 8.5L6.5 11.5L12.5 4.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
-                              </svg>
-                            )}
-                          </div>
-                          <span className={`text-xs leading-snug break-words flex-1 text-left ${selectedCountries.length === 0 ? 'font-bold text-slate-900 dark:text-white' : ''}`}>
-                            All Destinations
-                          </span>
-                        </div>
-                        <span className="text-[11px] text-slate-400 font-normal shrink-0 ml-2">
-                          ({mockUniversities.length})
-                        </span>
-                      </button>
-
-                      {/* List of Countries with Yellow Tick Options */}
-                      {APPROVED_COUNTRY_NAMES.filter((c) =>
-                        c.toLowerCase().includes(countrySearch.toLowerCase())
-                      ).map((c) => {
-                        const isSelected = selectedCountries.includes(c);
-                        const count = facetCounts.countryMap[c] || 0;
-                        if (count === 0 && !isSelected) return null;
-
-                        return (
-                          <button
-                            key={c}
-                            type="button"
-                            onClick={() => toggleCountry(c)}
-                            className="w-full flex items-center justify-between py-1.5 px-2 rounded-lg text-left text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-amber-50/70 dark:hover:bg-amber-950/20 hover:text-amber-700 dark:hover:text-amber-400 transition-colors group cursor-pointer"
-                          >
-                            <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                              <div
-                                className={`w-4 h-4 rounded-[4px] border flex items-center justify-center shrink-0 transition-colors ${
-                                  isSelected
-                                    ? 'bg-[#fbb034] border-[#fbb034] text-white shadow-xs'
-                                    : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 group-hover:border-[#fbb034]'
-                                }`}
-                              >
-                                {isSelected && (
-                                  <svg className="w-2.5 h-2.5 stroke-current stroke-[3.5]" viewBox="0 0 16 16" fill="none">
-                                    <path d="M3.5 8.5L6.5 11.5L12.5 4.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
-                                  </svg>
-                                )}
-                              </div>
-                              <span className={`text-xs leading-snug break-words flex-1 text-left ${isSelected ? 'font-bold text-slate-900 dark:text-white' : ''}`}>
-                                {c}
-                              </span>
-                            </div>
-                            <span className="text-[11px] text-slate-400 font-normal shrink-0 ml-2">
-                              ({count})
-                            </span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* 2. DEGREE LEVEL / PROGRAMS (Tick Options - Full Text Visible) */}
-              <div className="space-y-2 pb-5 border-b border-slate-100 dark:border-slate-800">
-                <button
-                  type="button"
-                  onClick={() => toggleSection('studyLevel')}
-                  className="flex items-center justify-between w-full group py-1"
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-slate-400 group-hover:text-[#fbb034] text-[10px]">school</span>
-                    <label className="text-[11px] uppercase font-extrabold tracking-wider text-slate-400 group-hover:text-[#fbb034]">
-                      Study Level
-                    </label>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {selectedLevels.length > 0 && (
-                      <span
-                        role="button"
-                        tabIndex={0}
-                        onClick={(e) => { e.stopPropagation(); setSelectedLevels([]); }}
-                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); setSelectedLevels([]); } }}
-                        className="text-[11px] font-bold text-[#fbb034] hover:text-amber-600 hover:underline cursor-pointer"
-                      >
-                        Clear
-                      </span>
-                    )}
-                    <span className={`material-symbols-outlined text-slate-400 text-sm transition-transform ${openSections.studyLevel ? '' : '-rotate-90'}`}>expand_more</span>
-                  </div>
-                </button>
-                {openSections.studyLevel && (
-                  <div className="space-y-1 max-h-[280px] overflow-y-auto sleek-scrollbar pr-1">
-                    {APPROVED_QUALIFICATIONS.map((qual) => {
-                      const isSelected =
-                        qual === 'All Levels'
-                          ? selectedLevels.length === 0 || selectedLevels.includes('All Levels')
-                          : selectedLevels.includes(qual);
-                      const count = facetCounts.qualificationCounts[qual] ?? 0;
-                      return (
-                        <button
-                          key={qual}
-                          type="button"
-                          onClick={() => toggleLevel(qual)}
-                          className="w-full flex items-center justify-between py-1.5 px-2 rounded-lg text-left text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-amber-50/70 dark:hover:bg-amber-950/20 hover:text-amber-700 dark:hover:text-amber-400 transition-colors group cursor-pointer"
-                        >
-                          <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                            <div
-                              className={`w-4 h-4 rounded-[4px] border flex items-center justify-center shrink-0 transition-colors ${
-                                isSelected
-                                  ? 'bg-[#fbb034] border-[#fbb034] text-white shadow-xs'
-                                  : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 group-hover:border-[#fbb034]'
-                              }`}
-                            >
-                              {isSelected && (
-                                <svg className="w-2.5 h-2.5 stroke-current stroke-[3.5]" viewBox="0 0 16 16" fill="none">
-                                  <path d="M3.5 8.5L6.5 11.5L12.5 4.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
-                                </svg>
-                              )}
-                            </div>
-                            <span className={`text-xs leading-snug break-words flex-1 text-left ${isSelected ? 'font-bold text-slate-900 dark:text-white' : ''}`}>
-                              {qual}
-                            </span>
-                          </div>
-                          <span className="text-[11px] text-slate-400 font-normal shrink-0 ml-2">
-                            ({count})
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-
-              {/* 3. IELTS SCORE (Tick Options - Full Implementation) */}
-              <div className="space-y-2 pb-5 border-b border-slate-100 dark:border-slate-800">
-                <button
-                  type="button"
-                  onClick={() => toggleSection('ielts')}
-                  className="flex items-center justify-between w-full group py-1"
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-slate-400 group-hover:text-[#fbb034] text-[10px]">quiz</span>
-                    <label className="text-[11px] uppercase font-extrabold tracking-wider text-slate-400 group-hover:text-[#fbb034]">
-                      IELTS Score
-                    </label>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {selectedIelts.length > 0 && (
-                      <span
-                        role="button"
-                        tabIndex={0}
-                        onClick={(e) => { e.stopPropagation(); setSelectedIelts([]); }}
-                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); setSelectedIelts([]); } }}
-                        className="text-[11px] font-bold text-[#fbb034] hover:text-amber-600 hover:underline cursor-pointer"
-                      >
-                        Clear
-                      </span>
-                    )}
-                    <span className={`material-symbols-outlined text-slate-400 text-sm transition-transform ${openSections.ielts ? '' : '-rotate-90'}`}>expand_more</span>
-                  </div>
-                </button>
-                {openSections.ielts && (
-                  <div className="grid grid-cols-1 gap-1">
-                    {[
-                      { id: '5.5', label: 'IELTS 5.5 (Foundation & Diploma)', count: facetCounts.ielts55 },
-                      { id: '6.0', label: 'IELTS 6.0 (Undergraduate)', count: facetCounts.ielts60 },
-                      { id: '6.5', label: 'IELTS 6.5 (Postgraduate)', count: facetCounts.ielts65 },
-                      { id: '7.0', label: 'IELTS 7.0 & Above (Top Tier)', count: facetCounts.ielts70 },
-                      { id: 'waiver', label: 'IELTS Waiver / English Medium', count: facetCounts.ieltsWaiver },
-                    ].map((item) => {
-                      const isSelected = selectedIelts.includes(item.id);
-                      return (
-                        <button
-                          key={item.id}
-                          type="button"
-                          onClick={() => toggleIelts(item.id)}
-                          className={`w-full flex items-center justify-between py-2.5 px-3 rounded-xl border transition-all group cursor-pointer ${
-                            isSelected
-                              ? 'border-[#fbb034] bg-amber-50/50 dark:bg-amber-950/20'
-                              : 'border-transparent hover:border-slate-200 dark:hover:border-slate-700 bg-slate-50 dark:bg-slate-800/50'
-                          }`}
-                        >
-                          <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                            <div
-                              className={`w-4 h-4 rounded-[4px] border flex items-center justify-center shrink-0 transition-colors ${
-                                isSelected
-                                  ? 'bg-[#fbb034] border-[#fbb034] text-white shadow-xs'
-                                  : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 group-hover:border-[#fbb034]'
-                              }`}
-                            >
-                              {isSelected && (
-                                <svg className="w-2.5 h-2.5 stroke-current stroke-[3.5]" viewBox="0 0 16 16" fill="none">
-                                  <path d="M3.5 8.5L6.5 11.5L12.5 4.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
-                                </svg>
-                              )}
-                            </div>
-                            <span className={`text-xs leading-snug break-words flex-1 text-left ${isSelected ? 'font-bold text-slate-900 dark:text-white' : 'text-slate-700 dark:text-slate-300'}`}>
-                              {item.label}
-                            </span>
-                          </div>
-                          <span className="text-[11px] text-slate-400 font-normal shrink-0 ml-2">
-                            ({item.count})
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-
-              {/* 3.1. INTAKE MONTHS (Tick Options) */}
-              <div className="space-y-2 pb-5 border-b border-slate-100 dark:border-slate-800">
-                <button
-                  type="button"
-                  onClick={() => toggleSection('intake')}
-                  className="flex items-center justify-between w-full group py-1"
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-slate-400 group-hover:text-[#fbb034] text-[10px]">date_range</span>
-                    <label className="text-[11px] uppercase font-extrabold tracking-wider text-slate-400 group-hover:text-[#fbb034]">
-                      Intake
-                    </label>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {selectedIntakes.length > 0 && (
-                      <span
-                        role="button"
-                        tabIndex={0}
-                        onClick={(e) => { e.stopPropagation(); setSelectedIntakes([]); }}
-                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); setSelectedIntakes([]); } }}
-                        className="text-[11px] font-bold text-[#fbb034] hover:text-amber-600 hover:underline cursor-pointer"
-                      >
-                        Clear
-                      </span>
-                    )}
-                    <span className={`material-symbols-outlined text-slate-400 text-sm transition-transform ${openSections.intake ? '' : '-rotate-90'}`}>expand_more</span>
-                  </div>
-                </button>
-                {openSections.intake && (
-                  <div className="space-y-1">
-                    {[
-                      'January', 'February', 'March', 'April', 'May', 'June',
-                      'July', 'August', 'September', 'October', 'November', 'December'
-                    ].map((month) => {
-                      const isSelected = selectedIntakes.includes(month);
-                      return (
-                        <button
-                          key={month}
-                          type="button"
-                          onClick={() => toggleIntake(month)}
-                          className="w-full flex items-center justify-between py-1.5 px-2 rounded-lg text-left text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-amber-50/70 dark:hover:bg-amber-950/20 hover:text-amber-700 dark:hover:text-amber-400 transition-colors group cursor-pointer"
-                        >
-                          <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                            <div
-                              className={`w-4 h-4 rounded-[4px] border flex items-center justify-center shrink-0 transition-colors ${
-                                isSelected
-                                  ? 'bg-[#fbb034] border-[#fbb034] text-white shadow-xs'
-                                  : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 group-hover:border-[#fbb034]'
-                              }`}
-                            >
-                              {isSelected && (
-                                <svg className="w-2.5 h-2.5 stroke-current stroke-[3.5]" viewBox="0 0 16 16" fill="none">
-                                  <path d="M3.5 8.5L6.5 11.5L12.5 4.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
-                                </svg>
-                              )}
-                            </div>
-                            <span className={`text-xs leading-snug break-words flex-1 text-left ${isSelected ? 'font-bold text-slate-900 dark:text-white' : ''}`}>
-                              {month}
-                            </span>
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-              {/* 3.2. DURATION (Tick Options) */}
-              <div className="space-y-2 pb-5 border-b border-slate-100 dark:border-slate-800">
-                <button
-                  type="button"
-                  onClick={() => toggleSection('duration')}
-                  className="flex items-center justify-between w-full group py-1"
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-slate-400 group-hover:text-[#fbb034] text-[10px]">hourglass_empty</span>
-                    <label className="text-[11px] uppercase font-extrabold tracking-wider text-slate-400 group-hover:text-[#fbb034]">
-                      Duration
-                    </label>
-                  </div>
-                  <span className={`material-symbols-outlined text-slate-400 text-sm transition-transform ${openSections.duration ? '' : '-rotate-90'}`}>expand_more</span>
-                </button>
-                {openSections.duration && (
-                  <div className="grid grid-cols-2 gap-2">
-                    {['Less than 1 year', '1 - 2 years', '2 - 3 years', '3 - 4 years', '4 - 5 years', 'More than 5 years'].map((d) => (
-                        <button
-                          key={d}
-                          type="button"
-                          className="py-2 px-1 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[10px] font-medium border border-transparent hover:border-amber-300"
-                        >
-                          {d}
-                        </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* 3.3. FEE RANGE (Slider) */}
-              <div className="space-y-2 pb-5 border-b border-slate-100 dark:border-slate-800">
-                <button
-                  type="button"
-                  onClick={() => toggleSection('feeRange')}
-                  className="flex items-center justify-between w-full group py-1"
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-slate-400 group-hover:text-[#fbb034] text-[10px]">account_balance_wallet</span>
-                    <label className="text-[11px] uppercase font-extrabold tracking-wider text-slate-400 group-hover:text-[#fbb034]">
-                      Fee range
-                    </label>
-                  </div>
-                  <span className={`material-symbols-outlined text-slate-400 text-sm transition-transform ${openSections.feeRange ? '' : '-rotate-90'}`}>expand_more</span>
-                </button>
-                {openSections.feeRange && (
-                  <div className="pt-2">
-                    <Slider06 
-                      min={0} 
-                      max={214000} 
-                      step={100} 
-                      initialRange={[minFee, maxFee]} 
-                      onRangeChange={(r) => { setMinFee(r[0]); setMaxFee(r[1]); }} 
-                    />
-                  </div>
-                )}
-              </div>
-
-              {/* 4. INSTITUTION TYPE (Tick Options) */}
-              <div className="space-y-2 pb-5 border-b border-slate-100 dark:border-slate-800">
-                <button
-                  type="button"
-                  onClick={() => toggleSection('institutionType')}
-                  className="flex items-center justify-between w-full group py-1"
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-slate-400 group-hover:text-[#fbb034] text-[10px]">account_balance</span>
-                    <label className="text-[11px] uppercase font-extrabold tracking-wider text-slate-400 group-hover:text-[#fbb034]">
-                      Institution Type
-                    </label>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {selectedTypes.length > 0 && (
-                      <span
-                        role="button"
-                        tabIndex={0}
-                        onClick={(e) => { e.stopPropagation(); setSelectedTypes([]); }}
-                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); setSelectedTypes([]); } }}
-                        className="text-[11px] font-bold text-[#fbb034] hover:text-amber-600 hover:underline cursor-pointer"
-                      >
-                        Clear
-                      </span>
-                    )}
-                    <span className={`material-symbols-outlined text-slate-400 text-sm transition-transform ${openSections.institutionType ? '' : '-rotate-90'}`}>expand_more</span>
-                  </div>
-                </button>
-                {openSections.institutionType && (
-                  <div className="space-y-1">
-                    {[
-                      { id: 'public', label: 'Public Universities', count: facetCounts.publicCount },
-                      { id: 'private', label: 'Private Universities', count: facetCounts.privateCount },
-                      { id: 'research', label: 'Research & Technical', count: facetCounts.researchCount },
-                    ].map((item) => {
-                      const isSelected = selectedTypes.includes(item.id);
-                      return (
-                        <button
-                          key={item.id}
-                          type="button"
-                          onClick={() => toggleType(item.id)}
-                          className="w-full flex items-center justify-between py-1.5 px-2 rounded-lg text-left text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-amber-50/70 dark:hover:bg-amber-950/20 hover:text-amber-700 dark:hover:text-amber-400 transition-colors group cursor-pointer"
-                        >
-                          <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                            <div
-                              className={`w-4 h-4 rounded-[4px] border flex items-center justify-center shrink-0 transition-colors ${
-                                isSelected
-                                  ? 'bg-[#fbb034] border-[#fbb034] text-white shadow-xs'
-                                  : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 group-hover:border-[#fbb034]'
-                              }`}
-                            >
-                              {isSelected && (
-                                <svg className="w-2.5 h-2.5 stroke-current stroke-[3.5]" viewBox="0 0 16 16" fill="none">
-                                  <path d="M3.5 8.5L6.5 11.5L12.5 4.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
-                                </svg>
-                              )}
-                            </div>
-                            <span className={`text-xs leading-snug break-words flex-1 text-left ${isSelected ? 'font-bold text-slate-900 dark:text-white' : ''}`}>
-                              {item.label}
-                            </span>
-                          </div>
-                          <span className="text-[11px] text-slate-400 font-normal shrink-0 ml-2">
-                            ({item.count})
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-
-              {/* 5. QS WORLD RANKING (Tick Options) */}
-              <div className="space-y-2 pb-5 border-b border-slate-100 dark:border-slate-800">
-                <button
-                  type="button"
-                  onClick={() => toggleSection('qsRanking')}
-                  className="flex items-center justify-between w-full group py-1"
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-slate-400 group-hover:text-[#fbb034] text-[10px]">leaderboard</span>
-                    <label className="text-[11px] uppercase font-extrabold tracking-wider text-slate-400 group-hover:text-[#fbb034]">
-                      QS World Ranking
-                    </label>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {selectedRankTiers.length > 0 && (
-                      <span
-                        role="button"
-                        tabIndex={0}
-                        onClick={(e) => { e.stopPropagation(); setSelectedRankTiers([]); }}
-                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); setSelectedRankTiers([]); } }}
-                        className="text-[11px] font-bold text-[#fbb034] hover:text-amber-600 hover:underline cursor-pointer"
-                      >
-                        Clear
-                      </span>
-                    )}
-                    <span className={`material-symbols-outlined text-slate-400 text-sm transition-transform ${openSections.qsRanking ? '' : '-rotate-90'}`}>expand_more</span>
-                  </div>
-                </button>
-                {openSections.qsRanking && (
-                  <div className="space-y-1">
-                    {[
-                      { id: 'top100', label: 'Top 100 QS Rank', count: facetCounts.qsTop100, badge: 'Elite' },
-                      { id: 'top300', label: 'Top 300 QS Rank', count: facetCounts.qsTop300 },
-                      { id: 'top500', label: 'Top 500 QS Rank', count: facetCounts.qsTop500 },
-                      { id: 'top1000', label: 'Top 1,000 QS Rank', count: facetCounts.qsTop1000 },
-                    ].map((item) => {
-                      const isSelected = selectedRankTiers.includes(item.id);
-                      return (
-                        <button
-                          key={item.id}
-                          type="button"
-                          onClick={() => toggleRankTier(item.id)}
-                          className="w-full flex items-center justify-between py-1.5 px-2 rounded-lg text-left text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-amber-50/70 dark:hover:bg-amber-950/20 hover:text-amber-700 dark:hover:text-amber-400 transition-colors group cursor-pointer"
-                        >
-                          <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                            <div
-                              className={`w-4 h-4 rounded-[4px] border flex items-center justify-center shrink-0 transition-colors ${
-                                isSelected
-                                  ? 'bg-[#fbb034] border-[#fbb034] text-white shadow-xs'
-                                  : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 group-hover:border-[#fbb034]'
-                              }`}
-                            >
-                              {isSelected && (
-                                <svg className="w-2.5 h-2.5 stroke-current stroke-[3.5]" viewBox="0 0 16 16" fill="none">
-                                  <path d="M3.5 8.5L6.5 11.5L12.5 4.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
-                                </svg>
-                              )}
-                            </div>
-                            <span className={`text-xs leading-snug break-words flex-1 text-left ${isSelected ? 'font-bold text-slate-900 dark:text-white' : ''}`}>
-                              {item.label}
-                            </span>
-                            {item.badge && (
-                              <span className="text-[9px] px-1.5 py-0.2 rounded-full bg-[#fbb034] text-slate-950 font-black shrink-0">
-                                {item.badge}
-                              </span>
-                            )}
-                          </div>
-                          <span className="text-[11px] text-slate-400 font-normal shrink-0 ml-2">
-                            ({item.count})
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-
-              {/* 6. ANNUAL TUITION RANGE (Tick Options) */}
-              <div className="space-y-2 pb-5 border-b border-slate-100 dark:border-slate-800">
-                <button
-                  type="button"
-                  onClick={() => toggleSection('tuition')}
-                  className="flex items-center justify-between w-full group py-1"
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-slate-400 group-hover:text-[#fbb034] text-[10px]">payments</span>
-                    <label className="text-[11px] uppercase font-extrabold tracking-wider text-slate-400 group-hover:text-[#fbb034]">
-                      Tuition Fee (Annual)
-                    </label>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {selectedTuitions.length > 0 && (
-                      <span
-                        role="button"
-                        tabIndex={0}
-                        onClick={(e) => { e.stopPropagation(); setSelectedTuitions([]); }}
-                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); setSelectedTuitions([]); } }}
-                        className="text-[11px] font-bold text-[#fbb034] hover:text-amber-600 hover:underline cursor-pointer"
-                      >
-                        Clear
-                      </span>
-                    )}
-                    <span className={`material-symbols-outlined text-slate-400 text-sm transition-transform ${openSections.tuition ? '' : '-rotate-90'}`}>expand_more</span>
-                  </div>
-                </button>
-                {openSections.tuition && (
-                  <div className="space-y-1">
-                    {[
-                      { id: 'under5k', label: 'Under $5,000 / yr', count: facetCounts.under5k },
-                      { id: '5k-10k', label: '$5,000 – $10,000 / yr', count: facetCounts.fee5k10k },
-                      { id: '10k-20k', label: '$10,000 – $20,000 / yr', count: facetCounts.fee10k20k },
-                      { id: 'above20k', label: 'Above $20,000 / yr', count: facetCounts.above20k },
-                    ].map((item) => {
-                      const isSelected = selectedTuitions.includes(item.id);
-                      return (
-                        <button
-                          key={item.id}
-                          type="button"
-                          onClick={() => toggleTuition(item.id)}
-                          className="w-full flex items-center justify-between py-1.5 px-2 rounded-lg text-left text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-amber-50/70 dark:hover:bg-amber-950/20 hover:text-amber-700 dark:hover:text-amber-400 transition-colors group cursor-pointer"
-                        >
-                          <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                            <div
-                              className={`w-4 h-4 rounded-[4px] border flex items-center justify-center shrink-0 transition-colors ${
-                                isSelected
-                                  ? 'bg-[#fbb034] border-[#fbb034] text-white shadow-xs'
-                                  : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 group-hover:border-[#fbb034]'
-                              }`}
-                            >
-                              {isSelected && (
-                                <svg className="w-2.5 h-2.5 stroke-current stroke-[3.5]" viewBox="0 0 16 16" fill="none">
-                                  <path d="M3.5 8.5L6.5 11.5L12.5 4.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
-                                </svg>
-                              )}
-                            </div>
-                            <span className={`text-xs leading-snug break-words flex-1 text-left ${isSelected ? 'font-bold text-slate-900 dark:text-white' : ''}`}>
-                              {item.label}
-                            </span>
-                          </div>
-                          <span className="text-[11px] text-slate-400 font-normal shrink-0 ml-2">
-                            ({item.count})
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-
-              {/* 7. SCHOLARSHIP & PERKS (Tick Option) */}
-              <div className="space-y-2 pb-5 border-b border-slate-100 dark:border-slate-800">
-                <button
-                  type="button"
-                  onClick={() => toggleSection('scholarship')}
-                  className="flex items-center justify-between w-full group py-1"
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-slate-400 group-hover:text-[#fbb034] text-[10px]">emoji_events</span>
-                    <label className="text-[11px] uppercase font-extrabold tracking-wider text-slate-400 group-hover:text-[#fbb034]">
-                      Benefits
-                    </label>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {scholarshipOnly && (
-                      <span
-                        role="button"
-                        tabIndex={0}
-                        onClick={(e) => { e.stopPropagation(); setScholarshipOnly(false); }}
-                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); setScholarshipOnly(false); } }}
-                        className="text-[11px] font-bold text-[#fbb034] hover:text-amber-600 hover:underline cursor-pointer"
-                      >
-                        Clear
-                      </span>
-                    )}
-                    <span className={`material-symbols-outlined text-slate-400 text-sm transition-transform ${openSections.scholarship ? '' : '-rotate-90'}`}>expand_more</span>
-                  </div>
-                </button>
-                {openSections.scholarship && (
-                  <div className="space-y-1">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setScholarshipOnly((prev) => !prev);
-                        setCurrentPage(1);
-                      }}
-                      className="w-full flex items-center justify-between py-1.5 px-2 rounded-lg text-left text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-amber-50/70 dark:hover:bg-amber-950/20 hover:text-amber-700 dark:hover:text-amber-400 transition-colors group cursor-pointer"
-                    >
-                      <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                        <div
-                          className={`w-4 h-4 rounded-[4px] border flex items-center justify-center shrink-0 transition-colors ${
-                            scholarshipOnly
-                              ? 'bg-[#fbb034] border-[#fbb034] text-white shadow-xs'
-                              : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 group-hover:border-[#fbb034]'
-                          }`}
-                        >
-                          {scholarshipOnly && (
-                            <svg className="w-2.5 h-2.5 stroke-current stroke-[3.5]" viewBox="0 0 16 16" fill="none">
-                              <path d="M3.5 8.5L6.5 11.5L12.5 4.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
-                            </svg>
-                          )}
-                        </div>
-                        <span className={`text-xs leading-snug break-words flex-1 text-left ${scholarshipOnly ? 'font-bold text-slate-900 dark:text-white' : ''}`}>
-                          Scholarships Available
-                        </span>
-                      </div>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setFeeWaiverOnly((prev) => !prev);
-                        setCurrentPage(1);
-                      }}
-                      className="w-full flex items-center justify-between py-1.5 px-2 rounded-lg text-left text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-amber-50/70 dark:hover:bg-amber-950/20 hover:text-amber-700 dark:hover:text-amber-400 transition-colors group cursor-pointer"
-                    >
-                      <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                        <div
-                          className={`w-4 h-4 rounded-[4px] border flex items-center justify-center shrink-0 transition-colors ${
-                            feeWaiverOnly
-                              ? 'bg-[#fbb034] border-[#fbb034] text-white shadow-xs'
-                              : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 group-hover:border-[#fbb034]'
-                          }`}
-                        >
-                          {feeWaiverOnly && (
-                            <svg className="w-2.5 h-2.5 stroke-current stroke-[3.5]" viewBox="0 0 16 16" fill="none">
-                              <path d="M3.5 8.5L6.5 11.5L12.5 4.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
-                            </svg>
-                          )}
-                        </div>
-                        <span className={`text-xs leading-snug break-words flex-1 text-left ${feeWaiverOnly ? 'font-bold text-slate-900 dark:text-white' : ''}`}>
-                          Application Fee Waiver
-                        </span>
-                      </div>
-                    </button>
-                  </div>
-                )}
-              </div>
-              </div>
+            {/* DESKTOP FILTER SIDEBAR (Approved Google Stitch Design) */}
+            <aside className="hidden lg:block lg:col-span-1 lg:sticky lg:top-24">
+              <StitchCourseFilterSidebar
+                mode="universities"
+                allCourses={mockCourses}
+                allUnis={mockUniversities}
+                totalResults={filteredUnis.length}
+                selectedCountries={selectedCountries}
+                selectedCities={selectedCities}
+                selectedInstitutions={selectedInstitutions}
+                selectedLevels={selectedLevels}
+                selectedFields={selectedFields}
+                selectedIelts={selectedIelts}
+                ieltsMin={ieltsMin}
+                ieltsMax={ieltsMax}
+                selectedModes={selectedModes}
+                selectedIntakes={selectedIntakes}
+                selectedDurations={selectedDurations}
+                minFee={minFee}
+                maxFee={maxFee}
+                selectedTypes={selectedTypes}
+                selectedRankTiers={selectedRankTiers}
+                scholarshipOnly={scholarshipOnly}
+                feeWaiverOnly={feeWaiverOnly}
+                onToggleCountry={toggleCountry}
+                onClearCountries={() => {
+                  setSelectedCountries([]);
+                  setCurrentPage(1);
+                }}
+                onToggleCity={toggleCity}
+                onClearCities={() => {
+                  setSelectedCities([]);
+                  setCurrentPage(1);
+                }}
+                onToggleInstitution={toggleInstitution}
+                onClearInstitutions={() => {
+                  setSelectedInstitutions([]);
+                  setCurrentPage(1);
+                }}
+                onToggleLevel={toggleLevel}
+                onSelectAllLevels={() => {
+                  setSelectedLevels([...SPECIFIC_QUALIFICATIONS]);
+                  setCurrentPage(1);
+                }}
+                onClearLevels={() => {
+                  setSelectedLevels([]);
+                  setCurrentPage(1);
+                }}
+                onToggleField={toggleField}
+                onClearFields={() => {
+                  setSelectedFields([]);
+                  setCurrentPage(1);
+                }}
+                onToggleIelts={toggleIelts}
+                onChangeIeltsRange={(minV, maxV) => {
+                  setIeltsMin(minV);
+                  setIeltsMax(maxV);
+                  setCurrentPage(1);
+                }}
+                onResetIelts={() => {
+                  setSelectedIelts([]);
+                  setIeltsMin(STITCH_IELTS_MIN);
+                  setIeltsMax(STITCH_IELTS_MAX);
+                  setCurrentPage(1);
+                }}
+                onToggleMode={toggleMode}
+                onToggleIntake={toggleIntake}
+                onToggleDuration={toggleDuration}
+                onChangeFeeRange={(minV, maxV) => {
+                  setMinFee(minV);
+                  setMaxFee(maxV);
+                  setCurrentPage(1);
+                }}
+                onResetFeeRange={() => {
+                  setMinFee(0);
+                  setMaxFee(STITCH_MAX_BUDGET);
+                  setCurrentPage(1);
+                }}
+                onToggleType={toggleType}
+                onClearTypes={() => {
+                  setSelectedTypes([]);
+                  setCurrentPage(1);
+                }}
+                onToggleRankTier={toggleRankTier}
+                onToggleScholarship={() => {
+                  setScholarshipOnly((v) => !v);
+                  setCurrentPage(1);
+                }}
+                onToggleFeeWaiver={() => {
+                  setFeeWaiverOnly((v) => !v);
+                  setCurrentPage(1);
+                }}
+                onResetAll={resetAllFilters}
+                onApplyFilters={() => {
+                  setCurrentPage(1);
+                }}
+              />
             </aside>
 
             {/* RIGHT CONTENT AREA: Results Bar, Grid & Pagination */}
@@ -2082,12 +1650,17 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
                   <div className="space-y-4">
                     {paginatedUnis.map((uni) => {
                       const isSaved = isUniSaved(uni.id);
+                      const isCompared = isUniversityCompared(uni.id);
                       const isBouncing = bouncingUniId === uni.id;
 
                       return (
                         <article
                           key={`list-${uni.id}`}
-                          className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col md:flex-row items-stretch group"
+                          className={`bg-white dark:bg-slate-900 rounded-2xl border overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col md:flex-row items-stretch group ${
+                            isCompared
+                              ? 'border-[#fbb034] ring-2 ring-[#fbb034]/40 bg-amber-50/10'
+                              : 'border-slate-200/90 dark:border-slate-800'
+                          }`}
                         >
                           {/* Banner / Image */}
                           <div
@@ -2151,7 +1724,7 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
                             <div className="space-y-1.5">
                               <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 flex-wrap">
                                 <span className="font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1">
-                                  <span className="material-symbols-outlined text-[14px] text-blue-600">account_balance</span>
+                                  <span className="material-symbols-outlined text-[14px] text-[#314158] dark:text-slate-300">account_balance</span>
                                   <span>{uni.type || 'University'}</span>
                                 </span>
                                 {uni.established && (
@@ -2197,52 +1770,108 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
                           </div>
 
                           {/* Right Side: Fee & Actions */}
-                          <div className="w-full md:w-56 p-4 sm:p-5 bg-slate-50/70 dark:bg-slate-800/40 border-t md:border-t-0 md:border-l border-slate-100 dark:border-slate-800 flex flex-col justify-between shrink-0 space-y-3">
+                          <div className="w-full md:w-[296px] lg:w-[312px] p-4 sm:p-5 bg-white dark:bg-slate-900 border-t md:border-t-0 md:border-l border-slate-100 dark:border-slate-800 flex flex-col justify-between shrink-0 space-y-4">
                             <div>
                               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
                                 AVG ANNUAL TUITION
                               </span>
-                              <div className="text-base sm:text-lg font-black text-slate-900 dark:text-white mt-0.5">
+                              <div className="text-lg sm:text-xl font-black text-slate-900 dark:text-white mt-0.5">
                                 {formatUSD(uni.avgTuitionAnnualUSD)} / yr
                               </div>
                             </div>
 
-                            <div className="space-y-2">
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  onApply(uni.name);
-                                }}
-                                className="w-full py-2.5 rounded-full bg-red-600 hover:bg-red-700 text-white font-bold text-xs sm:text-sm transition-all cursor-pointer text-center active:scale-95 shadow-xs"
-                              >
-                                Apply Now
-                              </button>
-                              <div className="grid grid-cols-2 gap-2">
-                                <button
-                                  type="button"
-                                  onClick={() => setSelectedUniSlug(uni.slug)}
-                                  className="py-2 px-2.5 rounded-full text-xs font-semibold transition-all cursor-pointer border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-50 text-center"
-                                >
-                                  Details
-                                </button>
+                            <div className="space-y-3.5">
+                              {/* Clean Inline Utility Actions: Shortlist & Compare */}
+                              <div className="flex items-center justify-end gap-5">
                                 <button
                                   type="button"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     toggleSaveUni(uni.id);
                                   }}
-                                  aria-label={isSaved ? "Saved" : "Save"}
-                                  className={`py-2 px-2.5 rounded-full text-xs font-semibold transition-all cursor-pointer border flex items-center justify-center gap-1 ${
+                                  aria-label={isSaved ? 'Remove from shortlist' : 'Add to shortlist'}
+                                  title={isSaved ? 'Shortlisted' : 'Shortlist'}
+                                  className={`no-min-touch inline-flex items-center gap-1.5 text-[13px] font-medium transition-colors cursor-pointer ${
                                     isSaved
-                                      ? 'bg-amber-100 dark:bg-amber-950/70 border-amber-300 text-amber-900 dark:text-amber-300 font-bold'
-                                      : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50'
+                                      ? 'text-rose-600 dark:text-rose-400 font-semibold'
+                                      : 'text-slate-700 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white'
                                   }`}
                                 >
-                                  <span className={`material-symbols-outlined text-[14px] ${isSaved ? 'text-[#fbb034]' : 'text-slate-400'}`}>
-                                    {isSaved ? 'bookmark_added' : 'bookmark_add'}
-                                  </span>
-                                  <span>{isSaved ? 'Saved' : 'Save'}</span>
+                                  <svg
+                                    className="w-[17px] h-[17px] shrink-0"
+                                    viewBox="0 0 24 24"
+                                    fill={isSaved ? 'currentColor' : 'none'}
+                                    stroke="currentColor"
+                                    strokeWidth="1.75"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    aria-hidden="true"
+                                  >
+                                    <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" />
+                                  </svg>
+                                  <span>{isSaved ? 'Shortlisted' : 'Shortlist'}</span>
+                                </button>
+
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    toggleCompareUniversity(uni.id);
+                                  }}
+                                  title={isCompared ? 'Remove from comparison' : 'Add to comparison'}
+                                  className={`no-min-touch inline-flex items-center gap-1.5 text-[13px] font-medium transition-colors cursor-pointer ${
+                                    isCompared
+                                      ? 'text-amber-600 dark:text-[#fbb034] font-semibold'
+                                      : 'text-slate-700 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white'
+                                  }`}
+                                >
+                                  <svg
+                                    className="w-[17px] h-[17px] shrink-0"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="1.75"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    aria-hidden="true"
+                                  >
+                                    <rect x="4" y="7" width="13" height="13" rx="2" />
+                                    <path d="M8 7V5a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2" />
+                                    {isCompared ? (
+                                      <path d="M8 13.5l2 2 3.5-3.5" />
+                                    ) : (
+                                      <>
+                                        <path d="M10.5 10.5v6" />
+                                        <path d="M7.5 13.5h6" />
+                                      </>
+                                    )}
+                                  </svg>
+                                  <span>{isCompared ? 'Comparing' : 'Compare'}</span>
+                                </button>
+                              </div>
+
+                              {/* Clean Equal-Width Rectangular CTAs: View University & Apply Now */}
+                              <div className="grid grid-cols-2 gap-2.5">
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setSelectedUniSlug(uni.slug);
+                                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                                  }}
+                                  className="w-full h-10 px-2.5 rounded-lg bg-[#FFCC00] hover:bg-[#f2c200] active:scale-[0.98] text-slate-950 font-semibold text-[12.5px] sm:text-[13px] tracking-[-0.01em] transition-all cursor-pointer flex items-center justify-center whitespace-nowrap"
+                                >
+                                  View University
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    onApply(uni.name);
+                                  }}
+                                  className="w-full h-10 px-2.5 rounded-lg bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 active:scale-[0.98] border border-slate-800 dark:border-slate-300 text-slate-900 dark:text-white font-semibold text-[12.5px] sm:text-[13px] tracking-[-0.01em] transition-all cursor-pointer flex items-center justify-center whitespace-nowrap"
+                                >
+                                  Apply Now
                                 </button>
                               </div>
                             </div>
@@ -2255,12 +1884,17 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
                   <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
                     {paginatedUnis.map((uni) => {
                       const isSaved = isUniSaved(uni.id);
+                      const isCompared = isUniversityCompared(uni.id);
                       const isBouncing = bouncingUniId === uni.id;
 
                       return (
                         <article
                           key={uni.id}
-                          className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between group"
+                          className={`bg-white dark:bg-slate-900 rounded-2xl border overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between group ${
+                            isCompared
+                              ? 'border-[#fbb034] ring-2 ring-[#fbb034]/40 bg-amber-50/10'
+                              : 'border-slate-200/90 dark:border-slate-800'
+                          }`}
                         >
                           <div onClick={() => setSelectedUniSlug(uni.slug)} className="cursor-pointer">
                             {/* Card Banner */}
@@ -2319,7 +1953,7 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
                               {/* Meta: Type & Established Year */}
                               <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
                                 <span className="font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1">
-                                  <span className="material-symbols-outlined text-[14px] text-blue-600">account_balance</span>
+                                  <span className="material-symbols-outlined text-[14px] text-[#314158] dark:text-slate-300">account_balance</span>
                                   <span className="truncate max-w-[150px]">{uni.type || 'University'}</span>
                                 </span>
                                 {uni.established && (
@@ -2353,19 +1987,101 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
                               </div>
                             </div>
                           </div>
-                          <div className="p-5 pt-0 flex items-center gap-3">
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                onApply(uni.name);
-                              }}
-                              className="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs transition-colors cursor-pointer"
-                            >
-                              Apply Now
-                            </button>
-                            <div className="flex items-center text-red-600 font-bold text-xs cursor-pointer hover:underline group-hover:text-red-700">
-                              <span>View Details</span>
-                              <span className="material-symbols-outlined text-[16px]">chevron_right</span>
+
+                          {/* Bottom Action Row - Matching clean list & grid design */}
+                          <div className="p-5 pt-0 space-y-3.5">
+                            {/* Clean Inline Utility Actions: Shortlist & Compare */}
+                            <div className="flex items-center justify-end gap-5">
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  toggleSaveUni(uni.id);
+                                }}
+                                aria-label={isSaved ? 'Remove from shortlist' : 'Add to shortlist'}
+                                title={isSaved ? 'Shortlisted' : 'Shortlist'}
+                                className={`no-min-touch inline-flex items-center gap-1.5 text-[13px] font-medium transition-colors cursor-pointer ${
+                                  isSaved
+                                    ? 'text-rose-600 dark:text-rose-400 font-semibold'
+                                    : 'text-slate-700 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white'
+                                }`}
+                              >
+                                <svg
+                                  className="w-[17px] h-[17px] shrink-0"
+                                  viewBox="0 0 24 24"
+                                  fill={isSaved ? 'currentColor' : 'none'}
+                                  stroke="currentColor"
+                                  strokeWidth="1.75"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  aria-hidden="true"
+                                >
+                                  <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" />
+                                </svg>
+                                <span>{isSaved ? 'Shortlisted' : 'Shortlist'}</span>
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  toggleCompareUniversity(uni.id);
+                                }}
+                                title={isCompared ? 'Remove from comparison' : 'Add to comparison'}
+                                className={`no-min-touch inline-flex items-center gap-1.5 text-[13px] font-medium transition-colors cursor-pointer ${
+                                  isCompared
+                                    ? 'text-amber-600 dark:text-[#fbb034] font-semibold'
+                                    : 'text-slate-700 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white'
+                                }`}
+                              >
+                                <svg
+                                  className="w-[17px] h-[17px] shrink-0"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="1.75"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  aria-hidden="true"
+                                >
+                                  <rect x="4" y="7" width="13" height="13" rx="2" />
+                                  <path d="M8 7V5a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2" />
+                                  {isCompared ? (
+                                    <path d="M8 13.5l2 2 3.5-3.5" />
+                                  ) : (
+                                    <>
+                                      <path d="M10.5 10.5v6" />
+                                      <path d="M7.5 13.5h6" />
+                                    </>
+                                  )}
+                                </svg>
+                                <span>{isCompared ? 'Comparing' : 'Compare'}</span>
+                              </button>
+                            </div>
+
+                            {/* Clean Equal-Width Rectangular CTAs: View University & Apply Now */}
+                            <div className="grid grid-cols-2 gap-2.5">
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedUniSlug(uni.slug);
+                                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                                }}
+                                className="w-full h-10 px-2 rounded-lg bg-[#FFCC00] hover:bg-[#f2c200] active:scale-[0.98] text-slate-950 font-semibold text-[12px] sm:text-[12.5px] tracking-[-0.01em] transition-all cursor-pointer flex items-center justify-center whitespace-nowrap"
+                              >
+                                View University
+                              </button>
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onApply(uni.name);
+                                }}
+                                className="w-full h-10 px-2 rounded-lg bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 active:scale-[0.98] border border-slate-800 dark:border-slate-300 text-slate-900 dark:text-white font-semibold text-[12px] sm:text-[12.5px] tracking-[-0.01em] transition-all cursor-pointer flex items-center justify-center whitespace-nowrap"
+                              >
+                                Apply Now
+                              </button>
                             </div>
                           </div>
                         </article>
@@ -2374,82 +2090,75 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
                   </div>
                 )}
 
-                {/* Numbered Pagination Bar */}
+                {/* Numbered Pagination Bar (shadcn disabled-state pattern, themed for University Explorer) */}
                 {effectiveUnis.length > ITEMS_PER_PAGE && (
                   <div className="mt-8 space-y-3 text-center">
-                    <span className="text-xs text-slate-500 dark:text-slate-400 font-medium block">
-                      Showing {startIndex}–{endIndex} of {effectiveUnis.length} universities
+                    <span className="text-xs text-slate-500 dark:text-slate-400 font-medium block tabular-nums">
+                      Showing <strong className="text-slate-900 dark:text-white font-semibold">{startIndex}–{endIndex}</strong> of{' '}
+                      <strong className="text-slate-900 dark:text-white font-semibold">{effectiveUnis.length}</strong> universities
                     </span>
-                    <nav
+                    <Pagination
                       aria-label="University Directory Pagination"
-                      className="flex items-center justify-center gap-1.5 sm:gap-2 select-none flex-wrap"
+                      className="w-fit max-w-full rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-1.5 shadow-[0_1px_3px_rgba(15,23,42,0.04)]"
                     >
-                      {/* Previous Button */}
-                      <button
-                        type="button"
-                        aria-label="Previous Page"
-                        disabled={currentPage === 1}
-                        onClick={() => {
-                          setCurrentPage((p) => Math.max(1, p - 1));
-                          window.scrollTo({ top: 0, behavior: 'smooth' });
-                        }}
-                        className="min-w-[44px] min-h-[44px] px-3.5 flex items-center justify-center rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-35 disabled:cursor-not-allowed transition-all shadow-xs cursor-pointer active:scale-95 text-xs font-bold gap-1"
-                      >
-                        <span className="material-symbols-outlined text-[18px]">chevron_left</span>
-                        <span className="hidden sm:inline">Prev</span>
-                      </button>
-
-                      {/* Dynamic Page Buttons */}
-                      {getPaginationPages().map((pageItem, idx) => {
-                        if (pageItem === '...') {
-                          return (
-                            <span
-                              key={`ellipsis-${idx}`}
-                              className="w-10 h-11 flex items-center justify-center text-slate-400 font-bold text-sm tracking-wider"
-                            >
-                              ...
-                            </span>
-                          );
-                        }
-
-                        const pageNum = Number(pageItem);
-                        const isActive = currentPage === pageNum;
-
-                        return (
-                          <button
-                            key={`page-${pageNum}`}
-                            type="button"
-                            aria-current={isActive ? 'page' : undefined}
+                      <PaginationContent>
+                        {/* Previous Button — faded and removed from tab order when on page 1 */}
+                        <PaginationItem>
+                          <PaginationPrevious
+                            aria-disabled={currentPage === 1}
+                            disabled={currentPage === 1}
+                            tabIndex={currentPage === 1 ? -1 : undefined}
                             onClick={() => {
-                              setCurrentPage(pageNum);
+                              setCurrentPage((p) => Math.max(1, p - 1));
                               window.scrollTo({ top: 0, behavior: 'smooth' });
                             }}
-                            className={`min-w-[44px] min-h-[44px] px-3.5 flex items-center justify-center rounded-2xl text-xs font-black transition-all cursor-pointer active:scale-95 ${
-                              isActive
-                                ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25 ring-2 ring-blue-400/50'
-                                : 'border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800'
-                            }`}
-                          >
-                            {pageNum}
-                          </button>
-                        );
-                      })}
+                          />
+                        </PaginationItem>
 
-                      {/* Next Button */}
-                      <button
-                        type="button"
-                        aria-label="Next Page"
-                        disabled={currentPage === totalPages}
-                        onClick={() => {
-                          setCurrentPage((p) => Math.min(totalPages, p + 1));
-                          window.scrollTo({ top: 0, behavior: 'smooth' });
-                        }}
-                        className="min-w-[44px] min-h-[44px] px-3.5 flex items-center justify-center rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-35 disabled:cursor-not-allowed transition-all shadow-xs cursor-pointer active:scale-95 text-xs font-bold gap-1"
-                      >
-                        <span className="hidden sm:inline">Next</span>
-                        <span className="material-symbols-outlined text-[18px]">chevron_right</span>
-                      </button>
-                    </nav>
+                        {/* Dynamic Page Numbers & Ellipsis */}
+                        {getPaginationPages().map((pageItem, idx) => {
+                          if (pageItem === '...') {
+                            return (
+                              <PaginationItem key={`ellipsis-${idx}`}>
+                                <PaginationEllipsis />
+                              </PaginationItem>
+                            );
+                          }
+
+                          const pageNum = Number(pageItem);
+                          const isActive = currentPage === pageNum;
+
+                          return (
+                            <PaginationItem key={`page-${pageNum}`}>
+                              <PaginationLink
+                                isActive={isActive}
+                                onClick={() => {
+                                  if (!isActive) {
+                                    setCurrentPage(pageNum);
+                                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                                  }
+                                }}
+                              >
+                                {pageNum}
+                              </PaginationLink>
+                            </PaginationItem>
+                          );
+                        })}
+
+                        {/* Next Button — faded and removed from tab order when on last page */}
+                        <PaginationItem>
+                          <PaginationNext
+                            aria-disabled={currentPage === totalPages}
+                            disabled={currentPage === totalPages}
+                            tabIndex={currentPage === totalPages ? -1 : undefined}
+                            onClick={() => {
+                              setCurrentPage((p) => Math.min(totalPages, p + 1));
+                              window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }}
+                          />
+                        </PaginationItem>
+                      </PaginationContent>
+                    </Pagination>
                   </div>
                 )}
               </>
@@ -2457,383 +2166,107 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
             </div>
           </div>
 
-          {/* MOBILE FILTER MODAL DRAWER */}
+          {/* MOBILE FILTER MODAL DRAWER (Approved Google Stitch Design) */}
           {isMobileFilterOpen && (
             <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-slate-950/70 backdrop-blur-xs p-0 sm:p-4 animate-fadeIn">
-              <div className="relative w-full sm:max-w-lg bg-white dark:bg-slate-900 rounded-t-2xl sm:rounded-3xl p-3.5 xs:p-4 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-2xl max-h-[85vh] flex flex-col">
-                {/* Header */}
-                <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-slate-100 dark:border-slate-800 shrink-0">
-                  <div className="flex items-center gap-1.5 sm:gap-2">
-                    <span className="material-symbols-outlined text-[#fbb034] text-lg sm:text-xl font-bold">tune</span>
-                    <h3 className="font-extrabold text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider">
-                      Refine Search
-                    </h3>
-                    {activeFiltersCount > 0 && (
-                      <span className="px-2 py-0.5 rounded-full bg-[#fbb034] text-slate-950 text-[10px] sm:text-xs font-black">
-                        {activeFiltersCount}
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-2 sm:gap-3">
-                    <button
-                      type="button"
-                      onClick={resetAllFilters}
-                      className={`text-xs font-bold transition-colors cursor-pointer ${
-                        activeFiltersCount > 0
-                          ? 'text-[#fbb034] hover:text-amber-600 dark:text-[#fbb034] dark:hover:text-amber-300 underline'
-                          : 'text-slate-400 hover:text-slate-600'
-                      }`}
-                    >
-                      Reset
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setIsMobileFilterOpen(false)}
-                      className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white flex items-center justify-center cursor-pointer"
-                    >
-                      <span className="material-symbols-outlined text-sm sm:text-base">close</span>
-                    </button>
-                  </div>
-                </div>
-
-                {/* Scrollable Filter List */}
-                <div className="flex-1 overflow-y-auto space-y-3.5 sm:space-y-5 py-3 sm:py-4 pr-1 sleek-scrollbar">
-                  {/* Destinations */}
-                  <div className="space-y-1.5 sm:space-y-2">
-                    <div className="flex items-center justify-between">
-                      <label className="text-[10px] sm:text-[11px] uppercase font-extrabold tracking-wider text-slate-400 block">
-                        Destinations
-                      </label>
-                      {selectedCountries.length > 0 && (
-                        <button
-                          type="button"
-                          onClick={() => toggleCountry('all')}
-                          className="text-[11px] font-bold text-[#fbb034] hover:underline cursor-pointer"
-                        >
-                          Clear
-                        </button>
-                      )}
-                    </div>
-                    <div className="space-y-1 max-h-[160px] overflow-y-auto sleek-scrollbar">
-                      <button
-                        type="button"
-                        onClick={() => toggleCountry('all')}
-                        className="w-full flex items-center justify-between py-1.5 px-2 rounded-lg text-left text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-amber-50/70 dark:hover:bg-amber-950/20"
-                      >
-                        <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                          <div
-                            className={`w-4 h-4 rounded-[4px] border flex items-center justify-center shrink-0 ${
-                              selectedCountries.length === 0 ? 'bg-[#fbb034] border-[#fbb034] text-slate-950' : 'border-slate-300 dark:border-slate-600'
-                            }`}
-                          >
-                            {selectedCountries.length === 0 && (
-                              <svg className="w-2.5 h-2.5 stroke-current stroke-[3.5]" viewBox="0 0 16 16" fill="none">
-                                <path d="M3.5 8.5L6.5 11.5L12.5 4.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
-                              </svg>
-                            )}
-                          </div>
-                          <span className={`text-xs leading-snug break-words flex-1 text-left ${selectedCountries.length === 0 ? 'font-bold text-slate-900 dark:text-white' : ''}`}>
-                            All Destinations
-                          </span>
-                        </div>
-                        <span className="text-[11px] text-slate-400">({mockUniversities.length})</span>
-                      </button>
-
-                      {APPROVED_COUNTRY_NAMES.map((c) => {
-                        const isSelected = selectedCountries.includes(c);
-                        const count = facetCounts.countryMap[c] || 0;
-                        if (count === 0 && !isSelected) return null;
-                        return (
-                          <button
-                            key={c}
-                            type="button"
-                            onClick={() => toggleCountry(c)}
-                            className="w-full flex items-center justify-between py-1.5 px-2 rounded-lg text-left text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-amber-50/70 dark:hover:bg-amber-950/20"
-                          >
-                            <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                              <div
-                                className={`w-4 h-4 rounded-[4px] border flex items-center justify-center shrink-0 ${
-                                  isSelected ? 'bg-[#fbb034] border-[#fbb034] text-slate-950' : 'border-slate-300 dark:border-slate-600'
-                                }`}
-                              >
-                                {isSelected && (
-                                  <svg className="w-2.5 h-2.5 stroke-current stroke-[3.5]" viewBox="0 0 16 16" fill="none">
-                                    <path d="M3.5 8.5L6.5 11.5L12.5 4.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
-                                  </svg>
-                                )}
-                              </div>
-                              <span className={`text-xs leading-snug break-words flex-1 text-left ${isSelected ? 'font-bold text-slate-900 dark:text-white' : ''}`}>
-                                {c}
-                              </span>
-                            </div>
-                            <span className="text-[11px] text-slate-400">({count})</span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  {/* Study Level - Full Text Visible */}
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <label className="text-[11px] uppercase font-extrabold tracking-wider text-slate-400 block">
-                        Study Level
-                      </label>
-                      {selectedLevels.length > 0 && (
-                        <button
-                          type="button"
-                          onClick={() => setSelectedLevels([])}
-                          className="text-[11px] font-bold text-[#fbb034] hover:underline cursor-pointer"
-                        >
-                          Clear
-                        </button>
-                      )}
-                    </div>
-                    <div className="space-y-1 max-h-[260px] overflow-y-auto sleek-scrollbar pr-1">
-                      {APPROVED_QUALIFICATIONS.map((qual) => {
-                        const isSelected =
-                          qual === 'All Levels'
-                            ? selectedLevels.length === 0 || selectedLevels.includes('All Levels')
-                            : selectedLevels.includes(qual);
-                        const count = facetCounts.qualificationCounts[qual] ?? 0;
-                        return (
-                          <button
-                            key={qual}
-                            type="button"
-                            onClick={() => toggleLevel(qual)}
-                            className="w-full flex items-center justify-between py-1.5 px-2 rounded-lg text-left text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-amber-50/70 dark:hover:bg-amber-950/20"
-                          >
-                            <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                              <div
-                                className={`w-4 h-4 rounded-[4px] border flex items-center justify-center shrink-0 ${
-                                  isSelected ? 'bg-[#fbb034] border-[#fbb034] text-slate-950' : 'border-slate-300 dark:border-slate-600'
-                                }`}
-                              >
-                                {isSelected && (
-                                  <svg className="w-2.5 h-2.5 stroke-current stroke-[3.5]" viewBox="0 0 16 16" fill="none">
-                                    <path d="M3.5 8.5L6.5 11.5L12.5 4.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
-                                  </svg>
-                                )}
-                              </div>
-                              <span className={`text-xs leading-snug break-words flex-1 text-left ${isSelected ? 'font-bold text-slate-900 dark:text-white' : ''}`}>
-                                {qual}
-                              </span>
-                            </div>
-                            <span className="text-[11px] text-slate-400 shrink-0 ml-2">({count})</span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  {/* IELTS Score */}
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <label className="text-[11px] uppercase font-extrabold tracking-wider text-slate-400 block">
-                        IELTS Score
-                      </label>
-                      {selectedIelts.length > 0 && (
-                        <button
-                          type="button"
-                          onClick={() => setSelectedIelts([])}
-                          className="text-[11px] font-bold text-[#fbb034] hover:underline cursor-pointer"
-                        >
-                          Clear
-                        </button>
-                      )}
-                    </div>
-                    <div className="space-y-1">
-                      {[
-                        { id: '5.5', label: 'IELTS 5.5 (Foundation & Diploma)', count: facetCounts.ielts55 },
-                        { id: '6.0', label: 'IELTS 6.0 (Undergraduate)', count: facetCounts.ielts60 },
-                        { id: '6.5', label: 'IELTS 6.5 (Postgraduate)', count: facetCounts.ielts65 },
-                        { id: '7.0', label: 'IELTS 7.0 & Above (Top Tier)', count: facetCounts.ielts70 },
-                        { id: 'waiver', label: 'IELTS Waiver / English Medium', count: facetCounts.ieltsWaiver },
-                      ].map((item) => {
-                        const isSelected = selectedIelts.includes(item.id);
-                        return (
-                          <button
-                            key={item.id}
-                            type="button"
-                            onClick={() => toggleIelts(item.id)}
-                            className="w-full flex items-center justify-between py-1.5 px-2 rounded-lg text-left text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-amber-50/70 dark:hover:bg-amber-950/20"
-                          >
-                            <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                              <div
-                                className={`w-4 h-4 rounded-[4px] border flex items-center justify-center shrink-0 ${
-                                  isSelected ? 'bg-[#fbb034] border-[#fbb034] text-slate-950' : 'border-slate-300 dark:border-slate-600'
-                                }`}
-                              >
-                                {isSelected && (
-                                  <svg className="w-2.5 h-2.5 stroke-current stroke-[3.5]" viewBox="0 0 16 16" fill="none">
-                                    <path d="M3.5 8.5L6.5 11.5L12.5 4.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
-                                  </svg>
-                                )}
-                              </div>
-                              <span className={`text-xs leading-snug break-words flex-1 text-left ${isSelected ? 'font-bold text-slate-900 dark:text-white' : ''}`}>
-                                {item.label}
-                              </span>
-                            </div>
-                            <span className="text-[11px] text-slate-400">({item.count})</span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  {/* QS Ranking */}
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <label className="text-[11px] uppercase font-extrabold tracking-wider text-slate-400 block">
-                        QS World Ranking
-                      </label>
-                      {selectedRankTiers.length > 0 && (
-                        <button
-                          type="button"
-                          onClick={() => setSelectedRankTiers([])}
-                          className="text-[11px] font-bold text-[#fbb034] hover:underline cursor-pointer"
-                        >
-                          Clear
-                        </button>
-                      )}
-                    </div>
-                    <div className="space-y-1">
-                      {[
-                        { id: 'top100', label: 'Top 100 QS Rank', count: facetCounts.qsTop100 },
-                        { id: 'top300', label: 'Top 300 QS Rank', count: facetCounts.qsTop300 },
-                        { id: 'top500', label: 'Top 500 QS Rank', count: facetCounts.qsTop500 },
-                        { id: 'top1000', label: 'Top 1,000 QS Rank', count: facetCounts.qsTop1000 },
-                      ].map((item) => {
-                        const isSelected = selectedRankTiers.includes(item.id);
-                        return (
-                          <button
-                            key={item.id}
-                            type="button"
-                            onClick={() => toggleRankTier(item.id)}
-                            className="w-full flex items-center justify-between py-1.5 px-2 rounded-lg text-left text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-amber-50/70 dark:hover:bg-amber-950/20"
-                          >
-                            <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                              <div
-                                className={`w-4 h-4 rounded-[4px] border flex items-center justify-center shrink-0 ${
-                                  isSelected ? 'bg-[#fbb034] border-[#fbb034] text-slate-950' : 'border-slate-300 dark:border-slate-600'
-                                }`}
-                              >
-                                {isSelected && (
-                                  <svg className="w-2.5 h-2.5 stroke-current stroke-[3.5]" viewBox="0 0 16 16" fill="none">
-                                    <path d="M3.5 8.5L6.5 11.5L12.5 4.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
-                                  </svg>
-                                )}
-                              </div>
-                              <span className={`text-xs leading-snug break-words flex-1 text-left ${isSelected ? 'font-bold text-slate-900 dark:text-white' : ''}`}>
-                                {item.label}
-                              </span>
-                            </div>
-                            <span className="text-[11px] text-slate-400">({item.count})</span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  {/* Tuition Fee */}
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <label className="text-[11px] uppercase font-extrabold tracking-wider text-slate-400 block">
-                        Tuition Fee (Annual)
-                      </label>
-                      {selectedTuitions.length > 0 && (
-                        <button
-                          type="button"
-                          onClick={() => setSelectedTuitions([])}
-                          className="text-[11px] font-bold text-[#fbb034] hover:underline cursor-pointer"
-                        >
-                          Clear
-                        </button>
-                      )}
-                    </div>
-                    <div className="space-y-1">
-                      {[
-                        { id: 'under5k', label: 'Under $5,000 / yr', count: facetCounts.under5k },
-                        { id: '5k-10k', label: '$5,000 – $10,000 / yr', count: facetCounts.fee5k10k },
-                        { id: '10k-20k', label: '$10,000 – $20,000 / yr', count: facetCounts.fee10k20k },
-                        { id: 'above20k', label: 'Above $20,000 / yr', count: facetCounts.above20k },
-                      ].map((item) => {
-                        const isSelected = selectedTuitions.includes(item.id);
-                        return (
-                          <button
-                            key={item.id}
-                            type="button"
-                            onClick={() => toggleTuition(item.id)}
-                            className="w-full flex items-center justify-between py-1.5 px-2 rounded-lg text-left text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-amber-50/70 dark:hover:bg-amber-950/20"
-                          >
-                            <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                              <div
-                                className={`w-4 h-4 rounded-[4px] border flex items-center justify-center shrink-0 ${
-                                  isSelected ? 'bg-[#fbb034] border-[#fbb034] text-slate-950' : 'border-slate-300 dark:border-slate-600'
-                                }`}
-                              >
-                                {isSelected && (
-                                  <svg className="w-2.5 h-2.5 stroke-current stroke-[3.5]" viewBox="0 0 16 16" fill="none">
-                                    <path d="M3.5 8.5L6.5 11.5L12.5 4.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
-                                  </svg>
-                                )}
-                              </div>
-                              <span className={`text-xs leading-snug break-words flex-1 text-left ${isSelected ? 'font-bold text-slate-900 dark:text-white' : ''}`}>
-                                {item.label}
-                              </span>
-                            </div>
-                            <span className="text-[11px] text-slate-400">({item.count})</span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  {/* Scholarships */}
-                  <div className="space-y-2">
-                    <button
-                      type="button"
-                      onClick={() => setScholarshipOnly((prev) => !prev)}
-                      className="w-full flex items-center justify-between py-1.5 px-2 rounded-lg text-left text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-amber-50/70 dark:hover:bg-amber-950/20"
-                    >
-                      <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                        <div
-                          className={`w-4 h-4 rounded-[4px] border flex items-center justify-center shrink-0 ${
-                            scholarshipOnly ? 'bg-[#fbb034] border-[#fbb034] text-slate-950' : 'border-slate-300 dark:border-slate-600'
-                          }`}
-                        >
-                          {scholarshipOnly && (
-                            <svg className="w-2.5 h-2.5 stroke-current stroke-[3.5]" viewBox="0 0 16 16" fill="none">
-                              <path d="M3.5 8.5L6.5 11.5L12.5 4.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
-                            </svg>
-                          )}
-                        </div>
-                        <span className={`text-xs leading-snug break-words flex-1 text-left ${scholarshipOnly ? 'font-bold text-slate-900 dark:text-white' : ''}`}>
-                          Scholarships Available
-                        </span>
-                      </div>
-                      <span className="text-[11px] text-slate-400">({facetCounts.scholarshipCount})</span>
-                    </button>
-                  </div>
-                </div>
-
-                {/* Footer Controls */}
-                <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center gap-3 shrink-0">
-                  <button
-                    type="button"
-                    onClick={resetAllFilters}
-                    className="flex-1 py-3 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold hover:bg-slate-50 transition-colors"
-                  >
-                    Reset All
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setIsMobileFilterOpen(false)}
-                    className="flex-2 py-3 rounded-xl bg-[#fbb034] hover:bg-amber-500 text-slate-950 text-xs font-extrabold shadow-md shadow-amber-400/25 active:scale-95 transition-all"
-                  >
-                    Show {filteredUnis.length} Universities
-                  </button>
-                </div>
+              <div className="relative w-full sm:max-w-[360px]">
+                <StitchCourseFilterSidebar
+                  mode="universities"
+                  allCourses={mockCourses}
+                  allUnis={mockUniversities}
+                  totalResults={filteredUnis.length}
+                  selectedCountries={selectedCountries}
+                  selectedCities={selectedCities}
+                  selectedInstitutions={selectedInstitutions}
+                  selectedLevels={selectedLevels}
+                  selectedFields={selectedFields}
+                  selectedIelts={selectedIelts}
+                  ieltsMin={ieltsMin}
+                  ieltsMax={ieltsMax}
+                  selectedModes={selectedModes}
+                  selectedIntakes={selectedIntakes}
+                  selectedDurations={selectedDurations}
+                  minFee={minFee}
+                  maxFee={maxFee}
+                  selectedTypes={selectedTypes}
+                  selectedRankTiers={selectedRankTiers}
+                  scholarshipOnly={scholarshipOnly}
+                  feeWaiverOnly={feeWaiverOnly}
+                  onToggleCountry={toggleCountry}
+                  onClearCountries={() => {
+                    setSelectedCountries([]);
+                    setCurrentPage(1);
+                  }}
+                  onToggleCity={toggleCity}
+                  onClearCities={() => {
+                    setSelectedCities([]);
+                    setCurrentPage(1);
+                  }}
+                  onToggleInstitution={toggleInstitution}
+                  onClearInstitutions={() => {
+                    setSelectedInstitutions([]);
+                    setCurrentPage(1);
+                  }}
+                  onToggleLevel={toggleLevel}
+                  onSelectAllLevels={() => {
+                    setSelectedLevels([...SPECIFIC_QUALIFICATIONS]);
+                    setCurrentPage(1);
+                  }}
+                  onClearLevels={() => {
+                    setSelectedLevels([]);
+                    setCurrentPage(1);
+                  }}
+                  onToggleField={toggleField}
+                  onClearFields={() => {
+                    setSelectedFields([]);
+                    setCurrentPage(1);
+                  }}
+                  onToggleIelts={toggleIelts}
+                  onChangeIeltsRange={(minV, maxV) => {
+                    setIeltsMin(minV);
+                    setIeltsMax(maxV);
+                    setCurrentPage(1);
+                  }}
+                  onResetIelts={() => {
+                    setSelectedIelts([]);
+                    setIeltsMin(STITCH_IELTS_MIN);
+                    setIeltsMax(STITCH_IELTS_MAX);
+                    setCurrentPage(1);
+                  }}
+                  onToggleMode={toggleMode}
+                  onToggleIntake={toggleIntake}
+                  onToggleDuration={toggleDuration}
+                  onChangeFeeRange={(minV, maxV) => {
+                    setMinFee(minV);
+                    setMaxFee(maxV);
+                    setCurrentPage(1);
+                  }}
+                  onResetFeeRange={() => {
+                    setMinFee(0);
+                    setMaxFee(STITCH_MAX_BUDGET);
+                    setCurrentPage(1);
+                  }}
+                  onToggleType={toggleType}
+                  onClearTypes={() => {
+                    setSelectedTypes([]);
+                    setCurrentPage(1);
+                  }}
+                  onToggleRankTier={toggleRankTier}
+                  onToggleScholarship={() => {
+                    setScholarshipOnly((v) => !v);
+                    setCurrentPage(1);
+                  }}
+                  onToggleFeeWaiver={() => {
+                    setFeeWaiverOnly((v) => !v);
+                    setCurrentPage(1);
+                  }}
+                  onResetAll={resetAllFilters}
+                  onApplyFilters={() => {
+                    setCurrentPage(1);
+                  }}
+                  isMobile
+                  onCloseMobile={() => setIsMobileFilterOpen(false)}
+                />
               </div>
             </div>
           )}
@@ -2905,6 +2338,6 @@ export const UniversityExplorerView: React.FC<UniversityExplorerViewProps> = ({
           </div>
         </div>
       )}
-    </div>
+    </ExplorerPageShell>
   );
 };

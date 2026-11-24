@@ -96,20 +96,25 @@
   /* 1. Typography Hierarchy & Apple Negative Letter-Tracking */
   main h1,
   .hero-study-in {
-    font-size: clamp(1.85rem, 7.6vw, 2.25rem) !important;
-    letter-spacing: -0.028em !important;
-    line-height: 1.08 !important;
-    font-weight: 800 !important;
+    font-size: clamp(1.85rem, 8.2vw, 2.2rem) !important;
+    letter-spacing: -0.03em !important;
+    line-height: 1.04 !important;
+    font-weight: 900 !important;
     text-wrap: balance !important;
   }
 
   main h2,
   .gees-section-title {
-    font-size: clamp(1.42rem, 6vw, 1.75rem) !important;
+    font-size: 30px !important;
     letter-spacing: -0.024em !important;
-    line-height: 1.15 !important;
+    line-height: 30px !important;
     font-weight: 800 !important;
     text-wrap: balance !important;
+  }
+
+  #partners-section h2 {
+    font-weight: 700 !important;
+    text-align: center !important;
   }
 
   /* Golden Pill Highlight Badge in Section Titles */
@@ -129,6 +134,11 @@
     letter-spacing: -0.02em !important;
     font-weight: 800 !important;
     white-space: nowrap !important;
+  }
+
+  #cta-reveal span.bg-\[\#fbb034\] {
+    font-size: 30px !important;
+    line-height: 30px !important;
   }
 
   main h3 {
@@ -168,28 +178,7 @@
     margin-right: auto !important;
   }
 
-  /* 2. Section Spacing & Vertical Rhythm (Consistent 44px / 2.75rem to 48px / 3rem) */
-  main > section {
-    padding-top: 2.75rem !important;
-    padding-bottom: 2.75rem !important;
-  }
-
-  /* Hero section sits directly beneath header without excessive dead air */
-  main > section:first-of-type {
-    padding-top: 0.5rem !important;
-    padding-bottom: 1.75rem !important;
-  }
-
-  /* Horizontal container padding consistency (16px / 1rem edge margin) */
-  main > section > div:first-child,
-  main > section > .w-full,
-  main > section > .max-w-7xl,
-  main > section > .max-w-6xl {
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
-  }
-
-  /* Consistent Header to Content Vertical Rhythm (20px to 24px) */
+  /* 2. Consistent Header to Content Vertical Rhythm on small phones */
   main > section header,
   main > section .gees-services-coverflow__head,
   main > section [data-purpose="section-header"],
@@ -200,7 +189,7 @@
   section[aria-labelledby="geesServicesTitle"] .gees-services-coverflow__head,
   #partners-section [data-purpose="section-header"],
   #why-choose-section > div:first-of-type {
-    margin-bottom: 1.35rem !important;
+    margin-bottom: 1.5rem !important;
   }
 
   /* 3. Border-Radius Scale & Proportions (Apple soft curve hierarchy) */
@@ -212,12 +201,6 @@
   main > section [class*="rounded-[36px]"],
   main > section [class*="rounded-[2.5rem]"] {
     border-radius: 1.25rem !important;
-  }
-
-  #cta-reveal .rounded-3xl,
-  #cta-reveal [class*="rounded-3xl"],
-  #cta-reveal [class*="rounded-\[2.5rem\]"] {
-    padding: 1.5rem 1.15rem !important;
   }
 
   /* 4. Touch Targets & Interaction Rhythm */
@@ -260,18 +243,19 @@
   /* 6. Hero Section Typewriter & Search Proportions on Mobile */
   .hero-typewriter-box {
     min-height: 44px;
+    line-height: 1.1 !important;
     display: inline-flex;
     align-items: center;
     vertical-align: middle;
-    border-radius: 1rem !important;
-    padding: 0.35rem 0.85rem !important;
+    border-radius: 0.9rem !important;
+    padding: 0.35rem 0.78rem !important;
   }
 
   .hero-typewriter {
-    line-height: 1;
+    line-height: 1.1 !important;
     display: inline-flex;
     align-items: center;
-    font-size: clamp(1.4rem, 5.8vw, 1.75rem) !important;
+    font-size: clamp(1.3rem, 6.2vw, 1.7rem) !important;
   }
 
   [data-purpose="compact-search-widget"] {
@@ -1186,22 +1170,28 @@ body {
   z-index: 90 !important;
 }
 
-/* 1. Top Information Bar */
+/* 1. Top Information Bar (Decoupled from layout flow for zero-reflow 120fps GPU glide) */
 .gees-topbar-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
   pointer-events: auto;
   width: 100%;
   height: 40px;
-  max-height: 40px;
   overflow: hidden;
   background-color: #0B1329;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   opacity: 1;
   visibility: visible;
-  transform: translateY(0);
-  transition: opacity 0.35s ease,
-              transform 0.45s cubic-bezier(0.165, 0.84, 0.44, 1),
-              max-height 0.45s cubic-bezier(0.165, 0.84, 0.44, 1);
-  will-change: transform, opacity, max-height;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transition: transform 0.48s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 0.36s cubic-bezier(0.22, 1, 0.36, 1),
+              visibility 0.48s linear;
+  will-change: transform, opacity;
 }
 
 @media (max-width: 768px) {
@@ -1211,51 +1201,54 @@ body {
 }
 
 .gees-header-wrapper.scrolled .gees-topbar-wrapper {
-  max-height: 0;
   opacity: 0;
   visibility: hidden;
-  transform: translateY(-100%);
+  transform: translate3d(0, -100%, 0);
   pointer-events: none;
 }
 
-/* 2. Main Navigation Bar */
+/* 2. Main Navigation Bar (Exact-Pixel Width + GPU translate3d + Exact Pill Radius for 120fps ProMotion) */
 .gees-main-navbar {
+  position: relative;
+  z-index: 1;
   pointer-events: auto;
-  width: 100%;
-  max-width: 100%;
   margin: 0 auto;
-  border-radius: 0;
-  transition: opacity 0.5s cubic-bezier(0.165, 0.84, 0.44, 1),
-              transform 0.5s cubic-bezier(0.165, 0.84, 0.44, 1),
-              max-width 0.5s cubic-bezier(0.165, 0.84, 0.44, 1),
-              width 0.5s cubic-bezier(0.165, 0.84, 0.44, 1),
-              margin 0.5s cubic-bezier(0.165, 0.84, 0.44, 1),
-              border-radius 0.5s cubic-bezier(0.165, 0.84, 0.44, 1),
-              background-color 0.5s cubic-bezier(0.165, 0.84, 0.44, 1),
-              border-color 0.5s cubic-bezier(0.165, 0.84, 0.44, 1),
-              box-shadow 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
-  will-change: opacity, max-width, width;
+  border-radius: 0px;
+  transform: translate3d(0, 40px, 0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transition: width 0.52s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.52s cubic-bezier(0.22, 1, 0.36, 1),
+              border-radius 0.52s cubic-bezier(0.22, 1, 0.36, 1),
+              background-color 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.48s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform, width, border-radius;
 }
 
-/* Expanded State (at top of page) */
+.gees-main-navbar[data-resizing="true"] {
+  transition: none !important;
+}
+
+/* Expanded State (at top of page — full viewport width, zero border-width shift) */
 .gees-main-navbar.expanded {
   background-color: #ffffff;
-  border-bottom: 1px solid rgba(226, 232, 240, 0.85);
+  border: 1px solid transparent;
+  border-bottom-color: rgba(226, 232, 240, 0.85);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
 }
 
 .dark .gees-main-navbar.expanded {
   background-color: #0B1329;
-  border-bottom: 1px solid rgba(30, 41, 59, 0.85);
+  border: 1px solid transparent;
+  border-bottom-color: rgba(30, 41, 59, 0.85);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
 }
 
-/* Compact Floating Capsule State: Light Mode Default when Scrolled */
+/* Compact Floating Capsule State: Light Mode Default when Scrolled (36px = exact 72px/2 pill curve) */
 .gees-main-navbar.scrolled-light {
-  width: 92%;
-  max-width: 1360px;
-  margin: 15px auto 0;
-  border-radius: 100px;
+  transform: translate3d(0, 14px, 0);
+  border-radius: 36px;
   background-color: #ffffff !important;
   border: 1px solid rgba(226, 232, 240, 0.9) !important;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12) !important;
@@ -1263,35 +1256,36 @@ body {
 
 /* Compact Floating Capsule State: Dark Mode when Dark Theme is Active */
 .gees-main-navbar.scrolled-dark {
-  width: 92%;
-  max-width: 1360px;
-  margin: 15px auto 0;
-  border-radius: 100px;
+  transform: translate3d(0, 14px, 0);
+  border-radius: 36px;
   background-color: #0B1329 !important;
   border: 1px solid rgba(255, 255, 255, 0.14) !important;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.28) !important;
 }
 
 @media (max-width: 768px) {
+  .gees-main-navbar {
+    transform: translate3d(0, 0px, 0);
+  }
   .gees-main-navbar.scrolled-light,
   .gees-main-navbar.scrolled-dark {
-    width: 94%;
-    margin: 10px auto 0;
+    transform: translate3d(0, 10px, 0);
+    border-radius: 30px;
   }
 }
 
-/* Spring-based transition with ease-out-back timing function for mobile menu expand/collapse */
+/* Spring-based transition with ease-out-back timing function for mobile/iPad menu expand/collapse */
 @media (max-width: 1279px) {
   .gees-main-navbar {
     max-height: 60px;
     overflow: visible;
-    transition: max-height 0.48s cubic-bezier(0.34, 1.35, 0.64, 1),
-                border-radius 0.35s cubic-bezier(0.34, 1.35, 0.64, 1),
-                box-shadow 0.35s ease,
-                background-color 0.35s ease,
-                border-color 0.35s ease,
-                width 0.4s ease,
-                margin 0.4s ease;
+    transition: width 0.52s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.52s cubic-bezier(0.22, 1, 0.36, 1),
+                max-height 0.48s cubic-bezier(0.34, 1.35, 0.64, 1),
+                border-radius 0.48s cubic-bezier(0.22, 1, 0.36, 1),
+                box-shadow 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+                background-color 0.36s cubic-bezier(0.22, 1, 0.36, 1),
+                border-color 0.36s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   @media (min-width: 640px) {
@@ -1301,21 +1295,18 @@ body {
   }
 
   .gees-main-navbar.mobile-menu-open {
+    transform: translate3d(0, 10px, 0) !important;
     max-height: min(92vh, 840px) !important;
     border-radius: 28px !important;
     overflow: hidden !important;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
     background-color: #ffffff !important;
-    border-color: rgba(226, 232, 240, 0.95) !important;
-    width: 94% !important;
-    margin-top: 10px !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
+    border: 1px solid rgba(226, 232, 240, 0.95) !important;
   }
 
   .dark .gees-main-navbar.mobile-menu-open {
     background-color: #0B1329 !important;
-    border-color: rgba(255, 255, 255, 0.14) !important;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
   }
 }
 
@@ -1397,9 +1388,7 @@ html {
   -webkit-overflow-scrolling: touch;
 }
 
-.gees-header-wrapper,
-.gees-topbar-wrapper {
-  transform: translateZ(0);
+.gees-header-wrapper {
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
@@ -1413,4 +1402,128 @@ html {
   }
 }
 
+/* ==========================================================================
+   GEES Approved Google Stitch Filter Sidebar Styles
+   ========================================================================== */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 9999px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
 
+.range-slider-container {
+  position: relative;
+  height: 4px;
+}
+.range-input {
+  position: absolute;
+  top: -6px;
+  left: 0;
+  width: 100%;
+  height: 16px;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  pointer-events: none;
+  margin: 0;
+}
+.range-input::-webkit-slider-thumb {
+  pointer-events: auto;
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2.5px solid #f59e0b;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+.range-input::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+  border-color: #d97706;
+}
+.range-input::-moz-range-thumb {
+  pointer-events: auto;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2.5px solid #f59e0b;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+.range-input-gooey {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  pointer-events: none;
+  margin: 0;
+}
+.range-input-gooey:focus {
+  outline: none;
+}
+.range-input-gooey::-webkit-slider-thumb {
+  pointer-events: auto;
+  appearance: none;
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  cursor: grab;
+}
+.range-input-gooey:active::-webkit-slider-thumb {
+  cursor: grabbing;
+}
+.range-input-gooey::-moz-range-thumb {
+  pointer-events: auto;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  cursor: grab;
+}
+.range-input-gooey:active::-moz-range-thumb {
+  cursor: grabbing;
+}
+
+@keyframes geesSlideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slideUp {
+  animation: geesSlideUp 220ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-slideUp {
+    animation: none;
+  }
+}

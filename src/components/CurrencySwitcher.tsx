@@ -214,7 +214,7 @@ export const HeaderCurrencyExchangeIcon: React.FC<HeaderCurrencyExchangeIconProp
                 Select Currency
               </span>
               <div className="flex items-center gap-1.5">
-                <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${isLive ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'}`}>
+                <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${isLive ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-950' : 'bg-slate-200/80 text-slate-700 dark:bg-slate-800 dark:text-slate-300'}`}>
                   {isLive ? '● Live Rates' : '● Standard Rates'}
                 </span>
                 <button
@@ -231,14 +231,14 @@ export const HeaderCurrencyExchangeIcon: React.FC<HeaderCurrencyExchangeIconProp
             </div>
 
             {/* Live FX Rate Date & Last Update Time Banner */}
-            <div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200/90 dark:border-emerald-800/60 text-[10.5px]">
-              <div className="flex items-center gap-1.5 text-emerald-800 dark:text-emerald-300 font-medium min-w-0 flex-wrap">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
-                <span>Date: <strong className="font-bold text-slate-900 dark:text-white">{fxDateStr}</strong></span>
-                <span className="text-emerald-400 dark:text-emerald-600">•</span>
+            <div className="flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-lg bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700/80 text-[10.5px]">
+              <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-400 font-medium min-w-0 flex-wrap">
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-900 dark:bg-white animate-pulse shrink-0"></span>
+                <span>Date: <strong className="font-bold text-slate-950 dark:text-white">{fxDateStr}</strong></span>
+                <span className="text-slate-300 dark:text-slate-600">•</span>
                 <span>Last updated: <strong className="font-semibold text-slate-800 dark:text-slate-200">{fxTimeStr}</strong></span>
               </div>
-              <span className="text-[9px] font-bold text-emerald-700 dark:text-emerald-400 bg-white/80 dark:bg-slate-900/80 px-1.5 py-0.5 rounded shadow-2xs border border-emerald-100 dark:border-emerald-900 shrink-0">
+              <span className="text-[9px] font-bold text-white dark:text-slate-950 bg-slate-900 dark:bg-white px-1.5 py-0.5 rounded shadow-2xs shrink-0">
                 1 MYR Base
               </span>
             </div>
@@ -249,7 +249,7 @@ export const HeaderCurrencyExchangeIcon: React.FC<HeaderCurrencyExchangeIconProp
                 placeholder="Search currency, code or country..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-8 pr-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-400"
+                className="w-full pl-8 pr-3 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 rounded-xl text-xs font-medium text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:outline-none focus:border-[#0a1120] dark:focus:border-[#fbb034] focus:ring-1 focus:ring-[#0a1120] dark:focus:ring-[#fbb034] transition-all"
                 autoFocus
               />
               <svg className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -294,7 +294,7 @@ export const HeaderCurrencyExchangeIcon: React.FC<HeaderCurrencyExchangeIconProp
                         <div className="flex items-center gap-1.5 text-[10px] text-slate-500 dark:text-slate-400 flex-wrap">
                           <span className="truncate">{opt.country} ({opt.symbol})</span>
                           {optRate !== undefined && (
-                            <span className="font-semibold text-emerald-600 dark:text-emerald-400 shrink-0">
+                            <span className="font-semibold text-slate-700 dark:text-slate-300 shrink-0">
                               • 1 MYR = {optRate >= 100 ? Math.round(optRate).toLocaleString() : optRate < 0.01 ? optRate.toFixed(4) : optRate.toFixed(3)}
                             </span>
                           )}
@@ -429,7 +429,7 @@ export const SelectCurrencyDropdown: React.FC<HeaderCurrencyExchangeIconProps> =
               placeholder="Search currency or country..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-400"
+              className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 rounded-xl text-xs font-medium text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:outline-none focus:border-[#0a1120] dark:focus:border-[#fbb034] focus:ring-1 focus:ring-[#0a1120] dark:focus:ring-[#fbb034] transition-all"
               autoFocus
             />
           </div>

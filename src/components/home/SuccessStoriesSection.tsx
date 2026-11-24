@@ -72,23 +72,23 @@ export const SuccessStoriesSection: React.FC<SuccessStoriesSectionProps> = ({ on
   };
 
   return (
-    <section className="w-full bg-white dark:bg-[#0B1329] py-8 min-[390px]:py-10 sm:py-20 border-t border-slate-100 dark:border-slate-800">
+    <section className="w-full bg-white dark:bg-[#0B1329] py-10 sm:py-20 border-t border-slate-100 dark:border-slate-800">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-6 sm:mb-8 px-2">
-          <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold font-display tracking-tight text-slate-900 dark:text-white flex items-center justify-center flex-wrap gap-2 sm:gap-3 md:gap-3.5 leading-tight text-center">
+        <div className="text-center max-w-3xl mx-auto mb-5 sm:mb-8 px-0 sm:px-2">
+          <h2 className="text-[30px] sm:text-4xl md:text-5xl lg:text-6xl font-extrabold font-display tracking-tight text-slate-900 dark:text-white flex items-center justify-center flex-wrap gap-2 sm:gap-3 md:gap-3.5 leading-[30px] sm:leading-tight text-center">
             <span>Success</span>
             <span className="bg-[#fbb034] text-slate-950 px-3.5 sm:px-5 md:px-6 py-0.5 sm:py-1 md:py-1.5 rounded-xl sm:rounded-2xl font-black tracking-tight leading-none shadow-sm shrink-0">
               Stories
             </span>
           </h2>
-          <p className="mt-2.5 sm:mt-3 text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-400 font-normal leading-relaxed max-w-2xl mx-auto px-2 text-center">
+          <p className="mt-2.5 sm:mt-3 text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-400 font-normal leading-relaxed max-w-2xl mx-auto px-0 sm:px-2 text-center">
             Real student experiences with admission, visa and arrival support.
           </p>
         </div>
 
         {/* Filter Segmented Tab Bar with Universal 120 FPS Sliding Indicator */}
-        <div className="w-full mx-auto mb-8 sm:mb-10 flex justify-center">
+        <div className="w-full mx-auto mb-6 sm:mb-10 flex justify-center">
           <AnimatedTabs
             tabs={tabs}
             activeId={selectedFilter}
@@ -106,9 +106,9 @@ export const SuccessStoriesSection: React.FC<SuccessStoriesSectionProps> = ({ on
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
-          className="w-full max-w-5xl bg-white dark:bg-slate-900 rounded-3xl sm:rounded-[36px] p-4 min-[390px]:p-5 sm:p-10 lg:p-12 shadow-xl border border-slate-100 dark:border-slate-800 transition-[opacity,transform] duration-300 ease-out will-change-[opacity,transform] select-none max-sm:overflow-hidden"
+          className="w-full max-w-5xl bg-white dark:bg-slate-900 rounded-3xl sm:rounded-[36px] p-4 sm:p-10 lg:p-12 shadow-xl border border-slate-100 dark:border-slate-800 transition-[opacity,transform] duration-300 ease-out will-change-[opacity,transform] select-none max-sm:overflow-hidden"
         >
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-center">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-5 sm:gap-8 md:gap-12 items-center">
             {/* Left 3D Perspective Photo Stack */}
             <div className="md:col-span-5 lg:col-span-6 flex justify-center items-center py-2">
               <div className="relative w-full max-w-[220px] min-[390px]:max-w-[260px] sm:max-w-[340px] aspect-[4/5] mx-auto preserve-3d">
@@ -179,7 +179,7 @@ export const SuccessStoriesSection: React.FC<SuccessStoriesSectionProps> = ({ on
                 </div>
 
                 {/* Quote with opening quote symbol - Fixed height and truncation for identical alignment */}
-                <div className="mt-5 mb-6 h-[160px] sm:h-[180px] flex flex-col justify-between items-start overflow-hidden">
+                <div className="mt-3 sm:mt-5 mb-4 sm:mb-6 h-auto min-h-[120px] sm:h-[180px] flex flex-col justify-between items-start overflow-hidden">
                   <p className="text-base sm:text-xl font-bold text-slate-800 dark:text-slate-200 leading-relaxed line-clamp-4 sm:line-clamp-4">
                     <span className="text-slate-400 text-2xl mr-1 select-none font-serif">“</span>
                     {activeStory.quote}
@@ -203,7 +203,7 @@ export const SuccessStoriesSection: React.FC<SuccessStoriesSectionProps> = ({ on
               </div>
 
               {/* Navigation Controls + Pagination Dots */}
-              <div className="flex items-center justify-between pt-5 border-t border-slate-100 dark:border-slate-800 mt-4">
+              <div className="flex items-center justify-between pt-4 sm:pt-5 border-t border-slate-100 dark:border-slate-800 mt-2 sm:mt-4">
                 <div className="flex items-center gap-3">
                   <button
                     onClick={prevSlide}
@@ -246,7 +246,7 @@ export const SuccessStoriesSection: React.FC<SuccessStoriesSectionProps> = ({ on
         </div>
 
         {/* Google Reviews CTA */}
-        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 text-center px-2 w-full">
+        <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 text-center px-0 sm:px-2 w-full">
           <a
             href="https://globaleducationexpert.com"
             target="_blank"

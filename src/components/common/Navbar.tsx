@@ -18,7 +18,7 @@ interface NavbarProps {
   isMobileMenuOpen?: boolean;
 }
 
-function useScrollHeader(compactThreshold = 50, expandThreshold = 30) {
+function useScrollHeader(compactThreshold = 50, expandThreshold = 24) {
   const [isScrolled, setIsScrolled] = useState(false);
   const isScrolledRef = useRef(false);
 
@@ -27,19 +27,16 @@ function useScrollHeader(compactThreshold = 50, expandThreshold = 30) {
     let rafId: number | null = null;
 
     const updateScrollState = () => {
-      const scrollY = window.scrollY || window.pageYOffset || 0;
+      // Clamp >= 0 so iOS/iPadOS rubber-band overscroll bounce at the top never flickers
+      const scrollY = Math.max(0, window.scrollY || window.pageYOffset || 0);
       const currentlyScrolled = isScrolledRef.current;
 
       if (!currentlyScrolled && scrollY > compactThreshold) {
         isScrolledRef.current = true;
-        React.startTransition(() => {
-          setIsScrolled(true);
-        });
+        setIsScrolled(true);
       } else if (currentlyScrolled && scrollY < expandThreshold) {
         isScrolledRef.current = false;
-        React.startTransition(() => {
-          setIsScrolled(false);
-        });
+        setIsScrolled(false);
       }
       ticking = false;
     };
@@ -62,6 +59,44 @@ function useScrollHeader(compactThreshold = 50, expandThreshold = 30) {
   return isScrolled;
 }
 
+function useLayoutViewportWidth() {
+  const [viewportWidth, setViewportWidth] = useState<number>(() =>
+    typeof document !== 'undefined' ? document.documentElement.clientWidth : 1440
+  );
+  const [isResizing, setIsResizing] = useState(false);
+
+  useEffect(() => {
+    let resizeTimer: ReturnType<typeof setTimeout> | null = null;
+
+    const syncWidth = () => {
+      const nextWidth = document.documentElement.clientWidth;
+      setViewportWidth((prev) => {
+        if (prev === nextWidth) return prev;
+        setIsResizing(true);
+        if (resizeTimer) clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          setIsResizing(false);
+        }, 140);
+        return nextWidth;
+      });
+    };
+
+    setViewportWidth(document.documentElement.clientWidth);
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(syncWidth) : null;
+    if (ro) ro.observe(document.documentElement);
+    window.addEventListener('resize', syncWidth, { passive: true });
+    window.addEventListener('orientationchange', syncWidth, { passive: true });
+    return () => {
+      if (ro) ro.disconnect();
+      window.removeEventListener('resize', syncWidth);
+      window.removeEventListener('orientationchange', syncWidth);
+      if (resizeTimer) clearTimeout(resizeTimer);
+    };
+  }, []);
+
+  return { viewportWidth, isResizing };
+}
+
 export const Navbar: React.FC<NavbarProps> = ({
   currentView,
   onNavigate,
@@ -73,7 +108,14 @@ export const Navbar: React.FC<NavbarProps> = ({
   onToggleTheme,
   isMobileMenuOpen = false
 }) => {
-  const isScrolled = useScrollHeader(50, 30);
+  const isScrolled = useScrollHeader(50, 24);
+  const { viewportWidth, isResizing } = useLayoutViewportWidth();
+  const navbarTargetWidth =
+    isMobileMenuOpen && viewportWidth < 1280
+      ? Math.round(viewportWidth * 0.96)
+      : isScrolled
+        ? Math.min(Math.round(viewportWidth * 0.96), 1600)
+        : viewportWidth;
   const [portalTab, setPortalTab] = useState<'signin' | 'signup'>('signin');
   const [selectedRole, setSelectedRole] = useState<'student' | 'agent' | 'counselor'>('student');
   const [selectedSignupRole, setSelectedSignupRole] = useState<'student' | 'agent'>('student');
@@ -289,16 +331,24 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
       </div>
 
-      {/* 2. Main Navigation Bar with Fluid Morphing */}
+      {/* 2. Main Navigation Bar with 120fps Hardware-Accelerated Fluid Morphing */}
       <div
+        data-resizing={isResizing ? 'true' : undefined}
+        style={{ width: `${navbarTargetWidth}px` }}
         className={`gees-main-navbar ${
           isMobileMenuOpen ? 'mobile-menu-open' : ''
         } ${
           isScrolled ? (isDark ? 'scrolled-dark' : 'scrolled-light') : 'expanded'
-        } -mt-1 xs:-mt-1.5 sm:mt-0 flex flex-col rounded-full shadow-lg shadow-black/5 dark:shadow-black/40 border border-slate-200/80 dark:border-slate-800`}
+        } flex flex-col`}
       >
         {/* Top Row: Brand Logo, Desktop Nav, Right Utility Controls */}
-        <div className="w-full h-[60px] sm:h-[72px] shrink-0 flex items-center justify-between px-3 xs:px-4 sm:px-6 md:px-7 lg:px-8 xl:px-10 gap-1.5 xs:gap-2 sm:gap-6">
+        <div
+          className={`w-full h-[60px] sm:h-[72px] shrink-0 flex items-center justify-between gap-1.5 xs:gap-2 sm:gap-6 transition-[padding] duration-[520ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
+            isScrolled
+              ? 'px-3 xs:px-4 sm:px-6 md:px-7 lg:px-8 xl:px-10'
+              : 'px-3 xs:px-4 sm:px-5 lg:px-6'
+          }`}
+        >
         {/* Brand Logo */}
         <div
           onClick={() => onNavigate('home')}
@@ -350,8 +400,9 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               ref={(el) => { navButtonRefs.current['countries'] = el; }}
               type="button"
+              onClick={() => handleMenuNavigate('study-abroad')}
               className={`relative px-3.5 py-2 rounded-full flex items-center gap-1.5 transition-colors duration-150 font-semibold cursor-pointer z-10 ${
-                currentView === 'destinations'
+                currentView === 'destinations' || currentView === 'study-abroad'
                   ? (isScrolled
                       ? (isDark ? 'text-[#fbb034] font-bold' : 'text-blue-600 font-bold')
                       : 'text-blue-600 dark:text-blue-400 font-bold')
@@ -462,13 +513,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </div>
 
                   {/* Bottom footer link */}
-                  <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between px-2">
+                  <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3 px-2">
                     <span className="text-xs text-slate-500 dark:text-slate-400 font-normal">
-                      Explore 50+ study destinations worldwide.
+                      Explore 15+ study destinations worldwide
                     </span>
                     <button
-                      onClick={() => handleMenuNavigate('destinations', 'all')}
-                      className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 text-[13px] font-bold hover:underline cursor-pointer"
+                      onClick={() => handleMenuNavigate('study-abroad')}
+                      className="inline-flex items-center gap-1 text-amber-600 dark:text-amber-400 text-[13px] font-bold hover:underline cursor-pointer shrink-0"
                     >
                       <span>View All Countries</span>
                       <span className="material-symbols-outlined text-[15px]">arrow_forward</span>
@@ -533,6 +584,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               ref={(el) => { navButtonRefs.current['services'] = el; }}
               type="button"
+              onClick={() => handleMenuNavigate('services')}
               className={`relative px-3.5 py-2 rounded-full flex items-center gap-1.5 transition-colors duration-150 font-semibold cursor-pointer z-10 ${
                 currentView === 'services'
                   ? (isScrolled
@@ -768,6 +820,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                         { icon: '🏢', label: 'About Us', action: () => handleMenuNavigate('about') },
                         { icon: '📞', label: 'Contact Us', action: () => handleMenuNavigate('contact') },
                         { icon: '🏫', label: 'Language Centers', action: () => handleMenuNavigate('language-centers') },
+                        { icon: '📋', label: 'Language Center List', action: () => handleMenuNavigate('language-center-list') },
                         { icon: '🎓', label: 'Application Tracker', action: () => { onRoleChange('student'); handleMenuNavigate('student-portal'); } },
                         { icon: '🇲🇾', label: 'EMGS Visa Tracker', action: () => handleMenuNavigate('track-visa') },
                         { icon: '📘', label: 'Students Guide', action: () => handleMenuNavigate('students-guide') },
@@ -1238,8 +1291,8 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Unfolded Menu Body matching all devices */}
         <div
-          className={`flex flex-col w-full border-t border-slate-100 dark:border-slate-800/80 overflow-y-auto overscroll-contain transition-opacity duration-300 ${
-            isMobileMenuOpen ? 'opacity-100 px-4 py-3 sm:px-6 sm:py-4 pointer-events-auto' : 'opacity-0 pointer-events-none h-0 py-0'
+          className={`flex flex-col w-full max-w-[1600px] mx-auto text-[16px] leading-[29px] border-t border-slate-100 dark:border-slate-800/80 overflow-y-auto overscroll-contain transition-opacity duration-300 ${
+            isMobileMenuOpen ? 'opacity-100 px-4 pt-0 pb-3 sm:px-6 sm:pt-0 sm:pb-4 pointer-events-auto' : 'opacity-0 pointer-events-none h-0 py-0'
           }`}
           style={{
             maxHeight: isMobileMenuOpen ? 'calc(min(92vh, 840px) - 76px)' : '0px'
@@ -1444,6 +1497,18 @@ export const Navbar: React.FC<NavbarProps> = ({
                       ))}
                     </div>
                   </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onNavigate('services');
+                      onOpenMobileMenu();
+                    }}
+                    className="w-full py-2.5 rounded-xl bg-slate-100/90 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-2xs"
+                  >
+                    <span>Explore All Services</span>
+                    <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                  </button>
                 </div>
               )}
             </div>
@@ -1789,7 +1854,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </nav>
 
           {/* Follow Us & Bottom Action CTA Section matching Screenshot 5 */}
-          <div className="pt-3.5 mt-2 border-t border-slate-100 dark:border-slate-800 space-y-3">
+          <div className="pt-[10px] mt-2 border-t border-slate-100 dark:border-slate-800 space-y-3">
             {/* Header Currency, Theme, & WhatsApp Support */}
             <div className="flex items-center justify-between text-xs">
               <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
@@ -1893,7 +1958,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onNavigate('apply');
                 onOpenMobileMenu();
               }}
-              className="group w-full py-3 rounded-xl bg-gradient-to-r from-[#fbb034] to-[#f59e0b] hover:from-[#f59e0b] hover:to-[#d97706] text-slate-950 font-extrabold text-sm tracking-wide shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer transition-all duration-300 active:scale-[0.99]"
+              className="group w-full ml-0 py-[10px] rounded-xl bg-gradient-to-r from-[#fbb034] to-[#f59e0b] hover:from-[#f59e0b] hover:to-[#d97706] text-slate-950 font-extrabold text-sm tracking-wide shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer transition-all duration-300 active:scale-[0.99]"
             >
               <span className="transition-transform duration-200 group-hover:-translate-x-0.5">Book Free Consultation</span>
               <span className="material-symbols-outlined text-[18px] transition-transform duration-300 ease-out group-hover:translate-x-1.5 group-hover:scale-110 inline-block shrink-0">

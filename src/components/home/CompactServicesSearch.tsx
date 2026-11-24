@@ -17,7 +17,7 @@ export const CompactServicesSearch: React.FC<CompactServicesSearchProps> = ({
   return (
     <section className="bg-white rounded-2xl border border-slate-200 overflow-hidden my-8" data-purpose="compact-search-widget">
       <div className="p-3 bg-gradient-to-b from-[#fbfbfe] to-white border-b border-slate-200 transition-all duration-300 relative group/searchbox">
-        <div className="relative flex items-center h-14 pl-2.5 pr-3.5 rounded-full bg-white border border-[#e2e4ea] shadow-sm overflow-hidden">
+        <div className="relative flex items-center h-14 pl-2.5 pr-3.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 focus-within:border-[#0a1120] dark:focus-within:border-[#fbb034] focus-within:ring-1 focus-within:ring-[#0a1120] dark:focus-within:ring-[#fbb034] transition-all overflow-hidden">
           <div className="w-9 h-9 rounded-full bg-amber-400 flex items-center justify-center mr-3 shrink-0"> 
             <span className="text-white text-xs font-black">AI</span>
           </div>

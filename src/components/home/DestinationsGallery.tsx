@@ -240,9 +240,9 @@ export const DestinationsGallery: React.FC<DestinationsGalleryProps> = ({
   };
 
   return (
-    <section className="relative w-full bg-slate-50/50 dark:bg-[#0B1329] py-10 min-[390px]:py-12 sm:py-16 md:py-20 pb-28 sm:pb-24 overflow-hidden border-t border-slate-100 dark:border-slate-800 select-none">
+    <section className="relative w-full bg-slate-50/50 dark:bg-[#0B1329] py-10 sm:py-16 md:py-20 sm:pb-24 overflow-hidden border-t border-slate-100 dark:border-slate-800 select-none">
       {/* Header Container */}
-      <div className="max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 mb-8 text-center">
+      <div className="max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 mb-5 sm:mb-8 text-center">
         {/* Eyebrow Subtitle */}
         <div className="flex items-center justify-center gap-3 mb-3">
           <span className="h-px w-8 sm:w-12 bg-slate-300 dark:bg-slate-700"></span>
@@ -253,7 +253,7 @@ export const DestinationsGallery: React.FC<DestinationsGalleryProps> = ({
         </div>
 
         {/* Section Heading with GEES Orange Badge */}
-        <h2 className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl font-black font-display text-slate-900 dark:text-white tracking-tight flex items-center justify-center flex-wrap gap-2.5 sm:gap-3.5 leading-none text-center mb-4">
+        <h2 className="text-[30px] sm:text-5xl md:text-6xl font-black font-display text-slate-900 dark:text-white tracking-tight flex items-center justify-center flex-wrap gap-2.5 sm:gap-3.5 leading-[30px] sm:leading-none text-center mb-4">
           <span>Choose your</span>
           <span className="bg-[#ffb52e] text-slate-950 px-4 sm:px-6 py-1.5 sm:py-2 rounded-2xl font-black tracking-tight leading-none shadow-xs shrink-0 inline-block">
             Destination
@@ -261,12 +261,12 @@ export const DestinationsGallery: React.FC<DestinationsGalleryProps> = ({
         </h2>
         
         {/* Short introductory copy */}
-        <p className="text-xs sm:text-sm md:text-base text-slate-600 dark:text-slate-400 font-normal leading-relaxed max-w-xl mx-auto mb-8 px-2 text-center">
+        <p className="text-xs sm:text-sm md:text-base text-slate-600 dark:text-slate-400 font-normal leading-relaxed max-w-xl mx-auto mb-5 sm:mb-8 px-0 sm:px-2 text-center">
           Explore study destinations, discover new opportunities and find the right place to begin your international education journey.
         </p>
 
         {/* Continent Filter Segmented Pills (Horizontally scrollable on mobile) */}
-        <div className="w-full flex justify-start sm:justify-center overflow-x-auto whitespace-nowrap scrollbar-none pb-2 sm:pb-0 px-2 sm:px-0 max-w-full mb-6">
+        <div className="w-full flex justify-start sm:justify-center overflow-x-auto whitespace-nowrap scrollbar-none pb-1 sm:pb-0 px-0 max-w-full mb-2 sm:mb-6">
           <AnimatedTabs
             tabs={regionTabs}
             activeId={activeRegion}
@@ -282,7 +282,7 @@ export const DestinationsGallery: React.FC<DestinationsGalleryProps> = ({
       </div>
 
       {/* Content Toolbar: Single horizontal line with Compact/Expand centered in the middle */}
-      <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 mb-6 grid grid-cols-[1fr_auto_1fr] items-center gap-2 sm:gap-4 whitespace-nowrap overflow-x-auto scrollbar-none">
+      <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 mb-5 sm:mb-6 flex flex-wrap items-center justify-between gap-y-2.5 gap-x-2 sm:grid sm:grid-cols-[1fr_auto_1fr] sm:gap-4 sm:whitespace-nowrap">
         {/* Left: Showing X curated destinations */}
         <div className="text-[#475569] dark:text-slate-400 font-normal text-xs sm:text-[15px] tracking-tight justify-self-start">
           Showing <strong className="font-extrabold text-[#0B1329] dark:text-white mx-0.5">{filteredDestinations.length}</strong> curated destinations
@@ -420,7 +420,7 @@ export const DestinationsGallery: React.FC<DestinationsGalleryProps> = ({
         <>
           {/* Mobile Slideshow View (<= 430px / sm breakpoint) matching Screenshot 1 */}
           <div 
-            className="block sm:hidden relative w-full px-4 py-2 touch-pan-y"
+            className="block sm:hidden relative w-full px-4 py-1 touch-pan-y"
             style={{ touchAction: 'pan-y' }}
             onTouchStart={handleSlideTouchStart}
             onTouchEnd={handleSlideTouchEnd}

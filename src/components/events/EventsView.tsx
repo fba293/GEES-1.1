@@ -2,11 +2,22 @@
  * @license
  * SPDX-License-Identifier: Apache-2.0
  * GEES Global Education Expert Services - Events & Spot Assessment Fairs View
+ * Built on the shared GEES Explorer Theme (ExplorerPageShell, ExplorerHeroBanner, SectionHeader).
  */
 
 import React, { useState, useMemo } from 'react';
 import { mockEvents } from '../../data/mockEvents.ts';
 import { EventItem } from '../../types/index.ts';
+import {
+  EXPLORER_THEME,
+  ExplorerCtaBanner,
+  ExplorerEmptyState,
+  ExplorerFilterBar,
+  ExplorerHeroBanner,
+  ExplorerHeroMetrics,
+  ExplorerPageShell,
+  SectionHeader,
+} from '../portal/ExplorerTheme.tsx';
 
 interface EventsViewProps {
   onBackToHome?: () => void;
@@ -14,33 +25,63 @@ interface EventsViewProps {
   onNavigate?: (view: string, payload?: any) => void;
 }
 
+const EVENT_TYPES = [
+  'All',
+  'Spot Assessment Fair',
+  'Roadshow',
+  'Webinar',
+  'Visa & Scholarship Clinic',
+  'IELTS Workshop',
+];
+
+const VENUE_OPTIONS = [
+  { id: 'All', label: 'All Venues' },
+  { id: 'Dhaka', label: 'Kakrail, Dhaka' },
+  { id: 'Malaysia', label: 'Subang Jaya' },
+  { id: 'Virtual', label: 'Online Zoom' },
+  { id: 'Hybrid', label: 'Hybrid' },
+];
+
 export const EventsView: React.FC<EventsViewProps> = ({
   onBackToHome,
   onOpenConsultation,
-  onNavigate
+  onNavigate,
 }) => {
   const [selectedType, setSelectedType] = useState<string>('All');
   const [selectedLocation, setSelectedLocation] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [registeredEventIds, setRegisteredEventIds] = useState<Set<string>>(new Set());
-  const [activeTab, setActiveTab] = useState<'upcoming' | 'past'>('upcoming');
 
-  // Filtered Events List
+  const handleGoHome = () => {
+    if (onBackToHome) onBackToHome();
+    else onNavigate?.('home');
+  };
+
   const filteredEvents = useMemo(() => {
+    const q = searchQuery.toLowerCase().trim();
     return mockEvents.filter((evt) => {
       const matchesType = selectedType === 'All' || evt.type === selectedType;
       const matchesLoc = selectedLocation === 'All' || evt.locationType === selectedLocation;
-      const q = searchQuery.toLowerCase().trim();
       const matchesSearch =
         !q ||
         evt.title.toLowerCase().includes(q) ||
         evt.description.toLowerCase().includes(q) ||
         evt.venueName.toLowerCase().includes(q) ||
-        evt.participatingUniversities.some((u) => u.name.toLowerCase().includes(q) || u.country.toLowerCase().includes(q));
-
+        evt.participatingUniversities.some(
+          (u) => u.name.toLowerCase().includes(q) || u.country.toLowerCase().includes(q)
+        );
       return matchesType && matchesLoc && matchesSearch;
     });
   }, [selectedType, selectedLocation, searchQuery]);
+
+  const hasActiveFilters =
+    selectedType !== 'All' || selectedLocation !== 'All' || searchQuery.trim().length > 0;
+
+  const resetFilters = () => {
+    setSelectedType('All');
+    setSelectedLocation('All');
+    setSearchQuery('');
+  };
 
   const handleRegister = (evt: EventItem) => {
     setRegisteredEventIds((prev) => new Set(prev).add(evt.id));
@@ -69,323 +110,247 @@ END:VCALENDAR`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0B1329] text-slate-900 dark:text-slate-100 transition-colors pb-16">
-      {/* Top Breadcrumb Bar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-2">
-        <button
-          onClick={onBackToHome}
-          className="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 hover:text-blue-700 dark:text-amber-400 dark:hover:text-amber-300 transition-colors cursor-pointer group"
-        >
-          <span className="material-symbols-outlined text-sm group-hover:-translate-x-1 transition-transform">arrow_back</span>
-          <span>Back to GEES Home</span>
-        </button>
-      </div>
+    <ExplorerPageShell>
+      {/* 1. Shared Dark-Navy Explorer Hero Banner & Full-Width Search */}
+      <ExplorerHeroBanner
+        dataPurpose="events-hero-banner"
+        onNavigateHome={handleGoHome}
+        breadcrumbs={[{ label: 'Education Fairs & Events' }]}
+        titlePrefix="Global Education"
+        titleHighlight="Fairs"
+        titleSuffix="& Spot Assessments"
+        subtitle="Meet official university delegates from the UK, Australia, Malaysia, New Zealand, and Europe with free application fee waivers"
+        rightSlot={
+          <ExplorerHeroMetrics
+            items={[
+              { value: '100%', label: 'Free Entry & VIP Pass' },
+              { value: '167', suffix: '+', label: 'Partner Universities' },
+              { value: '$4.2M', suffix: '+', label: 'Scholarships Awarded' },
+              { value: '98%', label: 'Visa Grant Success' },
+            ]}
+          />
+        }
+        search={{
+          value: searchQuery,
+          onChange: setSearchQuery,
+          placeholder: 'Search fairs, participating universities, cities, or workshops...',
+          ariaLabel: 'Search education fairs and spot assessments',
+        }}
+      />
 
-      {/* Hero Banner Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white py-12 md:py-16 mb-10 shadow-xl">
-        <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#3b82f6_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none" />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/30 text-xs font-bold uppercase tracking-wider mb-4">
-              <span className="material-symbols-outlined text-sm animate-pulse">event_upcoming</span>
-              <span>100% Free Entry & Spot Offer Letters</span>
-            </div>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-tight mb-4">
-              Global Education Fairs & <br className="hidden sm:inline" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500">
-                University Spot Assessments
-              </span>
-            </h1>
-            <p className="text-slate-300 text-base sm:text-lg leading-relaxed mb-6">
-              Connect face-to-face or virtually with official international university delegates from the UK, Australia, Malaysia, New Zealand, and Europe. Enjoy 100% application fee waivers, on-the-spot profile evaluation, and scholarship guidance.
-            </p>
-
-            {/* Quick Stats Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 border-t border-slate-800">
-              <div className="p-3 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm">
-                <p className="text-2xl font-black text-amber-400">100% Free</p>
-                <p className="text-xs text-slate-300 font-medium">Entry & VIP Access</p>
-              </div>
-              <div className="p-3 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm">
-                <p className="text-2xl font-black text-amber-400">167+</p>
-                <p className="text-xs text-slate-300 font-medium">Partner Universities</p>
-              </div>
-              <div className="p-3 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm">
-                <p className="text-2xl font-black text-amber-400">$4.2M+</p>
-                <p className="text-xs text-slate-300 font-medium">Scholarships Awarded</p>
-              </div>
-              <div className="p-3 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm">
-                <p className="text-2xl font-black text-amber-400">98%</p>
-                <p className="text-xs text-slate-300 font-medium">Visa Grant Success</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Main Events Catalog Area */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Search & Filter Controls Card */}
-        <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-md border border-slate-200 dark:border-slate-800 mb-8 space-y-4">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            {/* Search Input */}
-            <div className="relative w-full md:w-96">
-              <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
-              <input
-                type="text"
-                placeholder="Search events, universities, or locations..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-amber-400"
-              />
-              {searchQuery && (
+      {/* 2. Shared Section Header (Consistent mb-12 & Vertically Centered Title) */}
+      <SectionHeader
+        title="Upcoming Education Fairs & Spot Assessments"
+        subtitle="Filter by event format or venue location to claim your free entry pass and add sessions to your calendar."
+        countLabel={`(${filteredEvents.length.toLocaleString()})`}
+        rightSlot={
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+            {VENUE_OPTIONS.map((venue) => {
+              const isActive = selectedLocation === venue.id;
+              return (
                 <button
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs font-bold"
-                >
-                  ✕
-                </button>
-              )}
-            </div>
-
-            {/* Location Selector */}
-            <div className="flex items-center gap-2 w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 shrink-0">Venue:</span>
-              {['All', 'Dhaka', 'Malaysia', 'Virtual', 'Hybrid'].map((loc) => (
-                <button
-                  key={loc}
-                  onClick={() => setSelectedLocation(loc)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
-                    selectedLocation === loc
-                      ? 'bg-blue-600 dark:bg-amber-500 text-white dark:text-slate-950 shadow-sm'
-                      : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                  key={venue.id}
+                  type="button"
+                  onClick={() => setSelectedLocation(venue.id)}
+                  className={`no-min-touch h-8 px-3 rounded-lg border text-xs font-semibold whitespace-nowrap transition-all cursor-pointer shrink-0 ${
+                    isActive
+                      ? EXPLORER_THEME.filterButtonActive
+                      : EXPLORER_THEME.filterButtonIdle
                   }`}
                 >
-                  {loc === 'Dhaka' ? '🇧🇩 Kakrail, Dhaka' : loc === 'Malaysia' ? '🇲🇾 Subang Jaya' : loc === 'Virtual' ? '💻 Online Zoom' : loc}
+                  {venue.label}
                 </button>
-              ))}
-            </div>
+              );
+            })}
           </div>
+        }
+      />
 
-          {/* Type Filter Pills */}
-          <div className="flex items-center gap-2 overflow-x-auto pt-2 border-t border-slate-100 dark:border-slate-800 pb-1">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 shrink-0">Event Type:</span>
-            {[
-              'All',
-              'Spot Assessment Fair',
-              'Roadshow',
-              'Webinar',
-              'Visa & Scholarship Clinic',
-              'IELTS Workshop'
-            ].map((type) => (
-              <button
-                key={type}
-                onClick={() => setSelectedType(type)}
-                className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
-                  selectedType === type
-                    ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 shadow-sm'
-                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
-                }`}
+      {/* 3. Shared Quiet Event-Type Filter Bar */}
+      <ExplorerFilterBar
+        options={EVENT_TYPES.map((type) => ({ id: type, label: type }))}
+        activeId={selectedType}
+        onSelect={setSelectedType}
+        totalCount={filteredEvents.length}
+        countEntityLabel="Events"
+        hasActiveFilters={hasActiveFilters}
+        onReset={resetFilters}
+      />
+
+      {/* 4. Events Cards Grid or Shared Empty State */}
+      {filteredEvents.length === 0 ? (
+        <ExplorerEmptyState
+          icon="event_busy"
+          title="No events match your current filters"
+          description="Try clearing your search term or selecting a different venue or event type above."
+          onReset={resetFilters}
+        />
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {filteredEvents.map((evt) => {
+            const isRegistered = registeredEventIds.has(evt.id);
+            const venueBadge =
+              evt.locationType === 'Dhaka'
+                ? 'Kakrail, Dhaka'
+                : evt.locationType === 'Malaysia'
+                ? 'Subang Jaya'
+                : evt.locationType;
+
+            return (
+              <article
+                key={evt.id}
+                className={`${EXPLORER_THEME.card} overflow-hidden flex flex-col group`}
               >
-                {type}
-              </button>
-            ))}
-          </div>
-        </div>
+                {/* Event Banner Image */}
+                <div className="relative h-52 overflow-hidden bg-slate-900">
+                  <img
+                    src={evt.bannerUrl}
+                    alt={evt.title}
+                    loading="lazy"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0a1120]/85 via-[#0a1120]/25 to-transparent pointer-events-none" />
 
-        {/* Section Title & Results Count */}
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <span className="material-symbols-outlined text-amber-500">campaign</span>
-            <span>Featured GEES Fairs & Sessions</span>
-          </h2>
-          <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300">
-            {filteredEvents.length} {filteredEvents.length === 1 ? 'Event' : 'Events'} Available
-          </span>
-        </div>
-
-        {/* Events Cards Grid */}
-        {filteredEvents.length === 0 ? (
-          <div className="bg-white dark:bg-slate-900 rounded-2xl p-12 text-center border border-slate-200 dark:border-slate-800 my-8">
-            <span className="material-symbols-outlined text-5xl text-slate-400 mb-3">event_busy</span>
-            <h3 className="text-lg font-bold text-slate-800 dark:text-slate-200 mb-1">No events found matching your criteria</h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto mb-6">
-              Try adjusting your search filters or clear your selection to view all upcoming university fairs.
-            </p>
-            <button
-              onClick={() => {
-                setSelectedType('All');
-                setSelectedLocation('All');
-                setSearchQuery('');
-              }}
-              className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-semibold transition-all shadow-md cursor-pointer"
-            >
-              Reset Filters
-            </button>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
-            {filteredEvents.map((evt) => {
-              const isRegistered = registeredEventIds.has(evt.id);
-
-              return (
-                <div
-                  key={evt.id}
-                  className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col group"
-                >
-                  {/* Event Image Banner with Overlays */}
-                  <div className="relative h-48 sm:h-56 overflow-hidden">
-                    <img
-                      src={evt.bannerUrl}
-                      alt={evt.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent" />
-
-                    {/* Top Badges */}
-                    <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2">
-                      <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-amber-500 text-slate-950 shadow-md">
-                        {evt.type}
+                  <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between gap-2">
+                    <span className="px-2.5 py-1 rounded-md text-[11px] font-bold bg-[#fbb034] text-[#0a1120]">
+                      {evt.type}
+                    </span>
+                    <span className="px-2.5 py-1 rounded-md text-[11px] font-semibold bg-[#0a1120]/85 text-white border border-white/15 inline-flex items-center gap-1">
+                      <span className="material-symbols-outlined text-[13px] text-[#fbb034]">
+                        location_on
                       </span>
-                      <span className="px-3 py-1 rounded-full text-xs font-bold bg-slate-900/80 text-white backdrop-blur-md border border-white/20 flex items-center gap-1">
-                        <span className="material-symbols-outlined text-xs text-amber-400">location_on</span>
-                        <span>{evt.locationType === 'Dhaka' ? 'Kakrail, Dhaka' : evt.locationType === 'Malaysia' ? 'Subang Jaya' : evt.locationType}</span>
-                      </span>
-                    </div>
-
-                    {/* Bottom Date Overlay */}
-                    <div className="absolute bottom-3 left-3 right-3 text-white">
-                      <p className="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1">
-                        <span className="material-symbols-outlined text-sm">calendar_month</span>
-                        <span>{evt.dateText} • {evt.timeText}</span>
-                      </p>
-                    </div>
+                      <span>{venueBadge}</span>
+                    </span>
                   </div>
 
-                  {/* Card Content Body */}
-                  <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between space-y-5">
+                  <div className="absolute bottom-3.5 left-4 right-4 text-xs font-semibold text-white flex items-center gap-2">
+                    <span className="material-symbols-outlined text-[15px] text-[#fbb034]">
+                      calendar_month
+                    </span>
+                    <span>
+                      {evt.dateText} · {evt.timeText}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Card Body */}
+                <div className={`${EXPLORER_THEME.cardPadding} flex-1 flex flex-col justify-between gap-5`}>
+                  <div className="space-y-4">
                     <div>
-                      {/* Title */}
-                      <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white leading-snug mb-2 group-hover:text-blue-600 dark:group-hover:text-amber-400 transition-colors">
+                      <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white leading-snug group-hover:text-amber-600 dark:group-hover:text-[#fbb034] transition-colors">
                         {evt.title}
                       </h3>
-
-                      {/* Description */}
-                      <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 line-clamp-2 leading-relaxed mb-4">
+                      <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 line-clamp-2 leading-relaxed mt-1.5">
                         {evt.description}
                       </p>
+                    </div>
 
-                      {/* Venue Address */}
-                      <div className="flex items-start gap-2 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-300 mb-4">
-                        <span className="material-symbols-outlined text-sm text-red-500 shrink-0 mt-0.5">map</span>
-                        <div className="min-w-0">
-                          <strong className="block font-semibold text-slate-900 dark:text-white">{evt.venueName}</strong>
-                          <span className="text-slate-500 dark:text-slate-400 block truncate">{evt.venueAddress}</span>
-                        </div>
+                    {/* Venue Block */}
+                    <div className="flex items-start gap-2.5 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/70 dark:border-slate-800 text-xs">
+                      <span className="material-symbols-outlined text-[16px] text-slate-500 dark:text-slate-400 shrink-0 mt-0.5">
+                        map
+                      </span>
+                      <div className="min-w-0">
+                        <strong className="block font-semibold text-slate-900 dark:text-white">
+                          {evt.venueName}
+                        </strong>
+                        <span className="text-slate-500 dark:text-slate-400 block truncate">
+                          {evt.venueAddress}
+                        </span>
                       </div>
+                    </div>
 
-                      {/* Participating Universities */}
-                      <div className="mb-4">
-                        <p className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
-                          Participating Institutions & Delegates:
-                        </p>
-                        <div className="flex flex-wrap gap-1.5">
-                          {evt.participatingUniversities.map((uni, idx) => (
-                            <span
-                              key={idx}
-                              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-blue-50 text-blue-900 dark:bg-blue-950/60 dark:text-blue-200 border border-blue-100 dark:border-blue-900/50"
-                            >
-                              <span>{uni.flagEmoji}</span>
-                              <span>{uni.name}</span>
-                            </span>
-                          ))}
-                        </div>
+                    {/* Participating Institutions */}
+                    <div>
+                      <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">
+                        Participating Institutions
                       </div>
-
-                      {/* Highlights Key Points */}
-                      <div className="space-y-1.5">
-                        {evt.highlights.slice(0, 3).map((h, idx) => (
-                          <div key={idx} className="flex items-start gap-2 text-xs text-slate-700 dark:text-slate-300">
-                            <span className="material-symbols-outlined text-sm text-emerald-500 shrink-0 mt-0.5">check_circle</span>
-                            <span>{h}</span>
-                          </div>
+                      <div className="flex flex-wrap gap-1.5">
+                        {evt.participatingUniversities.map((uni, idx) => (
+                          <span
+                            key={idx}
+                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200/70 dark:border-slate-700"
+                          >
+                            <span>{uni.flagEmoji}</span>
+                            <span>{uni.name}</span>
+                          </span>
                         ))}
                       </div>
                     </div>
 
-                    {/* Footer Actions */}
-                    <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3">
-                      {/* Free Entry tag & Calendar button */}
-                      <div className="flex items-center gap-2 w-full sm:w-auto">
-                        <span className="inline-flex items-center gap-1 text-xs font-extrabold px-2.5 py-1 rounded-md bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
-                          <span className="material-symbols-outlined text-sm">confirmation_number</span>
-                          <span>FREE PASS</span>
-                        </span>
-                        <button
-                          onClick={() => downloadCalendarIcs(evt)}
-                          title="Add to Calendar (.ics)"
-                          className="p-1.5 rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors text-xs flex items-center gap-1 cursor-pointer"
+                    {/* Highlights */}
+                    <ul className="space-y-1.5">
+                      {evt.highlights.slice(0, 3).map((h, idx) => (
+                        <li
+                          key={idx}
+                          className="flex items-start gap-2 text-xs text-slate-600 dark:text-slate-300"
                         >
-                          <span className="material-symbols-outlined text-sm">calendar_add_on</span>
-                          <span className="hidden sm:inline">Add to Calendar</span>
-                        </button>
-                      </div>
+                          <span className="material-symbols-outlined text-[15px] text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5">
+                            check_circle
+                          </span>
+                          <span>{h}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
 
-                      {/* Registration CTA Button */}
+                  {/* Card Footer Actions */}
+                  <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400">
+                        Free Entry Pass
+                      </span>
+                      <span className="text-slate-300 dark:text-slate-700" aria-hidden="true">
+                        ·
+                      </span>
                       <button
-                        onClick={() => handleRegister(evt)}
-                        className={`w-full sm:w-auto px-5 py-2.5 rounded-xl font-bold text-sm transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer ${
-                          isRegistered
-                            ? 'bg-emerald-600 text-white hover:bg-emerald-700'
-                            : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-blue-500/20'
-                        }`}
+                        type="button"
+                        onClick={() => downloadCalendarIcs(evt)}
+                        title="Add to Calendar (.ics)"
+                        className="no-min-touch inline-flex items-center gap-1 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
                       >
-                        <span className="material-symbols-outlined text-sm">{isRegistered ? 'verified' : 'how_to_reg'}</span>
-                        <span>{isRegistered ? 'Pass Requested ✓' : 'Claim Free Pass'}</span>
+                        <span className="material-symbols-outlined text-[15px]">
+                          calendar_add_on
+                        </span>
+                        <span>Save .ICS</span>
                       </button>
                     </div>
+
+                    <button
+                      type="button"
+                      onClick={() => handleRegister(evt)}
+                      className={
+                        isRegistered
+                          ? 'inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-[13px] transition-all cursor-pointer whitespace-nowrap'
+                          : EXPLORER_THEME.primaryGoldButton
+                      }
+                    >
+                      <span className="material-symbols-outlined text-[16px]">
+                        {isRegistered ? 'verified' : 'how_to_reg'}
+                      </span>
+                      <span>{isRegistered ? 'Pass Requested' : 'Claim Free Pass'}</span>
+                    </button>
                   </div>
                 </div>
-              );
-            })}
-          </div>
-        )}
-
-        {/* Event Booking Help Banner */}
-        <div className="bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 rounded-3xl p-6 sm:p-10 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 mb-12 relative overflow-hidden">
-          <div className="max-w-xl space-y-2 relative z-10 text-center md:text-left">
-            <span className="inline-block px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 text-xs font-bold uppercase tracking-wider mb-1">
-              Custom Group Booking or University Fair Inquiry
-            </span>
-            <h3 className="text-2xl sm:text-3xl font-extrabold text-white">
-              Planning to bring your institution or group?
-            </h3>
-            <p className="text-slate-300 text-sm leading-relaxed">
-              Contact our Events Team directly to schedule a dedicated spot-assessment session or request personalized group counseling at Kakrail Dhaka or Subang Jaya Malaysia.
-            </p>
-          </div>
-          <div className="relative z-10 shrink-0 w-full md:w-auto flex flex-col sm:flex-row gap-3">
-            <button
-              onClick={() => onOpenConsultation?.('Group Event Inquiry / Spot Assessment')}
-              className="px-6 py-3 bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold rounded-xl text-sm transition-all shadow-lg hover:scale-105 cursor-pointer text-center"
-            >
-              Contact Event Coordinators
-            </button>
-            <a
-              href="https://wa.me/8801805529578"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl text-sm transition-all backdrop-blur-md border border-white/20 flex items-center justify-center gap-2 cursor-pointer"
-            >
-              <span>WhatsApp Direct</span>
-              <span className="material-symbols-outlined text-sm">open_in_new</span>
-            </a>
-          </div>
+              </article>
+            );
+          })}
         </div>
-      </div>
-    </div>
+      )}
+
+      {/* 5. Shared Dark-Navy Bottom Consultation CTA */}
+      <ExplorerCtaBanner
+        title="Planning to bring your institution or student group?"
+        description="Contact our Events Team to schedule a dedicated spot-assessment session or group counseling at our Dhaka or Subang Jaya offices."
+        primaryLabel="Contact Event Coordinators"
+        onPrimaryClick={() => onOpenConsultation?.('Group Event Inquiry / Spot Assessment')}
+        secondaryLabel="WhatsApp Direct"
+        secondaryHref="https://wa.me/8801805529578"
+      />
+    </ExplorerPageShell>
   );
 };

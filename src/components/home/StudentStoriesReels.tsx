@@ -198,22 +198,22 @@ export const StudentStoriesReels: React.FC = () => {
   };
 
   return (
-    <section className="relative w-full max-w-full overflow-hidden bg-white dark:bg-[#0B1329] py-12 min-[390px]:py-16 sm:py-24 px-4 sm:px-6 lg:px-8 select-none border-t border-slate-100 dark:border-slate-800">
-      <div className="max-w-[1440px] mx-auto w-full overflow-hidden">
+    <section className="relative w-full max-w-[1600px] mx-auto overflow-hidden bg-white dark:bg-[#0B1329] py-10 sm:py-24 px-4 sm:px-6 lg:px-8 select-none border-t border-slate-100 dark:border-slate-800">
+      <div className="max-w-[1600px] mx-auto w-full overflow-hidden">
         {/* Section Heading — Premium Visual Hierarchy */}
-        <header className="text-center max-w-3xl mx-auto mb-8 sm:mb-12 px-2">
-          <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold font-display tracking-tight text-[#0A1120] dark:text-white flex items-center justify-center flex-wrap gap-2 sm:gap-3 md:gap-3.5 leading-tight text-center">
+        <header className="text-center max-w-3xl mx-auto mb-6 sm:mb-12 px-0 sm:px-2">
+          <h2 className="text-[30px] sm:text-4xl md:text-5xl lg:text-6xl font-extrabold font-display tracking-tight text-[#0A1120] dark:text-white flex items-center justify-center flex-wrap gap-2 sm:gap-3 md:gap-3.5 leading-[30px] sm:leading-tight text-center">
             <span>Student</span>
             <span className="bg-[#fbb034] text-slate-950 px-3.5 sm:px-5 md:px-6 py-0.5 sm:py-1 md:py-1.5 rounded-xl sm:rounded-2xl font-black tracking-tight leading-none shadow-sm shrink-0">
               Stories
             </span>
           </h2>
-          <p className="mt-3 sm:mt-4 text-sm sm:text-base md:text-lg text-slate-500 dark:text-slate-400 font-normal leading-relaxed max-w-2xl mx-auto px-2 text-center">
+          <p className="mt-2.5 sm:mt-4 text-sm sm:text-base md:text-lg text-slate-500 dark:text-slate-400 font-normal leading-relaxed max-w-2xl mx-auto px-0 sm:px-2 text-center">
             Real experiences. Real achievements. Inspiring journeys from our students around the world.
           </p>
 
           {/* Category Filter Pills — Compact & Professional */}
-          <div className="w-full pt-6 sm:pt-8 flex justify-center">
+          <div className="w-full pt-5 sm:pt-8 flex justify-center">
             <AnimatedTabs
               tabs={storyTabs}
               activeId={selectedFilter}
@@ -273,7 +273,7 @@ export const StudentStoriesReels: React.FC = () => {
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
             onPointerCancel={handlePointerUp}
-            className="relative w-full overflow-hidden py-4 sm:py-6 touch-pan-y cursor-grab active:cursor-grabbing select-none"
+            className="relative w-full overflow-hidden py-3 sm:py-6 touch-pan-y cursor-grab active:cursor-grabbing select-none"
           >
             <div
               className={`absolute inset-0 bg-white/40 dark:bg-[#0B1329]/40 backdrop-blur-[1px] z-30 transition-opacity duration-240 ease-out pointer-events-none ${
@@ -300,7 +300,7 @@ export const StudentStoriesReels: React.FC = () => {
         </div>
 
         {/* Bottom CTA — View All Student Stories */}
-        <div className="mt-10 sm:mt-16 text-center flex justify-center">
+        <div className="mt-6 sm:mt-16 text-center flex justify-center">
           <InteractiveHoverButton
             type="button"
             text="View all stories"
